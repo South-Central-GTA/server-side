@@ -1,0 +1,40 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:    
+    - uses: actions/checkout@master
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      working-directory: Server/
+      run: dotnet build -c Release Server.csproj
+    
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    
+    - name: SFTP Deploy
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.2
+      with:
+          username: 'tstolzenberg'
+          server: '192.145.44.94'
+          port: '8459'
+          sftp_only: 'true'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          local_path: 'Server/bin/Release/net6.0/*'
+          remote_path: '/home/tstolzenberg/altv/resources/southcentral/server'
+          args: '-o ConnectTimeout=5'

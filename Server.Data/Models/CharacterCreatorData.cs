@@ -1,0 +1,24 @@
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using AltV.Net;
+using Server.Database.Models.Character;
+
+namespace Server.Data.Models;
+
+public class CharacterCreatorData
+{
+    [JsonPropertyName("character")] 
+    public CharacterModel CharacterModel { get; set; }
+
+    [JsonPropertyName("startMoney")] 
+    public int StartMoney { get; set; }
+
+    [JsonPropertyName("hasPhone")] 
+    public bool HasPhone { get; set; }
+
+    [JsonPropertyName("purchaseOrders")] 
+    public List<CharacterCreatorPurchaseOrder> PurchaseOrders { get; set; }
+
+    [JsonPropertyName("spawnId")] 
+    public int SpawnId { get; set; }
+}
