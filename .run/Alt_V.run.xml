@@ -12,7 +12,7 @@
       <option name="CleanSolution" enabled="true" />
       <option name="Build Solution" enabled="true" />
       <option name="NpmBeforeRunTask" enabled="true">
-        <package-json value="$PROJECT_DIR$/../south-central-client/package.json" />
+        <package-json value="$PROJECT_DIR$/../client-side-ts/package.json" />
         <command value="run" />
         <scripts>
           <script value="build" />
@@ -20,6 +20,7 @@
         <node-interpreter value="project" />
         <envs />
       </option>
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Move Files" run_configuration_type="RunNativeExe" />
     </method>
   </configuration>
 </component>

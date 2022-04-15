@@ -2,9 +2,8 @@
 <project version="4">
   <component name="UserContentModel">
     <attachedFolders>
-      <Path>../south-central-client</Path>
-      <Path>../south-central-resources</Path>
-      <Path>../south-central-webview</Path>
+      <Path>../client-side-ts</Path>
+      <Path>../webview</Path>
     </attachedFolders>
     <explicitIncludes />
     <explicitExcludes />
