@@ -2,6 +2,7 @@
 
 public class DiscordOptions
 {
+    public string Token { get; set; }
     public bool IsLive { get; set; }
     public ulong WecomeMessageId { get; set; }
     public ulong VerifiedUserRoleId { get; set; }

@@ -218,7 +218,7 @@ public class DiscordModule : ISingletonScript
         _client.MessageDeleted += OnMessageDeleted;
         _client.MessageUpdated += OnMessageUpdated;
 
-        await _client.LoginAsync(TokenType.Bot, "NjIxMzcwMjkyMzQ1NzY1OTAw.XXkWLg.oc0ahktzogOaOV6gz5kiy7R4LkY");
+        await _client.LoginAsync(TokenType.Bot, _discordOptions.Token);
         await _client.StartAsync();
     }
 
