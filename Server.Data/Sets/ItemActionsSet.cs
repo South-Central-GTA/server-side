@@ -191,7 +191,13 @@ public static class ItemActionsSet
         { (int)ItemCatalogIds.COMPONENT_SNIPER_FLASHLIGHT, new List<ActionData>() },
         { (int)ItemCatalogIds.COMPONENT_SNIPER_SCOPE1, new List<ActionData>() },
         { (int)ItemCatalogIds.COMPONENT_SNIPER_SCOPE2, new List<ActionData>() },
-        { (int)ItemCatalogIds.COMPONENT_SNIPER_GRIP, new List<ActionData>() }
+        { (int)ItemCatalogIds.COMPONENT_SNIPER_GRIP, new List<ActionData>() },
+        { (int)ItemCatalogIds.DRUG_MARIJUANA, new List<ActionData>() },
+        { (int)ItemCatalogIds.DRUG_COCAINE, new List<ActionData>() },
+        { (int)ItemCatalogIds.DRUG_MDMA, new List<ActionData>() },
+        { (int)ItemCatalogIds.DRUG_XANAX, new List<ActionData>() },
+        { (int)ItemCatalogIds.DRUG_CODEINE, new List<ActionData>() },
+        { (int)ItemCatalogIds.DRUG_METH, new List<ActionData>() },
     };
 
     public static List<ActionData> Get(ItemCatalogIds id)

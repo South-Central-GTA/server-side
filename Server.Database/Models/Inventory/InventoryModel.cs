@@ -82,9 +82,6 @@ public class InventoryModel
             writer.Name("description");
             writer.Value(item.CatalogItemModel.Description);
 
-            writer.Name("useValue");
-            writer.Value(item.CatalogItemModel.UseValue);
-
             writer.Name("rarity");
             writer.Value((int)item.CatalogItemModel.Rarity);
 

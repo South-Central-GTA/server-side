@@ -35,9 +35,6 @@ public class ItemWeaponAttachmentModel
         writer.Name("description");
         writer.Value(CatalogItemModel.Description);
 
-        writer.Name("useValue");
-        writer.Value(CatalogItemModel.UseValue);
-
         writer.Name("rarity");
         writer.Value((int)CatalogItemModel.Rarity);
 

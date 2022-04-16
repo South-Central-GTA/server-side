@@ -126,6 +126,7 @@ public class ObjectActionHandler : ISingletonScript
             case 1843823183: // ammo - heavy                
             case 1470358132: // all attachments (prop_champ_box_01)    
             case 3575239779: // clothing box
+            case 525896218: // drug box
                 if (!objId.HasValue)
                 {
                     return;

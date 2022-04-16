@@ -14,7 +14,7 @@ public class CatalogItemModel
     {
     }
 
-    public CatalogItemModel(ItemCatalogIds id, string name, string model, Rotation rotation, float zOffset, string image, string description, int useValue, Rarity rarity, float weight, bool equippable,
+    public CatalogItemModel(ItemCatalogIds id, string name, string model, Rotation rotation, float zOffset, string image, string description, Rarity rarity, float weight, bool equippable,
                        bool stackable, bool buyable, bool sellable, int price, int sellPrice, int? maxLimit = null)
     {
         Id = id;
@@ -26,7 +26,6 @@ public class CatalogItemModel
         ZOffset = zOffset;
         Image = image;
         Description = description;
-        UseValue = useValue;
         Rarity = rarity;
         Weight = weight;
         Equippable = equippable;
@@ -47,7 +46,6 @@ public class CatalogItemModel
     public float ZOffset { get; set; }
     public string Image { get; set; }
     public string Description { get; set; }
-    public int UseValue { get; set; }
     public Rarity Rarity { get; set; }
     public float Weight { get; set; }
     public bool Equippable { get; set; }
@@ -73,9 +71,6 @@ public class CatalogItemModel
 
         writer.Name("description");
         writer.Value(Description);
-
-        writer.Name("useValue");
-        writer.Value(UseValue);
 
         writer.Name("rarity");
         writer.Value((int)Rarity);
