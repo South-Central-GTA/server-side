@@ -454,6 +454,26 @@ public class ItemCreationModule
                     IsStolen = isStolen
                 });
                 break;
+            case ItemCatalogIds.DRUG_MARIJUANA:
+            case ItemCatalogIds.DRUG_COCAINE:
+            case ItemCatalogIds.DRUG_MDMA:
+            case ItemCatalogIds.DRUG_XANAX:
+            case ItemCatalogIds.DRUG_CODEINE:
+            case ItemCatalogIds.DRUG_METH:
+                createdItemModel = await _itemService.Add(new ItemDrugModel
+                {
+                    InventoryModelId = inventoryModel.Id,
+                    Slot = slot,
+                    CatalogItemModelId = catalogId,
+                    Amount = amount,
+                    CustomData = customData,
+                    Note = note,
+                    Condition = condition,
+                    ItemState = itemState,
+                    IsBought = isBought,
+                    IsStolen = isStolen
+                });
+                break;
             case ItemCatalogIds.DOLLAR:
             case ItemCatalogIds.LICENSES:
             case ItemCatalogIds.REPAIR_KIT:
