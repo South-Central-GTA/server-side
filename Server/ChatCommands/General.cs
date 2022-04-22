@@ -56,6 +56,7 @@ public class General : ISingletonScript
     private readonly ItemCatalogService _itemCatalogService;
     private readonly ItemCreationModule _itemCreationModule;
     private readonly ItemService _itemService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly LockModule _lockModule;
     private readonly PedSyncModule _pedSyncModule;
@@ -87,7 +88,8 @@ public class General : ISingletonScript
         HelpMeModule helpMeModule,
         DiscordModule discordModule,
         RoleplayInfoModule roleplayInfoModule,
-        AnimationModule animationModule)
+        AnimationModule animationModule, 
+        RegistrationOfficeService registrationOfficeService)
     {
         _worldLocationOptions = worldLocationOptions.Value;
         _companyOptions = companyOptions.Value;
@@ -114,6 +116,7 @@ public class General : ISingletonScript
         _discordModule = discordModule;
         _roleplayInfoModule = roleplayInfoModule;
         _animationModule = animationModule;
+        _registrationOfficeService = registrationOfficeService;
     }
 
     [Command("verify", "Update deine Berechtigungen basierend auf unseren Discord Server.")]
@@ -602,6 +605,13 @@ public class General : ISingletonScript
             player.SendNotification("Dein Charakter darf in keinem Fahrzeug sitzen.", NotificationType.ERROR);
             return;
         }
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
 
         if (!await _inventoryModule.CanCarry(player, ItemCatalogIds.KEY))
         {
@@ -664,6 +674,13 @@ public class General : ISingletonScript
             return;
         }
 
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
+        
         if (!await _inventoryModule.CanCarry(player, ItemCatalogIds.KEY))
         {
             return;

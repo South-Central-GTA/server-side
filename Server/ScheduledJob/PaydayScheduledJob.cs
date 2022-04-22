@@ -34,6 +34,8 @@ public class PaydayScheduledJob
     private readonly PublicGarageEntryService _publicGarageEntryService;
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    private readonly DefinedJobService _definedJobService;
     private readonly BankModule _bankModule;
     private readonly GroupModule _groupModule;
     private readonly HouseModule _houseModule;
@@ -53,6 +55,8 @@ public class PaydayScheduledJob
         VehicleCatalogService vehicleCatalogService,
         GroupService groupService,
         HouseService houseService,
+        RegistrationOfficeService registrationOfficeService,
+        DefinedJobService definedJobService,
         HouseModule houseModule)
         : base(TimeSpan.FromMinutes(1))
     {
@@ -67,10 +71,12 @@ public class PaydayScheduledJob
         _vehicleCatalogService = vehicleCatalogService;
         _groupService = groupService;
         _houseService = houseService;
+        _registrationOfficeService = registrationOfficeService;
         
         _bankModule = bankModule;
         _groupModule = groupModule;
         _houseModule = houseModule;
+        _definedJobService = definedJobService;
     }
 
     public override async Task Action()
@@ -195,6 +201,14 @@ public class PaydayScheduledJob
             return;
         }
 
+        if (!await _registrationOfficeService.IsRegistered(player.CharacterModel.Id))
+        {
+            await _definedJobService.Remove(j => j.CharacterModelId == player.CharacterModel.Id);
+            player.CharacterModel.JobModel = null;
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet, weshalb er seinen Job verloren hat und kein Gehalt bekam.", NotificationType.ERROR);
+            return;
+        }
+
         var definedJobData = _gameOptions.DefinedJobs.Find(d => d.Id == player.CharacterModel.JobModel.JobId);
         if (definedJobData == null)
         {
@@ -287,6 +301,15 @@ public class PaydayScheduledJob
             {
                 player.SendNotification($"Dein Charakter hat keine Transferrechte mehr für das Konto {bankAccount.BankDetails} das Fahrzeug {catalogVehicle.DisplayName} wird ausgeparkt.", NotificationType.WARNING);
                 // TODO: Implement "unparking" of vehicle.
+                player.SendNotification("Debug: Implementation fehlt noch.", NotificationType.WARNING);
+                continue;
+            }
+            
+            if (!await _registrationOfficeService.IsRegistered(player.CharacterModel.Id))
+            {
+                player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet, weshalb die Public Garage das Fahrzeug ausgeparkt hat.", NotificationType.ERROR);
+                // TODO: Implement "unparking" of vehicle.
+                player.SendNotification("Debug: Implementation fehlt noch.", NotificationType.WARNING);
                 continue;
             }
 

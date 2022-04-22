@@ -105,6 +105,11 @@ public class Blip : IServerJob
                                        drivingSchool.PedPointZ));
         }
 
+        _blipSyncModule.Create("Stadthalle", 4, 1, true, 120,
+                               new Position(_worldLocationOptions.CityHallPositionX,
+                                            _worldLocationOptions.CityHallPositionY,
+                                            _worldLocationOptions.CityHallPositionZ));
+
         await Task.CompletedTask;
     }
 }

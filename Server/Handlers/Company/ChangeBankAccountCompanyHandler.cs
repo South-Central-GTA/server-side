@@ -7,6 +7,7 @@ using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Bank;
+using Server.Modules.Phone;
 
 namespace Server.Handlers.Company;
 
@@ -15,19 +16,27 @@ public class ChangeBankAccountCompanyHandler : ISingletonScript
     private readonly BankAccountService _bankAccountService;
     private readonly GroupMemberService _groupMemberService;
     private readonly GroupService _groupService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    
     private readonly BankModule _bankModule;
+    private readonly PhoneModule _phoneModule;
 
     public ChangeBankAccountCompanyHandler(
         GroupService groupService,
         BankAccountService bankAccountService,
         GroupMemberService groupMemberService,
-        BankModule bankModule)
+        RegistrationOfficeService registrationOfficeService,
+        
+        BankModule bankModule, 
+        PhoneModule phoneModule)
     {
         _groupService = groupService;
         _bankAccountService = bankAccountService;
         _groupMemberService = groupMemberService;
+        _registrationOfficeService = registrationOfficeService;
 
         _bankModule = bankModule;
+        _phoneModule = phoneModule;
 
         AltAsync.OnClient<ServerPlayer, int, int>("company:changebankaccount", OnChangeBankAccount);
     }
@@ -39,6 +48,13 @@ public class ChangeBankAccountCompanyHandler : ISingletonScript
         if (group == null)
         {
             return;
+        }
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
         }
 
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);

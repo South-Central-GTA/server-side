@@ -21,9 +21,9 @@ public class PedActionHandler : ISingletonScript
     
     private readonly ContextModule _contextModule;
     
-    private uint[] _publicGaragePeds = { Alt.Hash("mp_m_waremech_01"), Alt.Hash("mp_f_bennymech_01"), Alt.Hash("cs_jimmyboston") };
-    private uint[] _drivingSchoolPeds = { Alt.Hash("u_m_y_baygor"), Alt.Hash("u_m_y_burgerdrug_01") };
-    
+    private readonly uint[] _publicGaragePeds = { Alt.Hash("mp_m_waremech_01"), Alt.Hash("mp_f_bennymech_01"), Alt.Hash("cs_jimmyboston") };
+    private readonly uint[] _drivingSchoolPeds = { Alt.Hash("u_m_y_baygor"), Alt.Hash("u_m_y_burgerdrug_01") };
+    private readonly uint _cityHallPed = Alt.Hash("u_m_y_gunvend_01");
     public PedActionHandler(
         HouseService houseService, 
         
@@ -32,19 +32,19 @@ public class PedActionHandler : ISingletonScript
         _houseService = houseService;
         
         _contextModule = contextModule;
-        AltAsync.OnClient<ServerPlayer, uint, int?>("pedactions:get", OnGetActions);
+        AltAsync.OnClient<ServerPlayer, uint, int>("pedactions:get", OnGetActions);
     }
 
-    private async void OnGetActions(ServerPlayer player, uint entityModel, int? playerId)
+    private async void OnGetActions(ServerPlayer player, uint entityModel, int playerId)
     {
         if (!player.Exists)
         {
             return;
         }
 
-        if (playerId.HasValue)
+        if (playerId != -1)
         {
-            var targetPlayer = Alt.GetAllPlayers().FindPlayerById(playerId.Value);
+            var targetPlayer = Alt.GetAllPlayers().FindPlayerById(playerId);
             if (targetPlayer != null)
             {
                 await HandlePlayerPed(player, targetPlayer);
@@ -104,6 +104,13 @@ public class PedActionHandler : ISingletonScript
             _contextModule.OpenMenu(player, "Public Garage Mitarbeiter", new List<ActionData>()
             {
                 new("Führerschein Prüfung beginnen", "drivingschool:showstartdialog"),
+            });
+        }
+        else if (_cityHallPed == entityModel)
+        {
+            _contextModule.OpenMenu(player, "LS Stadthalle", new List<ActionData>()
+            {
+                new("Meldeamt", "cityhall:requestmenu"),
             });
         }
     }

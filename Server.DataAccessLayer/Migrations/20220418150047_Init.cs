@@ -87,7 +87,9 @@ namespace Server.DataAccessLayer.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    Location = table.Column<string>(type: "text", nullable: false),
                     Situation = table.Column<string>(type: "text", nullable: false),
+                    FactionType = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -129,7 +131,6 @@ namespace Server.DataAccessLayer.Migrations
                     ZOffset = table.Column<float>(type: "real", nullable: false),
                     Image = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    UseValue = table.Column<int>(type: "integer", nullable: false),
                     Rarity = table.Column<int>(type: "integer", nullable: false),
                     Weight = table.Column<float>(type: "real", nullable: false),
                     Equippable = table.Column<bool>(type: "boolean", nullable: false),
@@ -186,6 +187,24 @@ namespace Server.DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MdcNodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TargetModelId = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    CreatorCharacterName = table.Column<string>(type: "text", nullable: false),
+                    Note = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MdcNodes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserShopDatas",
                 columns: table => new
                 {
@@ -228,7 +247,6 @@ namespace Server.DataAccessLayer.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AccountModelId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    CharacterLicenses = table.Column<int>(type: "integer", nullable: false),
                     OnlineSince = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
@@ -321,7 +339,34 @@ namespace Server.DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupRankModel",
+                name: "Directories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    GroupModelId = table.Column<int>(type: "integer", nullable: false),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    ReadGroupLevel = table.Column<int>(type: "integer", nullable: false),
+                    WriteGroupLevel = table.Column<int>(type: "integer", nullable: false),
+                    LastEditCharacterName = table.Column<string>(type: "text", nullable: false),
+                    CreatorCharacterId = table.Column<int>(type: "integer", nullable: false),
+                    CreatorCharacterName = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Directories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Directories_Groups_GroupModelId",
+                        column: x => x.GroupModelId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupRanks",
                 columns: table => new
                 {
                     GroupModelId = table.Column<int>(type: "integer", nullable: false),
@@ -333,9 +378,9 @@ namespace Server.DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupRankModel", x => new { x.GroupModelId, x.Level });
+                    table.PrimaryKey("PK_GroupRanks", x => new { x.GroupModelId, x.Level });
                     table.ForeignKey(
-                        name: "FK_GroupRankModel_Groups_GroupModelId",
+                        name: "FK_GroupRanks_Groups_GroupModelId",
                         column: x => x.GroupModelId,
                         principalTable: "Groups",
                         principalColumn: "Id",
@@ -348,6 +393,7 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CharacterModelId = table.Column<int>(type: "integer", nullable: true),
                     GroupModelId = table.Column<int>(type: "integer", nullable: true),
                     HouseType = table.Column<int>(type: "integer", nullable: false),
                     HouseNumber = table.Column<int>(type: "integer", nullable: false),
@@ -355,7 +401,6 @@ namespace Server.DataAccessLayer.Migrations
                     StreetDirection = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<int>(type: "integer", nullable: false),
                     InteriorId = table.Column<int>(type: "integer", nullable: true),
-                    OwnerId = table.Column<int>(type: "integer", nullable: true),
                     Rentable = table.Column<bool>(type: "boolean", nullable: false),
                     BlockedOwnership = table.Column<bool>(type: "boolean", nullable: false),
                     RentBankAccountId = table.Column<int>(type: "integer", nullable: true),
@@ -392,18 +437,18 @@ namespace Server.DataAccessLayer.Migrations
                 columns: table => new
                 {
                     MailAccountModelMailAddress = table.Column<string>(type: "text", nullable: false),
-                    GroupId = table.Column<int>(type: "integer", nullable: false),
-                    GroupModelId = table.Column<int>(type: "integer", nullable: true),
+                    GroupModelId = table.Column<int>(type: "integer", nullable: false),
                     Owner = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MailAccountGroupAccessModel", x => new { x.MailAccountModelMailAddress, x.GroupId });
+                    table.PrimaryKey("PK_MailAccountGroupAccessModel", x => new { x.MailAccountModelMailAddress, x.GroupModelId });
                     table.ForeignKey(
                         name: "FK_MailAccountGroupAccessModel_Groups_GroupModelId",
                         column: x => x.GroupModelId,
                         principalTable: "Groups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MailAccountGroupAccessModel_MailAccounts_MailAccountModelMa~",
                         column: x => x.MailAccountModelMailAddress,
@@ -445,7 +490,7 @@ namespace Server.DataAccessLayer.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     OrderedBy = table.Column<string>(type: "text", nullable: false),
                     CatalogVehicleModelId = table.Column<string>(type: "text", nullable: false),
-                    GroupId = table.Column<int>(type: "integer", nullable: false),
+                    GroupModelId = table.Column<int>(type: "integer", nullable: false),
                     DeliverdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DeliveryRequestedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DeliveryRequestedBy = table.Column<string>(type: "text", nullable: false),
@@ -617,6 +662,29 @@ namespace Server.DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CriminalRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CharacterModelId = table.Column<int>(type: "integer", nullable: false),
+                    CreatorCharacterName = table.Column<string>(type: "text", nullable: false),
+                    Reason = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CriminalRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CriminalRecords_Characters_CharacterModelId",
+                        column: x => x.CharacterModelId,
+                        principalTable: "Characters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DefinedJobs",
                 columns: table => new
                 {
@@ -733,13 +801,101 @@ namespace Server.DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MdcAllergies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CharacterModelId = table.Column<int>(type: "integer", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    CreatorCharacterName = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MdcAllergies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MdcAllergies_Characters_CharacterModelId",
+                        column: x => x.CharacterModelId,
+                        principalTable: "Characters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MdcMedicalEntries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CharacterModelId = table.Column<int>(type: "integer", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    CreatorCharacterName = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MdcMedicalEntries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MdcMedicalEntries_Characters_CharacterModelId",
+                        column: x => x.CharacterModelId,
+                        principalTable: "Characters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PersonalLicenses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CharacterModelId = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Warnings = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersonalLicenses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PersonalLicenses_Characters_CharacterModelId",
+                        column: x => x.CharacterModelId,
+                        principalTable: "Characters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RegistrationOfficeEntries",
+                columns: table => new
+                {
+                    CharacterModelId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RegistrationOfficeEntries", x => x.CharacterModelId);
+                    table.ForeignKey(
+                        name: "FK_RegistrationOfficeEntries_Characters_CharacterModelId",
+                        column: x => x.CharacterModelId,
+                        principalTable: "Characters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoleplayInfos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     MarkerId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    CharacterModelId = table.Column<int>(type: "integer", nullable: true),
+                    CharacterModelId = table.Column<int>(type: "integer", nullable: false),
                     Dimension = table.Column<int>(type: "integer", nullable: false),
                     Distance = table.Column<int>(type: "integer", nullable: false),
                     Context = table.Column<string>(type: "text", nullable: false),
@@ -759,7 +915,8 @@ namespace Server.DataAccessLayer.Migrations
                         name: "FK_RoleplayInfos_Characters_CharacterModelId",
                         column: x => x.CharacterModelId,
                         principalTable: "Characters",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -836,6 +993,7 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CharacterModelId = table.Column<int>(type: "integer", nullable: true),
                     GroupModelOwnerId = table.Column<int>(type: "integer", nullable: true),
                     Model = table.Column<string>(type: "text", nullable: false),
                     VehicleState = table.Column<int>(type: "integer", nullable: false),
@@ -850,7 +1008,6 @@ namespace Server.DataAccessLayer.Migrations
                     DrivenKilometre = table.Column<float>(type: "real", nullable: false),
                     LastDrivers = table.Column<List<string>>(type: "text[]", nullable: false),
                     EngineOn = table.Column<bool>(type: "boolean", nullable: false),
-                    OwnerId = table.Column<int>(type: "integer", nullable: true),
                     LockState = table.Column<int>(type: "integer", nullable: false),
                     Keys = table.Column<List<int>>(type: "integer[]", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -867,8 +1024,8 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vehicles_Characters_OwnerId",
-                        column: x => x.OwnerId,
+                        name: "FK_Vehicles_Characters_CharacterModelId",
+                        column: x => x.CharacterModelId,
                         principalTable: "Characters",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -876,6 +1033,34 @@ namespace Server.DataAccessLayer.Migrations
                         column: x => x.GroupModelOwnerId,
                         principalTable: "Groups",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Files",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DirectoryModelId = table.Column<int>(type: "integer", nullable: false),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Context = table.Column<string>(type: "text", nullable: false),
+                    IsBlocked = table.Column<bool>(type: "boolean", nullable: false),
+                    BlockedByCharacterName = table.Column<string>(type: "text", nullable: true),
+                    LastEditCharacterName = table.Column<string>(type: "text", nullable: false),
+                    CreatorCharacterId = table.Column<int>(type: "integer", nullable: false),
+                    CreatorCharacterName = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Files", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Files_Directories_DirectoryModelId",
+                        column: x => x.DirectoryModelId,
+                        principalTable: "Directories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1027,9 +1212,8 @@ namespace Server.DataAccessLayer.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     InventoryModelId = table.Column<int>(type: "integer", nullable: true),
-                    CatalogItemId = table.Column<int>(type: "integer", nullable: false),
-                    ItemType = table.Column<int>(type: "integer", nullable: false),
                     CatalogItemModelId = table.Column<int>(type: "integer", nullable: false),
+                    ItemType = table.Column<int>(type: "integer", nullable: false),
                     Slot = table.Column<int>(type: "integer", nullable: true),
                     DroppedByCharacter = table.Column<string>(type: "text", nullable: true),
                     CustomData = table.Column<string>(type: "text", nullable: true),
@@ -1047,14 +1231,16 @@ namespace Server.DataAccessLayer.Migrations
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
                     Active = table.Column<bool>(type: "boolean", nullable: true),
                     BackgroundImageId = table.Column<int>(type: "integer", nullable: true),
-                    OwnerId = table.Column<int>(type: "integer", nullable: true),
+                    CurrentOwnerId = table.Column<int>(type: "integer", nullable: true),
+                    InitialOwnerId = table.Column<int>(type: "integer", nullable: true),
                     LastTimeOpenedNotifications = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     FactionType = table.Column<int>(type: "integer", nullable: true),
-                    Frequence = table.Column<int>(type: "integer", nullable: true),
+                    Frequency = table.Column<int>(type: "integer", nullable: true),
                     ItemWeaponId = table.Column<int>(type: "integer", nullable: true),
                     ItemModelWeaponId = table.Column<int>(type: "integer", nullable: true),
                     SerialNumber = table.Column<string>(type: "text", nullable: true),
-                    ComponentHashs = table.Column<List<string>>(type: "text[]", nullable: true),
+                    ItemWeaponModel_InitialOwnerId = table.Column<int>(type: "integer", nullable: true),
+                    ComponentHashes = table.Column<List<string>>(type: "text[]", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     PositionX = table.Column<float>(type: "real", nullable: false),
@@ -1072,7 +1258,8 @@ namespace Server.DataAccessLayer.Migrations
                         name: "FK_Items_Groups_ItemGroupKeyModel_GroupModelId",
                         column: x => x.ItemGroupKeyModel_GroupModelId,
                         principalTable: "Groups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Items_Inventories_InventoryModelId",
                         column: x => x.InventoryModelId,
@@ -1227,6 +1414,11 @@ namespace Server.DataAccessLayer.Migrations
                 column: "CharacterModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CriminalRecords_CharacterModelId",
+                table: "CriminalRecords",
+                column: "CharacterModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Deliveries_OrderGroupModelId",
                 table: "Deliveries",
                 column: "OrderGroupModelId");
@@ -1242,9 +1434,19 @@ namespace Server.DataAccessLayer.Migrations
                 column: "SupplierGroupModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Directories_GroupModelId",
+                table: "Directories",
+                column: "GroupModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Doors_HouseModelId",
                 table: "Doors",
                 column: "HouseModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_DirectoryModelId",
+                table: "Files",
+                column: "DirectoryModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupMembers_CharacterModelId",
@@ -1316,9 +1518,24 @@ namespace Server.DataAccessLayer.Migrations
                 column: "MailModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MdcAllergies_CharacterModelId",
+                table: "MdcAllergies",
+                column: "CharacterModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MdcMedicalEntries_CharacterModelId",
+                table: "MdcMedicalEntries",
+                column: "CharacterModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderedVehicles_CatalogVehicleModelId",
                 table: "OrderedVehicles",
                 column: "CatalogVehicleModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonalLicenses_CharacterModelId",
+                table: "PersonalLicenses",
+                column: "CharacterModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PhoneChats_ItemPhoneModelId",
@@ -1376,14 +1593,14 @@ namespace Server.DataAccessLayer.Migrations
                 column: "StaffAccountModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Vehicles_CharacterModelId",
+                table: "Vehicles",
+                column: "CharacterModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_GroupModelOwnerId",
                 table: "Vehicles",
                 column: "GroupModelOwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vehicles_OwnerId",
-                table: "Vehicles",
-                column: "OwnerId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Inventories_Items_ItemClothModelId",
@@ -1400,7 +1617,7 @@ namespace Server.DataAccessLayer.Migrations
                 table: "Inventories");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Vehicles_Characters_OwnerId",
+                name: "FK_Vehicles_Characters_CharacterModelId",
                 table: "Vehicles");
 
             migrationBuilder.DropForeignKey(
@@ -1449,6 +1666,9 @@ namespace Server.DataAccessLayer.Migrations
                 name: "CommandLogs");
 
             migrationBuilder.DropTable(
+                name: "CriminalRecords");
+
+            migrationBuilder.DropTable(
                 name: "DefinedJobs");
 
             migrationBuilder.DropTable(
@@ -1464,10 +1684,13 @@ namespace Server.DataAccessLayer.Migrations
                 name: "FaceFeatures");
 
             migrationBuilder.DropTable(
+                name: "Files");
+
+            migrationBuilder.DropTable(
                 name: "GroupMembers");
 
             migrationBuilder.DropTable(
-                name: "GroupRankModel");
+                name: "GroupRanks");
 
             migrationBuilder.DropTable(
                 name: "MailAccountCharacterAccessModel");
@@ -1479,7 +1702,19 @@ namespace Server.DataAccessLayer.Migrations
                 name: "MailLinkModel");
 
             migrationBuilder.DropTable(
+                name: "MdcAllergies");
+
+            migrationBuilder.DropTable(
+                name: "MdcMedicalEntries");
+
+            migrationBuilder.DropTable(
+                name: "MdcNodes");
+
+            migrationBuilder.DropTable(
                 name: "OrderedVehicles");
+
+            migrationBuilder.DropTable(
+                name: "PersonalLicenses");
 
             migrationBuilder.DropTable(
                 name: "PhoneContacts");
@@ -1492,6 +1727,9 @@ namespace Server.DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "PublicGarageEntries");
+
+            migrationBuilder.DropTable(
+                name: "RegistrationOfficeEntries");
 
             migrationBuilder.DropTable(
                 name: "RoleplayInfos");
@@ -1507,6 +1745,9 @@ namespace Server.DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "BankAccounts");
+
+            migrationBuilder.DropTable(
+                name: "Directories");
 
             migrationBuilder.DropTable(
                 name: "MailAccounts");

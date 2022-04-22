@@ -20,6 +20,7 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
     private readonly BankAccountService _bankAccountService;
     private readonly CharacterService _characterService;
     private readonly GroupService _groupService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
     public RemoveCharacterBankAccessHandler(
         PhoneModule phoneModule,
@@ -27,7 +28,8 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
         BankAccountCharacterAccessService bankAccountCharacterAccessService, 
         BankAccountService bankAccountService, 
         CharacterService characterService, 
-        GroupService groupService)
+        GroupService groupService, 
+        RegistrationOfficeService registrationOfficeService)
     {
         _phoneModule = phoneModule;
         _bankModule = bankModule;
@@ -35,7 +37,8 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
         _bankAccountService = bankAccountService;
         _characterService = characterService;
         _groupService = groupService;
-        
+        _registrationOfficeService = registrationOfficeService;
+
         AltAsync.OnClient<ServerPlayer, int, int, int>("bank:removeaccess", OnRemoveAccess);
     }
 
@@ -45,7 +48,14 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
         {
             return;
         }
-
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
+        
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
         if (bankAccount == null)
         {

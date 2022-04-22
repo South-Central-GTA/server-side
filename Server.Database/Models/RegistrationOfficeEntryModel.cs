@@ -7,7 +7,7 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models;
 
-public class RegistrationOfficeEntry
+public class RegistrationOfficeEntryModel
     : ModelBase, IWritable
 {
     [Key]

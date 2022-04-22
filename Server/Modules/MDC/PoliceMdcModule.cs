@@ -12,7 +12,9 @@ using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
+using Server.Database.Models.Banking;
 using Server.Database.Models.File;
+using Server.Database.Models.Housing;
 using Server.Database.Models.Mdc;
 using Server.Modules.FileSystem;
 
@@ -35,6 +37,7 @@ public class PoliceMdcModule
     private readonly ItemPhoneService _itemPhoneService;
     private readonly ItemWeaponService _itemWeaponService;
     private readonly MailAccountService _mailAccountService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
     
     public PoliceMdcModule(
         GroupFactionService groupFactionService, 
@@ -48,7 +51,8 @@ public class PoliceMdcModule
         BankAccountService bankAccountService, 
         ItemPhoneService itemPhoneService, 
         ItemWeaponService itemWeaponService, 
-        MailAccountService mailAccountService)
+        MailAccountService mailAccountService, 
+        RegistrationOfficeService registrationOfficeService)
     {
         CallSign = new CallSign(groupFactionService);
         _groupFactionService = groupFactionService;
@@ -61,6 +65,7 @@ public class PoliceMdcModule
         _itemPhoneService = itemPhoneService;
         _itemWeaponService = itemWeaponService;
         _mailAccountService = mailAccountService;
+        _registrationOfficeService = registrationOfficeService;
         _criminalRecordService = criminalRecordService;
         _mdcNoteService = mdcNoteService;
     }
@@ -95,34 +100,48 @@ public class PoliceMdcModule
             return;
         }
 
+        var isRegistered = await _registrationOfficeService.IsRegistered(character.Id);
+
         var records = await _criminalRecordService.Where(r => r.CharacterModelId == character.Id);
         var notes = await _mdcNoteService.Where(r => r.TargetModelId == targetCharacterId && r.Type == MdcSearchType.NAME);
-        
+
+       
         var vehicles = await _vehicleService.Where(v => v.CharacterModelId == character.Id);
         var vehicleDatas = new List<VehicleData>();
 
-        foreach (var vehicle in vehicles)
+        if (isRegistered)
         {
-            var catalogVehicle = await _vehicleCatalogService.GetByKey(vehicle.Model.ToLower());
-            if (catalogVehicle == null)
+            foreach (var vehicle in vehicles)
             {
-                continue;
+                var catalogVehicle = await _vehicleCatalogService.GetByKey(vehicle.Model.ToLower());
+                if (catalogVehicle == null)
+                {
+                    continue;
+                }
+                
+                vehicleDatas.Add(new VehicleData
+                {
+                    Id = vehicle.Id, 
+                    DisplayName = catalogVehicle.DisplayName, 
+                    DisplayClass = catalogVehicle.DisplayClass,
+                    NumberPlateText = vehicle.NumberplateText
+                });
             }
-            
-            vehicleDatas.Add(new VehicleData
-            {
-                Id = vehicle.Id, 
-                DisplayName = catalogVehicle.DisplayName, 
-                DisplayClass = catalogVehicle.DisplayClass,
-                NumberPlateText = vehicle.NumberplateText
-            });
         }
 
-        var houses = await _houseService.Where(h => h.CharacterModelId == character.Id);
-        var bankAccounts = await _bankAccountService.GetByCharacter(character.Id);
+
+        var houses = isRegistered
+            ? await _houseService.Where(h => h.CharacterModelId == character.Id)
+            : new List<HouseModel>();
+        
+        var bankAccounts = isRegistered 
+            ? await _bankAccountService.GetByCharacter(character.Id) 
+            : new List<BankAccountModel>();
         
         var phoneModels = await _itemPhoneService.Where(p => p.InitialOwnerId == character.Id);
-        var phoneNumbers = phoneModels.Select(p => p.PhoneNumber).ToList();
+        var phoneNumbers = isRegistered 
+            ? phoneModels.Select(p => p.PhoneNumber).ToList()
+            : new List<string>();
         
         player.EmitLocked("policemdc:opencharacterrecord", character, records, notes, vehicleDatas, houses, bankAccounts, phoneNumbers);
     }

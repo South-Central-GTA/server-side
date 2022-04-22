@@ -79,6 +79,13 @@ public class Peds : IServerJob
             _pedSyncModule.CreateCashier(leaseCompanyHouse);
         }
 
+        _pedSyncModule.Create("u_m_y_gunvend_01",
+                              new Position(_worldLocationOptions.CityHallPositionX,
+                                           _worldLocationOptions.CityHallPositionY,
+                                           _worldLocationOptions.CityHallPositionZ),
+                              0,
+                              0);
+
         await Task.CompletedTask;
     }
 }

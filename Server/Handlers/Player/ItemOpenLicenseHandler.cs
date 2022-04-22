@@ -83,6 +83,6 @@ public class ItemOpenLicenseHandler : ISingletonScript
             }
         }
 
-        _narratorModule.SendMessage(player, $"{character.Name} besitzt folgende Lizenzen {string.Join(", ", licenseStrings)}.");
+        _narratorModule.SendMessage(player, $"{character.Name} besitzt folgende Lizenzen: {string.Join(", ", licenseStrings)}.");
     }
 }

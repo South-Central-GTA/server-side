@@ -9,6 +9,7 @@ using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Banking;
 using Server.Modules.Bank;
+using Server.Modules.Phone;
 
 namespace Server.Handlers.Bank;
 
@@ -17,18 +18,27 @@ public class TransferBankHandler : ISingletonScript
     private readonly BankAccountService _bankAccountService;
     private readonly BankHistoryService _bankHistoryService;
     private readonly GroupService _groupService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
     
     private readonly BankModule _bankModule;
+    private readonly PhoneModule _phoneModule;
 
     public TransferBankHandler(
         BankAccountService bankAccountService, 
         BankHistoryService bankHistoryService, 
-        GroupService groupService, BankModule bankModule)
+        RegistrationOfficeService registrationOfficeService,
+        GroupService groupService, 
+        
+        BankModule bankModule, 
+        PhoneModule phoneModule)
     {
         _bankAccountService = bankAccountService;
         _bankHistoryService = bankHistoryService;
         _groupService = groupService;
+        _registrationOfficeService = registrationOfficeService;
+        
         _bankModule = bankModule;
+        _phoneModule = phoneModule;
 
         AltAsync.OnClient<ServerPlayer, int, string, int, string>("bank:transfer", OnTransfer);
     }
@@ -41,6 +51,13 @@ public class TransferBankHandler : ISingletonScript
             return;
         }
 
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
+        
         if (0 >= value)
         {
             player.SendNotification("Es muss eine positive Zahl welche größer ist als Null genutzt werden.",

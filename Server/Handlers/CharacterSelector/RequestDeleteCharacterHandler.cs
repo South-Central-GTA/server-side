@@ -31,6 +31,7 @@ public class RequestDeleteCharacterHandler : ISingletonScript
     private readonly PublicGarageEntryService _publicGarageEntryService;
     private readonly RoleplayInfoService _roleplayInfoService;
     private readonly VehicleService _vehicleService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
     public RequestDeleteCharacterHandler(
         GroupModule groupModule, 
@@ -47,7 +48,7 @@ public class RequestDeleteCharacterHandler : ISingletonScript
         ItemService itemService,
         PublicGarageEntryService publicGarageEntryService,
         RoleplayInfoService roleplayInfoService, 
-        VehicleService vehicleService)
+        VehicleService vehicleService, RegistrationOfficeService registrationOfficeService)
     {
         _groupModule = groupModule;
         _houseModule = houseModule;
@@ -64,7 +65,8 @@ public class RequestDeleteCharacterHandler : ISingletonScript
         _publicGarageEntryService = publicGarageEntryService;
         _roleplayInfoService = roleplayInfoService;
         _vehicleService = vehicleService;
-        
+        _registrationOfficeService = registrationOfficeService;
+
         AltAsync.OnClient<ServerPlayer, int>("charselector:requestdelete", OnRequestDeleteCharacter);
         AltAsync.OnClient<ServerPlayer, int>("charselector:delete", OnDeleteCharacter);
     }
@@ -102,6 +104,12 @@ public class RequestDeleteCharacterHandler : ISingletonScript
         {
             player.AccountModel.LastSelectedCharacterId = -1;
             await _accountService.Update(player.AccountModel);
+        }
+
+        var officeEntryModel = await _registrationOfficeService.GetByKey(characterId);
+        if (officeEntryModel != null)
+        {
+            await _registrationOfficeService.Remove(officeEntryModel);
         }
 
         var ownedVehicles = await _vehicleService.Where(v => v.CharacterModelId == characterId);

@@ -64,7 +64,6 @@ public class UserRecordLogModel
 
         writer.Name("loggedAt");
         writer.Value(JsonSerializer.Serialize(LoggedAt));
-        ;
 
         writer.EndObject();
     }

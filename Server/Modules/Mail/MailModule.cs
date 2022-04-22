@@ -262,6 +262,8 @@ public class MailModule
 
         await UpdatePlayersUi(targetMailAccount);
         await UpdatePlayersUi(mailAccount);
+        
+        player.EmitGui("mail:sendinfo", $"Mail wurde erfolgreich verschickt.");
     }
 
     public async Task DeleteMail(string mailAddress, int mailId)

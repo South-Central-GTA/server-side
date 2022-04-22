@@ -1,6 +1,8 @@
 ﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
+using Server.Core.Extensions;
+using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Bank;
@@ -11,17 +13,22 @@ namespace Server.Handlers.Bank;
 public class CreateBankAccountHandler : ISingletonScript
 {
     private readonly BankAccountService _bankAccountService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly BankModule _bankModule;
     private readonly PhoneModule _phoneModule;
 
     public CreateBankAccountHandler(
         BankAccountService bankAccountService,
+        RegistrationOfficeService registrationOfficeService,
+        
         BankModule bankModule,
         PhoneModule phoneModule)
     {
-        _bankModule = bankModule;
         _bankAccountService = bankAccountService;
+        _registrationOfficeService = registrationOfficeService;
+        
+        _bankModule = bankModule;
         _phoneModule = phoneModule;
 
         AltAsync.OnClient<ServerPlayer, int, int>("phonebank:createaccount", OnCreateAccount);
@@ -34,6 +41,13 @@ public class CreateBankAccountHandler : ISingletonScript
             return;
         }
 
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
+        
         var bankAccounts = await _bankAccountService.GetByOwner(player.CharacterModel.Id);
         if (bankAccounts.Count >= 10)
         {
