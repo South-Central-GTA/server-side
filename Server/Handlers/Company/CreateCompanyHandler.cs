@@ -23,6 +23,7 @@ public class CreateCompanyHandler : ISingletonScript
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
     private readonly GroupMemberService _groupMemberService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
     private readonly BankModule _bankModule;
     private readonly GroupModule _groupModule;
     private readonly MailModule _mailModule;
@@ -34,6 +35,8 @@ public class CreateCompanyHandler : ISingletonScript
         HouseService houseService,
         BankAccountService bankAccountService,
         GroupMemberService groupMemberService,
+        RegistrationOfficeService registrationOfficeService,
+        
         GroupModule groupModule,
         PhoneModule phoneModule,
         BankModule bankModule,
@@ -45,6 +48,7 @@ public class CreateCompanyHandler : ISingletonScript
         _houseService = houseService;
         _bankAccountService = bankAccountService;
         _groupMemberService = groupMemberService;
+        _registrationOfficeService = registrationOfficeService;
 
         _groupModule = groupModule;
         _phoneModule = phoneModule;
@@ -56,6 +60,13 @@ public class CreateCompanyHandler : ISingletonScript
 
     private async void OnCreateCompany(ServerPlayer player, int phoneId, string name, int bankAccountId, int houseId)
     {
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
+
         if (await _groupModule.IsPlayerInGroupType(player, GroupType.COMPANY))
         {
             await _phoneModule.SendNotification(phoneId,

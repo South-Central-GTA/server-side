@@ -29,6 +29,7 @@ public class PublicGarageHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
     private readonly PublicGarageEntryService _publicGarageEntryService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly PublicGarageModule _publicGarageModule;
     private readonly VehicleCatalogService _vehicleCatalogService;
@@ -45,6 +46,7 @@ public class PublicGarageHandler : ISingletonScript
         BankAccountService bankAccountService,
         VehicleCatalogService vehicleCatalogService,
         GroupService groupService,
+        RegistrationOfficeService registrationOfficeService,
         PublicGarageModule publicGarageModule,
         BankModule bankModule,
         VehicleModule vehicleModule,
@@ -63,6 +65,7 @@ public class PublicGarageHandler : ISingletonScript
         _bankModule = bankModule;
         _vehicleModule = vehicleModule;
         _groupModule = groupModule;
+        _registrationOfficeService = registrationOfficeService;
 
         AltAsync.OnClient<ServerPlayer>("publicgarage:requestparkvehicle", OnRequestParkVehicle);
         AltAsync.OnClient<ServerPlayer>("publicgarage:requestparkedvehicles", OnRequestUnparkVehicles);
@@ -87,6 +90,13 @@ public class PublicGarageHandler : ISingletonScript
         {
             player.SendNotification("Es befindet keine Garage in der Nähe deines Charakters.", NotificationType.ERROR);
             return;
+        }
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
         }
 
         if (!await _bankModule.HasBankAccount(player))
@@ -157,6 +167,13 @@ public class PublicGarageHandler : ISingletonScript
         {
             player.SendNotification("Es befindet keine Garage in der Nähe deines Charakters.", NotificationType.ERROR);
             return;
+        }
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
         }
 
         if (player.IsInVehicle)

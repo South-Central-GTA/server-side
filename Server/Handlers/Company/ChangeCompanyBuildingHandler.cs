@@ -9,6 +9,7 @@ using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Group;
 using Server.Modules.Houses;
+using Server.Modules.Phone;
 
 namespace Server.Handlers.Company;
 
@@ -16,20 +17,28 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
 {
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    
     private readonly GroupModule _groupModule;
     private readonly HouseModule _houseModule;
+    private readonly PhoneModule _phoneModule;
 
     public ChangeCompanyBuildingHandler(
         GroupService groupService,
         HouseService houseService,
+        RegistrationOfficeService registrationOfficeService,
+        
         GroupModule groupModule,
-        HouseModule houseModule)
+        HouseModule houseModule, 
+        PhoneModule phoneModule)
     {
         _groupService = groupService;
         _houseService = houseService;
+        _registrationOfficeService = registrationOfficeService;
 
         _groupModule = groupModule;
         _houseModule = houseModule;
+        _phoneModule = phoneModule;
 
         AltAsync.OnClient<ServerPlayer, int, int>("company:changecompanybuilding", OnChangeCompanyHouse);
     }
@@ -44,8 +53,20 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
         {
             return;
         }
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
 
         var newHouse = await _houseService.GetByKey(houseId);
+        if (newHouse == null)
+        {
+            return;
+        }
+        
         if (newHouse.HouseType != HouseType.HOUSE)
         {
             player.SendNotification("Dieses Gebäude kann nicht als Hauptsitz des Unternehmens gesetzt werden.", NotificationType.ERROR);

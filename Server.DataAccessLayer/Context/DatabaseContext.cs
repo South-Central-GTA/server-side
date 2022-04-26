@@ -95,12 +95,17 @@ public class DatabaseContext
                     .HasValue<ItemKeyModel>(ItemType.KEY)
                     .HasValue<ItemGroupKeyModel>(ItemType.GROUP_KEY)
                     .HasValue<ItemRadioModel>(ItemType.RADIO)
-                    .HasValue<ItemHandCuffModel>(ItemType.HANDCUFF);
+                    .HasValue<ItemHandCuffModel>(ItemType.HANDCUFF)
+                    .HasValue<ItemDrugModel>(ItemType.DRUG);
 
         modelBuilder.Entity<ItemClothModel>()
                     .HasOne(i => i.ClothingInventoryModel)
                     .WithOne(i => i.ItemClothModel)
                     .HasForeignKey<InventoryModel>(i => i.ItemClothModelId);
+        
+        
+        modelBuilder.Entity<RegistrationOfficeEntryModel>()
+                    .HasKey(c => new { c.CharacterModelId });
     }
 
     #region Entities
@@ -160,6 +165,7 @@ public class DatabaseContext
     public DbSet<MdcAllergyModel> MdcAllergies { get; set; }
     public DbSet<FileModel> Files { get; set; }
     public DbSet<DirectoryModel> Directories { get; set; }
+    public DbSet<RegistrationOfficeEntryModel> RegistrationOfficeEntries  { get; set; }
 
     #endregion
 }

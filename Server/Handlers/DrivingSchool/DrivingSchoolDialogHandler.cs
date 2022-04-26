@@ -7,6 +7,7 @@ using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
 using Server.Data.Models;
+using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Bank;
 
@@ -14,15 +15,19 @@ namespace Server.Handlers.DrivingSchool;
 
 public class DrivingSchoolDialogHandler : ISingletonScript
 {
-    private readonly BankModule _bankModule;
     private readonly WorldLocationOptions _worldLocationOptions;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    private readonly BankModule _bankModule;
 
     public DrivingSchoolDialogHandler(
         IOptions<WorldLocationOptions> worldLocationOptions,
+        RegistrationOfficeService registrationOfficeService,
         BankModule bankModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
 
+        _registrationOfficeService = registrationOfficeService;
+        
         _bankModule = bankModule;
 
         AltAsync.OnClient<ServerPlayer>("drivingschool:showstartdialog", OnShowStartDialog);

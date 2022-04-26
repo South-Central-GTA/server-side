@@ -11,6 +11,7 @@ using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models.Housing;
+using Server.Database.Models.Inventory;
 using Server.Modules.EntitySync;
 using Server.Modules.Houses;
 using Server.Modules.Inventory;
@@ -23,6 +24,7 @@ public class PlayerDisconnectHandler : ISingletonScript
     private readonly DeliveryService _deliveryService;
     private readonly HouseModule _houseModule;
     private readonly HouseService _houseService;
+    private readonly FileService _fileService;
 
     private readonly PedSyncModule _pedSyncModule;
 
@@ -31,11 +33,14 @@ public class PlayerDisconnectHandler : ISingletonScript
         DeliveryService deliveryService,
         HouseService houseService,
         HouseModule houseModule,
+        FileService fileService,
+        
         PedSyncModule pedSyncModule)
     {
         _characterService = characterService;
         _deliveryService = deliveryService;
         _houseService = houseService;
+        _fileService = fileService;
 
         _houseModule = houseModule;
         _pedSyncModule = pedSyncModule;
@@ -45,7 +50,7 @@ public class PlayerDisconnectHandler : ISingletonScript
 
     private async Task OnPlayerDisconnect(ServerPlayer player, string reason)
     {
-        if (player.Exists && player.IsLoggedIn && player.IsSpawned && player.AccountModel.AdminCheckpoints == 0)
+        if (player.Exists && player.IsSpawned && player.AccountModel.AdminCheckpoints == 0)
         {
             player.CharacterModel.PositionX = player.Position.X;
             player.CharacterModel.PositionY = player.Position.Y;
@@ -92,6 +97,14 @@ public class PlayerDisconnectHandler : ISingletonScript
             {
                 delivery.OldStatus = delivery.Status;
                 await _deliveryService.Update(delivery);
+            }
+
+            var file = await _fileService.Find(f => f.IsBlocked && f.BlockedByCharacterName != null &&
+                                                     f.BlockedByCharacterName == player.CharacterModel.Name);
+            if (file != null)
+            {
+                file.IsBlocked = false;
+                await _fileService.Update(file);
             }
         }
 

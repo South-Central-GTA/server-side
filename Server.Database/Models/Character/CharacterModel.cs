@@ -84,6 +84,7 @@ public class CharacterModel
 
     public ulong AccountModelId { get; set; }
     public AccountModel? AccountModel { get; set; }
+    public RegistrationOfficeEntryModel? RegistrationOfficeEntryModel { get; set; }
 
     [JsonPropertyName("faceFeatures")] 
     public FaceFeaturesModel FaceFeaturesModel { get; set; }

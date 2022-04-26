@@ -2460,7 +2460,7 @@ public class Administration : ISingletonScript
             return;
         }
 
-        var success = await _groupModule.Invite(null, group, player);
+        var success = await _groupModule.Invite(null, group, target);
         if (success)
         {
             var definedJob = await _definedJobService.Find(j => j.CharacterModelId == player.CharacterModel.Id);

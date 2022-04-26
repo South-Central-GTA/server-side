@@ -16,6 +16,12 @@ public class CharacterCreatorData
     [JsonPropertyName("hasPhone")] 
     public bool HasPhone { get; set; }
 
+    [JsonPropertyName("isRegistered")] 
+    public bool IsRegistered { get; set; }
+
+    [JsonPropertyName("hasDrivingLicense")] 
+    public bool HasDrivingLicense { get; set; }
+
     [JsonPropertyName("purchaseOrders")] 
     public List<CharacterCreatorPurchaseOrder> PurchaseOrders { get; set; }
 

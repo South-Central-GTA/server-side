@@ -6,11 +6,13 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
+using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Group;
 using Server.Modules.Bank;
 using Server.Modules.Group;
+using Server.Modules.Phone;
 
 namespace Server.Handlers.Company;
 
@@ -19,23 +21,31 @@ public class SellLicenseHandler : ISingletonScript
     private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
     private readonly GroupService _groupService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    
     private readonly BankModule _bankModule;
     private readonly GroupModule _groupModule;
+    private readonly PhoneModule _phoneModule;
 
     public SellLicenseHandler(
         IOptions<CompanyOptions> companyOptions,
         GroupService groupService,
         BankAccountService bankAccountService,
+        RegistrationOfficeService registrationOfficeService,
+        
         GroupModule groupModule,
-        BankModule bankModule)
+        BankModule bankModule, 
+        PhoneModule phoneModule)
     {
         _companyOptions = companyOptions.Value;
 
         _groupService = groupService;
         _bankAccountService = bankAccountService;
+        _registrationOfficeService = registrationOfficeService;
 
         _groupModule = groupModule;
         _bankModule = bankModule;
+        _phoneModule = phoneModule;
 
         AltAsync.OnClient<ServerPlayer, int, int, LicensesFlags>("company:selllicenses", OnSellLicenses);
     }
@@ -55,7 +65,14 @@ public class SellLicenseHandler : ISingletonScript
         {
             return;
         }
-
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
+        
         var license = _companyOptions.Licenses.Find(l => l.License == licensesFlags);
         if (license == null)
         {

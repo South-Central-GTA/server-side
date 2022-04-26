@@ -6,6 +6,7 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
+using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Group;
@@ -20,14 +21,18 @@ public class BuyLicenseCompanyHandler : ISingletonScript
     private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
     private readonly GroupService _groupService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    
     private readonly BankModule _bankModule;
     private readonly GroupModule _groupModule;
-    private readonly PhoneModule _phoneModule;
+    private readonly PhoneModule _phoneModule;  
 
     public BuyLicenseCompanyHandler(
         IOptions<CompanyOptions> companyOptions,
         GroupService groupService,
         BankAccountService bankAccountService,
+        RegistrationOfficeService registrationOfficeService,
+        
         GroupModule groupModule,
         PhoneModule phoneModule,
         BankModule bankModule)
@@ -36,6 +41,7 @@ public class BuyLicenseCompanyHandler : ISingletonScript
 
         _groupService = groupService;
         _bankAccountService = bankAccountService;
+        _registrationOfficeService = registrationOfficeService;
 
         _groupModule = groupModule;
         _phoneModule = phoneModule;
@@ -52,12 +58,19 @@ public class BuyLicenseCompanyHandler : ISingletonScript
         {
             return;
         }
-
+        
         var companyGroup = (CompanyGroupModel)group;
 
         if (!await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.BUY_LICENSES))
         {
             return;
+        }
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
         }
 
         if (companyGroup.PurchasedLicenses + 1 > _companyOptions.MaxLicenses)

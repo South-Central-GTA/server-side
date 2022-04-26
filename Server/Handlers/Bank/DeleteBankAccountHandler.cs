@@ -21,6 +21,7 @@ public class DeleteBankAccountHandler : ISingletonScript
     private readonly BankAccountService _bankAccountService;
     private readonly DefinedJobService _definedJobService;
     private readonly PublicGarageEntryService _publicGarageEntryService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
     public DeleteBankAccountHandler(
         PhoneModule phoneModule,
@@ -28,7 +29,8 @@ public class DeleteBankAccountHandler : ISingletonScript
         PublicGarageModule publicGarageModule,
         BankAccountService bankAccountService, 
         DefinedJobService definedJobService,
-        PublicGarageEntryService publicGarageEntryService)
+        PublicGarageEntryService publicGarageEntryService, 
+        RegistrationOfficeService registrationOfficeService)
     {
         _phoneModule = phoneModule;
         _bankModule = bankModule;
@@ -36,7 +38,8 @@ public class DeleteBankAccountHandler : ISingletonScript
         _bankAccountService = bankAccountService;
         _definedJobService = definedJobService;
         _publicGarageEntryService = publicGarageEntryService;
-        
+        _registrationOfficeService = registrationOfficeService;
+
         AltAsync.OnClient<ServerPlayer, int, int>("bank:deletebankaccount", OnDeleteBankAccount);
     }
 
@@ -47,6 +50,13 @@ public class DeleteBankAccountHandler : ISingletonScript
             return;
         }
 
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
+        }
+        
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
         if (bankAccount == null)
         {

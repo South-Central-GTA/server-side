@@ -18,18 +18,20 @@ public class RemovePermissionBankHandler : ISingletonScript
     private readonly PhoneModule _phoneModule;
     private readonly BankAccountService _bankAccountService;
     private readonly CharacterService _characterService;
-
+    private readonly RegistrationOfficeService _registrationOfficeService;
     public RemovePermissionBankHandler(
         BankModule bankModule, 
         PhoneModule phoneModule, 
         BankAccountService bankAccountService, 
-        CharacterService characterService)
+        CharacterService characterService, 
+        RegistrationOfficeService registrationOfficeService)
     {
         _bankModule = bankModule;
         _phoneModule = phoneModule;
         _bankAccountService = bankAccountService;
         _characterService = characterService;
-        
+        _registrationOfficeService = registrationOfficeService;
+
         AltAsync.OnClient<ServerPlayer, int, int, int, string>("bank:removepermission", OnRemovePermission);
     }
 
@@ -38,6 +40,13 @@ public class RemovePermissionBankHandler : ISingletonScript
         if (!player.Exists)
         {
             return;
+        }
+        
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
         }
 
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);

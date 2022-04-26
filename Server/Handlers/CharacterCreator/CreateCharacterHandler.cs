@@ -8,6 +8,7 @@ using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
+using Server.Database.Models;
 using Server.Database.Models.Character;
 using Server.Helper;
 using Server.Modules.Character;
@@ -29,6 +30,8 @@ public class CreateCharacterHandler : ISingletonScript
     private readonly SouthCentralPointsModule _southCentralPointsModule;
     private readonly VehicleModule _vehicleModule;
     private readonly CharacterService _characterService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    private readonly PersonalLicenseService _personalLicenseService;
     
     private readonly Random _rand = new();
 
@@ -40,7 +43,9 @@ public class CreateCharacterHandler : ISingletonScript
                                   ItemCreationModule itemCreationModule, 
                                   SouthCentralPointsModule southCentralPointsModule, 
                                   VehicleModule vehicleModule, 
-                                  CharacterService characterService)
+                                  CharacterService characterService, 
+                                  RegistrationOfficeService registrationOfficeService, 
+                                  PersonalLicenseService personalLicenseService)
     {
         _serializer = serializer;
         _characterCreationModule = characterCreationModule;
@@ -51,7 +56,9 @@ public class CreateCharacterHandler : ISingletonScript
         _southCentralPointsModule = southCentralPointsModule;
         _vehicleModule = vehicleModule;
         _characterService = characterService;
-        
+        _registrationOfficeService = registrationOfficeService;
+        _personalLicenseService = personalLicenseService;
+
         AltAsync.OnClient<ServerPlayer, string>("charcreator:createcharacter", OnCreateCharacter);
     }
 
@@ -139,6 +146,25 @@ public class CreateCharacterHandler : ISingletonScript
         if (characterCreatorData.HasPhone)
         {
             await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.PHONE, 1);
+        }
+
+        if (characterCreatorData.IsRegistered)
+        {
+            await _registrationOfficeService.Add(new RegistrationOfficeEntryModel()
+            {
+                CharacterModelId = player.CharacterModel.Id
+            });
+        }
+
+        if (characterCreatorData.HasDrivingLicense)
+        {
+            await _personalLicenseService.Add(new PersonalLicenseModel()
+            {
+                CharacterModelId = player.CharacterModel.Id,
+                Type = PersonalLicensesType.DRIVING
+            });
+            
+            await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.LICENSES, 1);
         }
 
         player.SendNotification("Dein Charakter wurde erfolgreich erstellt.", NotificationType.SUCCESS);

@@ -13,8 +13,8 @@ using Server.DataAccessLayer.Context;
 namespace Server.DataAccessLayer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220308154220_FixGroupRanksName")]
-    partial class FixGroupRanksName
+    [Migration("20220418150047_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -319,9 +319,6 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<bool>("Stackable")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("UseValue")
-                        .HasColumnType("integer");
-
                     b.Property<float>("Weight")
                         .HasColumnType("real");
 
@@ -505,9 +502,6 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<int>("BodySize")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CharacterLicenses")
-                        .HasColumnType("integer");
-
                     b.Property<int>("CharacterState")
                         .HasColumnType("integer");
 
@@ -689,6 +683,36 @@ namespace Server.DataAccessLayer.Migrations
                     b.ToTable("FaceFeatures");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.Character.PersonalLicenseModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Warnings")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterModelId");
+
+                    b.ToTable("PersonalLicenses");
+                });
+
             modelBuilder.Entity("Server.Database.Models.Character.TattoosModel", b =>
                 {
                     b.Property<int>("CharacterModelId")
@@ -753,6 +777,136 @@ namespace Server.DataAccessLayer.Migrations
                     b.ToTable("TattoosModel");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.CustomLogs.ChatLogModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AccountModelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<int>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ChatType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LoggedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountModelId");
+
+                    b.HasIndex("CharacterModelId");
+
+                    b.ToTable("ChatLogs");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.CustomLogs.CommandLogModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AccountModelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("Arguments")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<int>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LoggedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<int>("RequiredPermission")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountModelId");
+
+                    b.HasIndex("CharacterModelId");
+
+                    b.ToTable("CommandLogs");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.CustomLogs.UserRecordLogModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AccountModelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<int?>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LoggedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("StaffAccountModelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<int>("UserRecordType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountModelId");
+
+                    b.HasIndex("CharacterModelId");
+
+                    b.HasIndex("StaffAccountModelId");
+
+                    b.ToTable("UserRecordLogs");
+                });
+
             modelBuilder.Entity("Server.Database.Models.Delivery.DeliveryModel", b =>
                 {
                     b.Property<int>("Id")
@@ -805,6 +959,102 @@ namespace Server.DataAccessLayer.Migrations
                     b.ToTable("Deliveries");
 
                     b.HasDiscriminator<int>("DeliveryType").HasValue(0);
+                });
+
+            modelBuilder.Entity("Server.Database.Models.File.DirectoryModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CreatorCharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CreatorCharacterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("GroupModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LastEditCharacterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ReadGroupLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("WriteGroupLevel")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupModelId");
+
+                    b.ToTable("Directories");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.File.FileModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BlockedByCharacterName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CreatorCharacterId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CreatorCharacterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("DirectoryModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastEditCharacterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DirectoryModelId");
+
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Group.GroupMemberModel", b =>
@@ -950,6 +1200,9 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<bool>("BlockedOwnership")
                         .HasColumnType("boolean");
 
+                    b.Property<int?>("CharacterModelId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -973,9 +1226,6 @@ namespace Server.DataAccessLayer.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("LockState")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("OwnerId")
                         .HasColumnType("integer");
 
                     b.Property<float>("Pitch")
@@ -1290,7 +1540,7 @@ namespace Server.DataAccessLayer.Migrations
                     b.ToTable("PhoneMessages");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.Inventory.Phone.PhoneNotification", b =>
+            modelBuilder.Entity("Server.Database.Models.Inventory.Phone.PhoneNotificationModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1319,136 +1569,6 @@ namespace Server.DataAccessLayer.Migrations
                     b.HasIndex("ItemPhoneModelId");
 
                     b.ToTable("PhoneNotifications");
-                });
-
-            modelBuilder.Entity("Server.Database.Models.Logs.ChatLogModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("AccountModelId")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.Property<int>("CharacterModelId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ChatType")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LastUsage")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LoggedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountModelId");
-
-                    b.HasIndex("CharacterModelId");
-
-                    b.ToTable("ChatLogs");
-                });
-
-            modelBuilder.Entity("Server.Database.Models.Logs.CommandLogModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("AccountModelId")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.Property<string>("Arguments")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)");
-
-                    b.Property<int>("CharacterModelId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LastUsage")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LoggedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)");
-
-                    b.Property<int>("RequiredPermission")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountModelId");
-
-                    b.HasIndex("CharacterModelId");
-
-                    b.ToTable("CommandLogs");
-                });
-
-            modelBuilder.Entity("Server.Database.Models.Logs.UserRecordLogModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("AccountModelId")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.Property<int?>("CharacterModelId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LastUsage")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LoggedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("StaffAccountModelId")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)");
-
-                    b.Property<int>("UserRecordType")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountModelId");
-
-                    b.HasIndex("CharacterModelId");
-
-                    b.HasIndex("StaffAccountModelId");
-
-                    b.ToTable("UserRecordLogs");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Mail.MailAccountCharacterAccessModel", b =>
@@ -1483,16 +1603,13 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<string>("MailAccountModelMailAddress")
                         .HasColumnType("text");
 
-                    b.Property<int>("GroupId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("GroupModelId")
+                    b.Property<int>("GroupModelId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("Owner")
                         .HasColumnType("boolean");
 
-                    b.HasKey("MailAccountModelMailAddress", "GroupId");
+                    b.HasKey("MailAccountModelMailAddress", "GroupModelId");
 
                     b.HasIndex("GroupModelId");
 
@@ -1572,6 +1689,38 @@ namespace Server.DataAccessLayer.Migrations
                     b.ToTable("Mails");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.Mdc.CriminalRecordModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatorCharacterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterModelId");
+
+                    b.ToTable("CriminalRecords");
+                });
+
             modelBuilder.Entity("Server.Database.Models.Mdc.EmergencyCallModel", b =>
                 {
                     b.Property<int>("Id")
@@ -1606,6 +1755,120 @@ namespace Server.DataAccessLayer.Migrations
                     b.ToTable("EmergencyCalls");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.Mdc.MdcAllergyModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatorCharacterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterModelId");
+
+                    b.ToTable("MdcAllergies");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Mdc.MdcMedicalEntryModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatorCharacterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterModelId");
+
+                    b.ToTable("MdcMedicalEntries");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Mdc.MdcNoteModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatorCharacterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TargetModelId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MdcNodes");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.RegistrationOfficeEntryModel", b =>
+                {
+                    b.Property<int>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("CharacterModelId");
+
+                    b.ToTable("RegistrationOfficeEntries");
+                });
+
             modelBuilder.Entity("Server.Database.Models.RoleplayInfoModel", b =>
                 {
                     b.Property<int>("Id")
@@ -1614,7 +1877,7 @@ namespace Server.DataAccessLayer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CharacterModelId")
+                    b.Property<int>("CharacterModelId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Context")
@@ -1730,7 +1993,7 @@ namespace Server.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("GroupId")
+                    b.Property<int>("GroupModelId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("LastUsage")
@@ -1757,6 +2020,9 @@ namespace Server.DataAccessLayer.Migrations
 
                     b.Property<long>("BodyHealth")
                         .HasColumnType("bigint");
+
+                    b.Property<int?>("CharacterModelId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1804,9 +2070,6 @@ namespace Server.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("integer");
-
                     b.Property<float>("Pitch")
                         .HasColumnType("real");
 
@@ -1839,9 +2102,9 @@ namespace Server.DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupModelOwnerId");
+                    b.HasIndex("CharacterModelId");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("GroupModelOwnerId");
 
                     b.ToTable("Vehicles");
                 });
@@ -1992,6 +2255,13 @@ namespace Server.DataAccessLayer.Migrations
                     b.HasDiscriminator().HasValue(4);
                 });
 
+            modelBuilder.Entity("Server.Database.Models.Inventory.ItemDrugModel", b =>
+                {
+                    b.HasBaseType("Server.Database.Models.Inventory.ItemModel");
+
+                    b.HasDiscriminator().HasValue(11);
+                });
+
             modelBuilder.Entity("Server.Database.Models.Inventory.ItemFoodModel", b =>
                 {
                     b.HasBaseType("Server.Database.Models.Inventory.ItemModel");
@@ -2003,7 +2273,7 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     b.HasBaseType("Server.Database.Models.Inventory.ItemModel");
 
-                    b.Property<int?>("GroupModelId")
+                    b.Property<int>("GroupModelId")
                         .HasColumnType("integer")
                         .HasColumnName("ItemGroupKeyModel_GroupModelId");
 
@@ -2048,11 +2318,14 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<int>("BackgroundImageId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CurrentOwnerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("InitialOwnerId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("LastTimeOpenedNotifications")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -2068,7 +2341,7 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<int>("FactionType")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Frequence")
+                    b.Property<int>("Frequency")
                         .HasColumnType("integer");
 
                     b.HasDiscriminator().HasValue(9);
@@ -2100,12 +2373,15 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     b.HasBaseType("Server.Database.Models.Inventory.ItemModel");
 
-                    b.Property<List<string>>("ComponentHashs")
+                    b.Property<List<string>>("ComponentHashes")
                         .IsRequired()
                         .HasColumnType("text[]");
 
+                    b.Property<int>("InitialOwnerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ItemWeaponModel_InitialOwnerId");
+
                     b.Property<string>("SerialNumber")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasDiscriminator().HasValue(1);
@@ -2204,6 +2480,17 @@ namespace Server.DataAccessLayer.Migrations
                     b.Navigation("CharacterModel");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.Character.PersonalLicenseModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithMany("Licenses")
+                        .HasForeignKey("CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CharacterModel");
+                });
+
             modelBuilder.Entity("Server.Database.Models.Character.TattoosModel", b =>
                 {
                     b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
@@ -2213,6 +2500,69 @@ namespace Server.DataAccessLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("CharacterModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.CustomLogs.ChatLogModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.AccountModel", "AccountModel")
+                        .WithMany("ChatLogs")
+                        .HasForeignKey("AccountModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithMany()
+                        .HasForeignKey("CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountModel");
+
+                    b.Navigation("CharacterModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.CustomLogs.CommandLogModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.AccountModel", "AccountModel")
+                        .WithMany("CommandLogs")
+                        .HasForeignKey("AccountModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithMany()
+                        .HasForeignKey("CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountModel");
+
+                    b.Navigation("CharacterModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.CustomLogs.UserRecordLogModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.AccountModel", "AccountModel")
+                        .WithMany("UserRecords")
+                        .HasForeignKey("AccountModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithMany()
+                        .HasForeignKey("CharacterModelId");
+
+                    b.HasOne("Server.Database.Models.AccountModel", "StaffAccountModel")
+                        .WithMany()
+                        .HasForeignKey("StaffAccountModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountModel");
+
+                    b.Navigation("CharacterModel");
+
+                    b.Navigation("StaffAccountModel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Delivery.DeliveryModel", b =>
@@ -2236,6 +2586,28 @@ namespace Server.DataAccessLayer.Migrations
                     b.Navigation("PlayerVehicleModel");
 
                     b.Navigation("SupplierGroupModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.File.DirectoryModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Group.GroupModel", "GroupModel")
+                        .WithMany()
+                        .HasForeignKey("GroupModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.File.FileModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.File.DirectoryModel", "DirectoryModel")
+                        .WithMany("Files")
+                        .HasForeignKey("DirectoryModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DirectoryModel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Group.GroupMemberModel", b =>
@@ -2365,7 +2737,7 @@ namespace Server.DataAccessLayer.Migrations
                     b.Navigation("ChatModel");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.Inventory.Phone.PhoneNotification", b =>
+            modelBuilder.Entity("Server.Database.Models.Inventory.Phone.PhoneNotificationModel", b =>
                 {
                     b.HasOne("Server.Database.Models.Inventory.ItemPhoneModel", "ItemPhoneModel")
                         .WithMany("Notifications")
@@ -2374,69 +2746,6 @@ namespace Server.DataAccessLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("ItemPhoneModel");
-                });
-
-            modelBuilder.Entity("Server.Database.Models.Logs.ChatLogModel", b =>
-                {
-                    b.HasOne("Server.Database.Models.AccountModel", "AccountModel")
-                        .WithMany("ChatLogs")
-                        .HasForeignKey("AccountModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
-                        .WithMany()
-                        .HasForeignKey("CharacterModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AccountModel");
-
-                    b.Navigation("CharacterModel");
-                });
-
-            modelBuilder.Entity("Server.Database.Models.Logs.CommandLogModel", b =>
-                {
-                    b.HasOne("Server.Database.Models.AccountModel", "AccountModel")
-                        .WithMany("CommandLogs")
-                        .HasForeignKey("AccountModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
-                        .WithMany()
-                        .HasForeignKey("CharacterModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AccountModel");
-
-                    b.Navigation("CharacterModel");
-                });
-
-            modelBuilder.Entity("Server.Database.Models.Logs.UserRecordLogModel", b =>
-                {
-                    b.HasOne("Server.Database.Models.AccountModel", "AccountModel")
-                        .WithMany("UserRecords")
-                        .HasForeignKey("AccountModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
-                        .WithMany()
-                        .HasForeignKey("CharacterModelId");
-
-                    b.HasOne("Server.Database.Models.AccountModel", "StaffAccountModel")
-                        .WithMany()
-                        .HasForeignKey("StaffAccountModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AccountModel");
-
-                    b.Navigation("CharacterModel");
-
-                    b.Navigation("StaffAccountModel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Mail.MailAccountCharacterAccessModel", b =>
@@ -2462,7 +2771,9 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     b.HasOne("Server.Database.Models.Group.GroupModel", "GroupModel")
                         .WithMany()
-                        .HasForeignKey("GroupModelId");
+                        .HasForeignKey("GroupModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Server.Database.Models.Mail.MailAccountModel", "MailAccountModel")
                         .WithMany("GroupAccess")
@@ -2494,11 +2805,57 @@ namespace Server.DataAccessLayer.Migrations
                     b.Navigation("MailModel");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.Mdc.CriminalRecordModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithMany()
+                        .HasForeignKey("CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CharacterModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Mdc.MdcAllergyModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithMany()
+                        .HasForeignKey("CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CharacterModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Mdc.MdcMedicalEntryModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithMany()
+                        .HasForeignKey("CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CharacterModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.RegistrationOfficeEntryModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithOne("RegistrationOfficeEntryModel")
+                        .HasForeignKey("Server.Database.Models.RegistrationOfficeEntryModel", "CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CharacterModel");
+                });
+
             modelBuilder.Entity("Server.Database.Models.RoleplayInfoModel", b =>
                 {
                     b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
                         .WithMany()
-                        .HasForeignKey("CharacterModelId");
+                        .HasForeignKey("CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CharacterModel");
                 });
@@ -2516,17 +2873,17 @@ namespace Server.DataAccessLayer.Migrations
 
             modelBuilder.Entity("Server.Database.Models.Vehicles.PlayerVehicleModel", b =>
                 {
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithMany()
+                        .HasForeignKey("CharacterModelId");
+
                     b.HasOne("Server.Database.Models.Group.GroupModel", "GroupModelOwner")
                         .WithMany()
                         .HasForeignKey("GroupModelOwnerId");
 
-                    b.HasOne("Server.Database.Models.Character.CharacterModel", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
+                    b.Navigation("CharacterModel");
 
                     b.Navigation("GroupModelOwner");
-
-                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Vehicles.PublicGarageEntryModel", b =>
@@ -2556,7 +2913,9 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     b.HasOne("Server.Database.Models.Group.GroupModel", "GroupModel")
                         .WithMany()
-                        .HasForeignKey("GroupModelId");
+                        .HasForeignKey("GroupModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("GroupModel");
                 });
@@ -2603,8 +2962,17 @@ namespace Server.DataAccessLayer.Migrations
 
                     b.Navigation("JobModel");
 
+                    b.Navigation("Licenses");
+
+                    b.Navigation("RegistrationOfficeEntryModel");
+
                     b.Navigation("TattoosModel")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Server.Database.Models.File.DirectoryModel", b =>
+                {
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Group.GroupModel", b =>

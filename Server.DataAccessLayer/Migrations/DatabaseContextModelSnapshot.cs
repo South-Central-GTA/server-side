@@ -1851,6 +1851,22 @@ namespace Server.DataAccessLayer.Migrations
                     b.ToTable("MdcNodes");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.RegistrationOfficeEntryModel", b =>
+                {
+                    b.Property<int>("CharacterModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUsage")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("CharacterModelId");
+
+                    b.ToTable("RegistrationOfficeEntries");
+                });
+
             modelBuilder.Entity("Server.Database.Models.RoleplayInfoModel", b =>
                 {
                     b.Property<int>("Id")
@@ -2235,6 +2251,13 @@ namespace Server.DataAccessLayer.Migrations
                     b.HasBaseType("Server.Database.Models.Inventory.ItemModel");
 
                     b.HasDiscriminator().HasValue(4);
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Inventory.ItemDrugModel", b =>
+                {
+                    b.HasBaseType("Server.Database.Models.Inventory.ItemModel");
+
+                    b.HasDiscriminator().HasValue(11);
                 });
 
             modelBuilder.Entity("Server.Database.Models.Inventory.ItemFoodModel", b =>
@@ -2813,6 +2836,17 @@ namespace Server.DataAccessLayer.Migrations
                     b.Navigation("CharacterModel");
                 });
 
+            modelBuilder.Entity("Server.Database.Models.RegistrationOfficeEntryModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
+                        .WithOne("RegistrationOfficeEntryModel")
+                        .HasForeignKey("Server.Database.Models.RegistrationOfficeEntryModel", "CharacterModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CharacterModel");
+                });
+
             modelBuilder.Entity("Server.Database.Models.RoleplayInfoModel", b =>
                 {
                     b.HasOne("Server.Database.Models.Character.CharacterModel", "CharacterModel")
@@ -2927,6 +2961,8 @@ namespace Server.DataAccessLayer.Migrations
                     b.Navigation("JobModel");
 
                     b.Navigation("Licenses");
+
+                    b.Navigation("RegistrationOfficeEntryModel");
 
                     b.Navigation("TattoosModel")
                         .IsRequired();

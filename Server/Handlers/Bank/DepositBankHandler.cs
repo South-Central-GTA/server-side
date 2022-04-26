@@ -8,6 +8,7 @@ using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Bank;
 using Server.Modules.Money;
+using Server.Modules.Phone;
 
 namespace Server.Handlers.Bank;
 
@@ -15,20 +16,26 @@ public class DepositBankHandler : ISingletonScript
 {
     private readonly BankModule _bankModule;
     private readonly MoneyModule _moneyModule;
+    private readonly PhoneModule _phoneModule;
     private readonly BankAccountService _bankAccountService;
     private readonly GroupService _groupService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
     
     public DepositBankHandler(
         BankModule bankModule, 
         MoneyModule moneyModule, 
+        PhoneModule phoneModule,
         BankAccountService bankAccountService, 
-        GroupService groupService)
+        GroupService groupService, 
+        RegistrationOfficeService registrationOfficeService)
     {
         _bankModule = bankModule;
         _moneyModule = moneyModule;
+        _phoneModule = phoneModule;
         _bankAccountService = bankAccountService;
         _groupService = groupService;
-        
+        _registrationOfficeService = registrationOfficeService;
+
         AltAsync.OnClient<ServerPlayer, int, int>("bank:deposit", OnDeposit);
     }
 
@@ -37,6 +44,13 @@ public class DepositBankHandler : ISingletonScript
         if (!player.Exists)
         {
             return;
+        }
+
+        var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
+        if (!isRegistered)
+        {
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            return;       
         }
 
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
