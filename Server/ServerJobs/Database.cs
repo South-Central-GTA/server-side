@@ -85,10 +85,13 @@ public class Database : IServerJob
             if (!_devOptions.LocalDb)
             {
                 await dbContext.Database.ExecuteSqlRawAsync("GRANT CONNECT ON DATABASE scdb TO public;");
+                await dbContext.Database.ExecuteSqlRawAsync("GRANT CONNECT ON DATABASE scdb TO public;");
             }
 
             await dbContext.Database.EnsureDeletedAsync();
             _logger.LogWarning("Database dropped.");
+            
+            await dbContext.Database.EnsureCreatedAsync();
         }
 
         try
