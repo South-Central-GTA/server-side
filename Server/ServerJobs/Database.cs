@@ -84,8 +84,6 @@ public class Database : IServerJob
         {
             if (!_devOptions.LocalDb)
             {
-                await dbContext.Database.ExecuteSqlRawAsync("CREATE DATABASE scdb;");
-                await dbContext.Database.ExecuteSqlRawAsync("GRANT ALL PRIVILEGES ON DATABASE scb to dobbymaster;");
                 await dbContext.Database.ExecuteSqlRawAsync("GRANT CONNECT ON DATABASE scdb TO public;");
             }
 
