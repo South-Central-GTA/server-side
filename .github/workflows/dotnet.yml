@@ -36,5 +36,5 @@ jobs:
           sftp_only: 'true'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
           local_path: 'Server/bin/Release/*'
-          remote_path: '/home/tstolzenberg/altv/resources/southcentral/server'
+          remote_path: '/home/tstolzenberg/altv/server/resources/southcentral/server'
           args: '-o ConnectTimeout=5'
