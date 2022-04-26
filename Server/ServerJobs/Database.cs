@@ -82,15 +82,15 @@ public class Database : IServerJob
 
         if (_devOptions.DropDatabaseAtStartup)
         {
+            if (!_devOptions.LocalDb)
+            {
+                await dbContext.Database.ExecuteSqlRawAsync("GRANT CONNECT ON DATABASE scdb TO public;");
+            }
+
             await dbContext.Database.EnsureDeletedAsync();
             _logger.LogWarning("Database dropped.");
         }
 
-        if (!_devOptions.LocalDb)
-        {
-            await dbContext.Database.ExecuteSqlRawAsync("GRANT CONNECT ON DATABASE scdb TO public;");
-        }
-        
         await dbContext.Database.MigrateAsync();
 
         if (_devOptions.SeedingDefaultDataIntoDatabase)
