@@ -103,9 +103,6 @@ public class InventoryModel
             writer.Name("price");
             writer.Value(item.CatalogItemModel.Price);
 
-            writer.Name("sellPrice");
-            writer.Value(item.CatalogItemModel.SellPrice);
-
             writer.EndObject();
 
             writer.Name("slot");

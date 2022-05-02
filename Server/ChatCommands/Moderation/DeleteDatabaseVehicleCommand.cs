@@ -19,7 +19,7 @@ public class DeleteDatabaseVehicleCommand : ISingletonScript
     }
 
     [Command("ddv", "Zerstört das Datenbank Fahrzeug in welchem du sitzt.", Permission.ADMIN)]
-    public async void OnDatabaseDestroyVehicle(ServerPlayer player)
+    public async void OnExecute(ServerPlayer player)
     {
         if (!player.Exists)
         {

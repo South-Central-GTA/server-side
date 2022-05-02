@@ -21,7 +21,7 @@ public class RemovePersonalLicenseCommands : ISingletonScript
     }
 
     [Command("removeclicense", "Entferne einem Charakter eine bestimmte Lizenz.", Permission.STAFF, new[] { "Spieler ID", "Lizenz" })]
-    public async void OnRemoveCharacterLicense(ServerPlayer player, string expectedPlayerId, string expectedLicense)
+    public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedLicense)
     {
         if (!player.Exists)
         {

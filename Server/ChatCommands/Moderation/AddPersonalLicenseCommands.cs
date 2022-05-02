@@ -21,7 +21,7 @@ public class AddPersonalLicenseCommands : ISingletonScript
     }
 
     [Command("addclicense", "Gebe einem Charakter eine bestimmte Lizenz.", Permission.STAFF, new[] { "Spieler ID", "Lizenz" })]
-    public async void OnAddCharacterLicense(ServerPlayer player, string expectedPlayerId, string expectedLicense)
+    public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedLicense)
     {
         if (!player.Exists)
         {

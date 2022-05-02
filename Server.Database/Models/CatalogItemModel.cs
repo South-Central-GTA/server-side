@@ -33,7 +33,6 @@ public class CatalogItemModel
         Buyable = buyable;
         Sellable = sellable;
         Price = price;
-        SellPrice = sellPrice;
         MaxLimit = maxLimit;
     }
 
@@ -53,7 +52,6 @@ public class CatalogItemModel
     public bool Buyable { get; set; }
     public bool Sellable { get; set; }
     public int Price { get; set; }
-    public int SellPrice { get; set; }
     public int? MaxLimit { get; set; }
 
     public void OnWrite(IMValueWriter writer)
@@ -92,9 +90,6 @@ public class CatalogItemModel
 
         writer.Name("price");
         writer.Value(Price);
-
-        writer.Name("sellPrice");
-        writer.Value(SellPrice);
 
         writer.EndObject();
     }

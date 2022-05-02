@@ -53,9 +53,6 @@ public class ItemWeaponAttachmentModel
         writer.Name("price");
         writer.Value(CatalogItemModel.Price);
 
-        writer.Name("sellPrice");
-        writer.Value(CatalogItemModel.SellPrice);
-
         writer.EndObject();
 
         writer.Name("slot");

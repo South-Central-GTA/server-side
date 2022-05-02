@@ -20,7 +20,7 @@ public class ResetPersonalLicenseCommands : ISingletonScript
     }
 
     [Command("resetclicense", "Entferne einem Charakter alle Lizenzen.", Permission.STAFF, new[] { "Spieler ID" })]
-    public async void OnResetCharacterLicense(ServerPlayer player, string expectedPlayerId)
+    public async void OnExecute(ServerPlayer player, string expectedPlayerId)
     {
         if (!player.Exists)
         {
