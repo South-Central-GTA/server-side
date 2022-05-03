@@ -10,6 +10,7 @@ using Server.Database.Enums;
 using Server.Database.Models.Banking;
 using Server.Modules.Bank;
 using Server.Modules.Phone;
+using Server.Modules.PoliceTicket;
 
 namespace Server.Handlers.Bank;
 
@@ -21,7 +22,7 @@ public class TransferBankHandler : ISingletonScript
     private readonly RegistrationOfficeService _registrationOfficeService;
     
     private readonly BankModule _bankModule;
-    private readonly PhoneModule _phoneModule;
+    private readonly PoliceTicketModule _policeTicketModule;
 
     public TransferBankHandler(
         BankAccountService bankAccountService, 
@@ -30,7 +31,7 @@ public class TransferBankHandler : ISingletonScript
         GroupService groupService, 
         
         BankModule bankModule, 
-        PhoneModule phoneModule)
+        PoliceTicketModule policeTicketModule)
     {
         _bankAccountService = bankAccountService;
         _bankHistoryService = bankHistoryService;
@@ -38,12 +39,12 @@ public class TransferBankHandler : ISingletonScript
         _registrationOfficeService = registrationOfficeService;
         
         _bankModule = bankModule;
-        _phoneModule = phoneModule;
+        _policeTicketModule = policeTicketModule;
 
         AltAsync.OnClient<ServerPlayer, int, string, int, string>("bank:transfer", OnTransfer);
     }
 
-    private async void OnTransfer(ServerPlayer player, int ownBankAccountId, string recieverBankAccountDetails,
+    private async void OnTransfer(ServerPlayer player, int ownBankAccountId, string receiverBankAccountDetails,
                                   int value, string useOfPurpose = "")
     {
         if (!player.Exists)
@@ -72,10 +73,10 @@ public class TransferBankHandler : ISingletonScript
             return;
         }
 
-        var targetBankAccount = await _bankAccountService.GetByBankDetails(recieverBankAccountDetails);
+        var targetBankAccount = await _bankAccountService.GetByBankDetails(receiverBankAccountDetails);
         if (targetBankAccount == null)
         {
-            player.SendNotification($"Das Bankkonto {recieverBankAccountDetails} existiert nicht.",
+            player.SendNotification($"Das Bankkonto {receiverBankAccountDetails} existiert nicht.",
                                     NotificationType.ERROR);
             return;
         }
@@ -102,6 +103,8 @@ public class TransferBankHandler : ISingletonScript
 
         bankAccount.Amount -= value;
         targetBankAccount.Amount += value;
+
+        await _policeTicketModule.CheckPoliceTickets(player, receiverBankAccountDetails, useOfPurpose, value);
 
         await _bankAccountService.Update(bankAccount);
         await _bankAccountService.Update(targetBankAccount);

@@ -96,7 +96,8 @@ public class DatabaseContext
                     .HasValue<ItemGroupKeyModel>(ItemType.GROUP_KEY)
                     .HasValue<ItemRadioModel>(ItemType.RADIO)
                     .HasValue<ItemHandCuffModel>(ItemType.HANDCUFF)
-                    .HasValue<ItemDrugModel>(ItemType.DRUG);
+                    .HasValue<ItemDrugModel>(ItemType.DRUG)
+                    .HasValue<ItemPoliceTicketModel>(ItemType.POLICE_TICKET);
 
         modelBuilder.Entity<ItemClothModel>()
                     .HasOne(i => i.ClothingInventoryModel)
@@ -126,6 +127,7 @@ public class DatabaseContext
     public DbSet<ItemKeyModel> ItemKeys { get; set; }
     public DbSet<ItemRadioModel> ItemRadios { get; set; }
     public DbSet<ItemHandCuffModel> ItemHandCuffs { get; set; }
+    public DbSet<ItemPoliceTicketModel> ItemPoliceTickets { get; set; }
 
     public DbSet<CatalogVehicleModel> VehicleCatalog { get; set; }
     public DbSet<PlayerVehicleModel> Vehicles { get; set; }

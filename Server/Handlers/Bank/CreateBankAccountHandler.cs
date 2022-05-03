@@ -44,7 +44,9 @@ public class CreateBankAccountHandler : ISingletonScript
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
+            await _phoneModule.SendNotification(phoneId,
+                                                PhoneNotificationType.MAZE_BANK,
+                                                "Leider können wir Sie unter Ihrem Namen nicht im Registration Office finden. Die Accounterstellung wurde abgebrochen.");
             return;       
         }
         

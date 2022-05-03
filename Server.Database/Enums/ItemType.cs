@@ -13,5 +13,6 @@ public enum ItemType
     GROUP_KEY,
     RADIO,
     HANDCUFF,
-    DRUG
+    DRUG,
+    POLICE_TICKET
 }

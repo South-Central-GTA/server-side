@@ -454,26 +454,6 @@ public class ItemCreationModule
                     IsStolen = isStolen
                 });
                 break;
-            case ItemCatalogIds.DRUG_MARIJUANA:
-            case ItemCatalogIds.DRUG_COCAINE:
-            case ItemCatalogIds.DRUG_MDMA:
-            case ItemCatalogIds.DRUG_XANAX:
-            case ItemCatalogIds.DRUG_CODEINE:
-            case ItemCatalogIds.DRUG_METH:
-                createdItemModel = await _itemService.Add(new ItemDrugModel
-                {
-                    InventoryModelId = inventoryModel.Id,
-                    Slot = slot,
-                    CatalogItemModelId = catalogId,
-                    Amount = amount,
-                    CustomData = customData,
-                    Note = note,
-                    Condition = condition,
-                    ItemState = itemState,
-                    IsBought = isBought,
-                    IsStolen = isStolen
-                });
-                break;
             case ItemCatalogIds.DOLLAR:
             case ItemCatalogIds.LICENSES:
             case ItemCatalogIds.REPAIR_KIT:
@@ -572,6 +552,41 @@ public class ItemCreationModule
             case ItemCatalogIds.COMPONENT_SNIPER_SCOPE2:
             case ItemCatalogIds.COMPONENT_SNIPER_GRIP:
                 createdItemModel = await _itemService.Add(new ItemWeaponAttachmentModel
+                {
+                    InventoryModelId = inventoryModel.Id,
+                    Slot = slot,
+                    CatalogItemModelId = catalogId,
+                    Amount = amount,
+                    CustomData = customData,
+                    Note = note,
+                    Condition = condition,
+                    ItemState = itemState,
+                    IsBought = isBought,
+                    IsStolen = isStolen
+                });
+                break;
+            case ItemCatalogIds.DRUG_MARIJUANA:
+            case ItemCatalogIds.DRUG_COCAINE:
+            case ItemCatalogIds.DRUG_MDMA:
+            case ItemCatalogIds.DRUG_XANAX:
+            case ItemCatalogIds.DRUG_CODEINE:
+            case ItemCatalogIds.DRUG_METH:
+                createdItemModel = await _itemService.Add(new ItemDrugModel
+                {
+                    InventoryModelId = inventoryModel.Id,
+                    Slot = slot,
+                    CatalogItemModelId = catalogId,
+                    Amount = amount,
+                    CustomData = customData,
+                    Note = note,
+                    Condition = condition,
+                    ItemState = itemState,
+                    IsBought = isBought,
+                    IsStolen = isStolen
+                });
+                break;
+            case ItemCatalogIds.POLICE_TICKET:
+                createdItemModel = await _itemService.Add(new ItemPoliceTicketModel()
                 {
                     InventoryModelId = inventoryModel.Id,
                     Slot = slot,

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.DataAccessLayer.Context;
 using Server.DataAccessLayer.Services.Base;
+using Server.Database.Enums;
 using Server.Database.Models.Group;
 
 namespace Server.DataAccessLayer.Services;
@@ -34,7 +35,7 @@ public class GroupFactionService
 
         return memberFaction;
     }
-
+    
     public override async Task<FactionGroupModel?> GetByKey(object id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
