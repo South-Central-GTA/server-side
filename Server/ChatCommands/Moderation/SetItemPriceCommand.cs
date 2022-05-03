@@ -48,5 +48,7 @@ public class SetItemPriceCommand : ISingletonScript
         catalogItem.Price = price;
 
         await _itemCatalogService.Update(catalogItem);
+        
+        player.SendNotification("Item Preis erfolgreich angepasst.", NotificationType.SUCCESS);
     }
 }
