@@ -26,8 +26,8 @@ internal class GivePlayerTicketCommand : ISingletonScript
         _policeTicketModule = policeTicketModule;
     }
 
-    [Command("giveticket", "Gebe einen anderen Charakter einen Strafzettel.", Permission.NONE, new[] { "Spieler ID", "Grund", "Kosten" })]
-    public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedReason, string expectedCosts)
+    [Command("giveticket", "Gebe einen anderen Charakter einen Strafzettel.", Permission.NONE, new[] { "Spieler ID", "Kosten", "Grund" }, CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
+    public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedCosts, string expectedReason)
     {
         if (!player.Exists)
         {
@@ -59,7 +59,7 @@ internal class GivePlayerTicketCommand : ISingletonScript
             return;
         }
 
-        bool success = await _policeTicketModule.GivePlayerTicket(target, player.CharacterModel.Name, expectedReason, costs);
+        var success = await _policeTicketModule.GivePlayerTicket(target, player.CharacterModel.Name, expectedReason, costs);
         if (success)
         {
             player.SendNotification("Du hast dem Charakter ein Ticket übergeben.", NotificationType.INFO);
