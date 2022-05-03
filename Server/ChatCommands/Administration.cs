@@ -538,6 +538,12 @@ public class Administration : ISingletonScript
             return;
         }
 
+        if (catalogItem.Id == ItemCatalogIds.POLICE_TICKET)
+        {
+            player.SendNotification("Strafzettel kannst du so aus dem Katalog nicht erstellen.", NotificationType.ERROR);
+            return;
+        }
+
         if (!int.TryParse(expectedAmount, out var amount))
         {
             player.SendNotification("Bitte gebe ein richtige Anzahl an.", NotificationType.ERROR);
