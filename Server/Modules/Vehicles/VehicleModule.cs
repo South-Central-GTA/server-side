@@ -208,7 +208,7 @@ public class VehicleModule
                                              int secondaryColor, byte livery = 0, uint bodyHealth = 1000, int engineHealth = 1000, float fuel = 0,
                                              float drivenKilometre = 0)
     {
-        var catalogVehicle = await _vehicleCatalogService.Find(vc => vc.DisplayName.ToLower() == vehicleModel.ToLower());
+        var catalogVehicle = await _vehicleCatalogService.Find(vc => vc.Model.ToLower() == vehicleModel.ToLower());
         if (catalogVehicle == null)
         {
             return null;
