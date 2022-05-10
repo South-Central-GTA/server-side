@@ -168,6 +168,7 @@ public class DatabaseContext
     public DbSet<FileModel> Files { get; set; }
     public DbSet<DirectoryModel> Directories { get; set; }
     public DbSet<RegistrationOfficeEntryModel> RegistrationOfficeEntries  { get; set; }
+    public DbSet<BulletInEntryModel> BulletInEntries  { get; set; }
 
     #endregion
 }

@@ -4,6 +4,7 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
+using Server.Database.Enums;
 using Server.Modules.FileSystem;
 using Server.Modules.MDC;
 
@@ -47,7 +48,10 @@ public class PdMdcOpenPageHandler : ISingletonScript
             case 0:
                 await OpenHomeScreen(player);
                 break;
-            case 4:
+            case 2:
+                await OpenApbScreen(player);
+                break;
+            case 3:
                 await OpenFileScreen(player);
                 break;
         }
@@ -59,6 +63,13 @@ public class PdMdcOpenPageHandler : ISingletonScript
                        await _policeMdcModule.GetEmergencyCalls(), 
                        _policeMdcModule.CallSign.GetCallSigns(), 
                        _policeMdcModule.CallSign.HasCallSign(player.CharacterModel));
+    }
+
+    private async Task OpenApbScreen(ServerPlayer player)
+    {
+        var test = await _baseMdcModule.GetBulletInEntries(FactionType.POLICE_DEPARTMENT);
+        player.EmitGui("policemdc:openapbscreen",  
+                       test);
     }
 
     private async Task OpenFileScreen(ServerPlayer player)

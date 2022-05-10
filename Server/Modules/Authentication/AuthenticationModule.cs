@@ -72,14 +72,14 @@ public class AuthenticationModule : ISingletonScript
             return;
         }
 
-        // Check for faking authentication
-        if (account.SocialClubId != player.SocialClubId
-            || account.HardwareIdHash != player.HardwareIdHash
-            || account.HardwareIdExHash != player.HardwareIdExHash)
-        {
-            player.Kick("Die abgespeicherten Sicherheitsdaten wie Social Club ID und weitere Merkmale sind nicht mehr gleich, der Account gehört nicht zu deinem GTA.");
-            return;
-        }
+        // // Check for faking authentication
+        // if (account.SocialClubId != player.SocialClubId
+        //     || account.HardwareIdHash != player.HardwareIdHash
+        //     || account.HardwareIdExHash != player.HardwareIdExHash)
+        // {
+        //     player.Kick("Die abgespeicherten Sicherheitsdaten wie Social Club ID und weitere Merkmale sind nicht mehr gleich, der Account gehört nicht zu deinem GTA.");
+        //     return;
+        // }
 
         await ContinueLoginProcess(player, account);
     }
@@ -168,6 +168,7 @@ public class AuthenticationModule : ISingletonScript
 
     public async Task ContinueLoginProcess(ServerPlayer player, AccountModel accountModel)
     {
+        accountModel.LastLogin = DateTime.Now;
         accountModel.LastIp = player.Ip;
         accountModel.HardwareIdHash = player.HardwareIdHash;
         accountModel.HardwareIdExHash = player.HardwareIdExHash;

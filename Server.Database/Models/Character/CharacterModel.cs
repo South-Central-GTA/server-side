@@ -133,6 +133,9 @@ public class CharacterModel
     public List<int> AnimationIds { get; set; } = new();
     public List<PersonalLicenseModel> Licenses { get; set; } = new();
 
+    public DateTime? JailedUntil { get; set; }
+    public string? JailedByCharacterName { get; set; }
+
     public void OnWrite(IMValueWriter writer)
     {
         writer.BeginObject();

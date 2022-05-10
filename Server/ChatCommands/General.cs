@@ -953,12 +953,8 @@ public class General : ISingletonScript
             return;
         }
 
-        player.ClearData();
-        player.ClearAllTimer();
-
         await _characterService.Update(player);
 
-        _pedSyncModule.Delete(player);
         await _characterSelectionModule.OpenAsync(player);
     }
 

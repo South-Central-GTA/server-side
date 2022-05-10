@@ -90,18 +90,6 @@ public abstract class BaseService<T> where T : ModelBase
         return entityEntry.Entity;
     }
 
-    public virtual async Task<T> Remove(Expression<Func<T, bool>> expression)
-    {
-        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var entity = await Find(expression);
-
-        dbContext.Entry(entity).State = EntityState.Deleted;
-        var entityEntry = dbContext.Set<T>().Remove(entity);
-        await dbContext.SaveChangesAsync();
-
-        return entityEntry.Entity;
-    }
-
     public virtual async Task RemoveRange(IEnumerable<T> entities)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();

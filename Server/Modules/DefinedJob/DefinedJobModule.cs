@@ -79,7 +79,13 @@ public class DefinedJobModule
             return;
         }
 
-        await _definedJobService.Remove(j => j.CharacterModelId == player.CharacterModel.Id);
+        var job = await _definedJobService.Find(j => j.CharacterModelId == player.CharacterModel.Id);
+        if (job == null)
+        {
+            return;
+        }
+        
+        await _definedJobService.Remove(job);
         player.CharacterModel.JobModel = null;
 
         player.SendNotification("Dein Charakter ist wieder arbeitslos und verdient kein Geld mehr.", NotificationType.INFO);

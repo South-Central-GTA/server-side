@@ -13,8 +13,10 @@ using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Bank;
 using Server.Modules.Chat;
+using Server.Modules.EntitySync;
 using Server.Modules.Group;
 using Server.Modules.Houses;
+using Server.Modules.Prison;
 using Server.Modules.Vehicles;
 
 namespace Server.Modules.Character;
@@ -22,20 +24,22 @@ namespace Server.Modules.Character;
 public class CharacterSelectionModule
     : ITransientScript
 {
-    private readonly AccountService _accountService;
-    private readonly BankModule _bankModule;
-
-    private readonly CharacterService _characterService;
-
-    private readonly CharacterSpawnModule _characterSpawnModule;
-    private readonly CommandModule _commandModule;
-    private readonly DeliveryService _deliveryService;
-    private readonly GroupModule _groupModule;
-    private readonly HouseModule _houseModule;
-    private readonly HouseService _houseService;
     private readonly ILogger<CharacterSelectionModule> _logger;
     private readonly WorldLocationOptions _worldLocationOptions;
+    
+    private readonly AccountService _accountService;
+    private readonly CharacterService _characterService;
+    private readonly DeliveryService _deliveryService;
+    private readonly HouseService _houseService;
+
+    private readonly BankModule _bankModule;
+    private readonly CharacterSpawnModule _characterSpawnModule;
+    private readonly CommandModule _commandModule;
+    private readonly GroupModule _groupModule;
+    private readonly HouseModule _houseModule;
     private readonly VehicleLocatingModule _vehicleLocatingModule;
+    private readonly PrisonModule _prisonModule;
+    private readonly PedSyncModule _pedSyncModule;
 
     public CharacterSelectionModule(
         ILogger<CharacterSelectionModule> logger,
@@ -49,7 +53,8 @@ public class CharacterSelectionModule
         CommandModule commandModule,
         BankModule bankModule,
         GroupModule groupModule,
-        VehicleLocatingModule vehicleLocatingModule)
+        VehicleLocatingModule vehicleLocatingModule, 
+        PrisonModule prisonModule, PedSyncModule pedSyncModule)
     {
         _logger = logger;
         _characterSpawnModule = characterSpawnModule;
@@ -63,6 +68,8 @@ public class CharacterSelectionModule
         _bankModule = bankModule;
         _groupModule = groupModule;
         _vehicleLocatingModule = vehicleLocatingModule;
+        _prisonModule = prisonModule;
+        _pedSyncModule = pedSyncModule;
     }
 
     public async Task OpenAsync(ServerPlayer player)
@@ -71,6 +78,9 @@ public class CharacterSelectionModule
         {
             return;
         }
+        
+        player.ClearData();
+        player.ClearAllTimer();
 
         var characters = await _characterService.GetAllFromAccount(player.AccountModel);
         characters = characters.FindAll(c => c.CharacterState == CharacterState.PLAYABLE);
@@ -85,7 +95,8 @@ public class CharacterSelectionModule
         player.DeleteStreamSyncedMetaData("DUTY");
 
         _vehicleLocatingModule.StopTracking(player);
-        
+        _pedSyncModule.Delete(player);
+
         player.EmitLocked("charselector:open", characters, player.AccountModel.LastSelectedCharacterId);
     }
 
@@ -170,5 +181,18 @@ public class CharacterSelectionModule
           new Position(player.CharacterModel.PositionX, player.CharacterModel.PositionY, player.CharacterModel.PositionZ),
           new Rotation(player.CharacterModel.Roll, player.CharacterModel.Pitch, player.CharacterModel.Yaw),
           player.CharacterModel.Dimension);
+        
+        // Check if player is in jail
+        if (player.CharacterModel.JailedUntil.HasValue)
+        {
+            if (player.CharacterModel.JailedUntil.Value < DateTime.Now)
+            {
+                await _prisonModule.ClearPlayerFromPrison(player);
+            }
+            else
+            {
+                _prisonModule.SetPlayerInPrison(player);
+            }
+        }
     }
 }

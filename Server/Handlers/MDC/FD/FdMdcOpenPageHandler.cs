@@ -3,6 +3,7 @@ using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
+using Server.Database.Enums;
 using Server.Modules.MDC;
 
 namespace Server.Handlers.MDC.FD;
@@ -36,6 +37,9 @@ public class FdMdcOpenPageHandler : ISingletonScript
             case 0:
                 await OpenHomeScreen(player);
                 break;
+            case 3:
+                await OpenApbScreen(player);
+                break;
         }
     }
 
@@ -45,5 +49,11 @@ public class FdMdcOpenPageHandler : ISingletonScript
                        await _fireMdcModule.GetEmergencyCalls(), 
                        _fireMdcModule.CallSign.GetCallSigns(), 
                        _fireMdcModule.CallSign.HasCallSign(player.CharacterModel));
+    }
+    
+    private async Task OpenApbScreen(ServerPlayer player)
+    {
+        player.EmitGui("firemdc:openapbscreen",  
+                       await _baseMdcModule.GetBulletInEntries(FactionType.FIRE_DEPARTMENT));
     }
 }

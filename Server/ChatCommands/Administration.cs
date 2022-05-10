@@ -1089,7 +1089,7 @@ public class Administration : ISingletonScript
             maxTank = catalogVehicle.MaxTank;
         }
 
-        var vehicle = _vehicleModule.Create(expectedModelName, playerPosition, playerRotation, primaryColor, secondaryColor, 0, 1000, 1000, maxTank);
+        var vehicle = await _vehicleModule.Create(expectedModelName, playerPosition, playerRotation, primaryColor, secondaryColor, 0, 1000, 1000, maxTank);
         if (vehicle != null)
         {
             player.SendNotification("Fahrzeug erfolgreich gespawnt.", NotificationType.SUCCESS);

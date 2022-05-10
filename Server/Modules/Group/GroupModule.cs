@@ -358,7 +358,13 @@ public class GroupModule
             }
         }
 
-        await _groupRankService.Remove(r => r.GroupModelId == groupModel.Id && r.Level == level);
+        var rank = await _groupRankService.Find(r => r.GroupModelId == groupModel.Id && r.Level == level);
+        if (rank == null)
+        {
+            return false;
+        }
+        
+        await _groupRankService.Remove(rank);
         return true;
     }
 

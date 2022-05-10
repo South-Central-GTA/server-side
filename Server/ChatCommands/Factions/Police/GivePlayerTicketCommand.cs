@@ -55,7 +55,7 @@ internal class GivePlayerTicketCommand : ISingletonScript
         
         if (player.Position.Distance(target.Position) > 3.0f)
         {
-            player.SendNotification("Du bist zu weit entfernt.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist zu weit entfernt.", NotificationType.ERROR);
             return;
         }
 

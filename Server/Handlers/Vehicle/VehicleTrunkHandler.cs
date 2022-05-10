@@ -1,5 +1,6 @@
 ﻿using AltV.Net;
 using AltV.Net.Async;
+using AltV.Net.Enums;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
@@ -52,10 +53,9 @@ public class VehicleTrunkHandler : ISingletonScript
             return;
         }
 
-        if (vehicle.DbEntity.LockState == LockState.CLOSED)
+        if (vehicle.LockState == VehicleLockState.Locked)
         {
-            player.SendNotification("Der Kofferraum ist verschlossen.",
-                                    NotificationType.ERROR);
+            player.SendNotification("Der Kofferraum ist verschlossen.", NotificationType.ERROR);
             return;
         }
 

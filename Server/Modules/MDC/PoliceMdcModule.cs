@@ -38,6 +38,7 @@ public class PoliceMdcModule
     private readonly ItemWeaponService _itemWeaponService;
     private readonly MailAccountService _mailAccountService;
     private readonly RegistrationOfficeService _registrationOfficeService;
+    private readonly PoliceTicketService _policeTicketService;
     
     public PoliceMdcModule(
         GroupFactionService groupFactionService, 
@@ -52,7 +53,8 @@ public class PoliceMdcModule
         ItemPhoneService itemPhoneService, 
         ItemWeaponService itemWeaponService, 
         MailAccountService mailAccountService, 
-        RegistrationOfficeService registrationOfficeService)
+        RegistrationOfficeService registrationOfficeService, 
+        PoliceTicketService policeTicketService)
     {
         CallSign = new CallSign(groupFactionService);
         _groupFactionService = groupFactionService;
@@ -66,6 +68,7 @@ public class PoliceMdcModule
         _itemWeaponService = itemWeaponService;
         _mailAccountService = mailAccountService;
         _registrationOfficeService = registrationOfficeService;
+        _policeTicketService = policeTicketService;
         _criminalRecordService = criminalRecordService;
         _mdcNoteService = mdcNoteService;
     }
@@ -142,8 +145,10 @@ public class PoliceMdcModule
         var phoneNumbers = isRegistered 
             ? phoneModels.Select(p => p.PhoneNumber).ToList()
             : new List<string>();
+
+        var tickets = await _policeTicketService.Where(pt => pt.TargetCharacterId == character.Id);
         
-        player.EmitLocked("policemdc:opencharacterrecord", character, records, notes, vehicleDatas, houses, bankAccounts, phoneNumbers);
+        player.EmitLocked("policemdc:opencharacterrecord", character, records, tickets, notes, vehicleDatas, houses, bankAccounts, phoneNumbers);
     }
 
     public async Task OpenPhoneRecord(ServerPlayer player, string targetPhoneId)

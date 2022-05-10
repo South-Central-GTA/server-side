@@ -50,6 +50,10 @@ public class FriskHandler : ISingletonScript
         }
 
         var character = await _characterService.GetByKey(targetPlayer.CharacterModel.Id);
+        if (character == null)
+        {
+            return;
+        }
 
         if (targetPlayer.CharacterModel.DeathState == DeathState.ALIVE)
         {

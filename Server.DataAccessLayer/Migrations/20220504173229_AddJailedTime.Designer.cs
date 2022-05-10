@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Server.DataAccessLayer.Context;
@@ -12,9 +13,10 @@ using Server.DataAccessLayer.Context;
 namespace Server.DataAccessLayer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220504173229_AddJailedTime")]
+    partial class AddJailedTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -521,9 +523,6 @@ namespace Server.DataAccessLayer.Migrations
 
                     b.Property<int>("Health")
                         .HasColumnType("integer");
-
-                    b.Property<string>("JailedByCharacterName")
-                        .HasColumnType("text");
 
                     b.Property<DateTime?>("JailedUntil")
                         .HasColumnType("timestamp with time zone");
@@ -1690,36 +1689,6 @@ namespace Server.DataAccessLayer.Migrations
                     b.ToTable("Mails");
                 });
 
-            modelBuilder.Entity("Server.Database.Models.Mdc.BulletInEntryModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatorCharacterName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("FactionType")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("LastUsage")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BulletInEntries");
-                });
-
             modelBuilder.Entity("Server.Database.Models.Mdc.CriminalRecordModel", b =>
                 {
                     b.Property<int>("Id")
@@ -2304,9 +2273,11 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     b.HasBaseType("Server.Database.Models.Inventory.ItemModel");
 
-                    b.Property<int?>("GroupModelId")
+                    b.Property<int>("GroupModelId")
                         .HasColumnType("integer")
                         .HasColumnName("ItemGroupKeyModel_GroupModelId");
+
+                    b.HasIndex("GroupModelId");
 
                     b.HasDiscriminator().HasValue(8);
                 });
@@ -2964,6 +2935,17 @@ namespace Server.DataAccessLayer.Migrations
                     b.Navigation("GroupModel");
 
                     b.Navigation("PlayerVehicleModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Inventory.ItemGroupKeyModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Group.GroupModel", "GroupModel")
+                        .WithMany()
+                        .HasForeignKey("GroupModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupModel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Inventory.ItemWeaponAttachmentModel", b =>

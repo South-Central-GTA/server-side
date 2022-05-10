@@ -71,7 +71,7 @@ public class VehicleActionHandler : ISingletonScript
         };
             
         if (player.CharacterModel.Id == dbVehicle.CharacterModelId || isInGroup) {
-            actions.Add(new("Fahrzeug verkaufen", "vehiclemenu:sell"));
+            actions.Add(new("Fahrzeug verkaufen", "vehiclemenu:sell", vehicleDbId));
         }
             
         _contextModule.OpenMenu(player, catalogVehicle.DisplayName, actions);

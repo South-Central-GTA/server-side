@@ -86,6 +86,11 @@ public class Peds : IServerJob
                               0,
                               0);
 
+        _pedSyncModule.Create("s_m_m_prisguard_01",
+                              new Position(349.85934f, -1600.5099f, 28.279907f),
+                              -36.85f,
+                              0);
+
         await Task.CompletedTask;
     }
 }

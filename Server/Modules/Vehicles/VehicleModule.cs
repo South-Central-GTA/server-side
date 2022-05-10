@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using AltV.Net;
@@ -172,7 +173,7 @@ public class VehicleModule
 
     public async Task<ServerVehicle?> Create(PlayerVehicleModel vehicleModel)
     {
-        var vehicle = Create(vehicleModel.Model,
+        var vehicle = await Create(vehicleModel.Model,
                              new Position(vehicleModel.PositionX, vehicleModel.PositionY, vehicleModel.PositionZ),
                              new Rotation(vehicleModel.Roll, vehicleModel.Pitch, vehicleModel.Yaw),
                              vehicleModel.PrimaryColor,
@@ -196,15 +197,23 @@ public class VehicleModule
 
         vehicle.DbEntity = vehicleModel;
 
+        await _vehicleService.Update(vehicleModel);
+
         await SetSyncedDataAsync(vehicle);
 
         return vehicle;
     }
 
-    public ServerVehicle? Create(string vehicleModel, Position position, Rotation rotation, int primaryColor,
-                                 int secondaryColor, byte livery = 0, uint bodyHealth = 1000, int engineHealth = 1000, float fuel = 0,
-                                 float drivenKilometre = 0)
+    public async Task<ServerVehicle?> Create(string vehicleModel, Position position, Rotation rotation, int primaryColor,
+                                             int secondaryColor, byte livery = 0, uint bodyHealth = 1000, int engineHealth = 1000, float fuel = 0,
+                                             float drivenKilometre = 0)
     {
+        var catalogVehicle = await _vehicleCatalogService.Find(vc => vc.DisplayName.ToLower() == vehicleModel.ToLower());
+        if (catalogVehicle == null)
+        {
+            return null;
+        }
+
         ServerVehicle? vehicle = new(Alt.Hash(vehicleModel), position, rotation)
         {
             PrimaryColor = byte.Parse(primaryColor.ToString()),

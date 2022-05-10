@@ -203,10 +203,15 @@ public class PaydayScheduledJob
 
         if (!await _registrationOfficeService.IsRegistered(player.CharacterModel.Id))
         {
-            await _definedJobService.Remove(j => j.CharacterModelId == player.CharacterModel.Id);
-            player.CharacterModel.JobModel = null;
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet, weshalb er seinen Job verloren hat und kein Gehalt bekam.", NotificationType.ERROR);
-            return;
+            var job = await _definedJobService.Find(j => j.CharacterModelId == player.CharacterModel.Id);
+            if (job != null)
+            {
+                await _definedJobService.Remove(job);
+            
+                player.CharacterModel.JobModel = null;
+                player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet, weshalb er seinen Job verloren hat und kein Gehalt bekam.", NotificationType.ERROR);
+                return;
+            }
         }
 
         var definedJobData = _gameOptions.DefinedJobs.Find(d => d.Id == player.CharacterModel.JobModel.JobId);
@@ -239,7 +244,7 @@ public class PaydayScheduledJob
                 continue;
             }
             
-            var bankAccount = await _bankAccountService.GetByKey(house.RentBankAccountId);
+            var bankAccount = await _bankAccountService.GetByKey(house.RentBankAccountId.Value);
             if (bankAccount == null)
             {
                 continue;
@@ -248,7 +253,7 @@ public class PaydayScheduledJob
             if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
             {
                 player.SendNotification($"Dein Charakter hat keine Transferrechte mehr für das Konto {bankAccount.BankDetails} der Mietvertrag mit der Immobilie ({house.Id}) wurde aufgelöst.", NotificationType.WARNING);
-                await _houseModule.ResetOwner(house);
+                // await _houseModule.ResetOwner(house);
                 continue;
             }
 

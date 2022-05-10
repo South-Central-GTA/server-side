@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AltV.Net.Async;
+using AltV.Net.Data;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
@@ -17,18 +18,21 @@ namespace Server.Handlers.Inventory;
 
 public class ItemActionHandler : ISingletonScript
 {
+    private readonly Serializer _serializer;
     private readonly ItemService _itemService;
     private readonly ItemWeaponAttachmentService _itemWeaponAttachmentService;
-    private readonly Serializer _serializer;
+    private readonly GroupFactionService _groupFactionService;
 
     public ItemActionHandler(
         Serializer serializer,
         ItemService itemService,
-        ItemWeaponAttachmentService itemWeaponAttachmentService)
+        ItemWeaponAttachmentService itemWeaponAttachmentService, 
+        GroupFactionService groupFactionService)
     {
         _serializer = serializer;
         _itemService = itemService;
         _itemWeaponAttachmentService = itemWeaponAttachmentService;
+        _groupFactionService = groupFactionService;
 
         AltAsync.OnClient<ServerPlayer, int>("itemactions:get", OnGetItemActions);
     }
@@ -91,6 +95,16 @@ public class ItemActionHandler : ISingletonScript
         if (player.IsAduty)
         {
             actions.Add(new ActionData($"[Admin] {GetItemName(item)} löschen", "item:delete"));
+        }
+        
+        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        if (factionGroup is { FactionType: FactionType.POLICE_DEPARTMENT })
+        {
+            // Evidence Room Position
+            if (player.Position.Distance(new Position(367.13406f, -1606.9055f, 28.279907f)) < 3.0f)
+            {
+                actions.Add(new ActionData($"{GetItemName(item)} in Asservatenkammer geben", "item:toevidenceroom"));
+            }
         }
 
         // Reset all interactions if the item is not in the players inventory.

@@ -1,4 +1,5 @@
-﻿using AltV.Net;
+﻿using System.Text.Json;
+using AltV.Net;
 
 namespace Server.Database.Models.Inventory;
 
@@ -22,12 +23,18 @@ public class ItemPoliceTicketModel
         writer.Name("reason");
         writer.Value(Reason);
 
-        writer.Name("price");
+        writer.Name("costs");
         writer.Value(Costs);
+
+        writer.Name("payed");
+        writer.Value(Payed);
 
         writer.Name("creatorCharacterName");
         writer.Value(CreatorCharacterName);
 
+        writer.Name("createdAtJson");
+        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        
         writer.EndObject();
     }
 }

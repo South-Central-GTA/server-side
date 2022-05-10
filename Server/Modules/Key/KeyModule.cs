@@ -29,6 +29,7 @@ public class KeyModule
 
         HouseModel houseModel = null;
         PlayerVehicleModel vehicleModel = null;
+        DoorModel doorModel = null;
         var keys = new List<int>();
         
         switch (lockableEntity)
@@ -43,7 +44,13 @@ public class KeyModule
                 keys = houseModel.Keys;
                 break;
             case DoorModel d:
-                keys = d.HouseModel.Keys;
+                if (d.HouseModel.GroupModelId.HasValue)
+                {
+                    isGroupEntity = true;
+                }
+
+                doorModel = d;
+                keys = doorModel.HouseModel.Keys;
                 break;
             case PlayerVehicleModel v:
                 if (v.GroupModelOwnerId.HasValue)
@@ -56,11 +63,6 @@ public class KeyModule
                 break;
         }
 
-        if (keys.Count == 0)
-        {
-            return HasKeyErrorType.HAS_NO_KEY;
-        }
-        
         var canInteract = false;
         var isNotInGroup = false;
 
@@ -69,6 +71,11 @@ public class KeyModule
             foreach (var i in player.CharacterModel.InventoryModel.Items
                                     .Where(i => i.CatalogItemModelId == ItemCatalogIds.GROUP_KEY).Cast<ItemGroupKeyModel>())
             {
+                if (!i.GroupModelId.HasValue)
+                {
+                    continue;
+                }
+                
                 var group = await _groupService.GetByKey(i.GroupModelId);
                 if (group?.Members == null || group.Members.Count == 0)
                 {
@@ -79,7 +86,8 @@ public class KeyModule
                 {
                     // Group keys are a bit diffrent, there are not in the key list there are just checking the group owner id.
                     canInteract = houseModel != null && houseModel?.GroupModelId == i.GroupModelId
-                                  || vehicleModel != null && vehicleModel?.GroupModelOwnerId == i.GroupModelId;
+                                  || vehicleModel != null && vehicleModel?.GroupModelOwnerId == i.GroupModelId
+                                  || doorModel != null && doorModel.HouseModel.GroupModelId == i.GroupModelId;
 
                     if (canInteract)
                     {
@@ -96,6 +104,11 @@ public class KeyModule
             return isNotInGroup
                 ? HasKeyErrorType.HAS_WRONG_GROUP_KEY
                 : HasKeyErrorType.HAS_NO_KEY;
+        }
+        
+        if (keys.Count == 0)
+        {
+            return HasKeyErrorType.HAS_NO_KEY;
         }
 
         // Last check if we are maybe able to use a normal key.

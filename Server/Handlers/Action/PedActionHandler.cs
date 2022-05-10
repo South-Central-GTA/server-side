@@ -24,6 +24,7 @@ public class PedActionHandler : ISingletonScript
     private readonly uint[] _publicGaragePeds = { Alt.Hash("mp_m_waremech_01"), Alt.Hash("mp_f_bennymech_01"), Alt.Hash("cs_jimmyboston") };
     private readonly uint[] _drivingSchoolPeds = { Alt.Hash("u_m_y_baygor"), Alt.Hash("u_m_y_burgerdrug_01") };
     private readonly uint _cityHallPed = Alt.Hash("u_m_y_gunvend_01");
+    private readonly uint _prisonGuardPed = Alt.Hash("s_m_m_prisguard_01");
     public PedActionHandler(
         HouseService houseService, 
         
@@ -111,6 +112,13 @@ public class PedActionHandler : ISingletonScript
             _contextModule.OpenMenu(player, "LS Stadthalle", new List<ActionData>()
             {
                 new("Meldeamt", "cityhall:requestmenu"),
+            });
+        }
+        else if (_prisonGuardPed == entityModel)
+        {
+            _contextModule.OpenMenu(player, "Gefängnis", new List<ActionData>()
+            {
+                new("Inassen auflisten", "prison:requestinmates"),
             });
         }
     }

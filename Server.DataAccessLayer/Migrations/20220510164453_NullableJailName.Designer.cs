@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Server.DataAccessLayer.Context;
@@ -12,9 +13,10 @@ using Server.DataAccessLayer.Context;
 namespace Server.DataAccessLayer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220510164453_NullableJailName")]
+    partial class NullableJailName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2304,9 +2306,11 @@ namespace Server.DataAccessLayer.Migrations
                 {
                     b.HasBaseType("Server.Database.Models.Inventory.ItemModel");
 
-                    b.Property<int?>("GroupModelId")
+                    b.Property<int>("GroupModelId")
                         .HasColumnType("integer")
                         .HasColumnName("ItemGroupKeyModel_GroupModelId");
+
+                    b.HasIndex("GroupModelId");
 
                     b.HasDiscriminator().HasValue(8);
                 });
@@ -2964,6 +2968,17 @@ namespace Server.DataAccessLayer.Migrations
                     b.Navigation("GroupModel");
 
                     b.Navigation("PlayerVehicleModel");
+                });
+
+            modelBuilder.Entity("Server.Database.Models.Inventory.ItemGroupKeyModel", b =>
+                {
+                    b.HasOne("Server.Database.Models.Group.GroupModel", "GroupModel")
+                        .WithMany()
+                        .HasForeignKey("GroupModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupModel");
                 });
 
             modelBuilder.Entity("Server.Database.Models.Inventory.ItemWeaponAttachmentModel", b =>

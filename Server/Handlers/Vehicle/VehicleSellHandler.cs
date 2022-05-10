@@ -51,7 +51,7 @@ public class VehicleSellHandler : ISingletonScript
         AltAsync.OnClient<ServerPlayer, int, int, int, int>("vehicle:buyovervsellwithbank", OnBuyOverVSellWithBank);
     }
 
-    private async void OnSellVehicle(ServerPlayer player, int vehicleId)
+    private async void OnSellVehicle(ServerPlayer player, int vehicleDbId)
     {
         if (!player.Exists)
         {
@@ -64,7 +64,7 @@ public class VehicleSellHandler : ISingletonScript
             return;
         }
 
-        var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleId);
+        var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleDbId);
         if (vehicle is not { Exists: true })
         {
             player.SendNotification("Dieses Fahrzeug kannst du nicht verkaufen.", NotificationType.ERROR);
@@ -95,7 +95,7 @@ public class VehicleSellHandler : ISingletonScript
             player.SetData("VEHICLE_SELL_OWNER_ID", vehicle.DbEntity.CharacterModelId);
         }
 
-        player.SetData("VEHICLE_SELL_VEHICLE_ID", vehicleId);
+        player.SetData("VEHICLE_SELL_VEHICLE_ID", vehicleDbId);
 
         player.EmitLocked("vehiclesellmenu:show", hasBankAccount, isGroupVehicle);
     }

@@ -101,7 +101,7 @@ public class DrivingSchoolModule
             return;
         }
         
-        var vehicle = _vehicleModule.Create(randomModel,
+        var vehicle = await _vehicleModule.Create(randomModel,
                 new Position(drivingSchoolData.StartPointX,
                              drivingSchoolData.StartPointY,
                              drivingSchoolData.StartPointZ),

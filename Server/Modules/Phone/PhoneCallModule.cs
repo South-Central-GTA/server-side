@@ -96,7 +96,7 @@ public class PhoneCallModule : ISingletonScript
             return;
         }
 
-        var phoneToCall = await _itemPhoneService.Find(p => p.PhoneNumber == callerNumber);
+        var phoneToCall = await _itemPhoneService.Find(p => p.PhoneNumber == numberToCall);
         if (phoneToCall == null)
         {
             return;
@@ -104,7 +104,7 @@ public class PhoneCallModule : ISingletonScript
 
         await AltAsync.Do(() =>
         {
-            if (phoneToCall?.CurrentOwnerId == null)
+            if (phoneToCall.CurrentOwnerId == null)
             {
                 player.EmitGui("phone:connectionfailed");
                 return;

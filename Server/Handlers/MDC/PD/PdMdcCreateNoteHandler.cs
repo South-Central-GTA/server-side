@@ -1,12 +1,9 @@
-﻿using System;
-using AltV.Net.Async;
+﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Mdc;
-using Server.Modules.Group;
 using Server.Modules.MDC;
 
 namespace Server.Handlers.MDC.PD;
@@ -43,7 +40,6 @@ public class PdMdcCreateNoteHandler : ISingletonScript
             return;
         }
 
-        
         await _mdcNoteService.Add(new MdcNoteModel()
         {
            TargetModelId = targetDbId,

@@ -21,6 +21,14 @@ public class WorldLocationOptions
     public float RespawnPositionY { get; set; }
     public float RespawnPositionZ { get; set; }
 
+    public float JailPositionX { get; set; }
+    public float JailPositionY { get; set; }
+    public float JailPositionZ { get; set; }
+
+    public float FreeJailPositionX { get; set; }
+    public float FreeJailPositionY { get; set; }
+    public float FreeJailPositionZ { get; set; }
+
     public InteriorData[] IntPositions { get; set; }
     public List<PublicGarageData> PublicGarages { get; set; }
     public List<DrivingSchoolData> DrivingSchools { get; set; }

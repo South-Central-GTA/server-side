@@ -387,6 +387,7 @@ public class ItemCreationModule
                     IsStolen = isStolen,
                     BackgroundImageId = 0,
                     InitialOwnerId = inventoryModel.CharacterModelId ?? -1,
+                    CurrentOwnerId = inventoryModel.CharacterModelId ?? null,
                     PhoneNumber = await _phoneModule.GetRandomPhoneNumber(),
                     LastTimeOpenedNotifications = DateTime.Now,
                     Contacts = new List<PhoneContactModel>(),
