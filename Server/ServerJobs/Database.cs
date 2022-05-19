@@ -97,11 +97,11 @@ public class Database : IServerJob
         {
             var basePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Data");
             
-            await dbContext.Database.ExecuteSqlRawAsync(string.Format(await File.ReadAllTextAsync($"{basePath}/Animations.sql")));
-            await dbContext.Database.ExecuteSqlRawAsync(string.Format(await File.ReadAllTextAsync($"{basePath}/VehicleCatalog.sql")));
-            await dbContext.Database.ExecuteSqlRawAsync(string.Format(await File.ReadAllTextAsync($"{basePath}/ItemCatalog.sql")));
-            await dbContext.Database.ExecuteSqlRawAsync(string.Format(await File.ReadAllTextAsync($"{basePath}/Houses.sql")));
-            await dbContext.Database.ExecuteSqlRawAsync(string.Format(await File.ReadAllTextAsync($"{basePath}/Doors.sql")));
+            await dbContext.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync($"{basePath}/Animations.sql"));
+            await dbContext.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync($"{basePath}/VehicleCatalog.sql"));
+            await dbContext.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync($"{basePath}/ItemCatalog.sql"));
+            await dbContext.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync($"{basePath}/Houses.sql"));
+            await dbContext.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync($"{basePath}/Doors.sql"));
 
             await dbContext.SaveChangesAsync();
 
