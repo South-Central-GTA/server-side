@@ -50,25 +50,17 @@ public class AuthenticationModule : ISingletonScript
         _adminPrisonModule = adminPrisonModule;
     }
 
-    public async Task SignIn(ServerPlayer player, string rawPassword)
+    public async Task SignIn(ServerPlayer player)
     {
         if (!player.Exists)
         {
             return;
         }
 
-        var account = await _accountService.Find(a => a.SocialClubId == player.SocialClubId);
+        var account = await _accountService.Find(a => a.SocialClubId == player.SocialClubId && a.DiscordId == player.DiscordId);
         if (account == null)
         {
             player.EmitGui("signin:showerror", "Es wurde kein Account unter diesem GTA gefunden, bitte starte dein Spiel neu.");
-            return;
-        }
-
-        var verified = BCrypt.Net.BCrypt.Verify(rawPassword, account.PasswordHash);
-
-        if (!verified)
-        {
-            player.EmitGui("signin:showerror", "Das Passwort ist falsch.");
             return;
         }
 
@@ -84,51 +76,13 @@ public class AuthenticationModule : ISingletonScript
         await ContinueLoginProcess(player, account);
     }
 
-    public async Task ChangePassword(ServerPlayer player, string rawoldPassword, string rawNewPassword)
-    {
-        if (!player.Exists)
-        {
-            return;
-        }
-
-        var account = await _accountService.Find(a => a.SocialClubId == player.SocialClubId);
-        if (account == null)
-        {
-            player.Kick("Es wurde kein Account mehr gefunden, du wurdest zur Sicherheit gekickt.");
-            return;
-        }
-
-        var verified = BCrypt.Net.BCrypt.Verify(rawoldPassword, account.PasswordHash);
-
-        if (!verified)
-        {
-            player.EmitGui("passwordchangedialog:wrongoldpassword");
-            return;
-        }
-
-        if (account.SocialClubId != player.SocialClubId
-            || account.HardwareIdHash != player.HardwareIdHash
-            || account.HardwareIdExHash != player.HardwareIdExHash)
-        {
-            player.Kick("Die abgespeicherten Sicherheitsdaten wie Social Club ID und weitere Merkmale sind nicht mehr gleich, der Account gehört nicht zu deinem GTA.");
-            return;
-        }
-
-        player.AccountModel.PasswordHash = BCrypt.Net.BCrypt.HashPassword(rawNewPassword);
-        await _accountService.Update(player.AccountModel);
-
-        player.SendNotification("Dein Passwort wurde erfolgreich geändert.", NotificationType.SUCCESS);
-        player.EmitGui("passwordchangedialog:changesuccessfully");
-    }
-
-    public async Task SignUp(ServerPlayer player, string rawPassword)
+    public async Task SignUp(ServerPlayer player)
     {
         var account = await _accountService.Add(new AccountModel
         {
             MaxCharacters = _accOptions.MaxCharacters,
             SouthCentralPoints = _accOptions.StartSouthCentralPoints,
             SocialClubId = player.SocialClubId,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(rawPassword),
             CurrentName = player.Name,
             DiscordId = player.DiscordId,
             HardwareIdHash = player.HardwareIdHash,
@@ -143,27 +97,6 @@ public class AuthenticationModule : ISingletonScript
         });
 
         await ContinueLoginProcess(player, account);
-    }
-
-    public bool VerifyLoginTries(ServerPlayer player)
-    {
-        if (!player.Exists)
-        {
-            return false;
-        }
-
-        player.LoginTrys++;
-        if (player.LoginTrys > _accOptions.LoginTrysMax)
-        {
-            player.Kick("Der Login-Server hat mehrfache erfolglos Login Versuche von Dir registriert und hat dich gekickt.");
-
-            var loginCheckTimer = new Timer(_accOptions.LoginTrysTimerMinutes * 60000);
-            loginCheckTimer.Elapsed += (sender, e) => ResetLoginTries(sender, e, player);
-            return false;
-        }
-
-        _logger.LogInformation($"Player '{player.DiscordId}' has {player.LoginTrys}/{_accOptions.LoginTrysMax} login tries.");
-        return true;
     }
 
     public async Task ContinueLoginProcess(ServerPlayer player, AccountModel accountModel)
@@ -212,12 +145,6 @@ public class AuthenticationModule : ISingletonScript
         _logger.LogInformation($"Player '{player.AccountName}' successfully logged in.");
 
         await _characterSelectionModule.OpenAsync(player);
-    }
-
-    private void ResetLoginTries(object sender, ElapsedEventArgs e, ServerPlayer player)
-    {
-        player.LoginTrys = 0;
-        _logger.LogInformation($"Login tries got resetted for '{player.DiscordId}'.");
     }
 
     private async Task<bool> CheckMaintenanceStatus(ServerPlayer player)

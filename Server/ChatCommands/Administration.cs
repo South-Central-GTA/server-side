@@ -15,6 +15,7 @@ using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
+using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models;
@@ -625,36 +626,6 @@ public class Administration : ISingletonScript
         player.EmitLocked("player:getcamerainfo", name);
     }
 
-    [Command("generatenewpassword", "Generiert dem Account ein neues Passwort und sendet es ihm per Discord.", Permission.ADMIN, new[] { "Account-Name" })]
-    public async void OnSetNewPassword(ServerPlayer player, string accountName)
-    {
-        var accountTarget = await _accountService.GetByName(accountName);
-        if (accountTarget == null)
-        {
-            player.SendNotification("Der angegebene Name wurde nicht in unserer Datenbank gefunden.", NotificationType.ERROR);
-            return;
-        }
-
-        var newPassword = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 12);
-        accountTarget.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-        await _accountService.Update(accountTarget);
-
-        var playerTarget = Alt.GetAllPlayers().FindPlayerByDiscordId(accountTarget.DiscordId);
-        if (playerTarget is { Exists: true })
-        {
-            playerTarget.SendNotification($"Dein Passwort wurde von {player.AccountName} neu generiert. Unser Discord Bot sollte dir dein neu generiertes Passwort geschickt haben.", NotificationType.INFO);
-        }
-
-        var description = string.Concat("Dir wurde von ",
-                                        player.AccountName,
-                                        " ein neues Passwort generiert. Dieses wurde automatisch generiert, weshalb nur du dieses Passwort kennst." +
-                                        " Ändere es trotzdessen so schnell wie möglich um. Solltest du kein Passwort wechsel in Auftrag gegeben haben melde dich bitte bei einem höheren Team Mitglied.");
-
-        _discordModule.SendDiscordMessage(accountTarget, newPassword, description, Color.Default);
-
-        player.SendNotification("Du hast das Passwort von dem User neugenerieren lassen.", NotificationType.SUCCESS);
-    }
-
     [Command("savepos", "Speichere die aktuelle Position deines Charakters ab.", Permission.STAFF, new[] { "Name" })]
     public async void OnSavePosition(ServerPlayer player, string name)
     {
@@ -864,8 +835,7 @@ public class Administration : ISingletonScript
             return;
         }
 
-        inventory.InventoryType = InventoryType.FRISK;
-        player.DefaultInventories = new List<InventoryModel> { inventory };
+        player.OpenInventories = new List<OpenInventoryData> { new (InventoryType.FRISK, inventory.Id)};
 
         await _inventoryModule.OpenInventoryUiAsync(player);
 
@@ -899,7 +869,7 @@ public class Administration : ISingletonScript
             return;
         }
 
-        player.DefaultInventories = new List<InventoryModel> { inventory };
+        player.OpenInventories = new List<OpenInventoryData> { new (inventory.InventoryType, inventory.Id) };
 
         await _inventoryModule.OpenInventoryUiAsync(player);
 

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AltV.Net;
 using AltV.Net.Async;
@@ -14,12 +16,14 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Refit;
 using Server.Core.Abstractions;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities.Factories;
 using Server.DataAccessLayer.Context;
 using Server.Extensions;
+using Server.Modules.Discord;
 using Server.ScheduledJob;
 
 namespace Server;
@@ -42,6 +46,16 @@ public class Server
 
         // Initialize dependency injection
         var services = new ServiceCollection();
+        
+        services
+            .AddRefitClient<IDiscordApi>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://discordapp.com/api"));
+
+        services.Configure<JsonSerializerOptions>(options =>
+        {
+            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.Converters.Add(new JsonStringEnumConverter());
+        });
         
         // Register configuration options
         services.AddOptions();

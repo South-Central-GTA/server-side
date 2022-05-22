@@ -23,7 +23,6 @@ public class AccountModel
     public string? AvatarUrl { get; set; }
 
     public ulong DiscordId { get; set; }
-    public string PasswordHash { get; set; }
     public string CurrentName { get; set; }
     public List<string> NameHistory { get; init; } = new();
 

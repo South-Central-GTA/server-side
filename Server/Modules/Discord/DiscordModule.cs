@@ -16,6 +16,7 @@ using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models;
+using Server.Helper;
 using Server.Modules.Chat;
 
 namespace Server.Modules.Discord;
@@ -26,6 +27,8 @@ public class DiscordModule : ISingletonScript
     private readonly CommandModule _commandModule;
     private readonly DiscordOptions _discordOptions;
     private readonly ILogger<DiscordModule> _logger;
+    private readonly IDiscordApi _discordApi;
+    private readonly Serializer _serializer;
 
     private readonly ulong[] _whitelistRoleIds;
 
@@ -39,7 +42,9 @@ public class DiscordModule : ISingletonScript
         ILogger<DiscordModule> logger,
         IOptions<DiscordOptions> discordOptions,
         CommandModule commandModule,
-        AccountService accountService)
+        AccountService accountService, 
+        IDiscordApi discordApi, 
+        Serializer serializer)
     {
         _logger = logger;
         _discordOptions = discordOptions.Value;
@@ -47,6 +52,8 @@ public class DiscordModule : ISingletonScript
         _commandModule = commandModule;
 
         _accountService = accountService;
+        _discordApi = discordApi;
+        _serializer = serializer;
 
         _whitelistRoleIds = new[] { _discordOptions.StaffUserRoleId, _discordOptions.TesterUserRoleId };
 
@@ -388,5 +395,16 @@ public class DiscordModule : ISingletonScript
                     .WithFooter("Original: " + before.Value.Content + "\n\nBearbeitet: " + after.Content);
 
         await logChannel.SendMessageAsync(null, false, embedBuilder.Build());
+    }
+
+    public async Task<DiscordUserDto> AuthenticatePlayer(ServerPlayer player, string token)
+    {
+        var userResponseJson = await _discordApi.GetUser(token);
+        if (string.IsNullOrEmpty(userResponseJson.Content))
+        {
+            throw new NullReferenceException();
+        }
+        
+        return _serializer.Deserialize<DiscordUserDto>(userResponseJson.Content);
     }
 }
