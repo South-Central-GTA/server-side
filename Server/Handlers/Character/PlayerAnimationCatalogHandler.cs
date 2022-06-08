@@ -12,9 +12,9 @@ public class PlayerAnimationCatalogHandler : ISingletonScript
 {
     private readonly AnimationService _animationService;
     private readonly CharacterService _characterService;
-    
+
     public PlayerAnimationCatalogHandler(
-        AnimationService animationService, 
+        AnimationService animationService,
         CharacterService characterService)
     {
         _animationService = animationService;
@@ -47,7 +47,9 @@ public class PlayerAnimationCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("animationcatalog:usersetup", await _animationService.GetAll(), player.CharacterModel.AnimationIds);
+        player.EmitGui("animationcatalog:usersetup",
+                       await _animationService.GetAll(),
+                       player.CharacterModel.AnimationIds);
     }
 
     private async void OnAddPlayerAnimation(ServerPlayer player, int animationId)
@@ -59,7 +61,9 @@ public class PlayerAnimationCatalogHandler : ISingletonScript
 
         if (player.CharacterModel.AnimationIds.Count >= player.AccountModel.MaxAnimations)
         {
-            player.SendNotification($"Du kannst nicht mehr als {player.AccountModel.MaxAnimations} Animationen im Schnellmenu haben.", NotificationType.ERROR);
+            player.SendNotification(
+                $"Du kannst nicht mehr als {player.AccountModel.MaxAnimations} Animationen im Schnellmenu haben.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -69,7 +73,7 @@ public class PlayerAnimationCatalogHandler : ISingletonScript
         }
 
         player.CharacterModel.AnimationIds.Add(animationId);
-            
+
         await _characterService.Update(player.CharacterModel);
         player.EmitGui("animationcatalog:addplayeranim", animationId);
     }
@@ -87,7 +91,7 @@ public class PlayerAnimationCatalogHandler : ISingletonScript
         }
 
         player.CharacterModel.AnimationIds.Remove(animationId);
-    
+
         await _characterService.Update(player.CharacterModel);
         player.EmitGui("animationcatalog:removelayeranim", animationId);
     }

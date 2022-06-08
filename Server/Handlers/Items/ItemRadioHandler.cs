@@ -64,7 +64,8 @@ public class ItemRadioHandler : ISingletonScript
                 {
                     Type = DialogType.ONE_BUTTON_DIALOG,
                     Title = "Frequenz setzen",
-                    Description = "Stelle eine Frequenz ein welche du für das Funkgerät nutzen möchtest. Dies ist ein zivilistes Funkgerät die Frequenz ist zwischen 0-500 einstellbar.",
+                    Description =
+                        "Stelle eine Frequenz ein welche du für das Funkgerät nutzen möchtest. Dies ist ein zivilistes Funkgerät die Frequenz ist zwischen 0-500 einstellbar.",
                     HasInputField = true,
                     FreezeGameControls = true,
                     Data = data,
@@ -80,7 +81,8 @@ public class ItemRadioHandler : ISingletonScript
                 {
                     Type = DialogType.ONE_BUTTON_DIALOG,
                     Title = "Frequenz setzen",
-                    Description = "Stelle eine Frequenz ein welche du für das Funkgerät nutzen möchtest. Dies ist ein staatliches Funkgerät die Frequenz ist zwischen 0-5 einstellbar.",
+                    Description =
+                        "Stelle eine Frequenz ein welche du für das Funkgerät nutzen möchtest. Dies ist ein staatliches Funkgerät die Frequenz ist zwischen 0-5 einstellbar.",
                     HasInputField = true,
                     FreezeGameControls = true,
                     Data = data,

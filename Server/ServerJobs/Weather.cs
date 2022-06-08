@@ -1,12 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Server.Core.Abstractions;
-using Server.Modules;
 using Server.Modules.World;
 
 namespace Server.ServerJobs;
 
-public class Weather : IServerJob
+public class Weather : IJob
 {
     private readonly ILogger<Weather> _logger;
     private readonly WeatherModule _weatherModule;

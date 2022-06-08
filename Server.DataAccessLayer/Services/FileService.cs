@@ -24,6 +24,5 @@ public class FileService
         return await dbContext.Files
                               .Include(file => file.DirectoryModel)
                               .FirstOrDefaultAsync(file => file.Id == id);
-
     }
 }

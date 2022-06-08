@@ -17,15 +17,14 @@ public class DeliveryVisibilityHandler : ISingletonScript
 {
     private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     private readonly GroupModule _groupModule;
     private readonly PhoneModule _phoneModule;
-    
+
     public DeliveryVisibilityHandler(
         GroupService groupService,
         RegistrationOfficeService registrationOfficeService,
-        
-        GroupModule groupModule, 
+        GroupModule groupModule,
         PhoneModule phoneModule)
     {
         _groupService = groupService;
@@ -45,12 +44,13 @@ public class DeliveryVisibilityHandler : ISingletonScript
         {
             return;
         }
-        
+
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
 
         var companyGroup = (CompanyGroupModel)group;

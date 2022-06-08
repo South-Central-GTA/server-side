@@ -22,7 +22,7 @@ public class EmergencyCallDialogModule
 
     public EmergencyCallDialogModule(
         ILogger<EmergencyCallDialogModule> logger,
-        EmergencyCallService emergencyCallService, 
+        EmergencyCallService emergencyCallService,
         RadioModule radioModule)
     {
         _logger = logger;
@@ -33,7 +33,7 @@ public class EmergencyCallDialogModule
     public void Start(ServerPlayer player, string callerNumber)
     {
         player.PhoneCallData = new PhoneCallData(0, "911", true);
-        
+
         player.EmitGui("phone:connectcall");
         player.EmitLocked("emergencycall:sendmessage", "Emergency Hotline 911, benötigen Sie das LSPD oder LSFD?");
         player.SetData("EMERGENCY_CALL_STATE", 1);
@@ -49,11 +49,11 @@ public class EmergencyCallDialogModule
                 case 1:
                 {
                     var factionType = FactionType.CITIZEN;
-                    
+
                     if (message.ToUpper().Contains("LSPD"))
                     {
                         factionType = FactionType.POLICE_DEPARTMENT;
-                    } 
+                    }
                     else if (message.ToUpper().Contains("LSFD"))
                     {
                         factionType = FactionType.FIRE_DEPARTMENT;
@@ -61,11 +61,12 @@ public class EmergencyCallDialogModule
 
                     if (factionType == FactionType.CITIZEN)
                     {
-                        player.EmitLocked("emergencycall:sendmessage", "Entschuldigen Sie, benötigen Sie das LSPD oder LSFD?");
+                        player.EmitLocked("emergencycall:sendmessage",
+                                          "Entschuldigen Sie, benötigen Sie das LSPD oder LSFD?");
                         player.SetData("EMERGENCY_CALL_STATE", 1);
-                        return;   
+                        return;
                     }
-                    
+
                     player.SetData("EMERGENCY_CALL_STATE", 2);
                     player.SetData("EMERGENCY_FACTION", message);
                     player.EmitLocked("emergencycall:sendmessage", "Was genau ist passiert?");
@@ -83,24 +84,28 @@ public class EmergencyCallDialogModule
                     player.GetData("EMERGENCY_CALL_NUMBER", out string phoneNumber);
                     player.GetData("EMERGENCY_FACTION", out string faction);
                     player.GetData("EMERGENCY_SITUATION", out string situation);
-                    
+
                     var factionType = FactionType.CITIZEN;
-                    
+
                     if (faction.ToUpper().Contains("LSPD"))
                     {
                         factionType = FactionType.POLICE_DEPARTMENT;
-                    } 
+                    }
                     else if (faction.ToUpper().Contains("LSFD"))
                     {
                         factionType = FactionType.FIRE_DEPARTMENT;
                     }
-                    
-                    await _emergencyCallService.Add(new EmergencyCallModel(phoneNumber, factionType, situation, message));
 
-                    await _radioModule.SendMessageOnFaction("Dispatch", 
-                        ChatType.RADIO_SPEAK, factionType, $"Neuer 911 Notruf, Situation {situation}, Location: {message}");
+                    await _emergencyCallService.Add(
+                        new EmergencyCallModel(phoneNumber, factionType, situation, message));
 
-                    player.EmitLocked("emergencycall:sendmessage", "Ihr Notruf wurde aufgenommen und wird schnellstmöglich bearbeitet.");
+                    await _radioModule.SendMessageOnFaction("Dispatch",
+                                                            ChatType.RADIO_SPEAK,
+                                                            factionType,
+                                                            $"Neuer 911 Notruf, Situation {situation}, Location: {message}");
+
+                    player.EmitLocked("emergencycall:sendmessage",
+                                      "Ihr Notruf wurde aufgenommen und wird schnellstmöglich bearbeitet.");
                     player.EmitLocked("phone:callgothungup");
                     Stop(player);
                 }

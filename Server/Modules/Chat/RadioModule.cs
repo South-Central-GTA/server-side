@@ -29,7 +29,8 @@ public class RadioModule
         _chatModule = chatModule;
     }
 
-    public async Task SendMessageOnFrequency(ServerPlayer senderPlayer, ChatType chatType, ItemRadioModel radioModel, string message)
+    public async Task SendMessageOnFrequency(ServerPlayer senderPlayer, ChatType chatType, ItemRadioModel radioModel,
+                                             string message)
     {
         switch (radioModel.FactionType)
         {
@@ -38,7 +39,8 @@ public class RadioModule
                 break;
             case FactionType.POLICE_DEPARTMENT:
             case FactionType.FIRE_DEPARTMENT:
-                var displayName = senderPlayer.CharacterModel.FirstName[0] + ". " + senderPlayer.CharacterModel.LastName;
+                var displayName = senderPlayer.CharacterModel.FirstName[0] + ". " +
+                                  senderPlayer.CharacterModel.LastName;
                 await SendMessageOnFaction(displayName, chatType, radioModel.FactionType, message, radioModel.Id);
                 break;
             default:
@@ -49,7 +51,7 @@ public class RadioModule
     public async Task SendMessageOnFaction(string senderName, ChatType chatType, FactionType factionType,
                                            string message, int radioModelId = -1)
     {
-        var factionRadios = await _itemRadioService.Where(r => r.FactionType == factionType 
+        var factionRadios = await _itemRadioService.Where(r => r.FactionType == factionType
                                                                && r.Id != radioModelId);
         foreach (var otherRadio in factionRadios)
         {
@@ -63,16 +65,20 @@ public class RadioModule
                 continue;
             }
 
-            var targetPlayer = Alt.GetAllPlayers().FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
+            var targetPlayer = Alt.GetAllPlayers()
+                                  .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
             if (targetPlayer != null)
             {
                 _chatModule.SendMessage(targetPlayer, senderName, chatType, message, "#eceba9");
             }
         }
     }
-    public async Task SendMessageOnDepartment(ServerPlayer senderPlayer, ChatType chatType, ItemRadioModel radioModel, string message)
+
+    public async Task SendMessageOnDepartment(ServerPlayer senderPlayer, ChatType chatType, ItemRadioModel radioModel,
+                                              string message)
     {
-        var factionRadios = await _itemRadioService.Where(r => r.FactionType != FactionType.CITIZEN && r.Id != radioModel.Id);
+        var factionRadios =
+            await _itemRadioService.Where(r => r.FactionType != FactionType.CITIZEN && r.Id != radioModel.Id);
         foreach (var otherRadio in factionRadios)
         {
             if (!otherRadio.InventoryModelId.HasValue)
@@ -85,7 +91,8 @@ public class RadioModule
                 continue;
             }
 
-            var targetPlayer = Alt.GetAllPlayers().FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
+            var targetPlayer = Alt.GetAllPlayers()
+                                  .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
             var displayName = senderPlayer.CharacterModel.FirstName[0] + ". " + senderPlayer.CharacterModel.LastName;
             if (targetPlayer != null)
             {
@@ -93,7 +100,7 @@ public class RadioModule
             }
         }
     }
-    
+
     private async Task SendMessageOnCitizen(ServerPlayer senderPlayer, ChatType chatType, ItemRadioModel radioModel,
                                             string message)
     {
@@ -110,7 +117,8 @@ public class RadioModule
                 continue;
             }
 
-            var targetPlayer = Alt.GetAllPlayers().FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
+            var targetPlayer = Alt.GetAllPlayers()
+                                  .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
             var displayName = senderPlayer.CharacterModel.FirstName[0] + ". " + senderPlayer.CharacterModel.LastName;
             if (targetPlayer != null)
             {

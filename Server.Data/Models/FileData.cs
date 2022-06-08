@@ -19,7 +19,7 @@ public class FileData
     public void OnWrite(IMValueWriter writer)
     {
         writer.BeginObject();
-        
+
         writer.Name("id");
         writer.Value(Id);
 
@@ -43,7 +43,7 @@ public class FileData
 
         writer.Name("lastEditAtJson");
         writer.Value(JsonSerializer.Serialize(LastEdit));
-        
+
         writer.EndObject();
     }
 }

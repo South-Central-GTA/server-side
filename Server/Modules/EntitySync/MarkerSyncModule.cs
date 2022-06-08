@@ -16,7 +16,8 @@ public class MarkerSyncModule : ISingletonScript
     private readonly Dictionary<IColShape, ServerMarker> _markers = new();
 
     public ServerMarker Create(MarkerType type, Position position, Vector3 direction, Vector3 rotation, Vector3 scale,
-                               Rgba color, int dimension, bool bobUpDown = false, uint streamRange = 200, string text = "", string ownerName = "", string createdAtJson = "")
+                               Rgba color, int dimension, bool bobUpDown = false, uint streamRange = 200,
+                               string text = "", string ownerName = "", string createdAtJson = "")
     {
         var shape = Alt.CreateColShapeSphere(position, 1.0f);
         var obj = new ServerMarker(position, dimension, streamRange)
@@ -60,10 +61,10 @@ public class MarkerSyncModule : ISingletonScript
         {
             AltEntitySync.RemoveEntity(serverMarker);
         }
-        
+
         _markers.Clear();
     }
-    
+
     public ServerMarker? Get(ulong objectId)
     {
         if (!AltEntitySync.TryGetEntity(objectId, (ulong)EntityType.MARKER, out var entity))
@@ -73,7 +74,7 @@ public class MarkerSyncModule : ISingletonScript
 
         return entity is not ServerMarker serverMarker ? default : serverMarker;
     }
-    
+
     public List<ServerMarker> GetAll()
     {
         return _markers.Select(entity => entity.Value).ToList();
@@ -84,8 +85,8 @@ public class MarkerSyncModule : ISingletonScript
         if (!_markers.ContainsKey(colShape))
         {
             return null;
-        }        
-        
+        }
+
         if (!AltEntitySync.TryGetEntity(_markers[colShape].Id, (ulong)EntityType.MARKER, out var entity))
         {
             return null;

@@ -36,9 +36,13 @@ public class VehicleEnterHandler : ISingletonScript
         _vehicleService = vehicleService;
 
         AltAsync.OnPlayerEnteringVehicle += (vehicle, player, seat) =>
-            OnPlayerEnteringVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(), (ServerPlayer)player, seat);
+            OnPlayerEnteringVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(),
+                                    (ServerPlayer)player,
+                                    seat);
         AltAsync.OnPlayerEnterVehicle += (vehicle, player, seat) =>
-            OnPlayerEnterVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(), (ServerPlayer)player, seat);
+            OnPlayerEnterVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(),
+                                 (ServerPlayer)player,
+                                 seat);
     }
 
     private async Task OnPlayerEnteringVehicle(ServerVehicle vehicle, ServerPlayer player, byte seat)
@@ -57,11 +61,15 @@ public class VehicleEnterHandler : ISingletonScript
             {
                 if (player.IsAduty)
                 {
-                    player.SendNotification("Dieses Fahrzeug ist nicht in unserem Katalog definiert, bitte füge es hinzu.", NotificationType.WARNING);
+                    player.SendNotification(
+                        "Dieses Fahrzeug ist nicht in unserem Katalog definiert, bitte füge es hinzu.",
+                        NotificationType.WARNING);
                     return;
                 }
 
-                player.SendNotification("Dieses Fahrzeug ist nicht in unserem Katalog definiert, wende dich bitte an einen Admin.", NotificationType.ERROR);
+                player.SendNotification(
+                    "Dieses Fahrzeug ist nicht in unserem Katalog definiert, wende dich bitte an einen Admin.",
+                    NotificationType.ERROR);
                 player.EmitLocked("player:cleartaskimmediately");
                 return;
             }
@@ -110,11 +118,15 @@ public class VehicleEnterHandler : ISingletonScript
             {
                 if (vehicle.DbEntity.LastDrivers == null)
                 {
-                    vehicle.DbEntity.LastDrivers = new List<string> { _serializer.Serialize(new LastDriverData(player.CharacterModel.Id)) };
+                    vehicle.DbEntity.LastDrivers = new List<string>
+                    {
+                        _serializer.Serialize(new LastDriverData(player.CharacterModel.Id))
+                    };
                 }
                 else
                 {
-                    vehicle.DbEntity.LastDrivers.Add(_serializer.Serialize(new LastDriverData(player.CharacterModel.Id)));
+                    vehicle.DbEntity.LastDrivers.Add(
+                        _serializer.Serialize(new LastDriverData(player.CharacterModel.Id)));
 
                     if (vehicle.DbEntity.LastDrivers.Count > 5)
                     {

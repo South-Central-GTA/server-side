@@ -1,28 +1,22 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using AltV.Net;
-using AltV.Net.Data;
 using AltV.Net.Elements.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Npgsql;
 using Server.Core.Abstractions;
 using Server.Core.Callbacks;
 using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.DataAccessLayer.Context;
-using Server.Database.Enums;
-using Server.Database.Models;
 using Server.Database.Models.Character;
-using Server.Database.Models.Group;
 
 namespace Server.ServerJobs;
 
-public class Database : IServerJob
+public class Database : IJob
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
     private readonly DevelopmentOptions _devOptions;
@@ -96,7 +90,7 @@ public class Database : IServerJob
         if (_devOptions.SeedingDefaultDataIntoDatabase)
         {
             var basePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Data");
-            
+
             await dbContext.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync($"{basePath}/Animations.sql"));
             await dbContext.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync($"{basePath}/VehicleCatalog.sql"));
             await dbContext.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync($"{basePath}/ItemCatalog.sql"));

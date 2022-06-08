@@ -12,13 +12,13 @@ namespace Server.Core.Entities;
 public class ServerVehicle
     : Vehicle
 {
-    public ServerVehicle(IServer server, IntPtr entityPointer, ushort id)
-        : base(server, entityPointer, id)
+    public ServerVehicle(ICore core, IntPtr entityPointer, ushort id)
+        : base(core, entityPointer, id)
     {
     }
 
     public ServerVehicle(uint model, Position position, Rotation rotation)
-        : base(Alt.Server, model, position, rotation)
+        : base(Alt.Core, model, position, rotation)
     {
     }
 

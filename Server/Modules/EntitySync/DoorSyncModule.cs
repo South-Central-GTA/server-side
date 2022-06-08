@@ -13,19 +13,17 @@ public class DoorSyncModule : ISingletonScript
 {
     private readonly Dictionary<ulong, ServerDoor> _doors = new();
 
-    public ServerDoor Create(uint hash, Position position, float heading, bool locked, int houseId, uint streamRange = 25)
+    public ServerDoor Create(uint hash, Position position, float heading, bool locked, int houseId,
+                             uint streamRange = 25)
     {
         var obj = new ServerDoor(position, 0, streamRange)
         {
-            Hash = hash,
-            Locked = locked,
-            Heading = heading,
-            HouseId = houseId
+            Hash = hash, Locked = locked, Heading = heading, HouseId = houseId
         };
-        
+
         AltEntitySync.AddEntity(obj);
         _doors.TryAdd(obj.Id, obj);
-        
+
         return obj;
     }
 
@@ -47,12 +45,12 @@ public class DoorSyncModule : ISingletonScript
     {
         return _doors[objectId];
     }
-    
+
     public List<ServerDoor> GetAllDoors()
     {
         return _doors.Select(entity => entity.Value).ToList();
     }
-    
+
     public ServerDoor? GetClosestDoor(Position position)
     {
         if (GetAllDoors().Count == 0)
@@ -78,7 +76,8 @@ public class DoorSyncModule : ISingletonScript
 
     public void UpdateHouseDoor(DoorModel doorModel)
     {
-        var serverDoor = GetAllDoors().FirstOrDefault(d => d.Position == doorModel.Position && d.Hash == doorModel.Hash);
+        var serverDoor =
+            GetAllDoors().FirstOrDefault(d => d.Position == doorModel.Position && d.Hash == doorModel.Hash);
         if (serverDoor == null)
         {
             return;

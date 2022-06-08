@@ -2,8 +2,8 @@
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
+using Server.Data.Models;
 using Server.DataAccessLayer.Services;
-using Server.Database.Models.Inventory;
 using Server.Modules.Inventory;
 
 namespace Server.Handlers.Group;
@@ -27,8 +27,12 @@ public class GroupMemberInventoryHandler : ISingletonScript
     {
         var inventory = await _inventoryService.Find(i =>
                                                          i.GroupCharacterId == characterId && i.GroupId == groupId);
+        if (inventory == null)
+        {
+            return;
+        }
 
-        player.DefaultInventories = new List<InventoryModel> { inventory };
+        player.OpenInventories = new List<OpenInventoryData> { new(inventory.InventoryType, inventory.Id) };
 
         await _inventoryModule.OpenInventoryUiAsync(player);
     }

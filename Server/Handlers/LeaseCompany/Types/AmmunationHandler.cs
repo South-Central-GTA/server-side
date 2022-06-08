@@ -98,7 +98,8 @@ public class AmmunationHandler : ISingletonScript
         {
             Type = DialogType.TWO_BUTTON_DIALOG,
             Title = "Waffenladen",
-            Description = $"Du würdest für {amount}x {catalogItem.Name} <b>${costs}</b>, bezahlen.<br><p class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</p>",
+            Description =
+                $"Du würdest für {amount}x {catalogItem.Name} <b>${costs}</b>, bezahlen.<br><p class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</p>",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             Data = data,
@@ -109,7 +110,8 @@ public class AmmunationHandler : ISingletonScript
         });
     }
 
-    private async void OnBuyWithCash(ServerPlayer player, int bankAccountId, ItemCatalogIds itemCatalogIds, int price, int amount)
+    private async void OnBuyWithCash(ServerPlayer player, int bankAccountId, ItemCatalogIds itemCatalogIds, int price,
+                                     int amount)
     {
         var success = await _moneyModule.WithdrawAsync(player, price);
         if (success)
@@ -122,7 +124,8 @@ public class AmmunationHandler : ISingletonScript
         }
     }
 
-    private async void OnBuyWithBank(ServerPlayer player, int bankAccountId, ItemCatalogIds itemCatalogIds, int price, int amount)
+    private async void OnBuyWithBank(ServerPlayer player, int bankAccountId, ItemCatalogIds itemCatalogIds, int price,
+                                     int amount)
     {
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
         if (bankAccount == null)
@@ -133,7 +136,8 @@ public class AmmunationHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -144,7 +148,8 @@ public class AmmunationHandler : ISingletonScript
         }
         else
         {
-            player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.",
+                                    NotificationType.ERROR);
         }
     }
 

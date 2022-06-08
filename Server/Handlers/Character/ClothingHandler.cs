@@ -12,7 +12,7 @@ public class ClothingHandler : ISingletonScript
     public ClothingHandler(CharacterService characterService)
     {
         _characterService = characterService;
-        
+
         AltAsync.OnClient<ServerPlayer, int, int>("settorsomenu:savetorso", OnSaveTorso);
     }
 

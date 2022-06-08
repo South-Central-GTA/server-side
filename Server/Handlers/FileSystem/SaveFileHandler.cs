@@ -14,14 +14,13 @@ public class SaveFileHandler : ISingletonScript
     private readonly FileService _fileService;
 
     private readonly GroupModule _groupModule;
-    
+
     public SaveFileHandler(
         FileService fileService,
-        
         GroupModule groupModule)
     {
         _fileService = fileService;
-        
+
         _groupModule = groupModule;
 
         AltAsync.OnClient<ServerPlayer, int, string>("filesystem:savefile", OnSaveFile);
@@ -39,7 +38,7 @@ public class SaveFileHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (!await _groupModule.IsPlayerInGroup(player, file.DirectoryModel.GroupModelId))
         {
             return;
@@ -50,7 +49,7 @@ public class SaveFileHandler : ISingletonScript
         file.IsBlocked = false;
 
         await _fileService.Update(file);
-        
+
         player.EmitGui("filesystem:filesaved");
     }
 }

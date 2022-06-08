@@ -42,7 +42,8 @@ public class ItemWeaponAttachmentService
                               .FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public override async Task<ItemWeaponAttachmentModel?> Find(Expression<Func<ItemWeaponAttachmentModel, bool>> expression)
+    public override async Task<ItemWeaponAttachmentModel?> Find(
+        Expression<Func<ItemWeaponAttachmentModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.ItemWeaponAttachments
@@ -52,7 +53,8 @@ public class ItemWeaponAttachmentService
                               .FirstOrDefaultAsync(expression);
     }
 
-    public override async Task<List<ItemWeaponAttachmentModel>> Where(Expression<Func<ItemWeaponAttachmentModel, bool>> expression)
+    public override async Task<List<ItemWeaponAttachmentModel>> Where(
+        Expression<Func<ItemWeaponAttachmentModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.ItemWeaponAttachments

@@ -8,12 +8,12 @@ namespace Server.Handlers.Chat;
 public class SetTypingHandler : ISingletonScript
 {
     private readonly ILogger<SetTypingHandler> _logger;
-    
+
     public SetTypingHandler(
         ILogger<SetTypingHandler> logger)
     {
         _logger = logger;
-        
+
         AltAsync.OnClient<ServerPlayer, bool>("chat:settyping", OnPlayerSetTyping);
     }
 

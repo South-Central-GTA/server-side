@@ -5,12 +5,11 @@ using Server.Core.Abstractions;
 using Server.Core.Configuration;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Modules;
 using Server.Modules.Vehicles;
 
 namespace Server.ServerJobs;
 
-public class PersistentVehicleDatabase : IServerJob
+public class PersistentVehicleDatabase : IJob
 {
     private readonly DevelopmentOptions _devOptions;
     private readonly ILogger<PersistentVehicleDatabase> _logger;

@@ -23,9 +23,9 @@ public class VehicleCatalogHandler : ISingletonScript
     private readonly VehicleCatalogService _vehicleCatalogService;
 
     public VehicleCatalogHandler(
-        Serializer serializer, 
+        Serializer serializer,
         AdminModule adminModule,
-        SouthCentralPointsModule southCentralPointsModule, 
+        SouthCentralPointsModule southCentralPointsModule,
         VehicleDumpModule vehicleDumpModule,
         VehicleCatalogService vehicleCatalogService)
     {
@@ -34,9 +34,10 @@ public class VehicleCatalogHandler : ISingletonScript
         _southCentralPointsModule = southCentralPointsModule;
         _vehicleDumpModule = vehicleDumpModule;
         _vehicleCatalogService = vehicleCatalogService;
-        
+
         AltAsync.OnClient<ServerPlayer>("vehiclecatalog:open", OnOpenVehicleCatalog);
-        AltAsync.OnClient<ServerPlayer, string, int>("vehiclecatalog:requestsetorderablevehiclesamount", OnRequestSetOrderableVehicleAmount);
+        AltAsync.OnClient<ServerPlayer, string, int>("vehiclecatalog:requestsetorderablevehiclesamount",
+                                                     OnRequestSetOrderableVehicleAmount);
         AltAsync.OnClient<ServerPlayer, string>("vehiclecatalog:saveveh", OnSaveVeh);
     }
 
@@ -58,7 +59,8 @@ public class VehicleCatalogHandler : ISingletonScript
         player.EmitGui("vehiclecatalog:setup", catalogVehicles);
     }
 
-    private async void OnRequestSetOrderableVehicleAmount(ServerPlayer player, string model, int amountOfOrderableVehicles)
+    private async void OnRequestSetOrderableVehicleAmount(ServerPlayer player, string model,
+                                                          int amountOfOrderableVehicles)
     {
         if (!player.Exists)
         {
@@ -79,7 +81,8 @@ public class VehicleCatalogHandler : ISingletonScript
 
         if (catalogVehicle.Price == 0)
         {
-            player.SendNotification("Dieses Fahrzeug hat kein Preis, du kannst es nicht beim Händler anbieten.", NotificationType.ERROR);
+            player.SendNotification("Dieses Fahrzeug hat kein Preis, du kannst es nicht beim Händler anbieten.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -100,7 +103,8 @@ public class VehicleCatalogHandler : ISingletonScript
     {
         var catalogVehicle = _serializer.Deserialize<CatalogVehicleModel>(catalogVehicleJson);
 
-        var dump = _vehicleDumpModule.Dump.Find(v => string.Equals(v.Name, catalogVehicle.Model, StringComparison.CurrentCultureIgnoreCase));
+        var dump = _vehicleDumpModule.Dump.Find(
+            v => string.Equals(v.Name, catalogVehicle.Model, StringComparison.CurrentCultureIgnoreCase));
 
         catalogVehicle.ClassId = dump == null ? "NOT_FOUND" : dump.Class;
         catalogVehicle.DlcName = dump == null ? "NOT_FOUND" : dump.DlcName;
@@ -114,7 +118,8 @@ public class VehicleCatalogHandler : ISingletonScript
     {
         var callback = new Action<ServerPlayer>(player =>
         {
-            catalogVehicleModel.SouthCentralPoints = _southCentralPointsModule.GetPointsPrice(catalogVehicleModel.Price);
+            catalogVehicleModel.SouthCentralPoints =
+                _southCentralPointsModule.GetPointsPrice(catalogVehicleModel.Price);
             player.EmitGui("vehiclecatalog:update", catalogVehicleModel);
         });
 

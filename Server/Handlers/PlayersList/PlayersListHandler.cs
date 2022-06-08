@@ -30,8 +30,7 @@ public class PlayerListsHandler : ISingletonScript
 
         var playerInformationDatas = players.Select(target => new PlayerInformationData
         {
-            Id = target.Id,
-            CharacterName = target.CharacterModel.Name
+            Id = target.Id, CharacterName = target.CharacterModel.Name
         }).ToList();
 
         player.EmitLocked("playerslist:show", playerInformationDatas);

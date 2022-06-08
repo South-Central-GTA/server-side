@@ -57,17 +57,19 @@ public class DefinedJobModule
             return;
         }
 
-        var definedJob = new Database.Models.Character.DefinedJobModel { CharacterModelId = player.CharacterModel.Id, JobId = jobId, BankAccountId = bankAccountId };
+        var definedJob = new Database.Models.Character.DefinedJobModel
+        {
+            CharacterModelId = player.CharacterModel.Id, JobId = jobId, BankAccountId = bankAccountId
+        };
 
         player.CharacterModel.JobModel = definedJob;
 
         await _definedJobService.Add(definedJob);
 
-        player.SendNotification(
-            jobId == 0
-                ? "Dein Charakter erhält finanzielle Unterstützung."
-                : "Dein Charakter hat erfolgreich ein Berufsfeld ausgewählt.",
-            NotificationType.INFO);
+        player.SendNotification(jobId == 0
+                                    ? "Dein Charakter erhält finanzielle Unterstützung."
+                                    : "Dein Charakter hat erfolgreich ein Berufsfeld ausgewählt.",
+                                NotificationType.INFO);
 
         await UpdateUi(player);
     }
@@ -84,11 +86,12 @@ public class DefinedJobModule
         {
             return;
         }
-        
+
         await _definedJobService.Remove(job);
         player.CharacterModel.JobModel = null;
 
-        player.SendNotification("Dein Charakter ist wieder arbeitslos und verdient kein Geld mehr.", NotificationType.INFO);
+        player.SendNotification("Dein Charakter ist wieder arbeitslos und verdient kein Geld mehr.",
+                                NotificationType.INFO);
         await UpdateUi(player);
     }
 
@@ -98,7 +101,7 @@ public class DefinedJobModule
         {
             return;
         }
-        
+
         if (player.CharacterModel.JobModel == null)
         {
             return;
@@ -113,7 +116,9 @@ public class DefinedJobModule
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.DEPOSIT))
         {
-            player.SendNotification("Dein Charakter hat nicht genügend Berechtigungen mehr um dieses Bankkonto zu nutzen.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter hat nicht genügend Berechtigungen mehr um dieses Bankkonto zu nutzen.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -129,7 +134,7 @@ public class DefinedJobModule
         {
             return;
         }
-        
+
         var definedJob = await GetPlayerJob(player);
         DefinedJobData? playerJob = null;
         if (definedJob != null)

@@ -12,31 +12,30 @@ public class FileModel
     public FileModel()
     {
     }
-    
+
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
-    
+
     public int DirectoryModelId { get; set; }
 
     public DirectoryModel DirectoryModel { get; set; }
-    
-    [MaxLength(50)] 
-    public string Title { get; set; } = "";
+
+    [MaxLength(50)] public string Title { get; set; } = "";
 
     public string Context { get; set; } = "";
     public bool IsBlocked { get; set; }
-    
+
     public string? BlockedByCharacterName { get; set; }
     public string LastEditCharacterName { get; set; }
-    
-    public int CreatorCharacterId { get; set; } 
+
+    public int CreatorCharacterId { get; set; }
     public string CreatorCharacterName { get; set; }
 
     public void OnWrite(IMValueWriter writer)
     {
         writer.BeginObject();
-        
+
         writer.Name("id");
         writer.Value(Id);
 
@@ -57,7 +56,7 @@ public class FileModel
 
         writer.Name("createdAtJson");
         writer.Value(JsonSerializer.Serialize(CreatedAt));
-        
+
         writer.EndObject();
     }
 }

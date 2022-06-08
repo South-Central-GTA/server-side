@@ -15,7 +15,7 @@ public static class ServerPlayerExtensions
 {
     public static void EmitGui(this ServerPlayer player, string eventName, params object[] args)
     {
-        player.EmitLocked("gui:emit", eventName, args);
+        player.EmitLocked("webview:emit", eventName, args);
     }
 
     public static void SendNotification(this ServerPlayer player, string text, NotificationType type)
@@ -71,7 +71,9 @@ public static class ServerPlayerExtensions
 
     public static void UpdateMoneyUi(this ServerPlayer player)
     {
-        player.EmitLocked("hud:setmoney", player.CharacterModel.InventoryModel.Items.Where(i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR).Sum(i => i.Amount));
+        player.EmitLocked("hud:setmoney",
+                          player.CharacterModel.InventoryModel.Items
+                                .Where(i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR).Sum(i => i.Amount));
     }
 
     public static void CreateDialog(this ServerPlayer player, DialogData dialogData)
@@ -84,7 +86,8 @@ public static class ServerPlayerExtensions
         player.EmitLocked("character:updateclothes", player.CharacterModel.InventoryModel);
     }
 
-    public static void CreateTimer(this ServerPlayer player, string id, ElapsedEventHandler callback, int milliseconds, bool restart = false)
+    public static void CreateTimer(this ServerPlayer player, string id, ElapsedEventHandler callback, int milliseconds,
+                                   bool restart = false)
     {
         var timer = new Timer { Interval = milliseconds, AutoReset = false, Enabled = true };
         if (player.Timers.TryAdd(id, timer))

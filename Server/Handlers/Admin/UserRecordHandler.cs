@@ -13,11 +13,11 @@ namespace Server.Handlers.Admin;
 public class UserRecordHandler : ISingletonScript
 {
     private readonly UserRecordLogService _userRecordLogService;
-    
+
     public UserRecordHandler(UserRecordLogService userRecordLogService)
     {
         _userRecordLogService = userRecordLogService;
-        
+
         AltAsync.OnClient<ServerPlayer, ulong>("userrecord:request", OnRequestUserRecord);
         AltAsync.OnClient<ServerPlayer, ulong, string>("userrecord:saveentry", OnRequestSaveUserRecordEntry);
     }
@@ -34,7 +34,9 @@ public class UserRecordHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("userrecord:setup", accountId, await _userRecordLogService.Where(ur => ur.AccountModelId == accountId));
+        player.EmitGui("userrecord:setup",
+                       accountId,
+                       await _userRecordLogService.Where(ur => ur.AccountModelId == accountId));
     }
 
     private async void OnRequestSaveUserRecordEntry(ServerPlayer player, ulong accountId, string manuelEntry)
@@ -49,7 +51,9 @@ public class UserRecordHandler : ISingletonScript
             LoggedAt = DateTime.Now
         });
 
-        player.EmitGui("userrecord:setup", accountId, await _userRecordLogService.Where(ur => ur.AccountModelId == accountId));
+        player.EmitGui("userrecord:setup",
+                       accountId,
+                       await _userRecordLogService.Where(ur => ur.AccountModelId == accountId));
         player.SendNotification("Eintrag wurde erfolgreich gespeichert.", NotificationType.SUCCESS);
     }
 }

@@ -11,7 +11,7 @@ namespace Server.Handlers.Action;
 public class PlayerActionHandler : ISingletonScript
 {
     private readonly ContextModule _contextModule;
-    
+
     public PlayerActionHandler(ContextModule contextModule)
     {
         _contextModule = contextModule;

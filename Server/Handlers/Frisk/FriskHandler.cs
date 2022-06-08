@@ -33,6 +33,7 @@ public class FriskHandler : ISingletonScript
         AltAsync.OnClient<ServerPlayer, int>("frisk:requestsearch", OnRequestMenu);
         AltAsync.OnClient<ServerPlayer, int, int>("frisk:permissiongranted", OnPermissionGranted);
         AltAsync.OnClient<ServerPlayer, int, int>("frisk:permissiondenied", OnPermissionDenied);
+        AltAsync.OnClient<ServerPlayer, int>("frisk:interrupt", OnInterrupt);
     }
 
     private async void OnRequestMenu(ServerPlayer player, int playerId)
@@ -66,7 +67,8 @@ public class FriskHandler : ISingletonScript
                 Type = DialogType.TWO_BUTTON_DIALOG,
                 Title = "Durchsuchen",
                 Description =
-                    $"Der Charakter {player.CharacterModel.Name} möchte deinen Charakter durchsuchen, erlaubst du es?<br><p class='text-muted'>Der Spieler kann frei auf dein Inventar zugreifen.</p>",
+                    $"Der Charakter {player.CharacterModel.Name} möchte deinen Charakter durchsuchen, erlaubst du es?<br>" +
+                    $"<p class='text-muted'>Der Spieler kann frei auf dein Inventar zugreifen.</p>",
                 FreezeGameControls = true,
                 Data = data,
                 PrimaryButton = "Ja",
@@ -77,8 +79,8 @@ public class FriskHandler : ISingletonScript
         }
         else
         {
-            player.DefaultInventories = new List<InventoryModel> { character.InventoryModel };
-            character.InventoryModel.InventoryType = InventoryType.FRISK;
+            player.OpenInventories =
+                new List<OpenInventoryData> { new(InventoryType.FRISK, character.InventoryModel.Id) };
 
             await _inventoryModule.OpenInventoryUiAsync(player);
         }
@@ -106,8 +108,8 @@ public class FriskHandler : ISingletonScript
 
         requestPlayer.SendNotification("Der andere Spieler hat deiner Anfrage zugestimmt.", NotificationType.INFO);
 
-        inventory.InventoryType = InventoryType.FRISK;
-        requestPlayer.DefaultInventories = new List<InventoryModel> { inventory };
+        requestPlayer.OpenInventories = new List<OpenInventoryData> { new(InventoryType.FRISK, inventory.Id) };
+        player.EmitLocked("frisk:start", requestPlayer.Id);
 
         await _inventoryModule.OpenInventoryUiAsync(requestPlayer);
     }
@@ -127,5 +129,16 @@ public class FriskHandler : ISingletonScript
         }
 
         requestPlayer.SendNotification("Der andere Spieler hat deine Abfrage abgelehnt.", NotificationType.INFO);
+    }
+
+    private async void OnInterrupt(ServerPlayer player, int searchedByPlayerId)
+    {
+        var requestPlayer = Alt.GetAllPlayers().FindPlayerById(searchedByPlayerId);
+        if (requestPlayer == null)
+        {
+            return;
+        }
+
+        _inventoryModule.CloseInventory(requestPlayer);
     }
 }

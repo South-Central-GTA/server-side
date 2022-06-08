@@ -80,7 +80,9 @@ public class MoneyModule
 
     public async Task<bool> GiveMoney(ServerPlayer player, int value)
     {
-        var existingMoneyItem = player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR);
+        var existingMoneyItem =
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR);
         if (existingMoneyItem != null)
         {
             existingMoneyItem.Amount += value;

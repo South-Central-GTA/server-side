@@ -72,7 +72,7 @@ public class MailModule
         {
             return;
         }
-        
+
         mailAddress = mailAddress.ToLower();
 
         var mailAccount = await _mailAccountService.GetByKey(mailAddress);
@@ -81,8 +81,23 @@ public class MailModule
             player.EmitGui("laptop:showerrormessage", "Diese Mail Adresse ist schon vergeben.");
             return;
         }
-        
-        await _mailAccountService.Add(new MailAccountModel { Type = OwnableAccountType.PRIVATE, MailAddress = mailAddress, CharacterAccesses = new List<MailAccountCharacterAccessModel> { new() { MailAccountModelMailAddress = mailAddress, CharacterModelId = player.CharacterModel.Id, Permission = MailingPermission.NONE, Owner = true } }, GroupAccess = new List<MailAccountGroupAccessModel>() });
+
+        await _mailAccountService.Add(new MailAccountModel
+        {
+            Type = OwnableAccountType.PRIVATE,
+            MailAddress = mailAddress,
+            CharacterAccesses = new List<MailAccountCharacterAccessModel>
+            {
+                new()
+                {
+                    MailAccountModelMailAddress = mailAddress,
+                    CharacterModelId = player.CharacterModel.Id,
+                    Permission = MailingPermission.NONE,
+                    Owner = true
+                }
+            },
+            GroupAccess = new List<MailAccountGroupAccessModel>()
+        });
 
         await UpdateUi(player);
     }
@@ -93,16 +108,18 @@ public class MailModule
         mailAddress = Regex.Replace(mailAddress, @"\s+", "");
         await _mailAccountService.Add(new MailAccountModel
         {
-            Type = OwnableAccountType.GROUP, 
-            MailAddress = mailAddress, 
+            Type = OwnableAccountType.GROUP,
+            MailAddress = mailAddress,
             GroupAccess = new List<MailAccountGroupAccessModel>
             {
-                new() { 
-                    MailAccountModelMailAddress = mailAddress, 
-                    GroupModelId = groupModel.Id, 
-                    Owner = true 
+                new()
+                {
+                    MailAccountModelMailAddress = mailAddress,
+                    GroupModelId = groupModel.Id,
+                    Owner = true
                 }
-            }, CharacterAccesses = new List<MailAccountCharacterAccessModel>()
+            },
+            CharacterAccesses = new List<MailAccountCharacterAccessModel>()
         });
     }
 
@@ -111,7 +128,8 @@ public class MailModule
     {
         var hasAccess = false;
 
-        var characterAccess = mailAccountModel.CharacterAccesses.Find(ca => ca.CharacterModelId == player.CharacterModel.Id);
+        var characterAccess =
+            mailAccountModel.CharacterAccesses.Find(ca => ca.CharacterModelId == player.CharacterModel.Id);
         if (characterAccess == null)
         {
             var groups = await _groupService.GetGroupsByCharacter(player.CharacterModel.Id);
@@ -173,7 +191,8 @@ public class MailModule
     {
         var isOwner = false;
 
-        var characterAccess = mailAccountModel.CharacterAccesses.Find(ca => ca.CharacterModelId == player.CharacterModel.Id);
+        var characterAccess =
+            mailAccountModel.CharacterAccesses.Find(ca => ca.CharacterModelId == player.CharacterModel.Id);
         if (characterAccess == null)
         {
             var groups = await _groupService.GetGroupsByCharacter(player.CharacterModel.Id);
@@ -211,7 +230,7 @@ public class MailModule
         {
             return;
         }
-        
+
         if (senderMailAddress.ToLower() == targetMailAddress.ToLower())
         {
             player.EmitGui("mail:senderror", "Sie können keine Mail auf das eigene Mailkonto schicken.");
@@ -228,7 +247,8 @@ public class MailModule
         var targetMailAccount = await _mailAccountService.GetByKey(targetMailAddress.ToLower());
         if (targetMailAccount == null)
         {
-            player.EmitGui("mail:senderror", "Die angegebene Mail wurde bei uns nicht gefunden, die Mail konnte nicht verschickt werden.");
+            player.EmitGui("mail:senderror",
+                           "Die angegebene Mail wurde bei uns nicht gefunden, die Mail konnte nicht verschickt werden.");
             player.EmitGui("mail:sendbackup", title, context);
             return;
         }
@@ -246,15 +266,8 @@ public class MailModule
             MailReadedFromAddress = new List<string>(),
             MailLinks = new List<MailLinkModel>
             {
-                new()
-                {
-                    MailAccountModelMailAddress = senderMailAddress, 
-                    IsAuthor = true
-                }, new()
-                {
-                    MailAccountModelMailAddress = targetMailAddress, 
-                    IsAuthor = false
-                }
+                new() { MailAccountModelMailAddress = senderMailAddress, IsAuthor = true },
+                new() { MailAccountModelMailAddress = targetMailAddress, IsAuthor = false }
             }
         };
 
@@ -262,7 +275,7 @@ public class MailModule
 
         await UpdatePlayersUi(targetMailAccount);
         await UpdatePlayersUi(mailAccount);
-        
+
         player.EmitGui("mail:sendinfo", $"Mail wurde erfolgreich verschickt.");
     }
 
@@ -324,9 +337,14 @@ public class MailModule
         }
     }
 
-    public async Task AddCharacterToAccount(ServerPlayer player, CharacterModel characterModel, MailAccountModel mailAccountModel)
+    public async Task AddCharacterToAccount(ServerPlayer player, CharacterModel characterModel,
+                                            MailAccountModel mailAccountModel)
     {
-        await _mailAccountCharacterAccessService.Add(new MailAccountCharacterAccessModel { CharacterModelId = characterModel.Id, MailAccountModelMailAddress = mailAccountModel.MailAddress });
+        await _mailAccountCharacterAccessService.Add(new MailAccountCharacterAccessModel
+        {
+            CharacterModelId = characterModel.Id,
+            MailAccountModelMailAddress = mailAccountModel.MailAddress
+        });
 
         await UpdateUi(player);
 
@@ -361,7 +379,9 @@ public class MailModule
                                           MailingPermission mailingPermission)
     {
         var characterAccess = await _mailAccountCharacterAccessService.Find(ca =>
-                                                                                ca.MailAccountModelMailAddress == mailAccountModel.MailAddress && ca.CharacterModelId == characterId);
+                                                                                ca.MailAccountModelMailAddress ==
+                                                                                mailAccountModel.MailAddress &&
+                                                                                ca.CharacterModelId == characterId);
         if (characterAccess == null)
         {
             return false;
@@ -377,7 +397,9 @@ public class MailModule
                                              MailingPermission mailingPermission)
     {
         var characterAccess = await _mailAccountCharacterAccessService.Find(ca =>
-                                                                                ca.MailAccountModelMailAddress == mailAccountModel.MailAddress && ca.CharacterModelId == characterId);
+                                                                                ca.MailAccountModelMailAddress ==
+                                                                                mailAccountModel.MailAddress &&
+                                                                                ca.CharacterModelId == characterId);
         if (characterAccess == null)
         {
             return false;

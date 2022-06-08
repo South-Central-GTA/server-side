@@ -16,7 +16,7 @@ public class HelpMeHandler : ISingletonScript
     public HelpMeHandler(HelpMeModule helpMeModule)
     {
         _helpMeModule = helpMeModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("helpme:open", OnOpenHelpMes);
         AltAsync.OnClient<ServerPlayer, string>("helpme:taketicket", OnTakeTicket);
     }
@@ -52,7 +52,10 @@ public class HelpMeHandler : ISingletonScript
         var ticketCreator = Alt.GetAllPlayers().FindPlayerByDiscordId(discordId);
         _helpMeModule.TakeTicket(discordId);
 
-        ticketCreator.SendNotification("Dein Ticket wurde von Team Mitglied " + player.AccountName + " angenommen.", NotificationType.INFO);
-        player.SendNotification("Du hast das Ticket von " + ticketCreator.AccountName + " (ID: " + ticketCreator.Id + ") angenommen, teleportiere dich bitte zum Spieler.", NotificationType.INFO);
+        ticketCreator.SendNotification("Dein Ticket wurde von Team Mitglied " + player.AccountName + " angenommen.",
+                                       NotificationType.INFO);
+        player.SendNotification("Du hast das Ticket von " + ticketCreator.AccountName + " (ID: " + ticketCreator.Id +
+                                ") angenommen, teleportiere dich bitte zum Spieler.",
+                                NotificationType.INFO);
     }
 }

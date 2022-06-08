@@ -16,17 +16,16 @@ public class DeleteDirectoryHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
     private readonly SyncFileModule _syncFileModule;
-    
+
     public DeleteDirectoryHandler(
         DirectoryService directoryService,
         FileService fileService,
-        
-        GroupModule groupModule, 
+        GroupModule groupModule,
         SyncFileModule syncFileModule)
     {
         _directoryService = directoryService;
         _fileService = fileService;
-        
+
         _groupModule = groupModule;
         _syncFileModule = syncFileModule;
 
@@ -46,14 +45,16 @@ public class DeleteDirectoryHandler : ISingletonScript
             return;
         }
 
-        if (!await _groupModule.HasPermission(player.CharacterModel.Id, directory.GroupModelId, GroupPermission.MDC_OPERATOR))
+        if (!await _groupModule.HasPermission(player.CharacterModel.Id,
+                                              directory.GroupModelId,
+                                              GroupPermission.MDC_OPERATOR))
         {
             return;
         }
 
         var files = await _fileService.Where(f => f.DirectoryModelId == directoryId);
         await _fileService.RemoveRange(files);
-        
+
         await _directoryService.Remove(directory);
         await _syncFileModule.UpdateDirectory(directory.GroupModelId);
     }

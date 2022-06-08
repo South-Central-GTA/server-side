@@ -38,16 +38,16 @@ public class SupermarketHandler
         MoneyModule moneyModule,
         BankModule bankModule) : base(companyOptions,
                                       itemCatalogService,
-                                     houseService,
-                                     bankAccountService,
-                                     itemService,
-                                     groupService,
-                                     userShopDataService,
-                                     inventoryService,
-                                     inventoryModule,
-                                     itemCreationModule,
-                                     moneyModule,
-                                     bankModule)
+                                      houseService,
+                                      bankAccountService,
+                                      itemService,
+                                      groupService,
+                                      userShopDataService,
+                                      inventoryService,
+                                      inventoryModule,
+                                      itemCreationModule,
+                                      moneyModule,
+                                      bankModule)
     {
         _itemCatalogService = itemCatalogService;
         _houseService = houseService;
@@ -110,7 +110,8 @@ public class SupermarketHandler
         var costs = await GetBill(player);
         if (costs == 0)
         {
-            player.SendNotification("Dein Charakter hat keine Waren von dem Supermarkt im Inventar.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat keine Waren von dem Supermarkt im Inventar.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -118,7 +119,8 @@ public class SupermarketHandler
         {
             Type = DialogType.TWO_BUTTON_DIALOG,
             Title = "Supermarkt",
-            Description = $"Deine ausgewählten Waren kosten <b>${costs}</b>, willst du diese bezahlen?<br><p class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</p>",
+            Description =
+                $"Deine ausgewählten Waren kosten <b>${costs}</b>, willst du diese bezahlen?<br><p class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</p>",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             PrimaryButton = "Bargeld nutzen",

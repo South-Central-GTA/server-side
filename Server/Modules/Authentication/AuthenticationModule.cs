@@ -57,10 +57,12 @@ public class AuthenticationModule : ISingletonScript
             return;
         }
 
-        var account = await _accountService.Find(a => a.SocialClubId == player.SocialClubId && a.DiscordId == player.DiscordId);
+        var account =
+            await _accountService.Find(a => a.SocialClubId == player.SocialClubId && a.DiscordId == player.DiscordId);
         if (account == null)
         {
-            player.EmitGui("signin:showerror", "Es wurde kein Account unter diesem GTA gefunden, bitte starte dein Spiel neu.");
+            player.EmitGui("signin:showerror",
+                           "Es wurde kein Account unter diesem GTA gefunden, bitte starte dein Spiel neu.");
             return;
         }
 
@@ -87,7 +89,7 @@ public class AuthenticationModule : ISingletonScript
             DiscordId = player.DiscordId,
             HardwareIdHash = player.HardwareIdHash,
             HardwareIdExHash = player.HardwareIdExHash,
-            LastIp = player.Ip, 
+            LastIp = player.Ip,
             LastSelectedCharacterId = -1,
             OnlineSince = DateTime.Now,
             LastLogin = DateTime.Now,
@@ -105,7 +107,7 @@ public class AuthenticationModule : ISingletonScript
         accountModel.LastIp = player.Ip;
         accountModel.HardwareIdHash = player.HardwareIdHash;
         accountModel.HardwareIdExHash = player.HardwareIdExHash;
-        
+
         accountModel.AvatarUrl = _discordModule.GetAvatar(player.DiscordId);
 
         if (player.Name != accountModel.CurrentName)

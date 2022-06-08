@@ -33,12 +33,16 @@ public class ResetPersonalLicenseCommands : ISingletonScript
             return;
         }
 
-        var personalLicenseModels = target.CharacterModel.Licenses.Where(l => l.CharacterModelId == target.CharacterModel.Id);
+        var personalLicenseModels =
+            target.CharacterModel.Licenses.Where(l => l.CharacterModelId == target.CharacterModel.Id);
         await _personalLicenseService.RemoveRange(personalLicenseModels);
 
-        player.CharacterModel.Licenses = await _personalLicenseService.Where(l => l.CharacterModelId == player.CharacterModel.Id);
-        
-        player.SendNotification("Du hast dem Charakter " + target.CharacterModel.Name + " alle Lizenzen entfernt.", NotificationType.SUCCESS);
-        target.SendNotification("Du hast von " + player.AccountName + " alle Lizenzen administrativ entfernt bekommen.", NotificationType.SUCCESS);
+        player.CharacterModel.Licenses =
+            await _personalLicenseService.Where(l => l.CharacterModelId == player.CharacterModel.Id);
+
+        player.SendNotification("Du hast dem Charakter " + target.CharacterModel.Name + " alle Lizenzen entfernt.",
+                                NotificationType.SUCCESS);
+        target.SendNotification("Du hast von " + player.AccountName + " alle Lizenzen administrativ entfernt bekommen.",
+                                NotificationType.SUCCESS);
     }
 }

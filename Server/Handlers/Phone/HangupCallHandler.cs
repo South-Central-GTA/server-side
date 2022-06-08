@@ -12,7 +12,7 @@ public class HangupCallHandler : ISingletonScript
     public HangupCallHandler(PhoneCallModule phoneCallModule)
     {
         _phoneCallModule = phoneCallModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("phone:hangup", OnHangup);
     }
 

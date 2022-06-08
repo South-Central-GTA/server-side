@@ -9,19 +9,18 @@ using Server.Core.Callbacks;
 using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
+using Server.Core.ScheduledJobs;
 using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Housing;
-using Server.Modules;
 using Server.Modules.Bank;
 using Server.Modules.Group;
 using Server.Modules.Houses;
 
-namespace Server.ScheduledJob;
+namespace Server.ScheduledJobs;
 
-public class PaydayScheduledJob
-    : ScheduledJob
+public class PaydayScheduledJob : ScheduledJob
 {
     private readonly BankAccountService _bankAccountService;
 
@@ -64,7 +63,7 @@ public class PaydayScheduledJob
         _gameOptions = gameOptions.Value;
         _companyOptions = companyOptions.Value;
         _worldLocationOptions = worldLocationOptions.Value;
-        
+
         _bankAccountService = bankAccountService;
         _publicGarageEntryService = publicGarageEntryService;
         _vehicleService = vehicleService;
@@ -72,7 +71,7 @@ public class PaydayScheduledJob
         _groupService = groupService;
         _houseService = houseService;
         _registrationOfficeService = registrationOfficeService;
-        
+
         _bankModule = bankModule;
         _groupModule = groupModule;
         _houseModule = houseModule;
@@ -122,7 +121,8 @@ public class PaydayScheduledJob
 
             var houses = await _houseService.GetAll();
             foreach (var leaseCompanyHouse in houses.Where(h => h.HouseType == HouseType.COMPANY
-                                                                && h.GroupModelId.HasValue).Cast<LeaseCompanyHouseModel>())
+                                                                && h.GroupModelId.HasValue)
+                                                    .Cast<LeaseCompanyHouseModel>())
             {
                 var revenue = _companyOptions.RevenueEachPayday[leaseCompanyHouse.LeaseCompanyType];
 
@@ -139,7 +139,8 @@ public class PaydayScheduledJob
 
                 var bankAccount = await _bankAccountService.Find(ba =>
                                                                      ba.Type == OwnableAccountType.GROUP
-                                                                     && ba.GroupRankAccess.Any(gra => gra.GroupModelId == ownerGroup.Id));
+                                                                     && ba.GroupRankAccess.Any(
+                                                                         gra => gra.GroupModelId == ownerGroup.Id));
                 if (bankAccount == null)
                 {
                     continue;
@@ -150,7 +151,10 @@ public class PaydayScheduledJob
                     case 0:
                         continue;
                     case < 0:
-                        await _bankModule.Withdraw(bankAccount, Math.Abs(revenue), true, "Pachtbarer Unternehmenssitz Umsatz");
+                        await _bankModule.Withdraw(bankAccount,
+                                                   Math.Abs(revenue),
+                                                   true,
+                                                   "Pachtbarer Unternehmenssitz Umsatz");
                         break;
                     default:
                         await _bankModule.Deposit(bankAccount, revenue, "Pachtbarer Unternehmenssitz Umsatz");
@@ -184,7 +188,10 @@ public class PaydayScheduledJob
                 if (bankAccount != null)
                 {
                     var groupBankAccount = await _bankAccountService.GetByOwningGroup(group.Id);
-                    var success = await _bankModule.Withdraw(groupBankAccount, (int)member.Salary, false, $"Mitarbeiter '{member.CharacterModel.Name}' Gehalt");
+                    var success = await _bankModule.Withdraw(groupBankAccount,
+                                                             (int)member.Salary,
+                                                             false,
+                                                             $"Mitarbeiter '{member.CharacterModel.Name}' Gehalt");
                     if (success)
                     {
                         await _bankModule.Deposit(bankAccount, (int)member.Salary, "Gehalt");
@@ -207,9 +214,11 @@ public class PaydayScheduledJob
             if (job != null)
             {
                 await _definedJobService.Remove(job);
-            
+
                 player.CharacterModel.JobModel = null;
-                player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet, weshalb er seinen Job verloren hat und kein Gehalt bekam.", NotificationType.ERROR);
+                player.SendNotification(
+                    "Dein Charakter ist nicht im Registration Office gemeldet, weshalb er seinen Job verloren hat und kein Gehalt bekam.",
+                    NotificationType.ERROR);
                 return;
             }
         }
@@ -243,30 +252,34 @@ public class PaydayScheduledJob
             {
                 continue;
             }
-            
+
             var bankAccount = await _bankAccountService.GetByKey(house.RentBankAccountId.Value);
             if (bankAccount == null)
             {
                 continue;
             }
-            
+
             if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
             {
-                player.SendNotification($"Dein Charakter hat keine Transferrechte mehr für das Konto {bankAccount.BankDetails} der Mietvertrag mit der Immobilie ({house.Id}) wurde aufgelöst.", NotificationType.WARNING);
+                player.SendNotification(
+                    $"Dein Charakter hat keine Transferrechte mehr für das Konto {bankAccount.BankDetails} der Mietvertrag mit der Immobilie ({house.Id}) wurde aufgelöst.",
+                    NotificationType.WARNING);
                 // await _houseModule.ResetOwner(house);
                 continue;
             }
 
             if (!await _bankModule.Withdraw(bankAccount, house.Price, false, $"Miete für Immobilie #'{house.Id}'"))
             {
-                player.SendNotification($"Das angegebene Konto {bankAccount.BankDetails} kann die Kosten für den Mietvertrag der Immobilie ({house.Id}) nicht decken daher wurde der Vertrag aufgelöst.", NotificationType.WARNING);
+                player.SendNotification(
+                    $"Das angegebene Konto {bankAccount.BankDetails} kann die Kosten für den Mietvertrag der Immobilie ({house.Id}) nicht decken daher wurde der Vertrag aufgelöst.",
+                    NotificationType.WARNING);
                 await _houseModule.ResetOwner(house);
             }
         }
-        
+
         await Task.CompletedTask;
     }
-    
+
     private async Task HandlePublicGarage(ServerPlayer player)
     {
         var vehicles = await _vehicleService.Where(v => v.CharacterModelId == player.CharacterModel.Id
@@ -283,7 +296,7 @@ public class PaydayScheduledJob
             {
                 continue;
             }
-            
+
             var publicGarageData = _worldLocationOptions.PublicGarages.Find(p => p.Id == publicGarageEntry.GarageId);
             if (publicGarageData == null)
             {
@@ -304,24 +317,33 @@ public class PaydayScheduledJob
 
             if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
             {
-                player.SendNotification($"Dein Charakter hat keine Transferrechte mehr für das Konto {bankAccount.BankDetails} das Fahrzeug {catalogVehicle.DisplayName} wird ausgeparkt.", NotificationType.WARNING);
+                player.SendNotification(
+                    $"Dein Charakter hat keine Transferrechte mehr für das Konto {bankAccount.BankDetails} das Fahrzeug {catalogVehicle.DisplayName} wird ausgeparkt.",
+                    NotificationType.WARNING);
                 // TODO: Implement "unparking" of vehicle.
                 player.SendNotification("Debug: Implementation fehlt noch.", NotificationType.WARNING);
                 continue;
             }
-            
+
             if (!await _registrationOfficeService.IsRegistered(player.CharacterModel.Id))
             {
-                player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet, weshalb die Public Garage das Fahrzeug ausgeparkt hat.", NotificationType.ERROR);
+                player.SendNotification(
+                    "Dein Charakter ist nicht im Registration Office gemeldet, weshalb die Public Garage das Fahrzeug ausgeparkt hat.",
+                    NotificationType.ERROR);
                 // TODO: Implement "unparking" of vehicle.
                 player.SendNotification("Debug: Implementation fehlt noch.", NotificationType.WARNING);
                 continue;
             }
 
             var costs = (int)(catalogVehicle.Price * publicGarageData.CostsPercentageOfVehiclePrice);
-            if (!await _bankModule.Withdraw(bankAccount, costs, false, $"Dauerparken für '{catalogVehicle.DisplayName}'"))
+            if (!await _bankModule.Withdraw(bankAccount,
+                                            costs,
+                                            false,
+                                            $"Dauerparken für '{catalogVehicle.DisplayName}'"))
             {
-                player.SendNotification($"Das angegebene Konto {bankAccount.BankDetails} kann die Parkkosten für das Fahrzeug {catalogVehicle.DisplayName} nicht mehr decken daher wurde es ausgeparkt.", NotificationType.WARNING);
+                player.SendNotification(
+                    $"Das angegebene Konto {bankAccount.BankDetails} kann die Parkkosten für das Fahrzeug {catalogVehicle.DisplayName} nicht mehr decken daher wurde es ausgeparkt.",
+                    NotificationType.WARNING);
             }
         }
 
@@ -338,7 +360,7 @@ public class PaydayScheduledJob
             var taxes = (int)(bankAccount.Amount * _gameOptions.TaxesExchangeRate);
             await _bankModule.Withdraw(bankAccount, taxes, false, "Steuern");
         }
-        
+
         await Task.CompletedTask;
     }
 }

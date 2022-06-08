@@ -42,7 +42,7 @@ public class BankModule
         {
             return;
         }
-        
+
         var bankAccounts = await _bankAccountService.GetByCharacter(player.CharacterModel.Id);
         var groups = await _groupService.Where(g => g.Members.Any(m => m.CharacterModelId == player.CharacterModel.Id));
 
@@ -74,12 +74,34 @@ public class BankModule
 
     public async Task CreateBankAccount(ServerPlayer player)
     {
-        await _bankAccountService.Add(new BankAccountModel { Type = OwnableAccountType.PRIVATE, BankDetails = await GetUniqueBankDetails(), CharacterAccesses = new List<BankAccountCharacterAccessModel> { new() { CharacterModelId = player.CharacterModel.Id, Permission = BankingPermission.NONE, Owner = true } }, GroupRankAccess = new List<BankAccountGroupRankAccessModel>() });
+        await _bankAccountService.Add(new BankAccountModel
+        {
+            Type = OwnableAccountType.PRIVATE,
+            BankDetails = await GetUniqueBankDetails(),
+            CharacterAccesses =
+                new List<BankAccountCharacterAccessModel>
+                {
+                    new()
+                    {
+                        CharacterModelId = player.CharacterModel.Id,
+                        Permission = BankingPermission.NONE,
+                        Owner = true
+                    }
+                },
+            GroupRankAccess = new List<BankAccountGroupRankAccessModel>()
+        });
     }
 
     public async Task CreateBankAccount(GroupModel groupModel)
     {
-        await _bankAccountService.Add(new BankAccountModel { Type = OwnableAccountType.GROUP, BankDetails = await GetUniqueBankDetails(), GroupRankAccess = new List<BankAccountGroupRankAccessModel> { new() { GroupModelId = groupModel.Id, Owner = true } }, CharacterAccesses = new List<BankAccountCharacterAccessModel>() });
+        await _bankAccountService.Add(new BankAccountModel
+        {
+            Type = OwnableAccountType.GROUP,
+            BankDetails = await GetUniqueBankDetails(),
+            GroupRankAccess =
+                new List<BankAccountGroupRankAccessModel> { new() { GroupModelId = groupModel.Id, Owner = true } },
+            CharacterAccesses = new List<BankAccountCharacterAccessModel>()
+        });
     }
 
     /// <summary>
@@ -89,7 +111,8 @@ public class BankModule
     /// <param name="force">Force should only be used when you want to grab money without check, like payday public garage costs.</param>
     /// <param name="useOfPurpose">Use of purpose for this transaction</param>
     /// <returns></returns>
-    public async Task<bool> Withdraw(BankAccountModel bankAccountModel, int amount, bool force = false, string useOfPurpose = "")
+    public async Task<bool> Withdraw(BankAccountModel bankAccountModel, int amount, bool force = false,
+                                     string useOfPurpose = "")
     {
         if (!force && bankAccountModel.Amount < amount)
         {
@@ -132,11 +155,13 @@ public class BankModule
         return bankAccount.Any(b => b.Status == BankAccountState.CREATED);
     }
 
-    public async Task<bool> HasPermission(ServerPlayer player, BankAccountModel bankAccountModel, BankingPermission bankingPermission)
+    public async Task<bool> HasPermission(ServerPlayer player, BankAccountModel bankAccountModel,
+                                          BankingPermission bankingPermission)
     {
         var hasAccess = false;
 
-        var bankAccountCharacterAccess = bankAccountModel.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == player.CharacterModel.Id);
+        var bankAccountCharacterAccess =
+            bankAccountModel.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == player.CharacterModel.Id);
         if (bankAccountCharacterAccess == null)
         {
             var groups = await _groupService.GetGroupsByCharacter(player.CharacterModel.Id);
@@ -147,7 +172,8 @@ public class BankModule
 
             foreach (var group in groups)
             {
-                var bankAccountGroupAccess = bankAccountModel.GroupRankAccess.FirstOrDefault(ga => ga.GroupModelId == group.Id);
+                var bankAccountGroupAccess =
+                    bankAccountModel.GroupRankAccess.FirstOrDefault(ga => ga.GroupModelId == group.Id);
                 if (bankAccountGroupAccess == null)
                 {
                     continue;

@@ -14,14 +14,14 @@ public class PdMdcDeleteNoteHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
     private readonly MdcNoteService _mdcNoteService;
-    
+
     private readonly PoliceMdcModule _policeMdcModule;
     private readonly GroupModule _groupModule;
- 
+
     public PdMdcDeleteNoteHandler(
         GroupFactionService groupFactionService,
         MdcNoteService mdcNoteService,
-        PoliceMdcModule policeMdcModule, GroupModule groupModule) 
+        PoliceMdcModule policeMdcModule, GroupModule groupModule)
     {
         _policeMdcModule = policeMdcModule;
         _groupModule = groupModule;
@@ -48,13 +48,13 @@ public class PdMdcDeleteNoteHandler : ISingletonScript
         {
             return;
         }
-        
+
         var note = await _mdcNoteService.GetByKey(id);
         if (note == null)
         {
             return;
         }
-        
+
         await _mdcNoteService.Remove(note);
 
         await _policeMdcModule.UpdateCurrentRecord(player, note.Type, note.TargetModelId);

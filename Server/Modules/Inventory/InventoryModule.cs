@@ -64,7 +64,9 @@ public class InventoryModule
                 return true;
             case CanCarryErrorType.LIMIT:
                 var catalogItem = await _itemCatalogService.GetByKey(itemCatalogId);
-                player.SendNotification($"In einem Inventar können maximal {catalogItem.MaxLimit} Stück des Items '{catalogItem.Name}' liegen.", NotificationType.ERROR);
+                player.SendNotification(
+                    $"In einem Inventar können maximal {catalogItem.MaxLimit} Stück des Items '{catalogItem.Name}' liegen.",
+                    NotificationType.ERROR);
                 return false;
             case CanCarryErrorType.NO_SPACE:
                 player.SendNotification("Das Inventar deines Charakters ist voll.", NotificationType.ERROR);
@@ -97,7 +99,9 @@ public class InventoryModule
         var canCarry = currentInventoryWeight + weight <= inventory.MaxWeight;
         if (!canCarry)
         {
-            player.SendNotification("Das Inventar deines Charakters ist voll, die Items konnten nicht hinzugefügt werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Das Inventar deines Charakters ist voll, die Items konnten nicht hinzugefügt werden.",
+                NotificationType.ERROR);
         }
 
         return canCarry;
@@ -160,17 +164,30 @@ public class InventoryModule
         {
             return;
         }
-        
+
         if (player.CharacterModel.DeathState == DeathState.DEAD)
         {
-            player.SendNotification("Du kannst jetzt nicht in das Inventar deines Charakters schauen.", NotificationType.ERROR);
+            player.SendNotification("Du kannst jetzt nicht in das Inventar deines Charakters schauen.",
+                                    NotificationType.ERROR);
             return;
         }
-        
+
         var inventories = await GetInventories(player);
 
         player.EmitLocked("inventory:open", inventories);
         player.UpdateMoneyUi();
+    }
+
+    public void CloseInventory(ServerPlayer player)
+    {
+        if (!player.Exists)
+        {
+            return;
+        }
+
+        player.OpenInventories = new List<OpenInventoryData>();
+
+        player.EmitLocked("inventory:close");
     }
 
     public async Task UpdateInventoryUiAsync(ServerPlayer player)
@@ -187,11 +204,12 @@ public class InventoryModule
         {
             return;
         }
-        
+
         var ammoData = _serializer.Deserialize<AmmoData>(ammoJson);
 
         var pistolAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.AMMO_PISTOL);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.AMMO_PISTOL);
         if (pistolAmmo != null)
         {
             pistolAmmo.Amount = ammoData.PistolAmmo;
@@ -206,7 +224,8 @@ public class InventoryModule
         }
 
         var machineGunAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.AMMO_MACHINE_GUN);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.AMMO_MACHINE_GUN);
         if (machineGunAmmo != null)
         {
             machineGunAmmo.Amount = ammoData.MachineGunAmmo;
@@ -221,7 +240,8 @@ public class InventoryModule
         }
 
         var assaultAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.AMMO_ASSAULT);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.AMMO_ASSAULT);
         if (assaultAmmo != null)
         {
             assaultAmmo.Amount = ammoData.AssaultAmmo;
@@ -236,7 +256,8 @@ public class InventoryModule
         }
 
         var sniperAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.AMMO_SNIPER);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.AMMO_SNIPER);
         if (sniperAmmo != null)
         {
             sniperAmmo.Amount = ammoData.SniperAmmo;
@@ -251,7 +272,8 @@ public class InventoryModule
         }
 
         var shotgunAmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.AMMO_SHOTGUN);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.AMMO_SHOTGUN);
         if (shotgunAmo != null)
         {
             shotgunAmo.Amount = ammoData.ShotgunAmmo;
@@ -266,7 +288,8 @@ public class InventoryModule
         }
 
         var lmgAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.AMMO_LIGHT_MACHINE_GUN);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.AMMO_LIGHT_MACHINE_GUN);
         if (lmgAmmo != null)
         {
             lmgAmmo.Amount = ammoData.LightMachineGunAmmo;
@@ -281,7 +304,8 @@ public class InventoryModule
         }
 
         var baseballAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_BASEBALL);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_BASEBALL);
         if (baseballAmmo != null)
         {
             baseballAmmo.Amount = ammoData.BaseballAmmo;
@@ -296,7 +320,8 @@ public class InventoryModule
         }
 
         var bzGasAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_BZ_GAS);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_BZ_GAS);
         if (bzGasAmmo != null)
         {
             bzGasAmmo.Amount = ammoData.BzgasAmmo;
@@ -311,7 +336,8 @@ public class InventoryModule
         }
 
         var flareAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_FLARE);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_FLARE);
         if (flareAmmo != null)
         {
             flareAmmo.Amount = ammoData.FlareAmmo;
@@ -326,7 +352,8 @@ public class InventoryModule
         }
 
         var grenadeAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_GRENADE);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_GRENADE);
         if (grenadeAmmo != null)
         {
             grenadeAmmo.Amount = ammoData.GrenadeAmmo;
@@ -341,7 +368,8 @@ public class InventoryModule
         }
 
         var molotovAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_MOLOTOV_COCKTAIL);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_MOLOTOV_COCKTAIL);
         if (molotovAmmo != null)
         {
             molotovAmmo.Amount = ammoData.MolotovAmmo;
@@ -356,7 +384,8 @@ public class InventoryModule
         }
 
         var snowballAmmo =
-            player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_SNOWBALL);
+            player.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CatalogItemModelId == ItemCatalogIds.WEAPON_SNOWBALL);
         if (snowballAmmo != null)
         {
             snowballAmmo.Amount = ammoData.SnowballAmmo;
@@ -392,7 +421,8 @@ public class InventoryModule
         // Update house inventory if they have the same inventory open.
         if (inventoryModel.HouseModelId.HasValue)
         {
-            var players = Alt.GetAllPlayers().Where(p => p.Dimension == inventoryModel.HouseModelId && !p.Equals(player));
+            var players = Alt.GetAllPlayers()
+                             .Where(p => p.Dimension == inventoryModel.HouseModelId && !p.Equals(player));
             foreach (var otherPlayers in players)
             {
                 await UpdateInventoryUiAsync(otherPlayers);
@@ -456,12 +486,26 @@ public class InventoryModule
         {
             return new List<InventoryModel>();
         }
-        
+
         player.CharacterModel.InventoryModel = characterInventory;
 
-        if (player.DefaultInventories.Count != 0)
+        if (player.OpenInventories.Count != 0)
         {
-            inventories.AddRange(player.DefaultInventories);
+            var openInventories = new List<InventoryModel>();
+
+            foreach (var openInventoryData in player.OpenInventories)
+            {
+                var inventory = await _inventoryService.GetByKey(openInventoryData.InventoryId);
+                if (inventory == null)
+                {
+                    continue;
+                }
+
+                inventory.InventoryType = openInventoryData.InventoryType;
+                openInventories.Add(inventory);
+            }
+
+            inventories.AddRange(openInventories);
         }
 
         inventories.Add(player.CharacterModel.InventoryModel);
@@ -472,20 +516,23 @@ public class InventoryModule
             var house = await _houseService.GetByKey(player.Dimension);
             if (house != null && house.Keys.Count != 0)
             {
-                var houseKeyItem = player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => house.Keys.Any(k => k == i.Id));
+                var houseKeyItem =
+                    player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => house.Keys.Any(k => k == i.Id));
 
                 if (houseKeyItem != null || house.CharacterModelId == player.CharacterModel.Id || player.IsAduty)
                 {
                     inventories.Add(house.Inventory);
                 }
             }
-        }   
+        }
+
         if (player.MloInterior != 0)
         {
             var house = await _houseService.GetByDistance(player.Position, 10);
             if (house != null && house.Keys.Count != 0)
             {
-                var houseKeyItem = player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => house.Keys.Any(k => k == i.Id));
+                var houseKeyItem =
+                    player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => house.Keys.Any(k => k == i.Id));
 
                 if (houseKeyItem != null || house.CharacterModelId == player.CharacterModel.Id || player.IsAduty)
                 {
@@ -502,7 +549,8 @@ public class InventoryModule
         }
 
         // Check if user is in a group, and around the group house to open the group member inventory.
-        foreach (var group in await _groupService.Where(g => g.Members.Any(m => m.CharacterModelId == player.CharacterModel.Id)))
+        foreach (var group in await _groupService.Where(
+                     g => g.Members.Any(m => m.CharacterModelId == player.CharacterModel.Id)))
         {
             var member = group.Members.FirstOrDefault(m => m.CharacterModelId == player.CharacterModel.Id);
             if (member == null)
@@ -529,7 +577,8 @@ public class InventoryModule
             }
 
             var inventory = await _inventoryService.Find(i =>
-                                                             i.GroupCharacterId == player.CharacterModel.Id && i.GroupId == group.Id);
+                                                             i.GroupCharacterId == player.CharacterModel.Id &&
+                                                             i.GroupId == group.Id);
             if (inventory == null)
             {
                 continue;

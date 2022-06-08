@@ -10,11 +10,11 @@ namespace Server.Handlers.Admin;
 public class ItemCatalogHandler : ISingletonScript
 {
     private readonly ItemCatalogService _itemCatalogService;
-    
+
     public ItemCatalogHandler(ItemCatalogService itemCatalogService)
     {
         _itemCatalogService = itemCatalogService;
-        
+
         AltAsync.OnClient<ServerPlayer>("itemcatalog:open", OnOpenItemCatalog);
     }
 

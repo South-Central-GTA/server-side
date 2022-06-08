@@ -4,6 +4,8 @@ using Server.Core.Entities;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Mdc;
+using Server.Modules.FileSystem;
+using Server.Modules.Group;
 
 namespace Server.Handlers.MDC.Base;
 
@@ -11,13 +13,19 @@ public class ApbDeleteBulletInHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
     private readonly BulletInService _bulletInService;
- 
+    private readonly ApbModule _apbModule;
+    private readonly GroupModule _groupModule;
+
     public ApbDeleteBulletInHandler(
-        GroupFactionService groupFactionService, 
-        BulletInService bulletInService) 
+        GroupFactionService groupFactionService,
+        BulletInService bulletInService,
+        ApbModule apbModule,
+        GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;
         _bulletInService = bulletInService;
+        _apbModule = apbModule;
+        _groupModule = groupModule;
 
         AltAsync.OnClient<ServerPlayer, FactionType, int>("apb:deletebulletin", OnExecute);
     }
@@ -35,6 +43,11 @@ public class ApbDeleteBulletInHandler : ISingletonScript
             return;
         }
 
+        if (!await _groupModule.HasPermission(player.CharacterModel.Id, factionGroup.Id, GroupPermission.MDC_OPERATOR))
+        {
+            return;
+        }
+
         var entry = await _bulletInService.GetByKey(entryId);
         if (entry == null)
         {
@@ -42,7 +55,7 @@ public class ApbDeleteBulletInHandler : ISingletonScript
         }
 
         await _bulletInService.Remove(entry);
-        
-        // TODO: Update for each player that has the apb menu open.
+
+        await _apbModule.UpdateUi(factionGroup.Id);
     }
 }

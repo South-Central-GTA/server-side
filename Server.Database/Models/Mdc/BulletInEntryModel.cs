@@ -12,14 +12,14 @@ public class BulletInEntryModel
 {
     public BulletInEntryModel()
     {
-        
     }
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
+
     public string CreatorCharacterName { get; set; }
-    
+
     public string Content { get; set; }
     public FactionType FactionType { get; set; }
 
@@ -35,7 +35,7 @@ public class BulletInEntryModel
 
         writer.Name("creatorCharacterName");
         writer.Value(CreatorCharacterName);
-        
+
         writer.Name("createdAtJson");
         writer.Value(JsonSerializer.Serialize(CreatedAt));
 

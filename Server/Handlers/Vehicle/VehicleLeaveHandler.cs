@@ -26,7 +26,9 @@ namespace Server.Handlers.Vehicle
             _drivingSchoolModule = drivingSchoolModule;
 
             AltAsync.OnPlayerLeaveVehicle += (vehicle, player, seat) =>
-                OnPlayerLeaveVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(), (ServerPlayer)player, seat);
+                OnPlayerLeaveVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(),
+                                     (ServerPlayer)player,
+                                     seat);
         }
 
         private async Task OnPlayerLeaveVehicle(ServerVehicle vehicle, ServerPlayer player, byte seat)
@@ -66,7 +68,9 @@ namespace Server.Handlers.Vehicle
                                                 if (examPlayer != null)
                                                 {
                                                     await _drivingSchoolModule.StopPlayerExam(examPlayer, false);
-                                                    player.SendNotification("Der Fahrlehrer wollte nicht länger warten und ist zurück gefahren.", NotificationType.ERROR);
+                                                    player.SendNotification(
+                                                        "Der Fahrlehrer wollte nicht länger warten und ist zurück gefahren.",
+                                                        NotificationType.ERROR);
                                                 }
                                                 else
                                                 {

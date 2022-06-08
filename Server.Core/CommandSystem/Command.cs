@@ -8,7 +8,9 @@ namespace Server.Core.CommandSystem;
 public class Command
     : Attribute, IWritable
 {
-    public Command(string name = null, string description = null, Permission requiredPermission = Permission.NONE, string[] parameterDescription = null, CommandArgs commandArgs = CommandArgs.NOT_GREEDY, string[] aliases = null)
+    public Command(string name = null, string description = null, Permission requiredPermission = Permission.NONE,
+                   string[] parameterDescription = null, CommandArgs commandArgs = CommandArgs.NOT_GREEDY,
+                   string[] aliases = null)
     {
         Name = name;
         Description = description;

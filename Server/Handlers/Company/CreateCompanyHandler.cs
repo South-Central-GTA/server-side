@@ -36,7 +36,6 @@ public class CreateCompanyHandler : ISingletonScript
         BankAccountService bankAccountService,
         GroupMemberService groupMemberService,
         RegistrationOfficeService registrationOfficeService,
-        
         GroupModule groupModule,
         PhoneModule phoneModule,
         BankModule bankModule,
@@ -63,8 +62,9 @@ public class CreateCompanyHandler : ISingletonScript
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
 
         if (await _groupModule.IsPlayerInGroupType(player, GroupType.COMPANY))
@@ -154,13 +154,22 @@ public class CreateCompanyHandler : ISingletonScript
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount, _companyOptions.CreateCosts, false, $"Unternehmensgründung '{name}'");
+        var success = await _bankModule.Withdraw(bankAccount,
+                                                 _companyOptions.CreateCosts,
+                                                 false,
+                                                 $"Unternehmensgründung '{name}'");
         if (success)
         {
             var createdGroup = await _groupModule.CreateGroup(GroupType.COMPANY, name);
             if (createdGroup != null)
             {
-                await _groupMemberService.Add(new GroupMemberModel { GroupModelId = createdGroup.Id, CharacterModelId = player.CharacterModel.Id, Owner = true, BankAccountId = bankAccountId });
+                await _groupMemberService.Add(new GroupMemberModel
+                {
+                    GroupModelId = createdGroup.Id,
+                    CharacterModelId = player.CharacterModel.Id,
+                    Owner = true,
+                    BankAccountId = bankAccountId
+                });
 
                 house.CharacterModelId = null;
                 house.GroupModelId = createdGroup.Id;

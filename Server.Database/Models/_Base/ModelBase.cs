@@ -12,9 +12,7 @@ public abstract class ModelBase
         LastUsage = DateTime.Now;
     }
 
-    [JsonIgnore] 
-    public DateTime CreatedAt { get; set; }
+    [JsonIgnore] public DateTime CreatedAt { get; set; }
 
-    [JsonIgnore] 
-    public DateTime LastUsage { get; set; }
+    [JsonIgnore] public DateTime LastUsage { get; set; }
 }

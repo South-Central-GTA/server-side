@@ -45,8 +45,9 @@ public class ItemDropModule
     {
         var item = await _itemService.GetByKey(itemId);
 
-        var sameItemType = player.CharacterModel.InventoryModel.Items.Find(i => i.CatalogItemModelId == item.CatalogItemModelId
-                                                                      && item.CatalogItemModel.Stackable);
+        var sameItemType = player.CharacterModel.InventoryModel.Items.Find(
+            i => i.CatalogItemModelId == item.CatalogItemModelId
+                 && item.CatalogItemModel.Stackable);
 
         if (player.Position.Distance(item.Position) > 3.0f)
         {
@@ -69,7 +70,9 @@ public class ItemDropModule
                 freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id, weight);
                 if (!freeSlot.HasValue)
                 {
-                    player.SendNotification("Dein Charakter hat nicht genug Platz im Inventar für die Waffe samt Erweiterungen.", NotificationType.ERROR);
+                    player.SendNotification(
+                        "Dein Charakter hat nicht genug Platz im Inventar für die Waffe samt Erweiterungen.",
+                        NotificationType.ERROR);
                     return false;
                 }
 
@@ -83,12 +86,14 @@ public class ItemDropModule
             }
             else
             {
-                freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id, item.CatalogItemModel.Weight);
+                freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id,
+                                                                  item.CatalogItemModel.Weight);
             }
         }
         else
         {
-            freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id, item.CatalogItemModel.Weight);
+            freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id,
+                                                              item.CatalogItemModel.Weight);
         }
 
         if (!freeSlot.HasValue)
@@ -120,11 +125,13 @@ public class ItemDropModule
         if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId))
         {
             var data = _serializer.Deserialize<ClothingData>(item.CustomData);
-            player.SendNotification($"Dein Charakter hat {item.Amount}x {data.Title} aufgehoben.", NotificationType.SUCCESS);
+            player.SendNotification($"Dein Charakter hat {item.Amount}x {data.Title} aufgehoben.",
+                                    NotificationType.SUCCESS);
         }
         else
         {
-            player.SendNotification($"Dein Charakter hat {item.Amount}x {item.CatalogItemModel.Name} aufgehoben.", NotificationType.SUCCESS);
+            player.SendNotification($"Dein Charakter hat {item.Amount}x {item.CatalogItemModel.Name} aufgehoben.",
+                                    NotificationType.SUCCESS);
         }
 
         return true;
@@ -134,8 +141,9 @@ public class ItemDropModule
     {
         var item = await _itemService.GetByKey(itemId);
 
-        var sameItem = player.CharacterModel.InventoryModel.Items.Find(i => i.CatalogItemModel.Id == item.CatalogItemModel.Id
-                                                                  && i.ItemState == ItemState.EQUIPPED);
+        var sameItem = player.CharacterModel.InventoryModel.Items.Find(
+            i => i.CatalogItemModel.Id == item.CatalogItemModel.Id
+                 && i.ItemState == ItemState.EQUIPPED);
 
         if (sameItem != null)
         {
@@ -146,7 +154,8 @@ public class ItemDropModule
         var clothingData = _serializer.Deserialize<ClothingData>(item.CustomData);
         if (clothingData.GenderType != player.CharacterModel.Gender)
         {
-            player.SendNotification("Dein Charakter kann keine Kleidung des anderen Geschlechtes anziehen.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter kann keine Kleidung des anderen Geschlechtes anziehen.",
+                                    NotificationType.ERROR);
             return;
         }
 

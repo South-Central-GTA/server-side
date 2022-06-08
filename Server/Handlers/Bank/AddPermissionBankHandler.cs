@@ -21,20 +21,21 @@ public class AddPermissionBankHandler : ISingletonScript
     private readonly CharacterService _characterService;
 
     public AddPermissionBankHandler(
-        PhoneModule phoneModule, 
-        BankModule bankModule, 
-        BankAccountService bankAccountService, 
+        PhoneModule phoneModule,
+        BankModule bankModule,
+        BankAccountService bankAccountService,
         CharacterService characterService)
     {
         _phoneModule = phoneModule;
         _bankModule = bankModule;
         _bankAccountService = bankAccountService;
         _characterService = characterService;
-        
+
         AltAsync.OnClient<ServerPlayer, int, int, int, string>("bank:addpermission", OnAddPermission);
     }
 
-    private async void OnAddPermission(ServerPlayer player, int phoneId, int bankAccountId, int characterId, string expectedPermission)
+    private async void OnAddPermission(ServerPlayer player, int phoneId, int bankAccountId, int characterId,
+                                       string expectedPermission)
     {
         if (!player.Exists)
         {

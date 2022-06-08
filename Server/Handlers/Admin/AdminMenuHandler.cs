@@ -11,7 +11,7 @@ public class AdminMenuHandler : ISingletonScript
     {
         AltAsync.OnClient<ServerPlayer>("admin:requestmenu", OnRequestMenu);
     }
-    
+
     private async void OnRequestMenu(ServerPlayer player)
     {
         if (!player.Exists)

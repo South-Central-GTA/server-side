@@ -4,6 +4,8 @@ using Server.Core.Entities;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Mdc;
+using Server.Modules.FileSystem;
+using Server.Modules.Group;
 
 namespace Server.Handlers.MDC.Base;
 
@@ -11,13 +13,19 @@ public class ApbCreateBulletInHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
     private readonly BulletInService _bulletInService;
- 
+    private readonly ApbModule _apbModule;
+    private readonly GroupModule _groupModule;
+
     public ApbCreateBulletInHandler(
-        GroupFactionService groupFactionService, 
-        BulletInService bulletInService) 
+        GroupFactionService groupFactionService,
+        BulletInService bulletInService,
+        ApbModule apbModule,
+        GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;
         _bulletInService = bulletInService;
+        _apbModule = apbModule;
+        _groupModule = groupModule;
 
         AltAsync.OnClient<ServerPlayer, FactionType, string>("apb:createbulletin", OnExecute);
     }
@@ -34,14 +42,19 @@ public class ApbCreateBulletInHandler : ISingletonScript
         {
             return;
         }
-        
+
+        if (!await _groupModule.HasPermission(player.CharacterModel.Id, factionGroup.Id, GroupPermission.MDC_OPERATOR))
+        {
+            return;
+        }
+
         await _bulletInService.Add(new BulletInEntryModel()
         {
-            CreatorCharacterName = player.CharacterModel.Name, 
+            CreatorCharacterName = player.CharacterModel.Name,
             Content = input,
             FactionType = factionType
         });
-        
-        // TODO: Update for each player that has the apb menu open.
+
+        await _apbModule.UpdateUi(factionGroup.Id);
     }
 }

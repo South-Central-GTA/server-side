@@ -12,7 +12,6 @@ public class MdcNoteModel
 {
     public MdcNoteModel()
     {
-        
     }
 
     [Key]
@@ -24,7 +23,7 @@ public class MdcNoteModel
 
     public string CreatorCharacterName { get; set; }
     public string Note { get; set; }
-    
+
     public void OnWrite(IMValueWriter writer)
     {
         writer.BeginObject();
@@ -37,7 +36,7 @@ public class MdcNoteModel
 
         writer.Name("creatorCharacterName");
         writer.Value(CreatorCharacterName);
-        
+
         writer.Name("createdAtJson");
         writer.Value(JsonSerializer.Serialize(CreatedAt));
 

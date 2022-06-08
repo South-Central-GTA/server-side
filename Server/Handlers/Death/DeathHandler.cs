@@ -14,12 +14,13 @@ public class DeathHandler : ISingletonScript
     public DeathHandler(DeathModule deathModule)
     {
         _deathModule = deathModule;
-        
+
         AltAsync.OnPlayerDead += (player, killer, weapon) => OnPlayerDead(player as ServerPlayer, killer, weapon);
     }
 
     private async Task OnPlayerDead(ServerPlayer player, IEntity killer, uint weapon)
     {
+        await Task.Delay(3000);
         await _deathModule.PreparePlayerDead(player, killer, weapon);
     }
 }

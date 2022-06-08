@@ -14,8 +14,9 @@ public class CatalogItemModel
     {
     }
 
-    public CatalogItemModel(ItemCatalogIds id, string name, string model, Rotation rotation, float zOffset, string image, string description, Rarity rarity, float weight, bool equippable,
-                       bool stackable, bool buyable, bool sellable, int price, int sellPrice, int? maxLimit = null)
+    public CatalogItemModel(ItemCatalogIds id, string name, string model, Rotation rotation, float zOffset,
+                            string image, string description, Rarity rarity, float weight, bool equippable,
+                            bool stackable, bool buyable, bool sellable, int price, int sellPrice, int? maxLimit = null)
     {
         Id = id;
         Name = name;

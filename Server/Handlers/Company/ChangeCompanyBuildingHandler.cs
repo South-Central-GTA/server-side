@@ -18,7 +18,7 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     private readonly GroupModule _groupModule;
     private readonly HouseModule _houseModule;
     private readonly PhoneModule _phoneModule;
@@ -27,9 +27,8 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
         GroupService groupService,
         HouseService houseService,
         RegistrationOfficeService registrationOfficeService,
-        
         GroupModule groupModule,
-        HouseModule houseModule, 
+        HouseModule houseModule,
         PhoneModule phoneModule)
     {
         _groupService = groupService;
@@ -53,12 +52,13 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
         {
             return;
         }
-        
+
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
 
         var newHouse = await _houseService.GetByKey(houseId);
@@ -66,10 +66,11 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (newHouse.HouseType != HouseType.HOUSE)
         {
-            player.SendNotification("Dieses Gebäude kann nicht als Hauptsitz des Unternehmens gesetzt werden.", NotificationType.ERROR);
+            player.SendNotification("Dieses Gebäude kann nicht als Hauptsitz des Unternehmens gesetzt werden.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -88,12 +89,12 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
             {
                 continue;
             }
-            
+
             if (!target.Exists)
             {
                 continue;
             }
-            
+
             await _houseModule.UpdateUi(target);
         }
 

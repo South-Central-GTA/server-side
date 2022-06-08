@@ -88,10 +88,6 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<DateTime>("OnlineSince")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("Permission")
                         .HasColumnType("integer");
 

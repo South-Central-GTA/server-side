@@ -18,7 +18,7 @@ public class ItemWeaponService
     {
         _dbContextFactory = dbContextFactory;
     }
-    
+
     public async Task<ItemWeaponModel?> GetByKey(int id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();

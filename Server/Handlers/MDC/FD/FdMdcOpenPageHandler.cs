@@ -12,9 +12,9 @@ public class FdMdcOpenPageHandler : ISingletonScript
 {
     private readonly BaseMdcModule _baseMdcModule;
     private readonly FireMdcModule _fireMdcModule;
- 
+
     public FdMdcOpenPageHandler(
-        BaseMdcModule baseMdcModule, 
+        BaseMdcModule baseMdcModule,
         FireMdcModule fireMdcModule)
     {
         _baseMdcModule = baseMdcModule;
@@ -45,15 +45,15 @@ public class FdMdcOpenPageHandler : ISingletonScript
 
     private async Task OpenHomeScreen(ServerPlayer player)
     {
-        player.EmitGui("firemdc:openhomescreen", 
-                       await _fireMdcModule.GetEmergencyCalls(), 
-                       _fireMdcModule.CallSign.GetCallSigns(), 
+        player.EmitGui("firemdc:openhomescreen",
+                       await _fireMdcModule.GetEmergencyCalls(),
+                       _fireMdcModule.CallSign.GetCallSigns(),
                        _fireMdcModule.CallSign.HasCallSign(player.CharacterModel));
     }
-    
+
     private async Task OpenApbScreen(ServerPlayer player)
     {
-        player.EmitGui("firemdc:openapbscreen",  
+        player.EmitGui("firemdc:openapbscreen",
                        await _baseMdcModule.GetBulletInEntries(FactionType.FIRE_DEPARTMENT));
     }
 }

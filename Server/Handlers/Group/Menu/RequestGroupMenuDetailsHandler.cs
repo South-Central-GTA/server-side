@@ -49,7 +49,7 @@ public class RequestGroupMenuDetailsHandler : ISingletonScript
                 var memberCharacterIds = group.Members.Select(m => m.CharacterModelId);
                 var players = Alt.GetAllPlayers()
                                  .GetAllServerPlayers()
-                                 .Where(p => memberCharacterIds.Contains(p.CharacterModel.Id));
+                                 .FindAll(p => memberCharacterIds.Contains(p.CharacterModel.Id));
 
                 onlineGroupPlayers = players
                                      .Select(target => new PlayerInformationData

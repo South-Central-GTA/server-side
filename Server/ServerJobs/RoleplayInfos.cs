@@ -10,12 +10,11 @@ using Server.Core.Configuration;
 using Server.Data.Enums.EntitySync;
 using Server.DataAccessLayer.Services;
 using Server.Helper;
-using Server.Modules;
 using Server.Modules.EntitySync;
 
 namespace Server.ServerJobs;
 
-public class RoleplayInfos : IServerJob
+public class RoleplayInfos : IJob
 {
     private readonly DevelopmentOptions _developmentOptions;
     private readonly GameOptions _gameOptions;

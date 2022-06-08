@@ -8,11 +8,11 @@ namespace Server.Handlers.CharacterCreator;
 public class CharacterCreatorSpawnHandler : ISingletonScript
 {
     private readonly CharacterSpawnModule _characterSpawnModule;
-    
+
     public CharacterCreatorSpawnHandler(CharacterSpawnModule characterSpawnModule)
     {
         _characterSpawnModule = characterSpawnModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("charcreatorspawn:open", OnOpenSpawnSelectionMenu);
     }
 

@@ -5,15 +5,11 @@ namespace Server.Data.Models;
 
 public class ClothingData
 {
-    [JsonPropertyName("genderType")] 
-    public GenderType GenderType { get; set; }
+    [JsonPropertyName("genderType")] public GenderType GenderType { get; set; }
 
-    [JsonPropertyName("drawableId")] 
-    public int DrawableId { get; set; }
+    [JsonPropertyName("drawableId")] public int DrawableId { get; set; }
 
-    [JsonPropertyName("textureId")] 
-    public int TextureId { get; set; }
+    [JsonPropertyName("textureId")] public int TextureId { get; set; }
 
-    [JsonPropertyName("title")] 
-    public string Title { get; set; }
+    [JsonPropertyName("title")] public string Title { get; set; }
 }

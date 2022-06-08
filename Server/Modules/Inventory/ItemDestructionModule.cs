@@ -46,7 +46,8 @@ public class ItemDestructionModule
         {
             var items = await _itemService.GetAll();
             var weaponAttachmentItems = items.Where(i =>
-                                                        i is ItemWeaponAttachmentModel weaponAttachment && weaponAttachment.ItemWeaponId == item.Id);
+                                                        i is ItemWeaponAttachmentModel weaponAttachment &&
+                                                        weaponAttachment.ItemWeaponId == item.Id);
             await _itemService.RemoveRange(weaponAttachmentItems);
 
             if (item.InventoryModelId.HasValue && item.InventoryModel.CharacterModelId.HasValue)

@@ -93,8 +93,9 @@ public class GasStationHandler : ISingletonScript
         {
             Type = DialogType.TWO_BUTTON_DIALOG,
             Title = "Zapfseule",
-            Description = $"Der Treibstoff kostet dich <b>${shopData.BillToPay}</b>, willst du diesen Betrag bezahlen?<br>" +
-                          "<p class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</p>",
+            Description =
+                $"Der Treibstoff kostet dich <b>${shopData.BillToPay}</b>, willst du diesen Betrag bezahlen?<br>" +
+                "<p class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</p>",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             PrimaryButton = "Bargeld nutzen",
@@ -126,8 +127,8 @@ public class GasStationHandler : ISingletonScript
         if (vehicle is not { Exists: true })
         {
             return;
-        }       
-        
+        }
+
         if (vehicle.DbEntity == null)
         {
             return;
@@ -144,7 +145,7 @@ public class GasStationHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (fuel > catalogVehicle.MaxTank)
         {
             player.SendNotification("Du kannst nicht so viel tanken.", NotificationType.ERROR);
@@ -168,7 +169,12 @@ public class GasStationHandler : ISingletonScript
         }
         else
         {
-            await _userShopDataService.Add(new UserShopDataModel { CharacterModelId = player.CharacterModel.Id, GotWarned = false, BillToPay = price });
+            await _userShopDataService.Add(new UserShopDataModel
+            {
+                CharacterModelId = player.CharacterModel.Id,
+                GotWarned = false,
+                BillToPay = price
+            });
         }
 
         player.SendNotification("Du hast des Fahrzeug erfolgreich getankt.", NotificationType.SUCCESS);
@@ -192,7 +198,8 @@ public class GasStationHandler : ISingletonScript
         var bill = shopData.BillToPay;
 
         //TODO: Add actual call to police here over mdc.
-        player.SendNotification($"Debug: Information ans PD, Tankdiebstahl in Wert von {bill}$.", NotificationType.WARNING);
+        player.SendNotification($"Debug: Information ans PD, Tankdiebstahl in Wert von {bill}$.",
+                                NotificationType.WARNING);
 
         await _userShopDataService.Remove(shopData);
     }
@@ -265,7 +272,8 @@ public class GasStationHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -281,7 +289,8 @@ public class GasStationHandler : ISingletonScript
         }
         else
         {
-            player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.",
+                                    NotificationType.ERROR);
         }
     }
 }

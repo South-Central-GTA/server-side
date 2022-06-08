@@ -14,15 +14,14 @@ public class CreateDirectoryHandler : ISingletonScript
 
     private readonly SyncFileModule _syncFileModule;
     private readonly GroupModule _groupModule;
-    
+
     public CreateDirectoryHandler(
         DirectoryService directoryService,
-        
-        SyncFileModule syncFileModule, 
+        SyncFileModule syncFileModule,
         GroupModule groupModule)
     {
         _directoryService = directoryService;
-        
+
         _syncFileModule = syncFileModule;
         _groupModule = groupModule;
 
@@ -47,7 +46,6 @@ public class CreateDirectoryHandler : ISingletonScript
             GroupModelId = groupId,
             CreatorCharacterName = player.CharacterModel.Name,
             LastEditCharacterName = player.CharacterModel.Name,
-            
         });
 
         await _syncFileModule.UpdateDirectory(groupId);

@@ -7,12 +7,11 @@ using Server.Core.Abstractions;
 using Server.Core.Configuration;
 using Server.Data.Enums.EntitySync;
 using Server.DataAccessLayer.Services;
-using Server.Modules;
 using Server.Modules.EntitySync;
 
 namespace Server.ServerJobs;
 
-public class Marker : IServerJob
+public class Marker : IJob
 {
     private readonly DevelopmentOptions _developmentOptions;
 
@@ -57,7 +56,9 @@ public class Marker : IServerJob
         }
 
         _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER,
-                                 new Position(_worldLocationOptions.HarbourSelectionPositionX, _worldLocationOptions.HarbourSelectionPositionY, _worldLocationOptions.HarbourSelectionPositionZ),
+                                 new Position(_worldLocationOptions.HarbourSelectionPositionX,
+                                              _worldLocationOptions.HarbourSelectionPositionY,
+                                              _worldLocationOptions.HarbourSelectionPositionZ),
                                  Vector3.Zero,
                                  Vector3.Zero,
                                  new Vector3(4f, 4f, 1f),
@@ -70,7 +71,9 @@ public class Marker : IServerJob
         foreach (var publicGarage in _worldLocationOptions.PublicGarages)
         {
             _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER,
-                                     new Position(publicGarage.ParkingPointX, publicGarage.ParkingPointY, publicGarage.ParkingPointZ),
+                                     new Position(publicGarage.ParkingPointX,
+                                                  publicGarage.ParkingPointY,
+                                                  publicGarage.ParkingPointZ),
                                      Vector3.Zero,
                                      Vector3.Zero,
                                      new Vector3(4f, 4f, 1f),
@@ -87,7 +90,7 @@ public class Marker : IServerJob
             {
                 continue;
             }
-            
+
             _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER,
                                      house.Position,
                                      Vector3.Zero,

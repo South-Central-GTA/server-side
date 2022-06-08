@@ -31,7 +31,7 @@ public class KeyModule
         PlayerVehicleModel vehicleModel = null;
         DoorModel doorModel = null;
         var keys = new List<int>();
-        
+
         switch (lockableEntity)
         {
             case HouseModel h:
@@ -57,7 +57,7 @@ public class KeyModule
                 {
                     isGroupEntity = true;
                 }
-                
+
                 vehicleModel = v;
                 keys = vehicleModel.Keys;
                 break;
@@ -69,13 +69,14 @@ public class KeyModule
         if (isGroupEntity)
         {
             foreach (var i in player.CharacterModel.InventoryModel.Items
-                                    .Where(i => i.CatalogItemModelId == ItemCatalogIds.GROUP_KEY).Cast<ItemGroupKeyModel>())
+                                    .Where(i => i.CatalogItemModelId == ItemCatalogIds.GROUP_KEY)
+                                    .Cast<ItemGroupKeyModel>())
             {
                 if (!i.GroupModelId.HasValue)
                 {
                     continue;
                 }
-                
+
                 var group = await _groupService.GetByKey(i.GroupModelId);
                 if (group?.Members == null || group.Members.Count == 0)
                 {
@@ -105,7 +106,7 @@ public class KeyModule
                 ? HasKeyErrorType.HAS_WRONG_GROUP_KEY
                 : HasKeyErrorType.HAS_NO_KEY;
         }
-        
+
         if (keys.Count == 0)
         {
             return HasKeyErrorType.HAS_NO_KEY;

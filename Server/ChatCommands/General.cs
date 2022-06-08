@@ -1,14 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using AltV.Net;
 using AltV.Net.Async;
-using AltV.Net.Data;
-using AltV.Net.Enums;
-using Microsoft.Extensions.Options;
-using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.CommandSystem;
-using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
@@ -17,7 +10,6 @@ using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Housing;
 using Server.Database.Models.Inventory;
-using Server.Modules;
 using Server.Modules.Admin;
 using Server.Modules.Animation;
 using Server.Modules.Bank;
@@ -32,6 +24,7 @@ using Server.Modules.Inventory;
 using Server.Modules.Key;
 using Server.Modules.RoleplayInfo;
 using Server.Modules.Vehicles;
+using Server.Core.Abstractions.ScriptStrategy;
 
 namespace Server.ChatCommands;
 
@@ -39,10 +32,8 @@ public class General : ISingletonScript
 {
     private readonly AnimationModule _animationModule;
     private readonly BankModule _bankModule;
-    private readonly CharacterSelectionModule _characterSelectionModule;
     private readonly CharacterService _characterService;
     private readonly ChatModule _chatModule;
-    private readonly CompanyOptions _companyOptions;
     private readonly DeliveryModule _deliveryModule;
     private readonly DiscordModule _discordModule;
     private readonly GroupFactionService _groupFactionService;
@@ -62,11 +53,9 @@ public class General : ISingletonScript
     private readonly PedSyncModule _pedSyncModule;
     private readonly RoleplayInfoModule _roleplayInfoModule;
     private readonly VehicleModule _vehicleModule;
-    private readonly WorldLocationOptions _worldLocationOptions;
+    private readonly CharacterSelectionModule _characterSelectionModule;
 
     public General(
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        IOptions<CompanyOptions> companyOptions,
         HouseService houseService,
         CharacterService characterService,
         ItemService itemService,
@@ -82,17 +71,15 @@ public class General : ISingletonScript
         BankModule bankModule,
         GroupModule groupModule,
         DeliveryModule deliveryModule,
-        CharacterSelectionModule characterSelectionModule,
         ChatModule chatModule,
         PedSyncModule pedSyncModule,
         HelpMeModule helpMeModule,
         DiscordModule discordModule,
         RoleplayInfoModule roleplayInfoModule,
-        AnimationModule animationModule, 
-        RegistrationOfficeService registrationOfficeService)
+        AnimationModule animationModule,
+        RegistrationOfficeService registrationOfficeService,
+        CharacterSelectionModule characterSelectionModule)
     {
-        _worldLocationOptions = worldLocationOptions.Value;
-        _companyOptions = companyOptions.Value;
         _houseService = houseService;
         _characterService = characterService;
         _itemService = itemService;
@@ -109,7 +96,6 @@ public class General : ISingletonScript
         _bankModule = bankModule;
         _groupModule = groupModule;
         _deliveryModule = deliveryModule;
-        _characterSelectionModule = characterSelectionModule;
         _chatModule = chatModule;
         _pedSyncModule = pedSyncModule;
         _helpMeModule = helpMeModule;
@@ -117,6 +103,7 @@ public class General : ISingletonScript
         _roleplayInfoModule = roleplayInfoModule;
         _animationModule = animationModule;
         _registrationOfficeService = registrationOfficeService;
+        _characterSelectionModule = characterSelectionModule;
     }
 
     [Command("verify", "Update deine Berechtigungen basierend auf unseren Discord Server.")]
@@ -131,7 +118,10 @@ public class General : ISingletonScript
         player.SendNotification("Deine Berechtigungen wurden erfolgreich geupdated.", NotificationType.SUCCESS);
     }
 
-    [Command("cuff", "Lege einem Charakter Handschellen an wenn dein Charakter das Item im Inventar hat.", Permission.NONE, new[] { "Spieler ID" })]
+    [Command("cuff",
+             "Lege einem Charakter Handschellen an wenn dein Charakter das Item im Inventar hat.",
+             Permission.NONE,
+             new[] { "Spieler ID" })]
     public async void OnCuff(ServerPlayer player, string expectedPlayerId)
     {
         if (!player.Exists)
@@ -140,7 +130,8 @@ public class General : ISingletonScript
         }
 
         var itemHandCuff = (ItemHandCuffModel)player.CharacterModel.InventoryModel.Items
-                                               .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.HANDCUFF);
+                                                    .FirstOrDefault(
+                                                        i => i.CatalogItemModelId == ItemCatalogIds.HANDCUFF);
         if (itemHandCuff == null)
         {
             player.SendNotification("Dein Charakter hat keine Handschellen im Inventar.", NotificationType.ERROR);
@@ -161,7 +152,8 @@ public class General : ISingletonScript
 
         if (player.Position.Distance(target.Position) > 2)
         {
-            player.SendNotification($"Dein Charakter ist von {target.CharacterModel.Name} zu weit entfernt.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter ist von {target.CharacterModel.Name} zu weit entfernt.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -179,10 +171,15 @@ public class General : ISingletonScript
 
         if (!await _groupModule.IsPlayerInGroupType(player, GroupType.FACTION))
         {
-            var keyItem = await _itemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.HANDCUFF_KEY, 1);
+            var keyItem =
+                await _itemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel,
+                                                       ItemCatalogIds.HANDCUFF_KEY,
+                                                       1);
             if (keyItem == null)
             {
-                player.SendNotification("Dein Charakter hatte kein Platz in seinem Inventar für den Schlüssel der Handschellen.", NotificationType.ERROR);
+                player.SendNotification(
+                    "Dein Charakter hatte kein Platz in seinem Inventar für den Schlüssel der Handschellen.",
+                    NotificationType.ERROR);
                 return;
             }
 
@@ -195,8 +192,9 @@ public class General : ISingletonScript
             {
                 return;
             }
-            
-            target.SendNotification("Jeder aus der Fraktion mit einem Gruppenschlüssel kann die Handschellen abnehmen.", NotificationType.INFO);
+
+            target.SendNotification("Jeder aus der Fraktion mit einem Gruppenschlüssel kann die Handschellen abnehmen.",
+                                    NotificationType.INFO);
 
             itemHandCuff.GroupModelId = faction.Id;
         }
@@ -215,7 +213,9 @@ public class General : ISingletonScript
         // Give the player the amount of handcuffs back.
         if (oldHandcuffAmount > 1)
         {
-            await _itemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.HANDCUFF, oldHandcuffAmount - 1);
+            await _itemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel,
+                                                   ItemCatalogIds.HANDCUFF,
+                                                   oldHandcuffAmount - 1);
         }
 
         target.Cuffed = true;
@@ -223,11 +223,16 @@ public class General : ISingletonScript
         await _inventoryModule.UpdateInventoryUiAsync(player);
         await _inventoryModule.UpdateInventoryUiAsync(target);
 
-        target.SendNotification($"Deinem Charakter wurden von {player.CharacterModel.Name} Handschellen angelegt.", NotificationType.INFO);
-        player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} Handschellen angelegt.", NotificationType.SUCCESS);
+        target.SendNotification($"Deinem Charakter wurden von {player.CharacterModel.Name} Handschellen angelegt.",
+                                NotificationType.INFO);
+        player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} Handschellen angelegt.",
+                                NotificationType.SUCCESS);
     }
 
-    [Command("uncuff", "Nehmen einen Charakter Handschellen ab wenn du den Schlüssel dafür hast.", Permission.NONE, new[] { "Spieler ID" })]
+    [Command("uncuff",
+             "Nehmen einen Charakter Handschellen ab wenn du den Schlüssel dafür hast.",
+             Permission.NONE,
+             new[] { "Spieler ID" })]
     public async void OnUncuff(ServerPlayer player, string expectedPlayerId)
     {
         if (!player.Exists)
@@ -249,12 +254,15 @@ public class General : ISingletonScript
 
         if (player.Position.Distance(target.Position) > 2)
         {
-            player.SendNotification($"Dein Charakter ist von {target.CharacterModel.Name} zu weit entfernt.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter ist von {target.CharacterModel.Name} zu weit entfernt.",
+                                    NotificationType.ERROR);
             return;
         }
 
         var itemHandCuff = (ItemHandCuffModel)target.CharacterModel.InventoryModel.Items
-                                               .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.HANDCUFF && i.ItemState == ItemState.FORCE_EQUIPPED);
+                                                    .FirstOrDefault(
+                                                        i => i.CatalogItemModelId == ItemCatalogIds.HANDCUFF &&
+                                                             i.ItemState == ItemState.FORCE_EQUIPPED);
         if (itemHandCuff == null)
         {
             player.SendNotification("Der Charakter hat keine Handschellen angelegt.", NotificationType.ERROR);
@@ -273,7 +281,9 @@ public class General : ISingletonScript
                       .Cast<ItemGroupKeyModel>()
                       .All(i => i.GroupModelId != itemHandCuff.GroupModelId.Value))
             {
-                player.SendNotification("Dein Charakter hat keinen Gruppenschlüssel von der Gruppe welche die Handschellen angelegt hat im Inventar.", NotificationType.ERROR);
+                player.SendNotification(
+                    "Dein Charakter hat keinen Gruppenschlüssel von der Gruppe welche die Handschellen angelegt hat im Inventar.",
+                    NotificationType.ERROR);
                 return;
             }
         }
@@ -282,7 +292,8 @@ public class General : ISingletonScript
             if (player.CharacterModel.InventoryModel.Items
                       .All(i => i.Id != itemHandCuff.ItemKeyModelId.Value))
             {
-                player.SendNotification("Dein Charakter hat kein Schlüssel für diese Handschellen.", NotificationType.ERROR);
+                player.SendNotification("Dein Charakter hat kein Schlüssel für diese Handschellen.",
+                                        NotificationType.ERROR);
                 return;
             }
 
@@ -303,11 +314,18 @@ public class General : ISingletonScript
         await _inventoryModule.UpdateInventoryUiAsync(player);
         await _inventoryModule.UpdateInventoryUiAsync(target);
 
-        target.SendNotification($"Deinem Charakter wurden von {player.CharacterModel.Name} die Handschellen abgenommen.", NotificationType.INFO);
-        player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} Handschellen abgenommen.", NotificationType.SUCCESS);
+        target.SendNotification(
+            $"Deinem Charakter wurden von {player.CharacterModel.Name} die Handschellen abgenommen.",
+            NotificationType.INFO);
+        player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} Handschellen abgenommen.",
+                                NotificationType.SUCCESS);
     }
 
-    [Command("addinfo", "Erstelle eine Info, um etwas zu beschreiben.", Permission.NONE, new[] { "Distanz", "Text" }, CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
+    [Command("addinfo",
+             "Erstelle eine Info, um etwas zu beschreiben.",
+             Permission.NONE,
+             new[] { "Distanz", "Text" },
+             CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
     public async void OnAddInfo(ServerPlayer player, string expectedDistance, string expectedInfo)
     {
         if (!player.Exists)
@@ -387,7 +405,11 @@ public class General : ISingletonScript
         });
     }
 
-    [Command("helpme", "Erkläre dein Problem in einer kurzen Nachricht.", Permission.NONE, new[] { "Beschreibung des Problems" }, CommandArgs.GREEDY)]
+    [Command("helpme",
+             "Erkläre dein Problem in einer kurzen Nachricht.",
+             Permission.NONE,
+             new[] { "Beschreibung des Problems" },
+             CommandArgs.GREEDY)]
     public async void OnHelpMe(ServerPlayer player, string message)
     {
         await AltAsync.Do(() =>
@@ -404,13 +426,15 @@ public class General : ISingletonScript
         });
     }
 
-    [Command("delhelpme", "Lösche dein letztes Ticket.", Permission.NONE, null, CommandArgs.GREEDY, new[] { "deletehelpme", "removehelpticket" })]
+    [Command("delhelpme",
+             "Lösche dein letztes Ticket.",
+             Permission.NONE,
+             null,
+             CommandArgs.GREEDY,
+             new[] { "deletehelpme", "removehelpticket" })]
     public async void OnDeleteHelpMe(ServerPlayer player)
     {
-        await AltAsync.Do(() =>
-        {
-            _helpMeModule.DeleteTicket(player);
-        });
+        await AltAsync.Do(() => { _helpMeModule.DeleteTicket(player); });
     }
 
     [Command("id", "Zeige deine eigene Id an.")]
@@ -437,11 +461,16 @@ public class General : ISingletonScript
             player.SendNotification("Es befindet sich kein Schloss in der Nähe.", NotificationType.ERROR);
             return;
         }
-        
+
         await _lockModule.Lock(player, entity);
     }
 
-    [Command("deletewaypoint", "Lösche deinen aktuellen Marker auf der Karte.", Permission.NONE, null, CommandArgs.NOT_GREEDY, new[] { "dw" })]
+    [Command("deletewaypoint",
+             "Lösche deinen aktuellen Marker auf der Karte.",
+             Permission.NONE,
+             null,
+             CommandArgs.NOT_GREEDY,
+             new[] { "dw" })]
     public async void OnDeleteWaypoint(ServerPlayer player)
     {
         await AltAsync.Do(() =>
@@ -459,7 +488,11 @@ public class General : ISingletonScript
         });
     }
 
-    [Command("pay", "Übergebe einen anderen Character Geld.", Permission.NONE, new[] { "Spieler ID", "Anzahl", "Emote" }, CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
+    [Command("pay",
+             "Übergebe einen anderen Character Geld.",
+             Permission.NONE,
+             new[] { "Spieler ID", "Anzahl", "Emote" },
+             CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
     public async void OnPay(ServerPlayer player, string expectedPlayerId, string expectedAmount, string expectedEmote)
     {
         if (!player.Exists)
@@ -506,7 +539,8 @@ public class General : ISingletonScript
         var amountOfDollar = _inventoryModule.AmountOfItem(player.CharacterModel.InventoryModel, ItemCatalogIds.DOLLAR);
         if (amountOfDollar == null)
         {
-            player.SendNotification("Es wurde kein Geld in dem Inventar deines Charakters gefunden.", NotificationType.ERROR);
+            player.SendNotification("Es wurde kein Geld in dem Inventar deines Charakters gefunden.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -525,13 +559,16 @@ public class General : ISingletonScript
         var newAddedItem = await _itemCreationModule.AddItemAsync(target, ItemCatalogIds.DOLLAR, amount);
         if (newAddedItem == null)
         {
-            player.SendNotification($"{target.CharacterModel.Name} hat kein Platz im Inventar.", NotificationType.ERROR);
+            player.SendNotification($"{target.CharacterModel.Name} hat kein Platz im Inventar.",
+                                    NotificationType.ERROR);
             return;
         }
 
         var toRemove = amount;
-        player.CharacterModel.InventoryModel = await _inventoryService.GetByKey(player.CharacterModel.InventoryModel.Id);
-        foreach (var item in player.CharacterModel.InventoryModel.Items.Where(i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR))
+        player.CharacterModel.InventoryModel =
+            await _inventoryService.GetByKey(player.CharacterModel.InventoryModel.Id);
+        foreach (var item in player.CharacterModel.InventoryModel.Items.Where(
+                     i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR))
         {
             if (item.Amount - toRemove <= 0)
             {
@@ -550,8 +587,10 @@ public class General : ISingletonScript
 
         await _chatModule.SendProxMessage(player, 15, ChatType.EMOTE, expectedEmote);
 
-        player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} {amount} Dollar gegeben.", NotificationType.SUCCESS);
-        target.SendNotification($"Dein Charakter hat von {player.CharacterModel.Name} {amount} Dollar erhalten.", NotificationType.INFO);
+        player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} {amount} Dollar gegeben.",
+                                NotificationType.SUCCESS);
+        target.SendNotification($"Dein Charakter hat von {player.CharacterModel.Name} {amount} Dollar erhalten.",
+                                NotificationType.INFO);
     }
 
     [Command("settorso", "Passe den Torso deines Charakters an.")]
@@ -568,7 +607,12 @@ public class General : ISingletonScript
         });
     }
 
-                          [Command("engine", "Schalte den Motor eines Fahrzeuges an oder aus.", Permission.NONE, null, CommandArgs.NOT_GREEDY, new[] { "e", "motor" })]
+    [Command("engine",
+             "Schalte den Motor eines Fahrzeuges an oder aus.",
+             Permission.NONE,
+             null,
+             CommandArgs.NOT_GREEDY,
+             new[] { "e", "motor" })]
     public async void OnEngine(ServerPlayer player)
     {
         if (!player.Exists)
@@ -605,12 +649,13 @@ public class General : ISingletonScript
             player.SendNotification("Dein Charakter darf in keinem Fahrzeug sitzen.", NotificationType.ERROR);
             return;
         }
-        
+
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
 
         if (!await _inventoryModule.CanCarry(player, ItemCatalogIds.KEY))
@@ -624,7 +669,7 @@ public class General : ISingletonScript
             player.SendNotification("Es ist kein Haus in der Nähe deines Charakters.", NotificationType.ERROR);
             return;
         }
-        
+
         if (house.BlockedOwnership)
         {
             return;
@@ -638,13 +683,16 @@ public class General : ISingletonScript
 
         if (_houseModule.IsHouseBlocked(house.Id))
         {
-            player.SendNotification("Dieses Haus wurde sich in der Charaktererstellung von einem anderen Spieler vorgemerkt.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dieses Haus wurde sich in der Charaktererstellung von einem anderen Spieler vorgemerkt.",
+                NotificationType.ERROR);
             return;
         }
 
         if (!await _bankModule.HasBankAccount(player))
         {
-            player.SendNotification("Dein Charakter benötigt ein Bankkonto um ein Haus zu kaufen.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter benötigt ein Bankkonto um ein Haus zu kaufen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -652,7 +700,8 @@ public class General : ISingletonScript
         {
             Type = DialogType.ONE_BUTTON_DIALOG,
             Title = "Haus kaufen",
-            Description = $"Möchtest du dieses Haus für <b>${house.Price}</b> erwerben?<br><br><span class='text-muted'>Die Kosten werden von deinem angegebenen Bankkonto abgezogen.</span>",
+            Description =
+                $"Möchtest du dieses Haus für <b>${house.Price}</b> erwerben?<br><br><span class='text-muted'>Die Kosten werden von deinem angegebenen Bankkonto abgezogen.</span>",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             PrimaryButton = "Kaufen",
@@ -677,10 +726,11 @@ public class General : ISingletonScript
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
-        
+
         if (!await _inventoryModule.CanCarry(player, ItemCatalogIds.KEY))
         {
             return;
@@ -706,13 +756,15 @@ public class General : ISingletonScript
 
         if (house.HasOwner)
         {
-            player.SendNotification("Dieser pachtbare Unternehmenssitz hat schon einen Eigentümer.", NotificationType.ERROR);
+            player.SendNotification("Dieser pachtbare Unternehmenssitz hat schon einen Eigentümer.",
+                                    NotificationType.ERROR);
             return;
         }
-        
+
         if (!await _bankModule.HasBankAccount(player))
         {
-            player.SendNotification("Dein Charakter benötigt ein Bankkonto um eine Immobilie zu mieten.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter benötigt ein Bankkonto um eine Immobilie zu mieten.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -723,7 +775,8 @@ public class General : ISingletonScript
                 {
                     Type = DialogType.ONE_BUTTON_DIALOG,
                     Title = "Mietbare Immobilie",
-                    Description = $"Möchtest du diese Immobilie für <b>${house.Price}</b> pro Zahltag mieten?<br><br><span class='text-muted'>Die Kosten werden von deinem angegebenen Bankkonto jeden Zahltag automatisch abgezogen, sollte nicht genügend Geld auf dem Konto sein verliert dein Charakter die Immobilie.</span>",
+                    Description =
+                        $"Möchtest du diese Immobilie für <b>${house.Price}</b> pro Zahltag mieten?<br><br><span class='text-muted'>Die Kosten werden von deinem angegebenen Bankkonto jeden Zahltag automatisch abgezogen, sollte nicht genügend Geld auf dem Konto sein verliert dein Charakter die Immobilie.</span>",
                     HasBankAccountSelection = true,
                     FreezeGameControls = true,
                     PrimaryButton = "Mieten",
@@ -738,10 +791,11 @@ public class General : ISingletonScript
                     player.SendNotification("Dein Charakter ist in keinem Unternehmen.", NotificationType.ERROR);
                     return;
                 }
-        
+
                 if (!_groupModule.IsOwner(player, group))
                 {
-                    player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.", NotificationType.ERROR);
+                    player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.",
+                                            NotificationType.ERROR);
                     return;
                 }
 
@@ -749,7 +803,8 @@ public class General : ISingletonScript
                 {
                     Type = DialogType.ONE_BUTTON_DIALOG,
                     Title = "Pachtbarer Unternehmenssitz pachten",
-                    Description = $"Möchtest du diesen pachtbaren Unternehmenssitz für <b>${house.Price}</b> pro Zahltag pachten?<br><br><span class='text-muted'>Die Kosten werden von deinem angegebenen Bankkonto jeden Zahltag automatisch abgezogen, sollte nicht genügend Geld auf dem Konto sein verliert dein Charakter den Unternehmenssitz.</span>",
+                    Description =
+                        $"Möchtest du diesen pachtbaren Unternehmenssitz für <b>${house.Price}</b> pro Zahltag pachten?<br><br><span class='text-muted'>Die Kosten werden von deinem angegebenen Bankkonto jeden Zahltag automatisch abgezogen, sollte nicht genügend Geld auf dem Konto sein verliert dein Charakter den Unternehmenssitz.</span>",
                     HasBankAccountSelection = true,
                     FreezeGameControls = true,
                     PrimaryButton = "Pachten",
@@ -772,17 +827,18 @@ public class General : ISingletonScript
             player.SendNotification("Dein Charakter darf in keinem Fahrzeug sitzen.", NotificationType.ERROR);
             return;
         }
-        
+
         var house = await _houseService.GetByDistance(player.Position);
         if (house == null)
         {
             player.SendNotification("Es ist keine mietbare Immobilie in der Nähe.", NotificationType.ERROR);
             return;
         }
-        
+
         if (!house.Rentable)
         {
-            player.SendNotification("Dies ist eine gekaufte Immobilie du kannst hier kein Mietvertrag kündigen.", NotificationType.ERROR);
+            player.SendNotification("Dies ist eine gekaufte Immobilie du kannst hier kein Mietvertrag kündigen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -797,11 +853,14 @@ public class General : ISingletonScript
             var group = await _groupService.GetByKey(house.GroupModelId.Value);
             if (group != null)
             {
-                player.SendNotification($"Diese Immobilie hat das Unternehmen {group.Name} als Hauptsitz daher kann der Mietvertrag nicht gekündigt werden.", NotificationType.ERROR);
+                player.SendNotification(
+                    $"Diese Immobilie hat das Unternehmen {group.Name} als Hauptsitz daher kann der Mietvertrag nicht gekündigt werden.",
+                    NotificationType.ERROR);
             }
+
             return;
         }
-       
+
         player.CreateDialog(new DialogData
         {
             Type = DialogType.ONE_BUTTON_DIALOG,
@@ -845,7 +904,9 @@ public class General : ISingletonScript
             var group = await _groupService.GetByKey(house.GroupModelId.Value);
             if (group != null)
             {
-                player.SendNotification($"Diese Immobilie hat das Unternehmen {group.Name} als Hauptsitz und kann daher nicht verkauft werden.", NotificationType.ERROR);
+                player.SendNotification(
+                    $"Diese Immobilie hat das Unternehmen {group.Name} als Hauptsitz und kann daher nicht verkauft werden.",
+                    NotificationType.ERROR);
             }
 
             return;
@@ -853,27 +914,31 @@ public class General : ISingletonScript
 
         if (house.Rentable)
         {
-            player.SendNotification("Dies ist eine gemietete Immobilie du kannst sie nicht verkaufen.", NotificationType.ERROR);
+            player.SendNotification("Dies ist eine gemietete Immobilie du kannst sie nicht verkaufen.",
+                                    NotificationType.ERROR);
             return;
         }
-        
+
         if (house.HouseType == HouseType.COMPANY)
         {
-            player.SendNotification("Du musst den Pachtvertrag kündigen, dies kannst du per /unrenthouse machen.", NotificationType.ERROR);
+            player.SendNotification("Du musst den Pachtvertrag kündigen, dies kannst du per /unrenthouse machen.",
+                                    NotificationType.ERROR);
             return;
         }
 
         if (!await _bankModule.HasBankAccount(player))
         {
-            player.SendNotification("Dein Charakter benötigt ein Bankkonto um eine Immobilie verkaufen zu können.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter benötigt ein Bankkonto um eine Immobilie verkaufen zu können.",
+                                    NotificationType.ERROR);
             return;
         }
-       
+
         player.CreateDialog(new DialogData
         {
             Type = DialogType.ONE_BUTTON_DIALOG,
             Title = "Haus verkaufen",
-            Description = $"Möchtest du dieses Haus für <b>${house.Price * 0.8f}</b> verkaufen, dies sind 80% von dem Kaufpreis.<br><br><span class='text-muted'>Das Geld wird dann auf dein angegebenes Bankkonto überwiesen.</span>",
+            Description =
+                $"Möchtest du dieses Haus für <b>${house.Price * 0.8f}</b> verkaufen, dies sind 80% von dem Kaufpreis.<br><br><span class='text-muted'>Das Geld wird dann auf dein angegebenes Bankkonto überwiesen.</span>",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             PrimaryButton = "Verkaufen",
@@ -938,14 +1003,21 @@ public class General : ISingletonScript
 
         if (!await _houseModule.CreateHouseKey(player, house))
         {
-            player.SendNotification("Dein Charakter hat nicht genug Platz im Inventar für den Hausschlüssel.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat nicht genug Platz im Inventar für den Hausschlüssel.",
+                                    NotificationType.ERROR);
             return;
         }
 
-        player.SendNotification("Du hast das Schloss ausgewechselt, spiele es nun im Roleplay aus.", NotificationType.SUCCESS);
+        player.SendNotification("Du hast das Schloss ausgewechselt, spiele es nun im Roleplay aus.",
+                                NotificationType.SUCCESS);
     }
 
-    [Command("changechar", "Gehe zurück in die Charakterauswahl.", Permission.NONE, null, CommandArgs.NOT_GREEDY, new[] { "q", "quit", "logout", "mc" })]
+    [Command("changechar",
+             "Gehe zurück in die Charakterauswahl.",
+             Permission.NONE,
+             null,
+             CommandArgs.NOT_GREEDY,
+             new[] { "q", "quit", "logout", "mc" })]
     public async void OnChangeChar(ServerPlayer player)
     {
         if (!player.Exists)
@@ -1000,13 +1072,17 @@ public class General : ISingletonScript
 
         if (await _groupModule.IsPlayerInGroupType(target, GroupType.COMPANY))
         {
-            player.SendNotification("Der Charakter ist schon in einem spielerbasierten Unternehmen und kann deswegen nicht eingeladen werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Der Charakter ist schon in einem spielerbasierten Unternehmen und kann deswegen nicht eingeladen werden.",
+                NotificationType.ERROR);
             return;
         }
 
         if (await _groupModule.IsPlayerInGroupType(target, GroupType.FACTION))
         {
-            player.SendNotification("Der Charakter ist schon in einer Fraktion und kann deswegen nicht eingeladen werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Der Charakter ist schon in einer Fraktion und kann deswegen nicht eingeladen werden.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -1019,7 +1095,8 @@ public class General : ISingletonScript
 
         if (!await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.INVITE))
         {
-            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1051,7 +1128,8 @@ public class General : ISingletonScript
             {
                 Type = DialogType.TWO_BUTTON_DIALOG,
                 Title = "Einladung",
-                Description = $"{player.CharacterModel.Name} hat deinen Charakter in {typeString} <b>{group.Name}</b> eingeladen.<br><br>Solltest du annehmen, auf welches Bankkonto soll das Gehalt überwiesen werden?",
+                Description =
+                    $"{player.CharacterModel.Name} hat deinen Charakter in {typeString} <b>{group.Name}</b> eingeladen.<br><br>Solltest du annehmen, auf welches Bankkonto soll das Gehalt überwiesen werden?",
                 HasBankAccountSelection = true,
                 FreezeGameControls = true,
                 Data = data,
@@ -1066,7 +1144,10 @@ public class General : ISingletonScript
         player.SendNotification("Du hast dem Charakter eine Einladung geschickt.", NotificationType.INFO);
     }
 
-    [Command("uninvite", "Werfe einen Charakter aus deiner Gruppe.", Permission.NONE, new[] { "Gruppen ID", "Spieler ID" })]
+    [Command("uninvite",
+             "Werfe einen Charakter aus deiner Gruppe.",
+             Permission.NONE,
+             new[] { "Gruppen ID", "Spieler ID" })]
     public async void OnUninvite(ServerPlayer player, string expectedGroupId, string expectedPlayerId)
     {
         if (!player.Exists)
@@ -1089,7 +1170,8 @@ public class General : ISingletonScript
 
         if (!await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.UNINVITE))
         {
-            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1127,8 +1209,12 @@ public class General : ISingletonScript
         await _groupModule.Kick(player, groupMember);
     }
 
-    [Command("setsalary", "Setze das Gehalt von einem Mitglied aus deiner Gruppe.", Permission.NONE, new[] { "Gruppen ID", "Spieler ID", "Gehalt" })]
-    public async void OnSetSalary(ServerPlayer player, string expectedGroupId, string expectedPlayerId, string expectedSalary)
+    [Command("setsalary",
+             "Setze das Gehalt von einem Mitglied aus deiner Gruppe.",
+             Permission.NONE,
+             new[] { "Gruppen ID", "Spieler ID", "Gehalt" })]
+    public async void OnSetSalary(ServerPlayer player, string expectedGroupId, string expectedPlayerId,
+                                  string expectedSalary)
     {
         if (!player.Exists)
         {
@@ -1150,7 +1236,8 @@ public class General : ISingletonScript
 
         if (!await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.MANAGE_MEMBERS))
         {
-            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1175,8 +1262,12 @@ public class General : ISingletonScript
         await _groupModule.SetSalary(player, target, group, salary);
     }
 
-    [Command("setrank", "Setze den Rang von einem Gruppenmitglied.", Permission.NONE, new[] { "Gruppen ID", "Spieler ID", "Level" })]
-    public async void OnSetRank(ServerPlayer player, string expectedGroupId, string expectedPlayerId, string expectedLevel)
+    [Command("setrank",
+             "Setze den Rang von einem Gruppenmitglied.",
+             Permission.NONE,
+             new[] { "Gruppen ID", "Spieler ID", "Level" })]
+    public async void OnSetRank(ServerPlayer player, string expectedGroupId, string expectedPlayerId,
+                                string expectedLevel)
     {
         if (!player.Exists)
         {
@@ -1198,7 +1289,8 @@ public class General : ISingletonScript
 
         if (!await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.MANAGE_MEMBERS))
         {
-            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1229,7 +1321,10 @@ public class General : ISingletonScript
         await _groupModule.SetMemberRank(player, group, target.CharacterModel.Id, level);
     }
 
-    [Command("givegroup", "Übergebe eine Gruppe einen anderen Charakter.", Permission.NONE, new[] { "Gruppen ID", "Spieler ID" })]
+    [Command("givegroup",
+             "Übergebe eine Gruppe einen anderen Charakter.",
+             Permission.NONE,
+             new[] { "Gruppen ID", "Spieler ID" })]
     public async void OnGiveGroup(ServerPlayer player, string expectedGroupId, string expectedPlayerId)
     {
         if (!player.Exists)
@@ -1252,7 +1347,8 @@ public class General : ISingletonScript
 
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1282,7 +1378,8 @@ public class General : ISingletonScript
         {
             Type = DialogType.TWO_BUTTON_DIALOG,
             Title = "Gruppe übergeben",
-            Description = $"Bist du sicher das du die Gruppe {group.Name} dem Charakter {target.CharacterModel.Name} vollständig überreichen möchtest?<br><br><span class='text-danger'>Dein Charakter ist dann nicht mehr Eigentümer dieser Gruppe!</span>",
+            Description =
+                $"Bist du sicher das du die Gruppe {group.Name} dem Charakter {target.CharacterModel.Name} vollständig überreichen möchtest?<br><br><span class='text-danger'>Dein Charakter ist dann nicht mehr Eigentümer dieser Gruppe!</span>",
             HasBankAccountSelection = false,
             FreezeGameControls = true,
             Data = data,
@@ -1303,13 +1400,15 @@ public class General : ISingletonScript
         var groups = await _groupService.GetGroupsByCharacter(player.CharacterModel.Id);
         if (groups == null || groups.Count == 0)
         {
-            player.SendNotification("Dein Charakter ist in keiner Gruppe und kann nicht in den Dienst gehen.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist in keiner Gruppe und kann nicht in den Dienst gehen.",
+                                    NotificationType.ERROR);
             return;
         }
 
         if (await _houseService.GetByDistance(player.Position) is LeaseCompanyHouseModel leaseCompanyHouse)
         {
-            var group = groups?.FirstOrDefault(g => g.GroupType == GroupType.COMPANY && g.Id == leaseCompanyHouse.GroupModelId);
+            var group = groups?.FirstOrDefault(g => g.GroupType == GroupType.COMPANY &&
+                                                    g.Id == leaseCompanyHouse.GroupModelId);
             if (group == null)
             {
                 player.SendNotification("Dein Charakter arbeitet hier nicht.", NotificationType.ERROR);
@@ -1333,8 +1432,9 @@ public class General : ISingletonScript
             // We have to send an event here because we need the house id.
             player.EmitLocked("player:setduty", player.IsDuty, leaseCompanyHouse.Id);
 
-            player.SendNotification(player.IsDuty ? "Du bist in den Dienst gegangen." : "Du bist aus dem Dienst gegangen.",
-                                    NotificationType.SUCCESS);
+            player.SendNotification(
+                player.IsDuty ? "Du bist in den Dienst gegangen." : "Du bist aus dem Dienst gegangen.",
+                NotificationType.SUCCESS);
 
             if (player.IsDuty)
             {
@@ -1384,7 +1484,8 @@ public class General : ISingletonScript
 
         if (await _houseService.GetByDistance(player.Position) is LeaseCompanyHouseModel leaseCompanyHouse)
         {
-            var group = groups?.FirstOrDefault(g => g.GroupType == GroupType.COMPANY && g.Id == leaseCompanyHouse.GroupModelId);
+            var group = groups?.FirstOrDefault(g => g.GroupType == GroupType.COMPANY &&
+                                                    g.Id == leaseCompanyHouse.GroupModelId);
             if (group == null)
             {
                 player.SendNotification("Dein Charakter ist nicht in dieser Gruppe.", NotificationType.ERROR);
@@ -1415,7 +1516,10 @@ public class General : ISingletonScript
         player.SendNotification("Du musst am pachtbaren Unternehmen stehen.", NotificationType.ERROR);
     }
 
-    [Command("creategkey", "Erstelle einen neuen Gruppenschlüssel für deine Gruppe.", Permission.NONE, new[] { "Gruppen ID" })]
+    [Command("creategkey",
+             "Erstelle einen neuen Gruppenschlüssel für deine Gruppe.",
+             Permission.NONE,
+             new[] { "Gruppen ID" })]
     public async void OnCreateGroupKey(ServerPlayer player, string expectedGroupId)
     {
         if (!player.Exists)
@@ -1438,7 +1542,8 @@ public class General : ISingletonScript
 
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1451,7 +1556,8 @@ public class General : ISingletonScript
         {
             Type = DialogType.ONE_BUTTON_DIALOG,
             Title = "Gruppenschlüssel erstellen",
-            Description = $"Möchtest du einen neuen Gruppenschlüssel für <b>${catalogItem.Price}</b> erstellen?<br><br><span class='text-muted'>Kosten werden von dem Gruppenkonto abgebucht.</span>",
+            Description =
+                $"Möchtest du einen neuen Gruppenschlüssel für <b>${catalogItem.Price}</b> erstellen?<br><br><span class='text-muted'>Kosten werden von dem Gruppenkonto abgebucht.</span>",
             HasBankAccountSelection = false,
             FreezeGameControls = true,
             Data = data,
@@ -1460,7 +1566,10 @@ public class General : ISingletonScript
         });
     }
 
-    [Command("togglegveh", "Ändere das aktuelle Fahrzeug zu einem Gruppenfahrzeug oder Privatfahrzeug.", Permission.NONE, new[] { "Gruppen ID" })]
+    [Command("togglegveh",
+             "Ändere das aktuelle Fahrzeug zu einem Gruppenfahrzeug oder Privatfahrzeug.",
+             Permission.NONE,
+             new[] { "Gruppen ID" })]
     public async void OnToggleGroupVehicle(ServerPlayer player, string expectedGroupId)
     {
         if (!player.Exists)
@@ -1489,7 +1598,8 @@ public class General : ISingletonScript
 
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1507,7 +1617,8 @@ public class General : ISingletonScript
             {
                 Type = DialogType.ONE_BUTTON_DIALOG,
                 Title = "Gruppenschlüssel erstellen",
-                Description = "Möchtest du dieses Fahrzeug von einem Gruppenfahrzeug zu deinem Privatfahrzeug machen?<br><br><span class='text-muted'>Gruppenschlüssel funktionieren dann bei diesem Fahrzeug nicht mehr.</span>",
+                Description =
+                    "Möchtest du dieses Fahrzeug von einem Gruppenfahrzeug zu deinem Privatfahrzeug machen?<br><br><span class='text-muted'>Gruppenschlüssel funktionieren dann bei diesem Fahrzeug nicht mehr.</span>",
                 FreezeGameControls = true,
                 PrimaryButton = "Wechseln",
                 PrimaryButtonServerEvent = "group:switchtoprivatevehicle"
@@ -1515,9 +1626,11 @@ public class General : ISingletonScript
         }
         else
         {
-            if (!vehicle.DbEntity.CharacterModelId.HasValue || player.CharacterModel.Id != vehicle.DbEntity.CharacterModelId.Value)
+            if (!vehicle.DbEntity.CharacterModelId.HasValue ||
+                player.CharacterModel.Id != vehicle.DbEntity.CharacterModelId.Value)
             {
-                player.SendNotification("Dein Charakter ist nicht der Eigentümer von diesem Fahrzeug.", NotificationType.ERROR);
+                player.SendNotification("Dein Charakter ist nicht der Eigentümer von diesem Fahrzeug.",
+                                        NotificationType.ERROR);
                 return;
             }
 
@@ -1528,7 +1641,8 @@ public class General : ISingletonScript
             {
                 Type = DialogType.ONE_BUTTON_DIALOG,
                 Title = "Gruppenschlüssel erstellen",
-                Description = "Möchtest du dieses Fahrzeug welches dein Privatfahrzeug ist zu einem Gruppenfahrzeug machen machen?<br><br><span class='text-muted'>Mitglieder in deiner Gruppe mit einem Gruppenschlüssel können dieses Fahrzeug dann verwenden.</span>",
+                Description =
+                    "Möchtest du dieses Fahrzeug welches dein Privatfahrzeug ist zu einem Gruppenfahrzeug machen machen?<br><br><span class='text-muted'>Mitglieder in deiner Gruppe mit einem Gruppenschlüssel können dieses Fahrzeug dann verwenden.</span>",
                 FreezeGameControls = true,
                 Data = data,
                 PrimaryButton = "Wechseln",
@@ -1547,7 +1661,12 @@ public class General : ISingletonScript
         await _deliveryModule.CollectDelivery(player);
     }
 
-    [Command("deploy", "Liefere eine Lieferung ab.", Permission.NONE, null, CommandArgs.NOT_GREEDY, new[] { "deliver" })]
+    [Command("deploy",
+             "Liefere eine Lieferung ab.",
+             Permission.NONE,
+             null,
+             CommandArgs.NOT_GREEDY,
+             new[] { "deliver" })]
     public async void OnDeploy(ServerPlayer player)
     {
         await _deliveryModule.DeployDelivery(player);

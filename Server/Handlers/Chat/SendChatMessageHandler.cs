@@ -14,13 +14,13 @@ namespace Server.Handlers.Chat;
 public class SendChatMessageHandler : ISingletonScript
 {
     private readonly ILogger<SendChatMessageHandler> _logger;
-    
+
     private readonly ChatModule _chatModule;
     private readonly EmergencyCallDialogModule _emergencyCallDialogModule;
-    
+
     public SendChatMessageHandler(
-        ILogger<SendChatMessageHandler> logger, 
-        ChatModule chatModule, 
+        ILogger<SendChatMessageHandler> logger,
+        ChatModule chatModule,
         EmergencyCallDialogModule emergencyCallDialogModule)
     {
         _logger = logger;
@@ -60,14 +60,19 @@ public class SendChatMessageHandler : ISingletonScript
                 await _emergencyCallDialogModule.SendDialogAnswer(player, message);
                 return;
             }
-            
-            var callPartnerPlayer = Alt.GetAllPlayers().GetPlayerById(player, player.PhoneCallData.PartnerPlayerId, false);
+
+            var callPartnerPlayer =
+                Alt.GetAllPlayers().GetPlayerById(player, player.PhoneCallData.PartnerPlayerId, false);
             if (callPartnerPlayer == null)
             {
                 return;
             }
 
-            _chatModule.SendMessage(callPartnerPlayer, player.CharacterModel.Name, ChatType.PHONE_SPEAK, message, "#f3f59f");
+            _chatModule.SendMessage(callPartnerPlayer,
+                                    player.CharacterModel.Name,
+                                    ChatType.PHONE_SPEAK,
+                                    message,
+                                    "#f3f59f");
             return;
         }
 

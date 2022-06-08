@@ -14,14 +14,13 @@ public class SetFileWritePermissionHandler : ISingletonScript
     private readonly DirectoryService _directoryService;
 
     private readonly GroupModule _groupModule;
-    
+
     public SetFileWritePermissionHandler(
         DirectoryService directoryService,
-        
         GroupModule groupModule)
     {
         _directoryService = directoryService;
-        
+
         _groupModule = groupModule;
 
         AltAsync.OnClient<ServerPlayer, int, int>("filesystem:setwritepermission", OnExecuteEvent);
@@ -46,7 +45,7 @@ public class SetFileWritePermissionHandler : ISingletonScript
         }
 
         directory.WriteGroupLevel = groupLevel;
-        
+
         await _directoryService.Update(directory);
     }
 }

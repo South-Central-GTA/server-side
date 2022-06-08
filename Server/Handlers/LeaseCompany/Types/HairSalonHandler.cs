@@ -112,7 +112,8 @@ public class HairSalonHandler : ISingletonScript
         {
             Type = DialogType.TWO_BUTTON_DIALOG,
             Title = "Erscheinungsbild ändern",
-            Description = $"Möchtest du dein neues Erscheinungsbild für <b>${price}</b> erwerben?<br><span class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</span>",
+            Description =
+                $"Möchtest du dein neues Erscheinungsbild für <b>${price}</b> erwerben?<br><span class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</span>",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             Data = data,
@@ -139,7 +140,8 @@ public class HairSalonHandler : ISingletonScript
         var success = await _moneyModule.WithdrawAsync(player, price);
         if (success)
         {
-            player.CharacterModel.AppearancesModel.Update(_serializer.Deserialize<AppearancesModel>(newAppearancesJson));
+            player.CharacterModel.AppearancesModel.Update(
+                _serializer.Deserialize<AppearancesModel>(newAppearancesJson));
             await _characterService.Update(player);
 
             player.EmitLocked("character:apply", player.CharacterModel);
@@ -192,7 +194,8 @@ public class HairSalonHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -202,7 +205,8 @@ public class HairSalonHandler : ISingletonScript
                                                  $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
         if (success)
         {
-            player.CharacterModel.AppearancesModel.Update(_serializer.Deserialize<AppearancesModel>(newAppearancesJson));
+            player.CharacterModel.AppearancesModel.Update(
+                _serializer.Deserialize<AppearancesModel>(newAppearancesJson));
             await _characterService.Update(player);
 
             player.SendNotification("Dein Charakter konnte den Friseur Salon bezahlen.", NotificationType.SUCCESS);
@@ -215,7 +219,7 @@ public class HairSalonHandler : ISingletonScript
                 {
                     var owningGroupBankAccount = await _bankAccountService.GetByOwningGroup(owningGroup.Id);
                     if (owningGroupBankAccount != null)
-                    { 
+                    {
                         await _bankModule.Deposit(owningGroupBankAccount, price, "Dienstleistungen");
                     }
                 }

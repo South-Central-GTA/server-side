@@ -14,7 +14,10 @@ public class WorldMarketModule : ISingletonScript
     {
         _logger = logger;
 
-        FuelPrice = new Dictionary<FuelType, int> { { FuelType.DIESEL, 5 }, { FuelType.PETROL, 5 }, { FuelType.KEROSENE, 5 }, { FuelType.ELECTRICITY, 5 } };
+        FuelPrice = new Dictionary<FuelType, int>
+        {
+            { FuelType.DIESEL, 5 }, { FuelType.PETROL, 5 }, { FuelType.KEROSENE, 5 }, { FuelType.ELECTRICITY, 5 }
+        };
     }
 
     public Dictionary<FuelType, int> FuelPrice { get; set; }

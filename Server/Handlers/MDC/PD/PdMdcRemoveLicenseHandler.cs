@@ -22,13 +22,12 @@ public class PdMdcRemoveLicenseHandler : ISingletonScript
     public PdMdcRemoveLicenseHandler(
         PersonalLicenseService personalLicenseService,
         GroupFactionService groupFactionService,
-        
-        PoliceMdcModule policeMdcModule, 
+        PoliceMdcModule policeMdcModule,
         CriminalRecordModule criminalRecordModule)
     {
         _personalLicenseService = personalLicenseService;
         _groupFactionService = groupFactionService;
-        
+
         _policeMdcModule = policeMdcModule;
         _criminalRecordModule = criminalRecordModule;
 
@@ -47,7 +46,7 @@ public class PdMdcRemoveLicenseHandler : ISingletonScript
         {
             return;
         }
-        
+
         var personalLicense = await _personalLicenseService.GetByKey(id);
         if (personalLicense == null)
         {

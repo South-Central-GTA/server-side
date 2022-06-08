@@ -8,7 +8,7 @@ namespace Server.Handlers.FileSystem;
 public class OpenRootDirectoryHandler : ISingletonScript
 {
     private readonly FileModule _fileModule;
-    
+
     public OpenRootDirectoryHandler(FileModule fileModule)
     {
         _fileModule = fileModule;

@@ -23,11 +23,11 @@ public class AddCharacterBankAccessHandler : ISingletonScript
     private readonly GroupService _groupService;
 
     public AddCharacterBankAccessHandler(
-        PhoneModule phoneModule, 
-        BankModule bankModule, 
-        BankAccountCharacterAccessService bankAccountCharacterAccessService, 
-        BankAccountService bankAccountService, 
-        CharacterService characterService, 
+        PhoneModule phoneModule,
+        BankModule bankModule,
+        BankAccountCharacterAccessService bankAccountCharacterAccessService,
+        BankAccountService bankAccountService,
+        CharacterService characterService,
         GroupService groupService)
     {
         _phoneModule = phoneModule;
@@ -36,7 +36,7 @@ public class AddCharacterBankAccessHandler : ISingletonScript
         _bankAccountService = bankAccountService;
         _characterService = characterService;
         _groupService = groupService;
-        
+
         AltAsync.OnClient<ServerPlayer, int, int, string>("bank:addcharacteraccess", OnAddCharacterAccess);
     }
 
@@ -119,7 +119,11 @@ public class AddCharacterBankAccessHandler : ISingletonScript
             return;
         }
 
-        await _bankAccountCharacterAccessService.Add(new BankAccountCharacterAccessModel { CharacterModelId = character.Id, BankAccountModelId = bankAccount.Id });
+        await _bankAccountCharacterAccessService.Add(
+            new BankAccountCharacterAccessModel
+            {
+                CharacterModelId = character.Id, BankAccountModelId = bankAccount.Id
+            });
 
         await _bankModule.UpdateUi(player);
 

@@ -25,7 +25,7 @@ public class DoorModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
-    
+
     public int HouseModelId { get; set; }
     public HouseModel HouseModel { get; set; }
 

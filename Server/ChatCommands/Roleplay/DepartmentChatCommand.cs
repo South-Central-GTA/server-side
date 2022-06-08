@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.CommandSystem;
 using Server.Core.Entities;
 using Server.Core.Extensions;
@@ -8,6 +7,7 @@ using Server.Database.Enums;
 using Server.Database.Models.Inventory;
 using Server.Modules.Chat;
 using Server.Modules.Group;
+using Server.Core.Abstractions.ScriptStrategy;
 
 namespace Server.ChatCommands.Roleplay;
 
@@ -28,7 +28,11 @@ internal class DepartmentChatCommand : ISingletonScript
         _radioModule = radioModule;
     }
 
-    [Command("dep", "Spreche in den öffentlichen Fraktionsfunk.", Permission.NONE, new[] { "Funkspruch" }, CommandArgs.GREEDY)]
+    [Command("dep",
+             "Spreche in den öffentlichen Fraktionsfunk.",
+             Permission.NONE,
+             new[] { "Funkspruch" },
+             CommandArgs.GREEDY)]
     public async void OnDepartmentRadio(ServerPlayer player, string message)
     {
         if (!player.Exists)
@@ -51,7 +55,7 @@ internal class DepartmentChatCommand : ISingletonScript
         }
 
         var radioItem = (ItemRadioModel)player.CharacterModel.InventoryModel.Items.OrderBy(i => i.Slot)
-                                         .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
+                                              .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
         if (radioItem == null)
         {
             player.SendNotification("Dein Charakter hat kein Funkgerät im Inventar.", NotificationType.ERROR);
@@ -60,7 +64,8 @@ internal class DepartmentChatCommand : ISingletonScript
 
         if (radioItem.FactionType == FactionType.CITIZEN)
         {
-            player.SendNotification("Das Funkgerät deines Charakters kann nicht auf dieser Frequenz funken.", NotificationType.ERROR);
+            player.SendNotification("Das Funkgerät deines Charakters kann nicht auf dieser Frequenz funken.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -75,7 +80,12 @@ internal class DepartmentChatCommand : ISingletonScript
         await _chatModule.SendProxMessage(player, 3, ChatType.DEP_SPEAK, message);
     }
 
-    [Command("deplow", "Flüstere in den öffentlichen Fraktionsfunk.", Permission.NONE, new[] { "Funkspruch" }, CommandArgs.GREEDY, new []{ "depl" })]
+    [Command("deplow",
+             "Flüstere in den öffentlichen Fraktionsfunk.",
+             Permission.NONE,
+             new[] { "Funkspruch" },
+             CommandArgs.GREEDY,
+             new[] { "depl" })]
     public async void OnLowDepartmentRadio(ServerPlayer player, string message)
     {
         if (!player.Exists)
@@ -98,7 +108,7 @@ internal class DepartmentChatCommand : ISingletonScript
         }
 
         var radioItem = (ItemRadioModel)player.CharacterModel.InventoryModel.Items.OrderBy(i => i.Slot)
-                                         .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
+                                              .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
         if (radioItem == null)
         {
             player.SendNotification("Dein Charakter hat kein Funkgerät im Inventar.", NotificationType.ERROR);
@@ -107,7 +117,8 @@ internal class DepartmentChatCommand : ISingletonScript
 
         if (radioItem.FactionType == FactionType.CITIZEN)
         {
-            player.SendNotification("Das Funkgerät deines Charakters kann nicht auf dieser Frequenz funken.", NotificationType.ERROR);
+            player.SendNotification("Das Funkgerät deines Charakters kann nicht auf dieser Frequenz funken.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -122,7 +133,12 @@ internal class DepartmentChatCommand : ISingletonScript
         await _chatModule.SendProxMessage(player, 3, ChatType.DEP_WISPER, message);
     }
 
-    [Command("depscream", "Schreie in den öffentlichen Fraktionsfunk.", Permission.NONE, new[] { "Funkspruch" }, CommandArgs.GREEDY, new []{ "deps" })]
+    [Command("depscream",
+             "Schreie in den öffentlichen Fraktionsfunk.",
+             Permission.NONE,
+             new[] { "Funkspruch" },
+             CommandArgs.GREEDY,
+             new[] { "deps" })]
     public async void OnScreamDepartmentRadio(ServerPlayer player, string message)
     {
         if (!player.Exists)
@@ -145,7 +161,7 @@ internal class DepartmentChatCommand : ISingletonScript
         }
 
         var radioItem = (ItemRadioModel)player.CharacterModel.InventoryModel.Items.OrderBy(i => i.Slot)
-                                         .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
+                                              .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
         if (radioItem == null)
         {
             player.SendNotification("Dein Charakter hat kein Funkgerät im Inventar.", NotificationType.ERROR);
@@ -154,7 +170,8 @@ internal class DepartmentChatCommand : ISingletonScript
 
         if (radioItem.FactionType == FactionType.CITIZEN)
         {
-            player.SendNotification("Das Funkgerät deines Charakters kann nicht auf dieser Frequenz funken.", NotificationType.ERROR);
+            player.SendNotification("Das Funkgerät deines Charakters kann nicht auf dieser Frequenz funken.",
+                                    NotificationType.ERROR);
             return;
         }
 

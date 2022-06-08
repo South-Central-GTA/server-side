@@ -73,17 +73,25 @@ public class VehicleModule
         {
             if (player.AccountModel.Permission.HasFlag(Permission.STAFF))
             {
-                player.SendNotification("Das Fahrzeug konnte nicht im Katalog gefunden werden.", NotificationType.ERROR);
+                player.SendNotification("Das Fahrzeug konnte nicht im Katalog gefunden werden.",
+                                        NotificationType.ERROR);
             }
 
             _logger.LogCritical("Can't find catalog vehicle, can't create persistent vehicle.");
             return null;
         }
 
-        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null, null, "Schlüssel für " + catalogVehicle.DisplayName);
+        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player,
+                                                                           ItemCatalogIds.KEY,
+                                                                           1,
+                                                                           null,
+                                                                           null,
+                                                                           "Schlüssel für " +
+                                                                           catalogVehicle.DisplayName);
         if (itemKey == null)
         {
-            player.SendNotification("Das Inventar ist voll, der Schlüssel konnte nicht hinzugefügt werden.", NotificationType.ERROR);
+            player.SendNotification("Das Inventar ist voll, der Schlüssel konnte nicht hinzugefügt werden.",
+                                    NotificationType.ERROR);
             return null;
         }
 
@@ -102,7 +110,12 @@ public class VehicleModule
             Fuel = catalogVehicle.MaxTank,
             Keys = new List<int> { itemKey.Id },
             NumberplateText = await GetRandomNumberplate(),
-            InventoryModel = new InventoryModel { Name = catalogVehicle.DisplayName + " Kofferraum", InventoryType = InventoryType.VEHICLE, MaxWeight = GetTrunkSize(vehicleModel) }
+            InventoryModel = new InventoryModel
+            {
+                Name = catalogVehicle.DisplayName + " Kofferraum",
+                InventoryType = InventoryType.VEHICLE,
+                MaxWeight = GetTrunkSize(vehicleModel)
+            }
         });
 
         itemKey.PlayerVehicleModelId = vehicleDbo.Id;
@@ -139,7 +152,12 @@ public class VehicleModule
             DrivenKilometre = drivenKilometre,
             NumberplateText = await GetRandomNumberplate(),
             Keys = new List<int>(),
-            InventoryModel = new InventoryModel { Name = catalogVehicle.DisplayName + " Kofferraum", InventoryType = InventoryType.VEHICLE, MaxWeight = GetTrunkSize(vehicleModel) }
+            InventoryModel = new InventoryModel
+            {
+                Name = catalogVehicle.DisplayName + " Kofferraum",
+                InventoryType = InventoryType.VEHICLE,
+                MaxWeight = GetTrunkSize(vehicleModel)
+            }
         });
 
         await Create(vehicleDbo);
@@ -174,15 +192,15 @@ public class VehicleModule
     public async Task<ServerVehicle?> Create(PlayerVehicleModel vehicleModel)
     {
         var vehicle = await Create(vehicleModel.Model,
-                             new Position(vehicleModel.PositionX, vehicleModel.PositionY, vehicleModel.PositionZ),
-                             new Rotation(vehicleModel.Roll, vehicleModel.Pitch, vehicleModel.Yaw),
-                             vehicleModel.PrimaryColor,
-                             vehicleModel.SecondaryColor,
-                             vehicleModel.Livery,
-                             vehicleModel.BodyHealth,
-                             vehicleModel.EngineHealth,
-                             vehicleModel.Fuel,
-                             vehicleModel.DrivenKilometre);
+                                   new Position(vehicleModel.PositionX, vehicleModel.PositionY, vehicleModel.PositionZ),
+                                   new Rotation(vehicleModel.Roll, vehicleModel.Pitch, vehicleModel.Yaw),
+                                   vehicleModel.PrimaryColor,
+                                   vehicleModel.SecondaryColor,
+                                   vehicleModel.Livery,
+                                   vehicleModel.BodyHealth,
+                                   vehicleModel.EngineHealth,
+                                   vehicleModel.Fuel,
+                                   vehicleModel.DrivenKilometre);
 
         if (vehicle == null)
         {
@@ -204,8 +222,10 @@ public class VehicleModule
         return vehicle;
     }
 
-    public async Task<ServerVehicle?> Create(string vehicleModel, Position position, Rotation rotation, int primaryColor,
-                                             int secondaryColor, byte livery = 0, uint bodyHealth = 1000, int engineHealth = 1000, float fuel = 0,
+    public async Task<ServerVehicle?> Create(string vehicleModel, Position position, Rotation rotation,
+                                             int primaryColor,
+                                             int secondaryColor, byte livery = 0, uint bodyHealth = 1000,
+                                             int engineHealth = 1000, float fuel = 0,
                                              float drivenKilometre = 0)
     {
         var catalogVehicle = await _vehicleCatalogService.Find(vc => vc.Model.ToLower() == vehicleModel.ToLower());
@@ -256,7 +276,7 @@ public class VehicleModule
         {
             return;
         }
-        
+
         var lockState = dbEntry.LockState == LockState.CLOSED ? "Abgeschlossen" : "Aufgeschlossen";
         var ownerLabel = "Kein Eigentümer";
 
@@ -284,14 +304,20 @@ public class VehicleModule
         {
             return;
         }
-        
+
         var catalogVehicle = await _vehicleCatalogService.GetByKey(vehicle.DbEntity.Model.ToLower());
         if (catalogVehicle == null)
         {
             return;
         }
-        
-        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null, null, "Schlüssel für " + catalogVehicle.DisplayName);
+
+        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player,
+                                                                           ItemCatalogIds.KEY,
+                                                                           1,
+                                                                           null,
+                                                                           null,
+                                                                           "Schlüssel für " +
+                                                                           catalogVehicle.DisplayName);
         if (itemKey == null)
         {
             return;
@@ -546,7 +572,8 @@ public class VehicleModule
             var vehicleDumpEntry = _vehicleDumpModule.Dump.Find(vd => vd.Hash == (long)vehicleModel);
             if (vehicleDumpEntry == null)
             {
-                _logger.LogCritical($"No vehicle dump data was found for model: {model}, so default inventory size used for trunk.");
+                _logger.LogCritical(
+                    $"No vehicle dump data was found for model: {model}, so default inventory size used for trunk.");
                 return trunkSize;
             }
 

@@ -4,7 +4,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Housing;
 
-public class UserShopDataModel 
+public class UserShopDataModel
     : ModelBase
 {
     [Key]

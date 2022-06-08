@@ -12,7 +12,7 @@ public class RequestMenuGroupHandler : ISingletonScript
     public RequestMenuGroupHandler(GroupModule groupModule)
     {
         _groupModule = groupModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("groupmenu:requestmenu", OnRequestMenu);
     }
 

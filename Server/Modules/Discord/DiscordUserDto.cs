@@ -12,7 +12,7 @@ public struct DiscordUserDto
     public string Email { get; set; }
     public int Flags { get; set; }
     public string Banner { get; set; }
-    public int AccentColor{ get; set; }
+    public int AccentColor { get; set; }
     public int PremiumType { get; set; }
     public int PublicFlags { get; set; }
 }

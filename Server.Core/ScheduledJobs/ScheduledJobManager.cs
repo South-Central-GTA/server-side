@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Server.Core.Abstractions.ScriptStrategy;
 
-namespace Server.ScheduledJob;
+namespace Server.Core.ScheduledJobs;
 
 public class ScheduledJobManager : ISingletonScript
 {

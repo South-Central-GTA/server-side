@@ -16,7 +16,7 @@ public class ItemModel
     }
 
     public ItemModel(ItemCatalogIds itemModelCatalogIds, int? slot, string customData, string note, int amount,
-                int? condition, bool isBought, bool isStolen, ItemState itemState)
+                     int? condition, bool isBought, bool isStolen, ItemState itemState)
     {
         CatalogItemModelId = itemModelCatalogIds;
         Slot = slot;
@@ -36,12 +36,11 @@ public class ItemModel
     public int? InventoryModelId { get; set; }
     public InventoryModel InventoryModel { get; set; }
 
-    [JsonPropertyName("catalogItemName")] 
-    public ItemCatalogIds CatalogItemModelId { get; set; }
+    [JsonPropertyName("catalogItemName")] public ItemCatalogIds CatalogItemModelId { get; set; }
     public CatalogItemModel CatalogItemModel { get; set; }
 
     public ItemType ItemType { get; set; }
-    
+
 
     public int? Slot { get; set; }
     public string? DroppedByCharacter { get; set; }

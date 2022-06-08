@@ -14,12 +14,12 @@ public class CallNumberHandler : ISingletonScript
     private readonly EmergencyCallDialogModule _emergencyCallDialogModule;
 
     public CallNumberHandler(
-        PhoneCallModule phoneCallModule, 
+        PhoneCallModule phoneCallModule,
         EmergencyCallDialogModule emergencyCallDialogModule)
     {
         _phoneCallModule = phoneCallModule;
         _emergencyCallDialogModule = emergencyCallDialogModule;
-        
+
         AltAsync.OnClient<ServerPlayer, string, string>("phone:call", OnCallNumber);
     }
 
@@ -30,7 +30,7 @@ public class CallNumberHandler : ISingletonScript
             _emergencyCallDialogModule.Start(player, callerNumber);
             return;
         }
-        
+
         await _phoneCallModule.CallPhoneAsync(player, numberToCall, callerNumber);
     }
 }

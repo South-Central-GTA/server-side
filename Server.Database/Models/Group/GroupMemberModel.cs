@@ -6,7 +6,7 @@ using Server.Database.Models.Character;
 namespace Server.Database.Models.Group;
 
 public class GroupMemberModel
-: ModelBase
+    : ModelBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]

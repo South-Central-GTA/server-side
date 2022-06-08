@@ -94,7 +94,7 @@ public abstract class BaseService<T> where T : ModelBase
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var entityBases = entities as T[] ?? entities.ToArray();
-        
+
         foreach (var entity in entityBases)
         {
             dbContext.Entry(entity).State = EntityState.Deleted;
@@ -109,7 +109,7 @@ public abstract class BaseService<T> where T : ModelBase
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.Set<T>().FirstOrDefaultAsync(expression);
     }
-    
+
     public virtual async Task<bool> Has(Expression<Func<T, bool>> expression)
     {
         return await Find(expression) != null;

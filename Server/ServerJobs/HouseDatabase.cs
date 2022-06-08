@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,13 +7,12 @@ using Server.Core.Configuration;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Housing;
-using Server.Modules;
 using Server.Modules.EntitySync;
 using Server.Modules.Houses;
 
 namespace Server.ServerJobs;
 
-public class HouseDatabase : IServerJob
+public class HouseDatabase : IJob
 {
     private readonly DevelopmentOptions _devOptions;
     private readonly HouseModule _houseModule;
@@ -44,7 +42,8 @@ public class HouseDatabase : IServerJob
     public async Task OnShutdown()
     {
         var houses = await _houseService.GetAll();
-        var leaseCompanyHouses = houses.Where(h => h.HouseType == HouseType.COMPANY).Cast<LeaseCompanyHouseModel>().ToList();
+        var leaseCompanyHouses =
+            houses.Where(h => h.HouseType == HouseType.COMPANY).Cast<LeaseCompanyHouseModel>().ToList();
 
         foreach (var leaseCompanyHouse in leaseCompanyHouses)
         {
@@ -61,7 +60,7 @@ public class HouseDatabase : IServerJob
         if (!_devOptions.DropDatabaseAtStartup)
         {
             var houses = await _houseService.GetAll();
-            
+
             await _houseModule.CreateCollShapes();
             await _houseModule.CreateInventories();
 
@@ -70,7 +69,11 @@ public class HouseDatabase : IServerJob
             {
                 foreach (var houseDoor in house.Doors)
                 {
-                    _doorSyncModule.Create(houseDoor.Hash, houseDoor.Position, 0, house.LockState == LockState.CLOSED, house.Id);
+                    _doorSyncModule.Create(houseDoor.Hash,
+                                           houseDoor.Position,
+                                           0,
+                                           house.LockState == LockState.CLOSED,
+                                           house.Id);
                 }
             }
         }

@@ -16,15 +16,14 @@ public class VehicleActionHandler : ISingletonScript
 {
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
-    
+
     private readonly ContextModule _contextModule;
     private readonly GroupModule _groupModule;
-    
+
     public VehicleActionHandler(
         VehicleCatalogService vehicleCatalogService,
         VehicleService vehicleService,
-        
-        ContextModule contextModule, 
+        ContextModule contextModule,
         GroupModule groupModule)
     {
         _vehicleCatalogService = vehicleCatalogService;
@@ -48,7 +47,7 @@ public class VehicleActionHandler : ISingletonScript
         {
             return;
         }
-        
+
         var catalogVehicle = await _vehicleCatalogService.GetByKey(dbVehicle.Model);
         if (catalogVehicle == null)
         {
@@ -56,24 +55,25 @@ public class VehicleActionHandler : ISingletonScript
         }
 
         var isInGroup = false;
-        
+
         if (dbVehicle.GroupModelOwnerId.HasValue)
         {
             isInGroup = await _groupModule.IsPlayerInGroup(player, dbVehicle.GroupModelOwnerId.Value);
         }
-        
+
         var actions = new List<ActionData>()
         {
-            new ("Kofferraum öffnen", "vehiclemenu:trunk", vehicleDbId),
-            new ("Auf- & Abschließen", "vehiclemenu:lock", vehicleDbId),
-            new ("Letzten Fahrer", "vehiclemenu:requestlastdrivers", vehicleDbId),
-            new ("Fahrzeug auftanken", "vehiclemenu:requestrefuel", vehicleDbId)
+            new("Kofferraum öffnen", "vehiclemenu:trunk", vehicleDbId),
+            new("Auf- & Abschließen", "vehiclemenu:lock", vehicleDbId),
+            new("Letzten Fahrer", "vehiclemenu:requestlastdrivers", vehicleDbId),
+            new("Fahrzeug auftanken", "vehiclemenu:requestrefuel", vehicleDbId)
         };
-            
-        if (player.CharacterModel.Id == dbVehicle.CharacterModelId || isInGroup) {
+
+        if (player.CharacterModel.Id == dbVehicle.CharacterModelId || isInGroup)
+        {
             actions.Add(new("Fahrzeug verkaufen", "vehiclemenu:sell", vehicleDbId));
         }
-            
+
         _contextModule.OpenMenu(player, catalogVehicle.DisplayName, actions);
     }
 }

@@ -100,20 +100,20 @@ public class DrivingSchoolModule
         {
             return;
         }
-        
+
         var vehicle = await _vehicleModule.Create(randomModel,
-                new Position(drivingSchoolData.StartPointX,
-                             drivingSchoolData.StartPointY,
-                             drivingSchoolData.StartPointZ),
-                new DegreeRotation(drivingSchoolData.StartPointRoll,
-                                   drivingSchoolData.StartPointPitch,
-                                   drivingSchoolData.StartPointYaw),
-                drivingSchoolData.VehPrimColor,
-                drivingSchoolData.VehSecColor,
-                0,
-                1000,
-                1000,
-                catalogVehicle.MaxTank);
+                                                  new Position(drivingSchoolData.StartPointX,
+                                                               drivingSchoolData.StartPointY,
+                                                               drivingSchoolData.StartPointZ),
+                                                  new DegreeRotation(drivingSchoolData.StartPointRoll,
+                                                                     drivingSchoolData.StartPointPitch,
+                                                                     drivingSchoolData.StartPointYaw),
+                                                  drivingSchoolData.VehPrimColor,
+                                                  drivingSchoolData.VehSecColor,
+                                                  0,
+                                                  1000,
+                                                  1000,
+                                                  catalogVehicle.MaxTank);
 
         if (vehicle == null)
         {
@@ -131,7 +131,10 @@ public class DrivingSchoolModule
 
         await player.SetIntoVehicleAsync(vehicle, 1);
 
-        player.EmitLocked("drivingschool:start", drivingSchoolData.StartPointX, drivingSchoolData.StartPointY, drivingSchoolData.StartPointZ - 0.5f);
+        player.EmitLocked("drivingschool:start",
+                          drivingSchoolData.StartPointX,
+                          drivingSchoolData.StartPointY,
+                          drivingSchoolData.StartPointZ - 0.5f);
     }
 
     public async Task StopPlayerExam(ServerPlayer player, bool passed)
@@ -161,7 +164,7 @@ public class DrivingSchoolModule
                 CharacterModelId = player.CharacterModel.Id,
                 Type = PersonalLicensesType.DRIVING
             });
-            
+
             await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.LICENSES, 1);
 
             player.SendNotification("Dein Charakter hat die Prüfung bestanden.", NotificationType.SUCCESS);
@@ -245,14 +248,16 @@ public class DrivingSchoolModule
         if (!player.IsInVehicle)
         {
             await StopPlayerExam(player, false);
-            player.SendNotification("Du hast das Fahrschulauto zurückgelassen und somit die Prüfung nicht bestanden.", NotificationType.ERROR);
+            player.SendNotification("Du hast das Fahrschulauto zurückgelassen und somit die Prüfung nicht bestanden.",
+                                    NotificationType.ERROR);
             return;
         }
 
         if (!Equals(player.Vehicle, serverVehicle))
         {
             await StopPlayerExam(player, false);
-            player.SendNotification("Du hast das Fahrschulauto zurückgelassen und somit die Prüfung nicht bestanden.", NotificationType.ERROR);
+            player.SendNotification("Du hast das Fahrschulauto zurückgelassen und somit die Prüfung nicht bestanden.",
+                                    NotificationType.ERROR);
             return;
         }
 

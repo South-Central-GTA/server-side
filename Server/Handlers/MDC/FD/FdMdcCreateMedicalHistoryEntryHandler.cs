@@ -11,18 +11,17 @@ namespace Server.Handlers.MDC.FD;
 public class FdMdcCreateMedicalHistoryEntryHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly MedicalHistoryModule _medicalHistoryModule;
     private readonly FireMdcModule _fireMdcModule;
 
     public FdMdcCreateMedicalHistoryEntryHandler(
         GroupFactionService groupFactionService,
-        
-        MedicalHistoryModule medicalHistoryModule, 
-        FireMdcModule fireMdcModule) 
+        MedicalHistoryModule medicalHistoryModule,
+        FireMdcModule fireMdcModule)
     {
         _groupFactionService = groupFactionService;
-        
+
         _medicalHistoryModule = medicalHistoryModule;
         _fireMdcModule = fireMdcModule;
 
@@ -43,7 +42,7 @@ public class FdMdcCreateMedicalHistoryEntryHandler : ISingletonScript
         }
 
         await _medicalHistoryModule.Add(characterId, player.CharacterModel.Name, input);
-        
+
         await _fireMdcModule.OpenPatientRecords(player, characterId);
     }
 }

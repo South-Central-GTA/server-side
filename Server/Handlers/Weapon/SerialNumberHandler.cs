@@ -12,16 +12,16 @@ namespace Server.Handlers.Weapon;
 public class SerialNumberHandler : ISingletonScript
 {
     private readonly ItemWeaponService _itemWeaponService;
-    
+
     private readonly NarratorModule _narratorModule;
-    
+
     public SerialNumberHandler(
-        ItemWeaponService itemWeaponService, 
+        ItemWeaponService itemWeaponService,
         NarratorModule narratorModule)
     {
         _itemWeaponService = itemWeaponService;
         _narratorModule = narratorModule;
-        
+
         AltAsync.OnClient<ServerPlayer, int>("serialnumber:show", OnShow);
         AltAsync.OnClient<ServerPlayer, int>("serialnumber:requestremove", OnRequestRemove);
         AltAsync.OnClient<ServerPlayer, int>("serialnumber:remove", OnRemove);
@@ -33,7 +33,7 @@ public class SerialNumberHandler : ISingletonScript
         {
             return;
         }
-        
+
         var item = await _itemWeaponService.GetByKey(itemId);
 
         if (player.CharacterModel.InventoryModel.Id != item?.InventoryModelId)
@@ -57,9 +57,9 @@ public class SerialNumberHandler : ISingletonScript
         {
             return;
         }
-        
+
         var item = await _itemWeaponService.GetByKey(itemId);
-    
+
         if (player.CharacterModel.InventoryModel.Id != item?.InventoryModelId)
         {
             return;
@@ -70,7 +70,7 @@ public class SerialNumberHandler : ISingletonScript
             player.SendNotification("Die Seriennummer ist schon entfernt", NotificationType.ERROR);
             return;
         }
-        
+
         var data = new object[1];
         data[0] = itemId;
 
@@ -78,7 +78,8 @@ public class SerialNumberHandler : ISingletonScript
         {
             Type = DialogType.TWO_BUTTON_DIALOG,
             Title = "Seriennummer entfernen",
-            Description = $"Bist du sicher das du die Seriennummer von deiner Waffe entfernen möchtest?<br><br><span class='text-muted'>Der Besitz dieser Waffe ist dann illegal und es kann nicht rückgängig gemacht werden!</span>",
+            Description =
+                $"Bist du sicher das du die Seriennummer von deiner Waffe entfernen möchtest?<br><br><span class='text-muted'>Der Besitz dieser Waffe ist dann illegal und es kann nicht rückgängig gemacht werden!</span>",
             HasBankAccountSelection = false,
             FreezeGameControls = true,
             Data = data,
@@ -87,14 +88,14 @@ public class SerialNumberHandler : ISingletonScript
             SecondaryButton = "Nein"
         });
     }
-    
+
     private async void OnRemove(ServerPlayer player, int itemId)
     {
         if (!player.Exists)
         {
             return;
         }
-        
+
         var item = await _itemWeaponService.GetByKey(itemId);
 
         if (player.CharacterModel.InventoryModel.Id != item?.InventoryModelId)
@@ -111,7 +112,7 @@ public class SerialNumberHandler : ISingletonScript
         item.SerialNumber = "";
 
         await _itemWeaponService.Update(item);
-        
+
         player.SendNotification("Die Seriennummer wurde entfernt", NotificationType.SUCCESS);
     }
 }

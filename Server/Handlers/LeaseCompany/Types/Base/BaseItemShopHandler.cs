@@ -107,7 +107,14 @@ public class BaseItemShopHandler : ISingletonScript
         }
         else
         {
-            var item = await _itemCreationModule.AddItemAsync(player, catalogItemId, amount, null, null, null, true, false);
+            var item = await _itemCreationModule.AddItemAsync(player,
+                                                              catalogItemId,
+                                                              amount,
+                                                              null,
+                                                              null,
+                                                              null,
+                                                              true,
+                                                              false);
             if (item == null)
             {
                 return;
@@ -136,7 +143,8 @@ public class BaseItemShopHandler : ISingletonScript
         var costs = await GetBill(player);
         if (costs == 0)
         {
-            player.SendNotification("Dein Charakter hat keine Waren von dem Supermarkt im Inventar.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat keine Waren von dem Supermarkt im Inventar.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -149,11 +157,15 @@ public class BaseItemShopHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
+                                    NotificationType.ERROR);
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount, costs, false, $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
+        var success = await _bankModule.Withdraw(bankAccount,
+                                                 costs,
+                                                 false,
+                                                 $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
         if (success)
         {
             player.SendNotification("Dein Charakter hat den Einkauf bezahlt.", NotificationType.SUCCESS);
@@ -171,7 +183,8 @@ public class BaseItemShopHandler : ISingletonScript
         }
         else
         {
-            player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.",
+                                    NotificationType.ERROR);
         }
     }
 
@@ -275,7 +288,12 @@ public class BaseItemShopHandler : ISingletonScript
         }
         else
         {
-            await _userShopDataService.Add(new UserShopDataModel { CharacterModelId = player.CharacterModel.Id, GotWarned = false, BillToPay = price });
+            await _userShopDataService.Add(new UserShopDataModel
+            {
+                CharacterModelId = player.CharacterModel.Id,
+                GotWarned = false,
+                BillToPay = price
+            });
         }
     }
 

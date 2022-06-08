@@ -86,7 +86,9 @@ public class HouseModule : ISingletonScript
         var houses = await _houseService.GetAll();
         foreach (var house in houses)
         {
-            ColShapes.Add(house.Id, Alt.CreateColShapeSphere(new Position(house.PositionX, house.PositionY, house.PositionZ), 1.5f));
+            ColShapes.Add(house.Id,
+                          Alt.CreateColShapeSphere(new Position(house.PositionX, house.PositionY, house.PositionZ),
+                                                   1.5f));
         }
     }
 
@@ -97,7 +99,13 @@ public class HouseModule : ISingletonScript
 
         foreach (var house in houses.Where(h => h.Inventory == null))
         {
-            newInventories.Add(new InventoryModel { HouseModelId = house.Id, Name = "Hauslager", InventoryType = InventoryType.HOUSE, MaxWeight = 100 });
+            newInventories.Add(new InventoryModel
+            {
+                HouseModelId = house.Id,
+                Name = "Hauslager",
+                InventoryType = InventoryType.HOUSE,
+                MaxWeight = 100
+            });
         }
 
         await _inventoryService.AddRange(newInventories);
@@ -113,7 +121,9 @@ public class HouseModule : ISingletonScript
 
         if (IsHouseBlocked(houseModel.Id))
         {
-            player.SendNotification("Dieses Haus wurde sich in der Charaktererstellung vorgemerkt und kann aktuell nicht gekauft werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dieses Haus wurde sich in der Charaktererstellung vorgemerkt und kann aktuell nicht gekauft werden.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -126,14 +136,16 @@ public class HouseModule : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
+                                    NotificationType.ERROR);
             return;
         }
 
         var success = await _bankModule.Withdraw(bankAccount, houseModel.Price, false, "Immobilienkauf");
         if (!success)
         {
-            player.SendNotification($"Auf dem Konto {bankAccount.BankDetails} liegt nicht genügend Geld.", NotificationType.ERROR);
+            player.SendNotification($"Auf dem Konto {bankAccount.BankDetails} liegt nicht genügend Geld.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -144,7 +156,8 @@ public class HouseModule : ISingletonScript
 
         await SetOwner(player, houseModel);
 
-        player.SendNotification($"Dein Charakter hat sich das Haus für ${houseModel.Price} gekauft.", NotificationType.SUCCESS);
+        player.SendNotification($"Dein Charakter hat sich das Haus für ${houseModel.Price} gekauft.",
+                                NotificationType.SUCCESS);
     }
 
     public async Task SetOwner(ServerPlayer player, HouseModel houseModel)
@@ -164,7 +177,13 @@ public class HouseModule : ISingletonScript
 
     public async Task<bool> CreateHouseKey(ServerPlayer player, HouseModel houseModel)
     {
-        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null, null, "Immobilienschlüssel");
+        var itemKey =
+            (ItemKeyModel)await _itemCreationModule.AddItemAsync(player,
+                                                                 ItemCatalogIds.KEY,
+                                                                 1,
+                                                                 null,
+                                                                 null,
+                                                                 "Immobilienschlüssel");
         if (itemKey == null)
         {
             return false;
@@ -200,17 +219,20 @@ public class HouseModule : ISingletonScript
         var price = (int)(houseModel.Price * 0.8f);
 
         await _bankModule.Deposit(bankAccount, price, "Immobilienverkauf");
-        player.SendNotification($"Dein Charakter hat Haus verkauft und ${price} auf das Bankkonto {bankAccount.BankDetails} überwiesen bekommen.", NotificationType.SUCCESS);
+        player.SendNotification(
+            $"Dein Charakter hat Haus verkauft und ${price} auf das Bankkonto {bankAccount.BankDetails} überwiesen bekommen.",
+            NotificationType.SUCCESS);
 
         await ResetOwner(houseModel);
 
-        var keyItems = player.CharacterModel.InventoryModel.Items.FindAll(i => i.CatalogItemModelId == ItemCatalogIds.KEY
-                                                                     && houseModel.Keys.Any(k => k == i.Id));
+        var keyItems = player.CharacterModel.InventoryModel.Items.FindAll(
+            i => i.CatalogItemModelId == ItemCatalogIds.KEY
+                 && houseModel.Keys.Any(k => k == i.Id));
 
         await _itemService.RemoveRange(keyItems);
         await _inventoryModule.UpdateInventoryUiAsync(player);
     }
-    
+
     public async Task ResetOwner(HouseModel houseModel)
     {
         houseModel.CharacterModelId = null;
@@ -248,18 +270,30 @@ public class HouseModule : ISingletonScript
         await _houseService.UpdateRange(houses);
     }
 
-    public async Task CreateHouse(Position position, Rotation rotation, int interiorId, int houseNumber, int price, string subName, int streetDirection)
+    public async Task CreateHouse(Position position, Rotation rotation, int interiorId, int houseNumber, int price,
+                                  string subName, int streetDirection)
     {
         if (subName == "FREI")
         {
             subName = "";
         }
 
-        var house = new HouseModel(position.X, position.Y, position.Z, rotation.Roll, rotation.Pitch, rotation.Yaw, interiorId, houseNumber, price, subName, streetDirection);
+        var house = new HouseModel(position.X,
+                                   position.Y,
+                                   position.Z,
+                                   rotation.Roll,
+                                   rotation.Pitch,
+                                   rotation.Yaw,
+                                   interiorId,
+                                   houseNumber,
+                                   price,
+                                   subName,
+                                   streetDirection);
         await _houseService.Add(house);
         AddToClient(house);
 
-        ColShapes.Add(house.Id, Alt.CreateColShapeSphere(new Position(house.PositionX, house.PositionY, house.PositionZ), 1.5f));
+        ColShapes.Add(house.Id,
+                      Alt.CreateColShapeSphere(new Position(house.PositionX, house.PositionY, house.PositionZ), 1.5f));
     }
 
     public async Task CreateLeaseCompany(LeaseCompanyType leaseCompanyType, Position position, Rotation rotation,
@@ -270,12 +304,24 @@ public class HouseModule : ISingletonScript
             subName = "";
         }
 
-        var leaseCompanyHouse = new LeaseCompanyHouseModel(leaseCompanyType, position.X, position.Y, position.Z, rotation.Roll, rotation.Pitch, rotation.Yaw, price, subName);
+        var leaseCompanyHouse = new LeaseCompanyHouseModel(leaseCompanyType,
+                                                           position.X,
+                                                           position.Y,
+                                                           position.Z,
+                                                           rotation.Roll,
+                                                           rotation.Pitch,
+                                                           rotation.Yaw,
+                                                           price,
+                                                           subName);
 
         await _houseService.Add(leaseCompanyHouse);
         AddToClient(leaseCompanyHouse);
 
-        ColShapes.Add(leaseCompanyHouse.Id, Alt.CreateColShapeSphere(new Position(leaseCompanyHouse.PositionX, leaseCompanyHouse.PositionY, leaseCompanyHouse.PositionZ), 1.5f));
+        ColShapes.Add(leaseCompanyHouse.Id,
+                      Alt.CreateColShapeSphere(new Position(leaseCompanyHouse.PositionX,
+                                                            leaseCompanyHouse.PositionY,
+                                                            leaseCompanyHouse.PositionZ),
+                                               1.5f));
     }
 
     public async Task DestroyHouse(HouseModel houseModel)
@@ -308,18 +354,21 @@ public class HouseModule : ISingletonScript
 
         if (!house.InteriorId.HasValue)
         {
-            return;   
+            return;
         }
-        
+
         if (player.IsInventoryOpen)
         {
-            player.SendNotification("Du kannst das Haus nicht betreten während dein Charakter sein Inventar offen hast.", NotificationType.ERROR);
+            player.SendNotification(
+                "Du kannst das Haus nicht betreten während dein Charakter sein Inventar offen hast.",
+                NotificationType.ERROR);
             return;
         }
 
         if (house.LockState == LockState.CLOSED)
         {
-            player.SendNotification("Dein Charakter kann das Haus nicht betreten, es ist abgeschlossen.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter kann das Haus nicht betreten, es ist abgeschlossen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -351,7 +400,8 @@ public class HouseModule : ISingletonScript
         var house = await _houseService.GetByKey(player.Dimension);
         if (house == null || house.InteriorId == -1)
         {
-            player.SendNotification("Bitte kontaktiere einen Admin dein Haus scheint nicht mehr zu exsistieren.", NotificationType.ERROR);
+            player.SendNotification("Bitte kontaktiere einen Admin dein Haus scheint nicht mehr zu exsistieren.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -362,13 +412,16 @@ public class HouseModule : ISingletonScript
 
         if (player.IsInventoryOpen)
         {
-            player.SendNotification("Du kannst das Haus nicht verlassen während dein Charakter sein Inventar offen hast.", NotificationType.ERROR);
+            player.SendNotification(
+                "Du kannst das Haus nicht verlassen während dein Charakter sein Inventar offen hast.",
+                NotificationType.ERROR);
             return;
         }
 
         if (house.LockState == LockState.CLOSED)
         {
-            player.SendNotification("Dein Charakter kann das Haus nicht verlassen, es ist abgeschlossen.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter kann das Haus nicht verlassen, es ist abgeschlossen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -460,7 +513,7 @@ public class HouseModule : ISingletonScript
         await _houseService.Update(houseModel);
         await UpdateOnClient(houseModel);
     }
-    
+
     public async Task SetBlockedOwnerShip(HouseModel houseModel, bool state)
     {
         houseModel.BlockedOwnership = state;
@@ -510,7 +563,8 @@ public class HouseModule : ISingletonScript
 
         _playerSelections.Add(houseId, player);
 
-        player.SendNotification("Diese Immobilie wurde deinem Charakter erfolgreich vorgemerkt.", NotificationType.SUCCESS);
+        player.SendNotification("Diese Immobilie wurde deinem Charakter erfolgreich vorgemerkt.",
+                                NotificationType.SUCCESS);
         player.Emit("houseselector:select", houseId);
     }
 
@@ -542,7 +596,7 @@ public class HouseModule : ISingletonScript
         {
             return null;
         }
-        
+
         return await _houseService.GetByKey(houseId);
     }
 
@@ -624,7 +678,8 @@ public class HouseModule : ISingletonScript
 
     private bool IsStarterHouse(HouseModel houseModel)
     {
-        return houseModel.SouthCentralPoints <= _characterCreatorOptions.MaxSouthCentralPointsHouses && houseModel.HasNoOwner;
+        return houseModel.SouthCentralPoints <= _characterCreatorOptions.MaxSouthCentralPointsHouses &&
+               houseModel.HasNoOwner;
     }
 
     private async Task<List<HouseModel>> GetStarterHousesAsync()

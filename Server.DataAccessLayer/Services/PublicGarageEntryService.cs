@@ -32,7 +32,8 @@ public class PublicGarageEntryService
                               .FirstOrDefaultAsync(expression);
     }
 
-    public override async Task<List<PublicGarageEntryModel>> Where(Expression<Func<PublicGarageEntryModel, bool>> expression)
+    public override async Task<List<PublicGarageEntryModel>> Where(
+        Expression<Func<PublicGarageEntryModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.PublicGarageEntries

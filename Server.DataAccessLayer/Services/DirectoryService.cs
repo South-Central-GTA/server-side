@@ -21,13 +21,13 @@ public class DirectoryService
     {
         _dbContextFactory = dbContextFactory;
     }
-    
+
     public async Task<DirectoryModel?> GetByKey(int id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.Directories
                               .Include(directory => directory.GroupModel)
-                                .ThenInclude(group => group.Members)
+                              .ThenInclude(group => group.Members)
                               .FirstOrDefaultAsync(directory => directory.Id == id);
     }
 

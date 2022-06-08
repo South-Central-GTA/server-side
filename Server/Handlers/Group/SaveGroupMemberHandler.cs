@@ -10,7 +10,8 @@ public class SaveGroupMemberHandler : ISingletonScript
     private readonly GroupMemberService _groupMemberService;
 
     public SaveGroupMemberHandler(GroupMemberService groupMemberService)
-    {;
+    {
+        ;
         _groupMemberService = groupMemberService;
 
         AltAsync.OnClient<ServerPlayer, int, int, uint, uint>("group:savemember", OnSaveMember);

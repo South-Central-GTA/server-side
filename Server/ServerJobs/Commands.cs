@@ -14,12 +14,11 @@ using Server.Core.Entities;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.CustomLogs;
-using Server.Modules;
 using Server.Modules.Chat;
 
 namespace Server.ServerJobs;
 
-public class Commands : IServerJob
+public class Commands : IJob
 {
     private static readonly LinkedList<Function> Functions = new();
 
@@ -215,7 +214,13 @@ public class Commands : IServerJob
                     }
                 }
 
-                await _commandLogService.Add(new CommandLogModel { AccountModelId = player.AccountModel.SocialClubId, CharacterModelId = player.CharacterModel.Id, Name = cmd, Arguments = string.Join(" ", args.Skip(1)) });
+                await _commandLogService.Add(new CommandLogModel
+                {
+                    AccountModelId = player.AccountModel.SocialClubId,
+                    CharacterModelId = player.CharacterModel.Id,
+                    Name = cmd,
+                    Arguments = string.Join(" ", args.Skip(1))
+                });
             }
         }
         else
@@ -231,234 +236,321 @@ public class Commands : IServerJob
     private void RegisterEvents(object target)
     {
         ModuleScriptMethodIndexer.Index(target,
-        new[] { typeof(Command), typeof(CommandEvent) },
-        (baseEvent, eventMethod, eventMethodDelegate) =>
-        {
-            switch (baseEvent)
-            {
-                case Command command:
-                {
-                    var commandName = command.Name ?? eventMethod.Name;
+                                        new[] { typeof(Command), typeof(CommandEvent) },
+                                        (baseEvent, eventMethod, eventMethodDelegate) =>
+                                        {
+                                            switch (baseEvent)
+                                            {
+                                                case Command command:
+                                                {
+                                                    var commandName = command.Name ?? eventMethod.Name;
 
-                    Handles.AddLast(GCHandle.Alloc(eventMethodDelegate));
+                                                    Handles.AddLast(GCHandle.Alloc(eventMethodDelegate));
 
-                    var function = Function.Create(eventMethodDelegate);
-                    if (function == null)
-                    {
-                        Console.WriteLine($"Unsupported Command method: {eventMethod}");
-                        return;
-                    }
+                                                    var function = Alt.CreateFunction(eventMethodDelegate);
+                                                    if (function == null)
+                                                    {
+                                                        Console.WriteLine($"Unsupported Command method: {eventMethod}");
+                                                        return;
+                                                    }
 
-                    Functions.AddLast(function);
+                                                    Functions.AddLast(function);
 
-                    _commandModule.AddCommand(command);
+                                                    _commandModule.AddCommand(command);
 
-                    if (!_commandDelegates.TryGetValue(commandName, out var delegates))
-                    {
-                        delegates = new LinkedList<RestrictedAccessCommandDelegate>();
-                        _commandDelegates[commandName] = delegates;
-                    }
+                                                    if (!_commandDelegates.TryGetValue(commandName, out var delegates))
+                                                    {
+                                                        delegates = new LinkedList<RestrictedAccessCommandDelegate>();
+                                                        _commandDelegates[commandName] = delegates;
+                                                    }
 
-                    switch (command.CommandArgs)
-                    {
-                        case CommandArgs.NOT_GREEDY:
-                        {
-                            delegates.AddLast(new RestrictedAccessCommandDelegate((player, arguments) =>
-                              {
-                                  function.Call(player, arguments);
-                              },
-                              command.RequiredPermission,
-                              command.ParameterDescription?.Length ?? 0,
-                              command.CommandArgs));
-                        }
-                            break;
-                        case CommandArgs.GREEDY:
-                        {
-                            delegates.AddLast(new RestrictedAccessCommandDelegate((player, arguments) =>
-                              {
-                                  function.Call(player, new[] { string.Join(" ", arguments) });
-                              },
-                              command.RequiredPermission,
-                              command.ParameterDescription?.Length ?? 0,
-                              command.CommandArgs));
-                        }
-                            break;
-                        case CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT:
-                        {
-                            delegates.AddLast(new RestrictedAccessCommandDelegate((player, arguments) =>
-                              {
-                                  function.Call(player, new[] { arguments[0], string.Join(" ", arguments.Skip(1)) });
-                              },
-                              command.RequiredPermission,
-                              command.ParameterDescription?.Length ?? 0,
-                              command.CommandArgs));
-                        }
-                            break;
-                        case CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT:
-                        {
-                            delegates.AddLast(new RestrictedAccessCommandDelegate((player, arguments) =>
-                              {
-                                  function.Call(player, new[] { arguments[0], arguments[1], string.Join(" ", arguments.Skip(2)) });
-                              },
-                              command.RequiredPermission,
-                              command.ParameterDescription?.Length ?? 0,
-                              command.CommandArgs));
-                        }
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                                                    switch (command.CommandArgs)
+                                                    {
+                                                        case CommandArgs.NOT_GREEDY:
+                                                        {
+                                                            delegates.AddLast(
+                                                                new RestrictedAccessCommandDelegate(
+                                                                    (player, arguments) =>
+                                                                    {
+                                                                        function.Call(player, arguments);
+                                                                    },
+                                                                    command.RequiredPermission,
+                                                                    command.ParameterDescription?.Length ?? 0,
+                                                                    command.CommandArgs));
+                                                        }
+                                                            break;
+                                                        case CommandArgs.GREEDY:
+                                                        {
+                                                            delegates.AddLast(
+                                                                new RestrictedAccessCommandDelegate(
+                                                                    (player, arguments) =>
+                                                                    {
+                                                                        function.Call(player,
+                                                                                      new[]
+                                                                                      {
+                                                                                          string.Join(
+                                                                                              " ",
+                                                                                              arguments)
+                                                                                      });
+                                                                    },
+                                                                    command.RequiredPermission,
+                                                                    command.ParameterDescription?.Length ?? 0,
+                                                                    command.CommandArgs));
+                                                        }
+                                                            break;
+                                                        case CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT:
+                                                        {
+                                                            delegates.AddLast(
+                                                                new RestrictedAccessCommandDelegate(
+                                                                    (player, arguments) =>
+                                                                    {
+                                                                        function.Call(player,
+                                                                                      new[]
+                                                                                      {
+                                                                                          arguments[0],
+                                                                                          string.Join(
+                                                                                              " ",
+                                                                                              arguments.Skip(1))
+                                                                                      });
+                                                                    },
+                                                                    command.RequiredPermission,
+                                                                    command.ParameterDescription?.Length ?? 0,
+                                                                    command.CommandArgs));
+                                                        }
+                                                            break;
+                                                        case CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT:
+                                                        {
+                                                            delegates.AddLast(
+                                                                new RestrictedAccessCommandDelegate(
+                                                                    (player, arguments) =>
+                                                                    {
+                                                                        function.Call(player,
+                                                                                      new[]
+                                                                                      {
+                                                                                          arguments[0],
+                                                                                          arguments[1],
+                                                                                          string.Join(
+                                                                                              " ",
+                                                                                              arguments.Skip(2))
+                                                                                      });
+                                                                    },
+                                                                    command.RequiredPermission,
+                                                                    command.ParameterDescription?.Length ?? 0,
+                                                                    command.CommandArgs));
+                                                        }
+                                                            break;
+                                                        default:
+                                                            throw new ArgumentOutOfRangeException();
+                                                    }
 
-                    var aliases = command.Aliases;
-                    if (aliases != null)
-                    {
-                        foreach (var alias in aliases)
-                        {
-                            if (!_commandDelegates.TryGetValue(alias, out delegates))
-                            {
-                                delegates = new LinkedList<RestrictedAccessCommandDelegate>();
-                                _commandDelegates[alias] = delegates;
-                            }
+                                                    var aliases = command.Aliases;
+                                                    if (aliases != null)
+                                                    {
+                                                        foreach (var alias in aliases)
+                                                        {
+                                                            if (!_commandDelegates.TryGetValue(alias, out delegates))
+                                                            {
+                                                                delegates =
+                                                                    new LinkedList<RestrictedAccessCommandDelegate>();
+                                                                _commandDelegates[alias] = delegates;
+                                                            }
 
-                            switch (command.CommandArgs)
-                            {
-                                case CommandArgs.NOT_GREEDY:
-                                {
-                                    delegates.AddLast(new RestrictedAccessCommandDelegate((player, arguments) =>
-                                      {
-                                          function.Call(player, arguments);
-                                      },
-                                      command.RequiredPermission,
-                                      command.ParameterDescription?.Length ?? 0,
-                                      command.CommandArgs));
-                                }
-                                    break;
-                                case CommandArgs.GREEDY:
-                                {
-                                    delegates.AddLast(new RestrictedAccessCommandDelegate((player, arguments) =>
-                                      {
-                                          function.Call(player, new[] { string.Join(" ", arguments) });
-                                      },
-                                      command.RequiredPermission,
-                                      command.ParameterDescription?.Length ?? 0,
-                                      command.CommandArgs));
-                                }
-                                    break;
-                                case CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT:
-                                {
-                                    delegates.AddLast(new RestrictedAccessCommandDelegate((player, arguments) =>
-                                      {
-                                          function.Call(player, new[] { arguments[0], string.Join(" ", arguments.Skip(1)) });
-                                      },
-                                      command.RequiredPermission,
-                                      command.ParameterDescription?.Length ?? 0,
-                                      command.CommandArgs));
-                                }
-                                    break;
-                                case CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT:
-                                {
-                                    delegates.AddLast(new RestrictedAccessCommandDelegate((player, arguments) =>
-                                      {
-                                          function.Call(player, new[] { arguments[0], arguments[1], string.Join(" ", arguments.Skip(2)) });
-                                      },
-                                      command.RequiredPermission,
-                                      command.ParameterDescription?.Length ?? 0,
-                                      command.CommandArgs));
-                                }
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException();
-                            }
-                        }
-                    }
+                                                            switch (command.CommandArgs)
+                                                            {
+                                                                case CommandArgs.NOT_GREEDY:
+                                                                {
+                                                                    delegates.AddLast(
+                                                                        new RestrictedAccessCommandDelegate(
+                                                                            (player, arguments) =>
+                                                                            {
+                                                                                function.Call(player, arguments);
+                                                                            },
+                                                                            command.RequiredPermission,
+                                                                            command.ParameterDescription?.Length ?? 0,
+                                                                            command.CommandArgs));
+                                                                }
+                                                                    break;
+                                                                case CommandArgs.GREEDY:
+                                                                {
+                                                                    delegates.AddLast(
+                                                                        new RestrictedAccessCommandDelegate(
+                                                                            (player, arguments) =>
+                                                                            {
+                                                                                function.Call(player,
+                                                                                              new[]
+                                                                                              {
+                                                                                                  string.Join(
+                                                                                                      " ",
+                                                                                                      arguments)
+                                                                                              });
+                                                                            },
+                                                                            command.RequiredPermission,
+                                                                            command.ParameterDescription?.Length ?? 0,
+                                                                            command.CommandArgs));
+                                                                }
+                                                                    break;
+                                                                case CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT:
+                                                                {
+                                                                    delegates.AddLast(
+                                                                        new RestrictedAccessCommandDelegate(
+                                                                            (player, arguments) =>
+                                                                            {
+                                                                                function.Call(player,
+                                                                                              new[]
+                                                                                              {
+                                                                                                  arguments[0],
+                                                                                                  string.Join(" ",
+                                                                                                              arguments
+                                                                                                                  .Skip(
+                                                                                                                      1))
+                                                                                              });
+                                                                            },
+                                                                            command.RequiredPermission,
+                                                                            command.ParameterDescription?.Length ?? 0,
+                                                                            command.CommandArgs));
+                                                                }
+                                                                    break;
+                                                                case CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT:
+                                                                {
+                                                                    delegates.AddLast(
+                                                                        new RestrictedAccessCommandDelegate(
+                                                                            (player, arguments) =>
+                                                                            {
+                                                                                function.Call(player,
+                                                                                              new[]
+                                                                                              {
+                                                                                                  arguments[0],
+                                                                                                  arguments[1],
+                                                                                                  string.Join(" ",
+                                                                                                              arguments
+                                                                                                                  .Skip(
+                                                                                                                      2))
+                                                                                              });
+                                                                            },
+                                                                            command.RequiredPermission,
+                                                                            command.ParameterDescription?.Length ?? 0,
+                                                                            command.CommandArgs));
+                                                                }
+                                                                    break;
+                                                                default:
+                                                                    throw new ArgumentOutOfRangeException();
+                                                            }
+                                                        }
+                                                    }
 
-                    break;
-                }
+                                                    break;
+                                                }
 
-                case CommandEvent commandEvent:
-                {
-                    var commandEventType = commandEvent.EventType;
-                    ScriptFunction scriptFunction;
+                                                case CommandEvent commandEvent:
+                                                {
+                                                    var commandEventType = commandEvent.EventType;
+                                                    ScriptFunction scriptFunction;
 
-                    switch (commandEventType)
-                    {
-                        case CommandEventType.NOT_FOUND:
-                            scriptFunction = ScriptFunction.Create(eventMethodDelegate,
-                                                                   new[] { typeof(ServerPlayer), typeof(string) });
+                                                    switch (commandEventType)
+                                                    {
+                                                        case CommandEventType.NOT_FOUND:
+                                                            scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                                                                                   new[]
+                                                                                                   {
+                                                                                                       typeof(
+                                                                                                           ServerPlayer),
+                                                                                                       typeof(
+                                                                                                           string)
+                                                                                                   });
 
-                            if (scriptFunction == null)
-                            {
-                                return;
-                            }
+                                                            if (scriptFunction == null)
+                                                            {
+                                                                return;
+                                                            }
 
-                            OnCommandDoesNotExist += (player, commandName) =>
-                            {
-                                scriptFunction.Set(player);
-                                scriptFunction.Set(commandName);
-                                scriptFunction.Call();
-                            };
-                            break;
+                                                            OnCommandDoesNotExist += (player, commandName) =>
+                                                            {
+                                                                scriptFunction.Set(player);
+                                                                scriptFunction.Set(commandName);
+                                                                scriptFunction.Call();
+                                                            };
+                                                            break;
 
-                        case CommandEventType.MISSING_PERMISSION:
-                            scriptFunction = ScriptFunction.Create(eventMethodDelegate,
-                                new[] { typeof(ServerPlayer), typeof(string) });
+                                                        case CommandEventType.MISSING_PERMISSION:
+                                                            scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                                                                                   new[]
+                                                                                                   {
+                                                                                                       typeof(
+                                                                                                           ServerPlayer),
+                                                                                                       typeof(
+                                                                                                           string)
+                                                                                                   });
 
-                            if (scriptFunction == null)
-                            {
-                                return;
-                            }
+                                                            if (scriptFunction == null)
+                                                            {
+                                                                return;
+                                                            }
 
-                            OnCommandMissingPermission += (player, commandName) =>
-                            {
-                                scriptFunction.Set(player);
-                                scriptFunction.Set(commandName);
-                                scriptFunction.Call();
-                            };
-                            break;
+                                                            OnCommandMissingPermission += (player, commandName) =>
+                                                            {
+                                                                scriptFunction.Set(player);
+                                                                scriptFunction.Set(commandName);
+                                                                scriptFunction.Call();
+                                                            };
+                                                            break;
 
-                        case CommandEventType.ADUTY_REQUIRED:
-                            scriptFunction = ScriptFunction.Create(eventMethodDelegate,
-                                new[] { typeof(ServerPlayer), typeof(string) });
+                                                        case CommandEventType.ADUTY_REQUIRED:
+                                                            scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                                                                                   new[]
+                                                                                                   {
+                                                                                                       typeof(
+                                                                                                           ServerPlayer),
+                                                                                                       typeof(
+                                                                                                           string)
+                                                                                                   });
 
-                            if (scriptFunction == null)
-                            {
-                                return;
-                            }
+                                                            if (scriptFunction == null)
+                                                            {
+                                                                return;
+                                                            }
 
-                            OnCommandAdutyRequired += (player, commandName) =>
-                            {
-                                scriptFunction.Set(player);
-                                scriptFunction.Set(commandName);
-                                scriptFunction.Call();
-                            };
-                            break;
+                                                            OnCommandAdutyRequired += (player, commandName) =>
+                                                            {
+                                                                scriptFunction.Set(player);
+                                                                scriptFunction.Set(commandName);
+                                                                scriptFunction.Call();
+                                                            };
+                                                            break;
 
-                        case CommandEventType.MISSING_ARGS:
-                            scriptFunction = ScriptFunction.Create(eventMethodDelegate,
-                                new[] { typeof(ServerPlayer), typeof(string) });
+                                                        case CommandEventType.MISSING_ARGS:
+                                                            scriptFunction = ScriptFunction.Create(eventMethodDelegate,
+                                                                                                   new[]
+                                                                                                   {
+                                                                                                       typeof(
+                                                                                                           ServerPlayer),
+                                                                                                       typeof(
+                                                                                                           string)
+                                                                                                   });
 
-                            if (scriptFunction == null)
-                            {
-                                return;
-                            }
+                                                            if (scriptFunction == null)
+                                                            {
+                                                                return;
+                                                            }
 
-                            OnCommandMissingArgs += (player, commandName) =>
-                            {
-                                scriptFunction.Set(player);
-                                scriptFunction.Set(commandName);
-                                scriptFunction.Call();
-                            };
-                            break;
-                    }
-                    break;
-                }
-            }
-        });
+                                                            OnCommandMissingArgs += (player, commandName) =>
+                                                            {
+                                                                scriptFunction.Set(player);
+                                                                scriptFunction.Set(commandName);
+                                                                scriptFunction.Call();
+                                                            };
+                                                            break;
+                                                    }
+
+                                                    break;
+                                                }
+                                            }
+                                        });
     }
 
     private class RestrictedAccessCommandDelegate
     {
-        public RestrictedAccessCommandDelegate(CommandDelegate action, Permission requiredPermission, int argsAmount, CommandArgs commandArgs)
+        public RestrictedAccessCommandDelegate(CommandDelegate action, Permission requiredPermission, int argsAmount,
+                                               CommandArgs commandArgs)
         {
             Action = action;
             RequiredPermission = requiredPermission;

@@ -35,10 +35,10 @@ public class VehicleData
 
         writer.Name("characterName");
         writer.Value(CharacterName);
-        
+
         writer.Name("isGroupVehicle");
         writer.Value(IsGroupVehicle);
-        
+
         writer.Name("numberPlateText");
         writer.Value(NumberPlateText);
 

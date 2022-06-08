@@ -21,7 +21,7 @@ public class AllergiesService
     {
         _dbContextFactory = dbContextFactory;
     }
-    
+
     public async Task<MdcAllergyModel?> GetByKey(int id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();

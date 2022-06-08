@@ -61,7 +61,8 @@ public class CreateGroupKeyHandler : ISingletonScript
         var group = await _groupService.GetByKey(groupId);
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -76,14 +77,20 @@ public class CreateGroupKeyHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
+                                    NotificationType.ERROR);
             return;
         }
 
         var success = await _bankModule.Withdraw(bankAccount, catalogItem.Price, false, "Gruppenschlüssel nachgemacht");
         if (success)
         {
-            var item = (ItemGroupKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.GROUP_KEY, 1, null, null, group.Name);
+            var item = (ItemGroupKeyModel)await _itemCreationModule.AddItemAsync(player,
+                                                                                 ItemCatalogIds.GROUP_KEY,
+                                                                                 1,
+                                                                                 null,
+                                                                                 null,
+                                                                                 group.Name);
             if (item == null)
             {
                 return;
@@ -93,11 +100,14 @@ public class CreateGroupKeyHandler : ISingletonScript
 
             await _itemService.Update(item);
 
-            player.SendNotification("Du hast erfolgreich einen weiteren Gruppenschlüssel erstellt. Dieser ist nur für Gruppenmitglieder verwendbar.", NotificationType.SUCCESS);
+            player.SendNotification(
+                "Du hast erfolgreich einen weiteren Gruppenschlüssel erstellt. Dieser ist nur für Gruppenmitglieder verwendbar.",
+                NotificationType.SUCCESS);
         }
         else
         {
-            player.SendNotification("Das Gruppenkonto hat nicht genug Geld um einen Gruppenschlüssel zu erstellen.", NotificationType.ERROR);
+            player.SendNotification("Das Gruppenkonto hat nicht genug Geld um einen Gruppenschlüssel zu erstellen.",
+                                    NotificationType.ERROR);
         }
     }
 }

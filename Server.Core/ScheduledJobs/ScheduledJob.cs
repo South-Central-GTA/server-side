@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Server.ScheduledJob;
+namespace Server.Core.ScheduledJobs;
 
 public abstract class ScheduledJob
 {

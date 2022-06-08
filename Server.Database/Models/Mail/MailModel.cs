@@ -20,8 +20,7 @@ public class MailModel
     public string SenderMailAddress { get; set; }
     public List<string> MailReadedFromAddress { get; init; } = new();
 
-    [MaxLength(50)] 
-    public string Title { get; set; }
+    [MaxLength(50)] public string Title { get; set; }
 
     public string Context { get; set; }
 

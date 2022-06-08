@@ -28,7 +28,7 @@ public class ItemToEvidenceRoomHandler : ISingletonScript
         {
             return;
         }
-        
+
         await _itemDestructionModule.Destroy(itemId);
 
         player.SendNotification("Du hast das Item in die Asservatenkammer übertragen.", NotificationType.INFO);

@@ -61,7 +61,8 @@ public class AddAccessMailAccountHandler : ISingletonScript
 
         if (player.CharacterModel.Id == character.Id)
         {
-            player.EmitGui("mail:senderror", "Sie können sich nicht selbst auf ein Mailkonto hinzufügen, Sie haben schon Zugriffsrechte.");
+            player.EmitGui("mail:senderror",
+                           "Sie können sich nicht selbst auf ein Mailkonto hinzufügen, Sie haben schon Zugriffsrechte.");
             return;
         }
 

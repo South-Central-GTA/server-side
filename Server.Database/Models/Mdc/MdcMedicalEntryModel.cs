@@ -12,7 +12,6 @@ public class MdcMedicalEntryModel
 {
     public MdcMedicalEntryModel()
     {
-        
     }
 
     [Key]
@@ -21,7 +20,7 @@ public class MdcMedicalEntryModel
 
     public int CharacterModelId { get; set; }
     public CharacterModel CharacterModel { get; set; }
-    
+
     public string Content { get; set; }
     public string CreatorCharacterName { get; set; }
 
@@ -37,7 +36,7 @@ public class MdcMedicalEntryModel
 
         writer.Name("creatorCharacterName");
         writer.Value(CreatorCharacterName);
-        
+
         writer.Name("createdAtJson");
         writer.Value(JsonSerializer.Serialize(CreatedAt));
 

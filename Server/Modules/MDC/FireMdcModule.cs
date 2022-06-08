@@ -27,13 +27,12 @@ public class FireMdcModule
     private readonly AllergiesModule _allergiesModule;
 
     public FireMdcModule(
-        GroupFactionService groupFactionService, 
-        EmergencyCallService emergencyCallService, 
-        CharacterService characterService, 
-        HouseService houseService, 
-        ItemPhoneService itemPhoneService, 
-        
-        MedicalHistoryModule medicalHistoryModule, 
+        GroupFactionService groupFactionService,
+        EmergencyCallService emergencyCallService,
+        CharacterService characterService,
+        HouseService houseService,
+        ItemPhoneService itemPhoneService,
+        MedicalHistoryModule medicalHistoryModule,
         AllergiesModule allergiesModule)
     {
         CallSign = new CallSign(groupFactionService);
@@ -42,7 +41,7 @@ public class FireMdcModule
         _characterService = characterService;
         _houseService = houseService;
         _itemPhoneService = itemPhoneService;
-        
+
         _medicalHistoryModule = medicalHistoryModule;
         _allergiesModule = allergiesModule;
     }
@@ -60,12 +59,14 @@ public class FireMdcModule
         {
             return;
         }
-        
+
         foreach (var target in factionGroup.Members
-                                           .Select(groupMember => Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                                           .Select(groupMember =>
+                                                       Alt.GetAllPlayers()
+                                                          .FindPlayerByCharacterId(groupMember.CharacterModelId))
                                            .Where(serverPlayer => serverPlayer != null))
         {
-            target.EmitGui("firepolicemdc:updateemergencycalls", await GetEmergencyCalls()); 
+            target.EmitGui("firepolicemdc:updateemergencycalls", await GetEmergencyCalls());
         }
     }
 
@@ -79,11 +80,11 @@ public class FireMdcModule
 
         var medicalHistory = await _medicalHistoryModule.GetByCharacterId(targetCharacterId);
         var allergies = await _allergiesModule.GetByCharacterId(targetCharacterId);
-        
+
         var houses = await _houseService.Where(h => h.CharacterModelId == character.Id);
         var phoneModels = await _itemPhoneService.Where(p => p.InitialOwnerId == character.Id);
         var phoneNumbers = phoneModels.Select(p => p.PhoneNumber).ToList();
-        
+
         player.EmitLocked("firemdc:openpatientrecord", character, houses, phoneNumbers, medicalHistory, allergies);
     }
 }

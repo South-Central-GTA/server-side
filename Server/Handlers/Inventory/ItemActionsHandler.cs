@@ -26,7 +26,7 @@ public class ItemActionHandler : ISingletonScript
     public ItemActionHandler(
         Serializer serializer,
         ItemService itemService,
-        ItemWeaponAttachmentService itemWeaponAttachmentService, 
+        ItemWeaponAttachmentService itemWeaponAttachmentService,
         GroupFactionService groupFactionService)
     {
         _serializer = serializer;
@@ -49,13 +49,13 @@ public class ItemActionHandler : ISingletonScript
         {
             return;
         }
-        
+
         var itemActions = ItemActionsSet.Get(item.CatalogItemModelId);
 
         var actions = new List<ActionData>
         {
-            new($"{GetItemName(item)} ablegen", "item:placeonground"), 
-            new($"{GetItemName(item)} Notiz setzen", "item:setnote"), 
+            new($"{GetItemName(item)} ablegen", "item:placeonground"),
+            new($"{GetItemName(item)} Notiz setzen", "item:setnote"),
             new($"{GetItemName(item)} vergeben", "item:getplayersaround")
         };
 
@@ -89,14 +89,17 @@ public class ItemActionHandler : ISingletonScript
         if (item is ItemWeaponModel)
         {
             var attachments = await _itemWeaponAttachmentService.Where(i => i.ItemWeaponId == itemId);
-            actions.AddRange(attachments.Select(itemWeaponAttachment => new ActionData($"{GetItemName(itemWeaponAttachment)} abmontieren", "item:removeattachment", itemWeaponAttachment.Id.ToString())));
+            actions.AddRange(attachments.Select(itemWeaponAttachment =>
+                                                    new ActionData($"{GetItemName(itemWeaponAttachment)} abmontieren",
+                                                                   "item:removeattachment",
+                                                                   itemWeaponAttachment.Id.ToString())));
         }
 
         if (player.IsAduty)
         {
             actions.Add(new ActionData($"[Admin] {GetItemName(item)} löschen", "item:delete"));
         }
-        
+
         var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
         if (factionGroup is { FactionType: FactionType.POLICE_DEPARTMENT })
         {
@@ -124,7 +127,7 @@ public class ItemActionHandler : ISingletonScript
             {
                 return "";
             }
-            
+
             var data = _serializer.Deserialize<ClothingData>(itemModel.CustomData);
             return data.Title;
         }

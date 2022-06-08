@@ -61,13 +61,15 @@ public class PhoneHandler : ISingletonScript
         var phoneItem = player.CharacterModel.InventoryModel.Items.Find(i => i.Id == itemId);
         if (phoneItem == null)
         {
-            player.SendNotification("Dein Charakter hat kein Handy im Inventar oder es ist noch nicht aktiv gesetzt.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat kein Handy im Inventar oder es ist noch nicht aktiv gesetzt.",
+                                    NotificationType.ERROR);
             return;
         }
 
         if (!phoneItem.IsBought)
         {
-            player.SendNotification("Dein Charakter kann das Handy erst nach dem Kaufen (oder Diebstahl) nutzen.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter kann das Handy erst nach dem Kaufen (oder Diebstahl) nutzen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -94,7 +96,9 @@ public class PhoneHandler : ISingletonScript
             return;
         }
 
-        player.SendNotification("Du kannst dieses Handy per Schnellzugriff nun mit Doppel-Pfeiltaste nach oben rausholen.", NotificationType.INFO);
+        player.SendNotification(
+            "Du kannst dieses Handy per Schnellzugriff nun mit Doppel-Pfeiltaste nach oben rausholen.",
+            NotificationType.INFO);
 
         await _phoneModule.SetActive(player, phoneItem.Id);
         await _phoneModule.OpenPhone(player, phoneItem.Id);
@@ -169,7 +173,13 @@ public class PhoneHandler : ISingletonScript
             return;
         }
 
-        var chat = await _phoneChatService.Add(new PhoneChatModel { ItemPhoneModelId = phoneId, PhoneNumber = phoneChat.PhoneNumber, Name = phoneChat.Name, Messages = new List<PhoneMessageModel>() });
+        var chat = await _phoneChatService.Add(new PhoneChatModel
+        {
+            ItemPhoneModelId = phoneId,
+            PhoneNumber = phoneChat.PhoneNumber,
+            Name = phoneChat.Name,
+            Messages = new List<PhoneMessageModel>()
+        });
 
         lock (player)
         {
@@ -200,7 +210,8 @@ public class PhoneHandler : ISingletonScript
 
         if (phone.PhoneNumber == phoneContact.PhoneNumber)
         {
-            player.SendNotification("Dein Charakter kann sich nicht selbst im Telefonbuch abspeichern.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter kann sich nicht selbst im Telefonbuch abspeichern.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -208,11 +219,18 @@ public class PhoneHandler : ISingletonScript
                                                          || c.Name == phoneContact.Name);
         if (contact != null)
         {
-            player.SendNotification($"Dein Charakter hat die Nummer '{contact.PhoneNumber}' schon unter dem Kontakt '{contact.Name}' abgespeichert.", NotificationType.ERROR);
+            player.SendNotification(
+                $"Dein Charakter hat die Nummer '{contact.PhoneNumber}' schon unter dem Kontakt '{contact.Name}' abgespeichert.",
+                NotificationType.ERROR);
             return;
         }
 
-        await _phoneContactService.Add(new PhoneContactModel { ItemPhoneModelId = phone.Id, PhoneNumber = phoneContact.PhoneNumber, Name = phoneContact.Name });
+        await _phoneContactService.Add(new PhoneContactModel
+        {
+            ItemPhoneModelId = phone.Id,
+            PhoneNumber = phoneContact.PhoneNumber,
+            Name = phoneContact.Name
+        });
 
         var chatDbo = phone.Chats.FirstOrDefault(c => c.PhoneNumber == phoneContact.PhoneNumber);
         if (chatDbo != null)

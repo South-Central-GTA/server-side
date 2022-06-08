@@ -17,28 +17,28 @@ public class Serializer
     }
 
     public T Deserialize<T>(string json)
-    { 
+    {
         return JsonSerializer.Deserialize<T>(json,
-            new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                PropertyNameCaseInsensitive = true,
-                IncludeFields = true,
-                NumberHandling = JsonNumberHandling.AllowReadingFromString,
-                Converters = { new JsonStringEnumConverter() }
-            });
+                                             new JsonSerializerOptions
+                                             {
+                                                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                                                 PropertyNameCaseInsensitive = true,
+                                                 IncludeFields = true,
+                                                 NumberHandling = JsonNumberHandling.AllowReadingFromString,
+                                                 Converters = { new JsonStringEnumConverter() }
+                                             });
     }
 
     public string Serialize(object obj)
     {
         return JsonSerializer.Serialize(obj,
-            new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                PropertyNameCaseInsensitive = true,
-                IncludeFields = true,
-                NumberHandling = JsonNumberHandling.AllowReadingFromString,
-                Converters = { new JsonStringEnumConverter() }
-            });
+                                        new JsonSerializerOptions
+                                        {
+                                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                                            PropertyNameCaseInsensitive = true,
+                                            IncludeFields = true,
+                                            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+                                            Converters = { new JsonStringEnumConverter() }
+                                        });
     }
 }

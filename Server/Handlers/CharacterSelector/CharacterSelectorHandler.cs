@@ -8,11 +8,11 @@ namespace Server.Handlers.CharacterSelector;
 public class CharacterSelectorHandler : ISingletonScript
 {
     private readonly CharacterSelectionModule _characterSelectionModule;
-    
+
     public CharacterSelectorHandler(CharacterSelectionModule characterSelectionModule)
     {
         _characterSelectionModule = characterSelectionModule;
-        
+
         AltAsync.OnClient<ServerPlayer, int>("charselector:play", OnPlayCharacter);
     }
 

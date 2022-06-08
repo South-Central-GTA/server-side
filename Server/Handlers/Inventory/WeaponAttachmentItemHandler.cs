@@ -36,7 +36,8 @@ public class WeaponAttachmentItemHandler : ISingletonScript
             return;
         }
 
-        if (player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.Id == attachedAttachmentId) is not ItemWeaponAttachmentModel weaponAttachment)
+        if (player.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.Id == attachedAttachmentId) is not
+            ItemWeaponAttachmentModel weaponAttachment)
         {
             return;
         }

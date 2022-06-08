@@ -8,16 +8,13 @@ namespace Server.Data.Models;
 public class MdcSearchEntity
     : IWritable
 {
-    [JsonPropertyName("id")] 
-    public int Id { get; set; }
+    [JsonPropertyName("id")] public int Id { get; set; }
     public string StringId { get; set; }
 
-    [JsonPropertyName("name")] 
-    public string Name { get; set; }
+    [JsonPropertyName("name")] public string Name { get; set; }
 
-    [JsonPropertyName("type")] 
-    public MdcSearchType Type { get; set; }
-    
+    [JsonPropertyName("type")] public MdcSearchType Type { get; set; }
+
 
     public void OnWrite(IMValueWriter writer)
     {
@@ -25,7 +22,7 @@ public class MdcSearchEntity
 
         writer.Name("id");
         writer.Value(Id);
-        
+
         writer.Name("stringId");
         writer.Value(StringId);
 

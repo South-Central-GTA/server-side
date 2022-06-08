@@ -12,20 +12,19 @@ public class FdMdcDeleteEmergencyCallHandler : ISingletonScript
 {
     private readonly EmergencyCallService _emergencyCallService;
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly FireMdcModule _fireMdcModule;
     private readonly GroupModule _groupModule;
-    
+
     public FdMdcDeleteEmergencyCallHandler(
-        EmergencyCallService emergencyCallService, 
-        GroupFactionService groupFactionService, 
-        
-        FireMdcModule fireMdcModule, 
+        EmergencyCallService emergencyCallService,
+        GroupFactionService groupFactionService,
+        FireMdcModule fireMdcModule,
         GroupModule groupModule)
     {
         _emergencyCallService = emergencyCallService;
         _groupFactionService = groupFactionService;
-        
+
         _fireMdcModule = fireMdcModule;
         _groupModule = groupModule;
 
@@ -38,7 +37,7 @@ public class FdMdcDeleteEmergencyCallHandler : ISingletonScript
         {
             return;
         }
-        
+
         var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
@@ -55,7 +54,7 @@ public class FdMdcDeleteEmergencyCallHandler : ISingletonScript
         {
             return;
         }
-        
+
         await _emergencyCallService.Remove(emergencyCallModel);
         await _fireMdcModule.UpdateEmergencyCallsUi(player);
     }

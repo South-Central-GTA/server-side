@@ -71,7 +71,7 @@ public class PlaceableItemHandler : ISingletonScript
             player.SendNotification("Dein Charakter kann jetzt keine Items platzieren.", NotificationType.ERROR);
             return;
         }
-        
+
         var dropItemData = _serializer.Deserialize<DropItemData>(itemDropJson);
 
         var items = await _itemService.GetAll();
@@ -120,11 +120,13 @@ public class PlaceableItemHandler : ISingletonScript
         if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId) && item.CustomData != null)
         {
             var data = _serializer.Deserialize<ClothingData>(item.CustomData);
-            player.SendNotification($"Dein Charakter hat {item.Amount}x {data.Title} abgelegt.", NotificationType.SUCCESS);
+            player.SendNotification($"Dein Charakter hat {item.Amount}x {data.Title} abgelegt.",
+                                    NotificationType.SUCCESS);
         }
         else
         {
-            player.SendNotification($"Dein Charakter hat {item.Amount}x {item.CatalogItemModel.Name} abgelegt.", NotificationType.SUCCESS);
+            player.SendNotification($"Dein Charakter hat {item.Amount}x {item.CatalogItemModel.Name} abgelegt.",
+                                    NotificationType.SUCCESS);
         }
 
         item.ItemState = ItemState.DROPPED;
@@ -140,7 +142,9 @@ public class PlaceableItemHandler : ISingletonScript
 
         _objectSyncModule.Create(item.CatalogItemModel.Model,
                                  item.CatalogItemModel.Name,
-                                 new Position(player.Position.X, player.Position.Y, player.Position.Z - 1 + item.CatalogItemModel.ZOffset),
+                                 new Position(player.Position.X,
+                                              player.Position.Y,
+                                              player.Position.Z - 1 + item.CatalogItemModel.ZOffset),
                                  item.CatalogItemModel.Rotation,
                                  player.Dimension,
                                  200,
@@ -168,20 +172,20 @@ public class PlaceableItemHandler : ISingletonScript
             player.SendNotification("Dein Charakter kann jetzt keine Items aufheben.", NotificationType.ERROR);
             return;
         }
-        
+
         var serverObject = _objectSyncModule.Get(objectId);
         if (serverObject == null)
         {
             return;
         }
-        
+
         var item = await _itemService.GetByKey(serverObject.ItemId);
         if (item == null)
         {
             player.SendNotification("Item konnte nicht gefunden werden.", NotificationType.ERROR);
             return;
         }
-        
+
         if (!await _inventoryModule.CanCarry(player, item.CatalogItemModel.Id, item.Amount))
         {
             return;
@@ -213,20 +217,20 @@ public class PlaceableItemHandler : ISingletonScript
             player.SendNotification("Dein Charakter kann jetzt keine Items aufheben.", NotificationType.ERROR);
             return;
         }
-        
+
         var serverObject = _objectSyncModule.Get(objectId);
         if (serverObject == null)
         {
             return;
         }
-        
+
         var item = await _itemService.GetByKey(serverObject.ItemId);
         if (item == null)
         {
             player.SendNotification("Item konnte nicht gefunden werden.", NotificationType.ERROR);
             return;
         }
-        
+
         if (!await _inventoryModule.CanCarry(player, item.CatalogItemModel.Id, item.Amount))
         {
             return;
@@ -255,7 +259,7 @@ public class PlaceableItemHandler : ISingletonScript
         {
             return;
         }
-        
+
         await _itemDestructionModule.Destroy(serverObject.ItemId);
 
         player.SendNotification("Du hast das Item administrativ gelöscht.", NotificationType.INFO);

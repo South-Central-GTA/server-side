@@ -18,7 +18,8 @@ public class WeatherModule : ISingletonScript
     private readonly Dictionary<WeatherType, Dictionary<WeatherType, float>> _weatherDefinitions = new()
     {
         {
-            WeatherType.ExtraSunny, new Dictionary<WeatherType, float>
+            WeatherType.ExtraSunny,
+            new Dictionary<WeatherType, float>
             {
                 { WeatherType.Clouds, 0.4f },
                 { WeatherType.Clear, 0.3f },
@@ -27,13 +28,55 @@ public class WeatherModule : ISingletonScript
                 { WeatherType.Smog, 0.1f }
             }
         },
-        { WeatherType.Clear, new Dictionary<WeatherType, float> { { WeatherType.Clouds, 0.4f }, { WeatherType.ExtraSunny, 0.4f }, { WeatherType.Foggy, 0.1f }, { WeatherType.Overcast, 0.1f } } },
-        { WeatherType.Clouds, new Dictionary<WeatherType, float> { { WeatherType.Clear, 0.8f }, { WeatherType.Overcast, 0.2f }, { WeatherType.Foggy, 0.2f } } },
-        { WeatherType.Smog, new Dictionary<WeatherType, float> { { WeatherType.Clear, 0.8f }, { WeatherType.Clouds, 0.1f } } },
-        { WeatherType.Overcast, new Dictionary<WeatherType, float> { { WeatherType.Rain, 0.5f }, { WeatherType.Thunder, 0.3f }, { WeatherType.Clearing, 0.2f } } },
-        { WeatherType.Rain, new Dictionary<WeatherType, float> { { WeatherType.Clearing, 0.6f }, { WeatherType.Thunder, 0.2f }, { WeatherType.Rain, 0.2f } } },
-        { WeatherType.Thunder, new Dictionary<WeatherType, float> { { WeatherType.Clearing, 0.8f }, { WeatherType.Rain, 0.1f }, { WeatherType.Thunder, 0.1f } } },
-        { WeatherType.Clearing, new Dictionary<WeatherType, float> { { WeatherType.Clear, 0.7f }, { WeatherType.Clouds, 0.2f }, { WeatherType.Smog, 0.1f } } }
+        {
+            WeatherType.Clear,
+            new Dictionary<WeatherType, float>
+            {
+                { WeatherType.Clouds, 0.4f },
+                { WeatherType.ExtraSunny, 0.4f },
+                { WeatherType.Foggy, 0.1f },
+                { WeatherType.Overcast, 0.1f }
+            }
+        },
+        {
+            WeatherType.Clouds,
+            new Dictionary<WeatherType, float>
+            {
+                { WeatherType.Clear, 0.8f }, { WeatherType.Overcast, 0.2f }, { WeatherType.Foggy, 0.2f }
+            }
+        },
+        {
+            WeatherType.Smog,
+            new Dictionary<WeatherType, float> { { WeatherType.Clear, 0.8f }, { WeatherType.Clouds, 0.1f } }
+        },
+        {
+            WeatherType.Overcast,
+            new Dictionary<WeatherType, float>
+            {
+                { WeatherType.Rain, 0.5f }, { WeatherType.Thunder, 0.3f }, { WeatherType.Clearing, 0.2f }
+            }
+        },
+        {
+            WeatherType.Rain,
+            new Dictionary<WeatherType, float>
+            {
+                { WeatherType.Clearing, 0.6f }, { WeatherType.Thunder, 0.2f }, { WeatherType.Rain, 0.2f }
+            }
+        },
+        {
+            WeatherType.Thunder,
+            new Dictionary<WeatherType, float>
+            {
+                { WeatherType.Clearing, 0.8f }, { WeatherType.Rain, 0.1f }, { WeatherType.Thunder, 0.1f }
+            }
+        },
+        {
+            WeatherType.Clearing,
+            new Dictionary<WeatherType, float>
+            {
+                { WeatherType.Clear, 0.7f }, { WeatherType.Clouds, 0.2f }, { WeatherType.Smog, 0.1f }
+            }
+        }
     };
 
     public int SecondsToChangeWeather;

@@ -51,7 +51,10 @@ public class ServerMarker
                 return default;
             }
 
-            return new Vector3 { X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"]) };
+            return new Vector3
+            {
+                X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"])
+            };
         }
         set
         {
@@ -69,7 +72,10 @@ public class ServerMarker
                 return default;
             }
 
-            return new Vector3 { X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"]) };
+            return new Vector3
+            {
+                X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"])
+            };
         }
         set
         {
@@ -87,7 +93,10 @@ public class ServerMarker
                 return default;
             }
 
-            return new Vector3 { X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"]) };
+            return new Vector3
+            {
+                X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"])
+            };
         }
         set
         {
@@ -112,7 +121,13 @@ public class ServerMarker
         }
         set
         {
-            var dict = new Dictionary<string, object> { { "red", Convert.ToInt32(value.R) }, { "green", Convert.ToInt32(value.G) }, { "blue", Convert.ToInt32(value.B) }, { "alpha", Convert.ToInt32(value.A) } };
+            var dict = new Dictionary<string, object>
+            {
+                { "red", Convert.ToInt32(value.R) },
+                { "green", Convert.ToInt32(value.G) },
+                { "blue", Convert.ToInt32(value.B) },
+                { "alpha", Convert.ToInt32(value.A) }
+            };
             SetData("color", dict);
         }
     }

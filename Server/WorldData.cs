@@ -40,7 +40,8 @@ public class WorldData : ISingletonScript
     {
         get
         {
-            if (!Alt.GetSyncedMetaData("Weather", out uint weatherId) || !Enum.IsDefined(typeof(WeatherType), weatherId))
+            if (!Alt.GetSyncedMetaData("Weather", out uint weatherId) ||
+                !Enum.IsDefined(typeof(WeatherType), weatherId))
             {
                 return WeatherType.Clear;
             }

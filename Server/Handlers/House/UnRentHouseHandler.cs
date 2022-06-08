@@ -13,7 +13,7 @@ public class UnRentHouseHandler : ISingletonScript
 {
     private readonly HouseService _houseService;
     private readonly GroupService _groupService;
-    
+
     private readonly HouseModule _houseModule;
 
 
@@ -46,26 +46,30 @@ public class UnRentHouseHandler : ISingletonScript
 
         if (!house.Rentable)
         {
-            player.SendNotification("Dies ist eine gekaufte Immobilie du kannst hier kein Mietvertrag kündigen.", NotificationType.ERROR);
+            player.SendNotification("Dies ist eine gekaufte Immobilie du kannst hier kein Mietvertrag kündigen.",
+                                    NotificationType.ERROR);
             return;
         }
-        
+
         if (!house.CharacterModelId.HasValue || house.CharacterModelId.Value != player.CharacterModel.Id)
         {
             player.SendNotification("Dein Charakter ist nicht der Eigentümer der Immobilie.", NotificationType.ERROR);
             return;
         }
-        
+
         if (house.GroupModelId.HasValue && house.HouseType != HouseType.COMPANY)
         {
             var group = await _groupService.GetByKey(house.GroupModelId.Value);
             if (group != null)
             {
-                player.SendNotification($"Diese Immobilie hat das Unternehmen {group.Name} als Hauptsitz daher kann der Mietvertrag nicht gekündigt werden.", NotificationType.ERROR);
+                player.SendNotification(
+                    $"Diese Immobilie hat das Unternehmen {group.Name} als Hauptsitz daher kann der Mietvertrag nicht gekündigt werden.",
+                    NotificationType.ERROR);
             }
+
             return;
         }
-        
+
         await _houseModule.ResetOwner(house);
 
         player.SendNotification("Erfolgreich Vertrag gekündigt.", NotificationType.SUCCESS);

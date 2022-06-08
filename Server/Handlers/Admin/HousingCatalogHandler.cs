@@ -10,11 +10,11 @@ namespace Server.Handlers.Admin;
 public class HousingCatalogHandler : ISingletonScript
 {
     private readonly HouseService _houseService;
-    
+
     public HousingCatalogHandler(HouseService houseService)
     {
         _houseService = houseService;
-        
+
         AltAsync.OnClient<ServerPlayer>("housingcatalog:open", OnOpenHousingCatalog);
         AltAsync.OnClient<ServerPlayer, int>("housingcatalog:requestdetails", OnRequestDetails);
     }

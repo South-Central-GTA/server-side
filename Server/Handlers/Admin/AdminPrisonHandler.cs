@@ -10,14 +10,14 @@ public class AdminPrisonHandler : ISingletonScript
 {
     private readonly AdminPrisonModule _adminPrisonModule;
     private readonly AccountService _accountService;
-    
+
     public AdminPrisonHandler(
-        AccountService accountService, 
+        AccountService accountService,
         AdminPrisonModule adminPrisonModule)
     {
         _accountService = accountService;
         _adminPrisonModule = adminPrisonModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("adminprison:requestnextcheckpoint", OnRequestNextCheckpoint);
     }
 

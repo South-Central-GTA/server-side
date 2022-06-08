@@ -18,8 +18,8 @@ public class PlayerConnectHandler : ISingletonScript
     private readonly WorldLocationOptions _worldLocationOptions;
 
     public PlayerConnectHandler(
-        ILogger<PlayerDisconnectHandler> logger, 
-        WorldData worldData, 
+        ILogger<PlayerDisconnectHandler> logger,
+        WorldData worldData,
         IOptions<WorldLocationOptions> worldLocationOptions,
         IOptions<DevelopmentOptions> devOptions)
     {

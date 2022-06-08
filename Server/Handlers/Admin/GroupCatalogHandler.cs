@@ -15,11 +15,11 @@ public class GroupCatalogHandler : ISingletonScript
     private readonly GroupService _groupService;
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
-        
+
     public GroupCatalogHandler(
-        BankAccountService bankAccountService, 
+        BankAccountService bankAccountService,
         GroupService groupService,
-        VehicleCatalogService vehicleCatalogService, 
+        VehicleCatalogService vehicleCatalogService,
         VehicleService vehicleService)
     {
         _bankAccountService = bankAccountService;
@@ -69,8 +69,13 @@ public class GroupCatalogHandler : ISingletonScript
             {
                 continue;
             }
-            
-            vehicleDatas.Add(new VehicleData { Id = vehicle.Id, DisplayName = catalogVehicle.DisplayName, DisplayClass = catalogVehicle.DisplayClass });
+
+            vehicleDatas.Add(new VehicleData
+            {
+                Id = vehicle.Id,
+                DisplayName = catalogVehicle.DisplayName,
+                DisplayClass = catalogVehicle.DisplayClass
+            });
         }
 
         player.EmitGui("groupcatalog:opendetails", group, bankAccount, vehicleDatas);

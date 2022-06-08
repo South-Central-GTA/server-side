@@ -38,7 +38,8 @@ public class CreateGroupRankHandler : ISingletonScript
 
         if (group.Ranks.Count >= group.MaxRanks)
         {
-            player.SendNotification($"Deine Gruppe kann nicht mehr als {group.MaxRanks} Ränge haben.", NotificationType.ERROR);
+            player.SendNotification($"Deine Gruppe kann nicht mehr als {group.MaxRanks} Ränge haben.",
+                                    NotificationType.ERROR);
             return;
         }
 

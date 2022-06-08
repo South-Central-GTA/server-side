@@ -13,7 +13,8 @@ public class LeaseCompanyHouseModel
     }
 
     public LeaseCompanyHouseModel(LeaseCompanyType leaseCompanyType, float positionX, float positionY, float positionZ,
-                             float rotationRoll, float rotationPitch, float rotationYaw, int price, string subName, bool rentable = true)
+                                  float rotationRoll, float rotationPitch, float rotationYaw, int price, string subName,
+                                  bool rentable = true)
         : base(positionX, positionY, positionZ, rotationRoll, rotationPitch, rotationYaw, price, subName)
     {
         LeaseCompanyType = leaseCompanyType;
@@ -23,7 +24,7 @@ public class LeaseCompanyHouseModel
     }
 
     public LeaseCompanyType LeaseCompanyType { get; set; }
-    
+
     public bool HasCashier { get; set; }
 
     [NotMapped] public bool HasOpen => HasCashier || PlayerDuty;
@@ -115,7 +116,7 @@ public class LeaseCompanyHouseModel
 
         writer.Name("blockedOwnership");
         writer.Value(BlockedOwnership);
-        
+
         writer.EndObject();
     }
 }

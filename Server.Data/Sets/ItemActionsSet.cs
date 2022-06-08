@@ -69,56 +69,406 @@ public static class ItemActionsSet
         { (int)ItemCatalogIds.WEAPON_BATTLE_AXE, new List<ActionData>() },
         { (int)ItemCatalogIds.WEAPON_POOL_CUE, new List<ActionData>() },
         { (int)ItemCatalogIds.WEAPON_STONE_HATCHET, new List<ActionData>() },
-        { (int)ItemCatalogIds.WEAPON_PISTOL, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_PISTOL_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_COMBAT_PISTOL, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_AP_PISTOL, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_STUN_GUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_PISTOL50, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SNS_PISTOL, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SNS_PISTOL_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_HEAVY_PISTOL, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_VINTAGE_PISTOL, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_FLARE_GUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_MARKSMAN_PISTOL, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_HEAVY_REVOLVER, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_HEAVY_REVOLVER_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_DOUBLE_ACTION_REVOLVER, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_MICRO_SMG, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SMG, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SMG_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_ASSAULT_SMG, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_COMBAT_PDW, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_MACHINE_PISTOL, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_MINI_SMG, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_PUMP_SHOTGUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_PUMP_SHOTGUN_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SAWED_OFF_SHOTGUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_ASSAULT_SHOTGUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_BULLPUP_SHOTGUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_MUSKET, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_HEAVY_SHOTGUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_DOUBLE_BARREL_SHOTGUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SWEEPER_SHOTGUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_ASSAULT_RIFLE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_ASSAULT_RIFLE_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_CARBINE_RIFLE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_CARBINE_RIFLE_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_ADVANCED_RIFLE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SPECIAL_CARBINE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SPECIAL_CARBINE_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_BULLPUP_RIFLE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_BULLPUP_RIFLE_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_COMPACT_RIFLE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_MG, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_COMBAT_MG, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_COMBAT_MG_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_GUSENBERG_SWEEPER, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_SNIPER_RIFLE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_HEAVY_SNIPER, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_HEAVY_SNIPER_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_MARKSMAN_RIFLE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_MARKSMAN_RIFLE_MK_II, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
+        {
+            (int)ItemCatalogIds.WEAPON_PISTOL,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_PISTOL_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_COMBAT_PISTOL,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_AP_PISTOL,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_STUN_GUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_PISTOL50,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SNS_PISTOL,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SNS_PISTOL_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_HEAVY_PISTOL,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_VINTAGE_PISTOL,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_FLARE_GUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_MARKSMAN_PISTOL,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_HEAVY_REVOLVER,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_HEAVY_REVOLVER_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_DOUBLE_ACTION_REVOLVER,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_MICRO_SMG,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SMG,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SMG_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_ASSAULT_SMG,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_COMBAT_PDW,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_MACHINE_PISTOL,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_MINI_SMG,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_PUMP_SHOTGUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_PUMP_SHOTGUN_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SAWED_OFF_SHOTGUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_ASSAULT_SHOTGUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_BULLPUP_SHOTGUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_MUSKET,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_HEAVY_SHOTGUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_DOUBLE_BARREL_SHOTGUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SWEEPER_SHOTGUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_ASSAULT_RIFLE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_ASSAULT_RIFLE_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_CARBINE_RIFLE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_CARBINE_RIFLE_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_ADVANCED_RIFLE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SPECIAL_CARBINE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SPECIAL_CARBINE_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_BULLPUP_RIFLE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_BULLPUP_RIFLE_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_COMPACT_RIFLE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_MG,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_COMBAT_MG,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_COMBAT_MG_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_GUSENBERG_SWEEPER,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_SNIPER_RIFLE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_HEAVY_SNIPER,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_HEAVY_SNIPER_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_MARKSMAN_RIFLE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_MARKSMAN_RIFLE_MK_II,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
         { (int)ItemCatalogIds.WEAPON_GRENADE, new List<ActionData>() },
         { (int)ItemCatalogIds.WEAPON_BZ_GAS, new List<ActionData>() },
         { (int)ItemCatalogIds.WEAPON_MOLOTOV_COCKTAIL, new List<ActionData>() },
@@ -128,8 +478,22 @@ public static class ItemActionsSet
         { (int)ItemCatalogIds.WEAPON_JERRY_CAN, new List<ActionData>() },
         { (int)ItemCatalogIds.WEAPON_PARACHUTE, new List<ActionData>() },
         { (int)ItemCatalogIds.WEAPON_FIRE_EXTINGUISHER, new List<ActionData>() },
-        { (int)ItemCatalogIds.WEAPON_MILITARY_RIFLE, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
-        { (int)ItemCatalogIds.WEAPON_COMBAT_SHOTGUN, new List<ActionData>() {new("Seriennummer anschauen", "serialnumber:show"), new("Seriennummer wegkratzen", "serialnumber:requestremove")} },
+        {
+            (int)ItemCatalogIds.WEAPON_MILITARY_RIFLE,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
+        {
+            (int)ItemCatalogIds.WEAPON_COMBAT_SHOTGUN,
+            new List<ActionData>()
+            {
+                new("Seriennummer anschauen", "serialnumber:show"),
+                new("Seriennummer wegkratzen", "serialnumber:requestremove")
+            }
+        },
         { (int)ItemCatalogIds.AMMO_PISTOL, new List<ActionData>() },
         { (int)ItemCatalogIds.AMMO_MACHINE_GUN, new List<ActionData>() },
         { (int)ItemCatalogIds.AMMO_ASSAULT, new List<ActionData>() },
@@ -201,7 +565,7 @@ public static class ItemActionsSet
         { (int)ItemCatalogIds.DRUG_XANAX, new List<ActionData>() },
         { (int)ItemCatalogIds.DRUG_CODEINE, new List<ActionData>() },
         { (int)ItemCatalogIds.DRUG_METH, new List<ActionData>() },
-        { (int)ItemCatalogIds.POLICE_TICKET, new List<ActionData>() { new ("Ticket anschauen", "ticket:show")} },
+        { (int)ItemCatalogIds.POLICE_TICKET, new List<ActionData>() { new("Ticket anschauen", "ticket:show") } },
     };
 
     public static List<ActionData> Get(ItemCatalogIds id)

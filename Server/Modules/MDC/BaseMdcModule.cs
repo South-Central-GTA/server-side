@@ -37,11 +37,11 @@ public class BaseMdcModule
         {
             return;
         }
-        
+
         var isOperator =
-           await _groupModule.HasPermission(player.CharacterModel.Id, factionGroup.Id, GroupPermission.MDC_OPERATOR);
-        
-        player.EmitGui("mdc:updateoperatorpermission", isOperator); 
+            await _groupModule.HasPermission(player.CharacterModel.Id, factionGroup.Id, GroupPermission.MDC_OPERATOR);
+
+        player.EmitGui("mdc:updateoperatorpermission", isOperator);
     }
 
     public async Task<List<BulletInEntryModel>> GetBulletInEntries(FactionType factionType)

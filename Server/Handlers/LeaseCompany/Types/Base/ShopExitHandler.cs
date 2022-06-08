@@ -21,7 +21,7 @@ public class ShopExitHandler : ISingletonScript
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
     private readonly ItemService _itemService;
-    
+
     private readonly ChatModule _chatModule;
     private readonly NarratorModule _narratorModule;
 
@@ -44,7 +44,6 @@ public class ShopExitHandler : ISingletonScript
         ItemService itemService,
         GroupService groupService,
         UserShopDataService userShopDataService,
-        
         ChatModule chatModule,
         NarratorModule narratorModule)
     {
@@ -86,7 +85,9 @@ public class ShopExitHandler : ISingletonScript
         }
 
         var genderString = player.CharacterModel.Gender == GenderType.MALE ? "er" : "sie";
-        var cashierPos = new Position(leaseCompanyHouse.CashierX.Value, leaseCompanyHouse.CashierY.Value, leaseCompanyHouse.CashierZ.Value);
+        var cashierPos = new Position(leaseCompanyHouse.CashierX.Value,
+                                      leaseCompanyHouse.CashierY.Value,
+                                      leaseCompanyHouse.CashierZ.Value);
 
         _chatModule.SendProxMessage("Kassierer",
                                     20,
@@ -162,7 +163,9 @@ public class ShopExitHandler : ISingletonScript
             }
 
             var genderString = player.CharacterModel.Gender == GenderType.MALE ? "ihm" : "ihr";
-            var cashierPos = new Position(leaseCompanyHouse.CashierX.Value, leaseCompanyHouse.CashierY.Value, leaseCompanyHouse.CashierZ.Value);
+            var cashierPos = new Position(leaseCompanyHouse.CashierX.Value,
+                                          leaseCompanyHouse.CashierY.Value,
+                                          leaseCompanyHouse.CashierZ.Value);
 
             if (await GotWarned(player))
             {
@@ -269,7 +272,8 @@ public class ShopExitHandler : ISingletonScript
 
             var costs = await GetBill(player);
 
-            player.SendNotification($"Debug: Information ans PD, Diebstahl in Wert von {costs}$.", NotificationType.WARNING);
+            player.SendNotification($"Debug: Information ans PD, Diebstahl in Wert von {costs}$.",
+                                    NotificationType.WARNING);
         }
 
         await RemovePlayerFromData(player, true);

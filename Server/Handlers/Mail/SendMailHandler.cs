@@ -16,7 +16,8 @@ public class SendMailHandler : ISingletonScript
         AltAsync.OnClient<ServerPlayer, string, string, string, string>("mailing:sendmail", OnSendMail);
     }
 
-    private async void OnSendMail(ServerPlayer player, string senderMailAddress, string targetMailAddress, string title, string content)
+    private async void OnSendMail(ServerPlayer player, string senderMailAddress, string targetMailAddress, string title,
+                                  string content)
     {
         await _mailModule.SendMail(player, senderMailAddress, targetMailAddress, title, content);
     }

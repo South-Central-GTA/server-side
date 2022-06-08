@@ -91,7 +91,8 @@ public class BankAccountService
                               .ThenInclude(access => access.GroupModel)
                               .Include(bank => bank.CharacterAccesses)
                               .ThenInclude(ca => ca.CharacterModel)
-                              .Where(bank => bank.CharacterAccesses != null && bank.CharacterAccesses.Any(m => m.CharacterModelId == characterId))
+                              .Where(bank => bank.CharacterAccesses != null &&
+                                             bank.CharacterAccesses.Any(m => m.CharacterModelId == characterId))
                               .ToListAsync();
     }
 
@@ -104,7 +105,9 @@ public class BankAccountService
                               .ThenInclude(access => access.GroupModel)
                               .Include(bank => bank.CharacterAccesses)
                               .ThenInclude(ca => ca.CharacterModel)
-                              .Where(bank => bank.CharacterAccesses != null && bank.CharacterAccesses.Any(m => m.CharacterModelId == characterId && m.Owner))
+                              .Where(bank => bank.CharacterAccesses != null &&
+                                             bank.CharacterAccesses.Any(
+                                                 m => m.CharacterModelId == characterId && m.Owner))
                               .ToListAsync();
     }
 
@@ -129,6 +132,7 @@ public class BankAccountService
                               .ThenInclude(access => access.GroupModel)
                               .Include(bank => bank.CharacterAccesses)
                               .ThenInclude(ca => ca.CharacterModel)
-                              .FirstOrDefaultAsync(bank => bank.GroupRankAccess.Any(ga => ga.GroupModelId == groupId && ga.Owner));
+                              .FirstOrDefaultAsync(
+                                  bank => bank.GroupRankAccess.Any(ga => ga.GroupModelId == groupId && ga.Owner));
     }
 }

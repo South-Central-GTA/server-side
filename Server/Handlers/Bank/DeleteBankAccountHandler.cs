@@ -25,11 +25,11 @@ public class DeleteBankAccountHandler : ISingletonScript
 
     public DeleteBankAccountHandler(
         PhoneModule phoneModule,
-        BankModule bankModule, 
+        BankModule bankModule,
         PublicGarageModule publicGarageModule,
-        BankAccountService bankAccountService, 
+        BankAccountService bankAccountService,
         DefinedJobService definedJobService,
-        PublicGarageEntryService publicGarageEntryService, 
+        PublicGarageEntryService publicGarageEntryService,
         RegistrationOfficeService registrationOfficeService)
     {
         _phoneModule = phoneModule;
@@ -53,10 +53,11 @@ public class DeleteBankAccountHandler : ISingletonScript
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
-        
+
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
         if (bankAccount == null)
         {
@@ -120,7 +121,9 @@ public class DeleteBankAccountHandler : ISingletonScript
         // Update all player bank ui when there had access for this deleted bank account.
         foreach (var playerWithAccessRights
                  in bankAccount.CharacterAccesses.Select(bankAccountCharacterAccess
-                                                             => Alt.GetAllPlayers().FindPlayerByCharacterId(bankAccountCharacterAccess.CharacterModelId))
+                                                             => Alt.GetAllPlayers()
+                                                                   .FindPlayerByCharacterId(
+                                                                       bankAccountCharacterAccess.CharacterModelId))
                                .Where(serverPlayer => serverPlayer != null))
         {
             await _bankModule.UpdateUi(playerWithAccessRights);

@@ -24,16 +24,17 @@ using Server.Core.Entities.Factories;
 using Server.DataAccessLayer.Context;
 using Server.Extensions;
 using Server.Modules.Discord;
-using Server.ScheduledJob;
+using Server.Core.ScheduledJobs;
 
 namespace Server;
 
-public class Server
+public class Startup
     : AsyncResource
 {
+    public IConfiguration Configuration { get; }
     private readonly ServiceProvider _serviceProvider;
-    
-    public Server()
+
+    public Startup()
         : base(new ActionTickSchedulerFactory())
     {
         // Read and build configuration
@@ -46,7 +47,15 @@ public class Server
 
         // Initialize dependency injection
         var services = new ServiceCollection();
-        
+
+        var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder
+                .AddConfiguration(Configuration.GetSection("Logging"));
+        });
+
+        var logger = loggerFactory.CreateLogger(typeof(ServiceCollectionExtensions));
+
         services
             .AddRefitClient<IDiscordApi>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://discordapp.com/api"));
@@ -56,7 +65,7 @@ public class Server
             options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             options.Converters.Add(new JsonStringEnumConverter());
         });
-        
+
         // Register configuration options
         services.AddOptions();
         services.Configure<AccountOptions>(Configuration.GetSection(nameof(AccountOptions)));
@@ -74,80 +83,82 @@ public class Server
 
         // Configure and register loggers
         services.AddLogging(config => config
-          .AddConfiguration(Configuration.GetSection("Logging"))
-          .AddDebug()
-          .AddConsole());
-        
+                                      .AddConfiguration(Configuration.GetSection("Logging"))
+                                      .AddDebug()
+                                      .AddConsole());
+
         // Register factory for database context
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         var useLocal = Configuration.GetSection(nameof(DevelopmentOptions)).GetValue<bool>("LocalDb");
         if (useLocal)
         {
             services.AddDbContextFactory<DatabaseContext>(options => options
-             .UseNpgsql(Configuration.GetConnectionString("LocalDatabase"),
-                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-             .EnableSensitiveDataLogging()
-             .ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning)));
+                                                                     .UseNpgsql(
+                                                                         Configuration.GetConnectionString(
+                                                                             "LocalDatabase"),
+                                                                         o => o.UseQuerySplittingBehavior(
+                                                                             QuerySplittingBehavior.SplitQuery))
+                                                                     .EnableSensitiveDataLogging()
+                                                                     .ConfigureWarnings(
+                                                                         w => w.Throw(
+                                                                             RelationalEventId
+                                                                                 .MultipleCollectionIncludeWarning)));
         }
         else
         {
             services.AddDbContextFactory<DatabaseContext>(options => options
-              .UseNpgsql(Configuration.GetConnectionString("LiveDatabase"),
-                         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+                                                              .UseNpgsql(
+                                                                  Configuration.GetConnectionString("LiveDatabase"),
+                                                                  o => o.UseQuerySplittingBehavior(
+                                                                      QuerySplittingBehavior.SplitQuery)));
         }
 
         //Register all dependency injectable services.
-        services.AddAllTypes<ITransientScript>(ServiceLifetime.Transient);
+        services.AddAllTypes<ITransientScript>();
         services.AddAllTypes<IScopedScript>(ServiceLifetime.Scoped);
         services.AddAllTypes<ISingletonScript>(ServiceLifetime.Singleton);
-        
+
         // Register all server jobs and scheduled jobs.
-        services.AddAllTypes<IServerJob>();
-        services.AddAllTypes<ScheduledJob.ScheduledJob>();
-        
+        services.AddAllTypes<IJob>();
+        services.AddAllTypes<ScheduledJob>();
+
         // Build DI services.
         _serviceProvider = services.BuildServiceProvider();
 
         // Everything done
-        var logger = _serviceProvider.GetService<ILogger<Server>>();
         logger.LogDebug("Dependency Injection initialized successfully.");
     }
 
-    public IConfiguration Configuration { get; }
-
     public override void OnStart()
     {
-        AltEntitySync.Init
-        (
-            8,
-            syncRate => 200,
-            threadId => false,
-            (threadCount, repository) => new ServerEventNetworkLayer(threadCount, repository),
-            (entity, threadCount) => entity.Type % threadCount,
-            (entityId, entityType, threadCount) => entityType % threadCount,
-            threadId =>
-            {
-                return threadId switch
-                {
-                    // Objects
-                    0 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
-                    // Marker
-                    1 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
-                    // Ped
-                    2 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
-                    // Blips
-                    3 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
-                    _ => new LimitedGrid3(50_000, 50_000, 175, 10_000, 10_000, 115)
-                };
-            },
-            new IdProvider()
-        );
+        AltEntitySync.Init(8,
+                           syncRate => 200,
+                           threadId => false,
+                           (threadCount, repository) => new ServerEventNetworkLayer(threadCount, repository),
+                           (entity, threadCount) => entity.Type % threadCount,
+                           (entityId, entityType, threadCount) => entityType % threadCount,
+                           threadId =>
+                           {
+                               return threadId switch
+                               {
+                                   // Objects
+                                   0 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
+                                   // Marker
+                                   1 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
+                                   // Ped
+                                   2 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
+                                   // Blips
+                                   3 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
+                                   _ => new LimitedGrid3(50_000, 50_000, 175, 10_000, 10_000, 115)
+                               };
+                           },
+                           new IdProvider());
 
         // Instantiate startup scripts
         _serviceProvider.InstantiateStartupScripts();
 
         // Instantiate ServerJobs
-        var serverJobs = _serviceProvider.GetServices<IServerJob>();
+        var serverJobs = _serviceProvider.GetServices<IJob>();
 
         // Execute startup method of all server jobs
         var taskList = new List<Task>();
@@ -173,7 +184,7 @@ public class Server
         scheduledJobsManager?.Cancellation.Cancel();
 
         // Execute shutdown method of all server jobs
-        var serverJobs = _serviceProvider.GetServices<IServerJob>();
+        var serverJobs = _serviceProvider.GetServices<IJob>();
 
         var taskList = new List<Task>();
         Parallel.ForEach(serverJobs, job => taskList.Add(job.OnShutdown()));

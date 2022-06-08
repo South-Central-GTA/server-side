@@ -24,11 +24,11 @@ public class ServerPlayer
     public ulong DiscordId;
     public bool IsSpawned;
 
-    public ServerPlayer(IServer server, IntPtr entityPointer, ushort id)
-        : base(server, entityPointer, id)
+    public ServerPlayer(ICore core, IntPtr entityPointer, ushort id)
+        : base(core, entityPointer, id)
     {
     }
-    
+
     public string AccountName => AccountModel.CurrentName;
 
     public AccountModel AccountModel
@@ -64,12 +64,10 @@ public class ServerPlayer
     public ConcurrentDictionary<string, Timer> Timers { get; set; } = new();
 
     public bool IsLoggedIn => IsConnected && AccountModel != null;
-    
-    public int LoginTrys { get; set; }
-    
+
     public PhoneCallData? PhoneCallData { get; set; }
 
-    public List<InventoryModel> DefaultInventories { get; set; } = new();
+    public List<OpenInventoryData> OpenInventories { get; set; } = new();
 
     public bool IsAduty
     {
@@ -83,13 +81,13 @@ public class ServerPlayer
     }
 
     public bool IsDuty { get; set; }
-    
+
     public int DutyLeaseCompanyHouseId { get; set; }
-    
+
     public bool IsInventoryOpen { get; set; }
-    
+
     public bool IsPhoneOpen { get; set; }
-    
+
     public bool IsInFreeCam
     {
         get => _isInFreeCam;
@@ -99,7 +97,7 @@ public class ServerPlayer
             Visible = !value;
         }
     }
-    
+
     public bool IsInBigEars { get; set; }
 
     public bool Cuffed

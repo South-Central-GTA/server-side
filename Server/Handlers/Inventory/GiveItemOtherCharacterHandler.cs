@@ -84,7 +84,8 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
 
         if (player.Position.Distance(target.Position) > 3)
         {
-            player.SendNotification("Dein Charakter ist zu weit weg von dem anderen Charakter.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist zu weit weg von dem anderen Charakter.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -96,7 +97,9 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
             return;
         }
 
-        var freeSlot = await _inventoryModule.GetFreeNextSlot(target.CharacterModel.InventoryModel.Id, item.CatalogItemModel.Weight);
+        var freeSlot =
+            await _inventoryModule.GetFreeNextSlot(target.CharacterModel.InventoryModel.Id,
+                                                   item.CatalogItemModel.Weight);
         if (freeSlot == null)
         {
             return;
@@ -113,17 +116,21 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
         if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId))
         {
             var data = _serializer.Deserialize<ClothingData>(item.CustomData);
-            player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} das Kleidungsstück {data.Title} gegeben.",
-                                    NotificationType.SUCCESS);
-            target.SendNotification($"Dein Charakter hat von {player.CharacterModel.Name} das Kleidungsstück {data.Title} erhalten.",
-                                    NotificationType.INFO);
+            player.SendNotification(
+                $"Dein Charakter hat {target.CharacterModel.Name} das Kleidungsstück {data.Title} gegeben.",
+                NotificationType.SUCCESS);
+            target.SendNotification(
+                $"Dein Charakter hat von {player.CharacterModel.Name} das Kleidungsstück {data.Title} erhalten.",
+                NotificationType.INFO);
         }
         else
         {
-            player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} {item.Amount}x {item.CatalogItemModel.Name} gegeben.",
-                                    NotificationType.SUCCESS);
-            target.SendNotification($"Dein Charakter hat von {player.CharacterModel.Name} {item.Amount}x {item.CatalogItemModel.Name} erhalten.",
-                                    NotificationType.INFO);
+            player.SendNotification(
+                $"Dein Charakter hat {target.CharacterModel.Name} {item.Amount}x {item.CatalogItemModel.Name} gegeben.",
+                NotificationType.SUCCESS);
+            target.SendNotification(
+                $"Dein Charakter hat von {player.CharacterModel.Name} {item.Amount}x {item.CatalogItemModel.Name} erhalten.",
+                NotificationType.INFO);
         }
 
         await _itemCreationModule.HandleGiveSpecialItems(target, item);

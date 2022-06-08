@@ -87,10 +87,12 @@ public class EquippedItemHandler : ISingletonScript
         }
 
         var inv = await _inventoryService.GetByKey(player.CharacterModel.InventoryModel.Id);
-        var requestedItems = inv.Items.Where(i => i.CatalogItemModelId == item.CatalogItemModelId && i.ItemState == ItemState.EQUIPPED);
+        var requestedItems =
+            inv.Items.Where(i => i.CatalogItemModelId == item.CatalogItemModelId && i.ItemState == ItemState.EQUIPPED);
         if (requestedItems.Any())
         {
-            player.SendNotification("Dein Charakter trägt schon ein Kleidungsstück dieser Sorte.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter trägt schon ein Kleidungsstück dieser Sorte.",
+                                    NotificationType.ERROR);
             return;
         }
 

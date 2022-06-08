@@ -12,14 +12,13 @@ public class RequestEditFileHandler : ISingletonScript
     private readonly FileService _fileService;
 
     private readonly GroupModule _groupModule;
-    
+
     public RequestEditFileHandler(
         FileService fileService,
-        
         GroupModule groupModule)
     {
         _fileService = fileService;
-        
+
         _groupModule = groupModule;
 
         AltAsync.OnClient<ServerPlayer, int>("filesystem:requesteditfile", OnRequestEditFile);
@@ -37,18 +36,18 @@ public class RequestEditFileHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (!await _groupModule.IsPlayerInGroup(player, file.DirectoryModel.GroupModelId))
         {
             return;
         }
-        
+
         var groupMember = await _groupModule.GetGroupMember(player, file.DirectoryModel.GroupModelId);
         if (groupMember == null)
         {
             return;
         }
-        
+
         if (groupMember.RankLevel < file.DirectoryModel.WriteGroupLevel && !groupMember.Owner)
         {
             return;
@@ -64,7 +63,7 @@ public class RequestEditFileHandler : ISingletonScript
         file.BlockedByCharacterName = player.CharacterModel.Name;
 
         await _fileService.Update(file);
-        
+
         player.EmitGui("filesystem:editfile", file.Context);
     }
 }

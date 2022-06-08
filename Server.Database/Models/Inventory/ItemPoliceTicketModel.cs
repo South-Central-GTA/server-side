@@ -34,7 +34,7 @@ public class ItemPoliceTicketModel
 
         writer.Name("createdAtJson");
         writer.Value(JsonSerializer.Serialize(CreatedAt));
-        
+
         writer.EndObject();
     }
 }

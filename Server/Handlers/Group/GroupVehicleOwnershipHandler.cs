@@ -57,10 +57,11 @@ public class GroupVehicleOwnershipHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -103,13 +104,15 @@ public class GroupVehicleOwnershipHandler : ISingletonScript
         var group = await _groupService.GetByKey(groupId);
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
         if (player.CharacterModel.Id != vehicle.DbEntity.CharacterModelId.Value)
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer von diesem Fahrzeug.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer von diesem Fahrzeug.",
+                                    NotificationType.ERROR);
             return;
         }
 

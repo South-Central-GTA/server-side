@@ -12,10 +12,10 @@ namespace Server.Handlers.Admin;
 public class PlayerCatalogHandler : ISingletonScript
 {
     public PlayerCatalogHandler()
-    {        
+    {
         AltAsync.OnClient<ServerPlayer>("playercatalog:open", OnOpenPlayerCatalog);
     }
-    
+
     private async void OnOpenPlayerCatalog(ServerPlayer player)
     {
         if (!player.Exists)
@@ -27,16 +27,16 @@ public class PlayerCatalogHandler : ISingletonScript
         {
             return;
         }
-        
+
         var players = Alt.GetAllPlayers().GetAllServerPlayers();
         if (players == null)
         {
             return;
         }
-        
+
         var playerInformationData = players.Select(target => new PlayerInformationData
         {
-            Id = target.Id, 
+            Id = target.Id,
             AccountId = target.AccountModel.SocialClubId,
             AccountName = target.AccountName,
             CharacterId = target.CharacterModel.Id,

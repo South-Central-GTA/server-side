@@ -2,6 +2,7 @@
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
+using ISingletonScript = Server.Core.Abstractions.ScriptStrategy.ISingletonScript;
 
 namespace Server.Core.CommandSystem;
 

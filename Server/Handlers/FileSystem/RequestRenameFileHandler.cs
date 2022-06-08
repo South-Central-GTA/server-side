@@ -14,15 +14,14 @@ public class RequestRenameFileHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
     private readonly SyncFileModule _syncFileModule;
-    
+
     public RequestRenameFileHandler(
         FileService fileService,
-        
-        GroupModule groupModule, 
+        GroupModule groupModule,
         SyncFileModule syncFileModule)
     {
         _fileService = fileService;
-        
+
         _groupModule = groupModule;
         _syncFileModule = syncFileModule;
 

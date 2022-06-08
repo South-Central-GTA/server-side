@@ -34,20 +34,20 @@ public class RequestDeleteCharacterHandler : ISingletonScript
     private readonly RegistrationOfficeService _registrationOfficeService;
 
     public RequestDeleteCharacterHandler(
-        GroupModule groupModule, 
-        HouseModule houseModule, 
-        CharacterSelectionModule characterSelectionModule, 
-        AccountService accountService, 
-        BankAccountService bankAccountService, 
-        CharacterService characterService, 
-        DeliveryService deliveryService, 
+        GroupModule groupModule,
+        HouseModule houseModule,
+        CharacterSelectionModule characterSelectionModule,
+        AccountService accountService,
+        BankAccountService bankAccountService,
+        CharacterService characterService,
+        DeliveryService deliveryService,
         GroupMemberService groupMemberService,
-        GroupService groupService, 
+        GroupService groupService,
         HouseService houseService,
-        InventoryService inventoryService, 
+        InventoryService inventoryService,
         ItemService itemService,
         PublicGarageEntryService publicGarageEntryService,
-        RoleplayInfoService roleplayInfoService, 
+        RoleplayInfoService roleplayInfoService,
         VehicleService vehicleService, RegistrationOfficeService registrationOfficeService)
     {
         _groupModule = groupModule;
@@ -80,7 +80,8 @@ public class RequestDeleteCharacterHandler : ISingletonScript
         {
             Type = DialogType.ONE_BUTTON_DIALOG,
             Title = "Charakter löschen",
-            Description = "Dies ist unsere Debug Lösung Charaktere zu löschen.<br><br>Charakter wird gelöscht samt,<br>Fahrzeuge, Häuser, Bankkonten, eingeparkte Fahrzeuge in Public Garages, Unternehmen werden zufällig an den Ranghöhsten weitergegeben. Wenn kein Ranghöhster gefunden wurde bekommt irgendein Mitglied das Unternehmen, wenn kein Mitglied gefunden wurde dann wird das Unternehmen gelöscht und Häuser des Unternehmens werden verkauft.",
+            Description =
+                "Dies ist unsere Debug Lösung Charaktere zu löschen.<br><br>Charakter wird gelöscht samt,<br>Fahrzeuge, Häuser, Bankkonten, eingeparkte Fahrzeuge in Public Garages, Unternehmen werden zufällig an den Ranghöhsten weitergegeben. Wenn kein Ranghöhster gefunden wurde bekommt irgendein Mitglied das Unternehmen, wenn kein Mitglied gefunden wurde dann wird das Unternehmen gelöscht und Häuser des Unternehmens werden verkauft.",
             PrimaryButton = "Löschen",
             Data = data,
             PrimaryButtonServerEvent = "charselector:delete"
@@ -199,7 +200,8 @@ public class RequestDeleteCharacterHandler : ISingletonScript
 
         if (character.InventoryModel != null)
         {
-            foreach (var itemCloth in character.InventoryModel.Items.Where(i => i is ItemClothModel).Cast<ItemClothModel>())
+            foreach (var itemCloth in character.InventoryModel.Items.Where(i => i is ItemClothModel)
+                                               .Cast<ItemClothModel>())
             {
                 if (itemCloth.ClothingInventoryModel != null)
                 {
@@ -221,5 +223,4 @@ public class RequestDeleteCharacterHandler : ISingletonScript
 
         await _characterSelectionModule.UpdateAsync(player);
     }
-    
 }

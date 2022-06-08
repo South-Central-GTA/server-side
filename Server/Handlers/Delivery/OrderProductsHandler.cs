@@ -108,7 +108,9 @@ namespace Server.Handlers.Delivery
                                                    && d.Status != DeliveryState.DELIVERD
                                                    && d.DeliveryType == DeliveryType.PRODUCT))
             {
-                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.DELIVERY, "Es besteht schon ein Lieferauftrag von Ihrem Unternehmen, bitte stornieren Sie diesen falls er noch nicht angenommen wurde um einen neuen zu erstellen.");
+                await _phoneModule.SendNotification(phoneId,
+                                                    PhoneNotificationType.DELIVERY,
+                                                    "Es besteht schon ein Lieferauftrag von Ihrem Unternehmen, bitte stornieren Sie diesen falls er noch nicht angenommen wurde um einen neuen zu erstellen.");
                 return;
             }
 
@@ -116,12 +118,16 @@ namespace Server.Handlers.Delivery
             var bankAccount = await _bankAccountService.GetByOwningGroup(group.Id);
             if (bankAccount == null || bankAccount.Amount < price)
             {
-                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.DELIVERY, $"Leider kann Ihr Unternehmenskonto den Produktpreis von ${price} nicht decken. Die Abrechnung wird erst getätigt wenn die Bestellung abgeliefert wird.");
+                await _phoneModule.SendNotification(phoneId,
+                                                    PhoneNotificationType.DELIVERY,
+                                                    $"Leider kann Ihr Unternehmenskonto den Produktpreis von ${price} nicht decken. Die Abrechnung wird erst getätigt wenn die Bestellung abgeliefert wird.");
                 return;
             }
 
             await _deliveryService.Add(new ProductDeliveryModel(companyGroup.Id, amount));
-            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.DELIVERY, "Wir haben die Bestellung erfolgreich in unser System aufgenommen.");
+            await _phoneModule.SendNotification(phoneId,
+                                                PhoneNotificationType.DELIVERY,
+                                                "Wir haben die Bestellung erfolgreich in unser System aufgenommen.");
 
             await _deliveryModule.UpdateOpenDeliveriesUi();
         }

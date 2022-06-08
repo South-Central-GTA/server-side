@@ -27,7 +27,7 @@ public class DrivingSchoolDialogHandler : ISingletonScript
         _worldLocationOptions = worldLocationOptions.Value;
 
         _registrationOfficeService = registrationOfficeService;
-        
+
         _bankModule = bankModule;
 
         AltAsync.OnClient<ServerPlayer>("drivingschool:showstartdialog", OnShowStartDialog);
@@ -42,20 +42,26 @@ public class DrivingSchoolDialogHandler : ISingletonScript
 
         if (!await _bankModule.HasBankAccount(player))
         {
-            player.SendNotification("Dein Charakter benötigt ein Bankkonto um eine Prüfung zu starten.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter benötigt ein Bankkonto um eine Prüfung zu starten.",
+                                    NotificationType.ERROR);
             return;
         }
 
-        var drivingSchoolData = _worldLocationOptions.DrivingSchools.Find(g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
+        var drivingSchoolData =
+            _worldLocationOptions.DrivingSchools.Find(
+                g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
         if (drivingSchoolData == null)
         {
-            player.SendNotification("Es befindet sich keine Fahrschule in der Nähe deines Charakters.", NotificationType.ERROR);
+            player.SendNotification("Es befindet sich keine Fahrschule in der Nähe deines Charakters.",
+                                    NotificationType.ERROR);
             return;
         }
 
         if (player.CharacterModel.Licenses.Exists(l => l.Type == PersonalLicensesType.DRIVING))
         {
-            player.SendNotification("Dein Charakter hat schon einen Führerschein, falls dir das Lizenz Item fehlt beantrage es am Tresen im Police Department.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter hat schon einen Führerschein, falls dir das Lizenz Item fehlt beantrage es am Tresen im Police Department.",
+                NotificationType.ERROR);
             return;
         }
 

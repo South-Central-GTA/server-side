@@ -19,24 +19,23 @@ public class WithdrawBankHandler : ISingletonScript
     private readonly BankModule _bankModule;
     private readonly MoneyModule _moneyModule;
     private readonly PhoneModule _phoneModule;
-    
+
     private readonly BankAccountService _bankAccountService;
     private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     public WithdrawBankHandler(
-        BankModule bankModule, 
-        MoneyModule moneyModule, 
+        BankModule bankModule,
+        MoneyModule moneyModule,
         PhoneModule phoneModule,
-        
-        BankAccountService bankAccountService, 
-        GroupService groupService, 
+        BankAccountService bankAccountService,
+        GroupService groupService,
         RegistrationOfficeService registrationOfficeService)
     {
         _bankModule = bankModule;
         _moneyModule = moneyModule;
         _phoneModule = phoneModule;
-        
+
         _bankAccountService = bankAccountService;
         _groupService = groupService;
         _registrationOfficeService = registrationOfficeService;
@@ -50,14 +49,15 @@ public class WithdrawBankHandler : ISingletonScript
         {
             return;
         }
-        
+
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
-        
+
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
         if (bankAccount == null)
         {
@@ -72,13 +72,17 @@ public class WithdrawBankHandler : ISingletonScript
 
         if (bankAccount.Amount < value)
         {
-            player.SendNotification($"Es steht auf dem Bankkonto {bankAccount.BankDetails} nicht genügend Geld zur Verfügung.", NotificationType.ERROR);
+            player.SendNotification(
+                $"Es steht auf dem Bankkonto {bankAccount.BankDetails} nicht genügend Geld zur Verfügung.",
+                NotificationType.ERROR);
             return;
         }
 
         if (!await _moneyModule.GiveMoney(player, value))
         {
-            player.SendNotification("Dein Charakter hat nicht genug Geld im Inventar und konnte das Geld nicht einzahlen.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter hat nicht genug Geld im Inventar und konnte das Geld nicht einzahlen.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -86,7 +90,9 @@ public class WithdrawBankHandler : ISingletonScript
         player.SendNotification("Dein Charakter hat erfolgreich Geld abgehoben.", NotificationType.SUCCESS);
 
         foreach (var targetPlayer in bankAccount.CharacterAccesses.Select(characterAccess =>
-                                                                              Alt.GetAllPlayers().FindPlayerByCharacterId(characterAccess.CharacterModelId))
+                                                                              Alt.GetAllPlayers()
+                                                                                 .FindPlayerByCharacterId(
+                                                                                     characterAccess.CharacterModelId))
                                                 .Where(serverPlayer => serverPlayer != null))
         {
             await _bankModule.UpdateUi(targetPlayer);

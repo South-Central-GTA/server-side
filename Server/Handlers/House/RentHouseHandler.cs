@@ -71,7 +71,7 @@ public class RentHouseHandler : ISingletonScript
 
         house.RentBankAccountId = bankAccountId;
         await _houseService.Update(house);
-        
+
         await _houseModule.UpdateOnClient(house);
 
         player.SendNotification("Erfolgreich Immobilie angemietet.", NotificationType.SUCCESS);

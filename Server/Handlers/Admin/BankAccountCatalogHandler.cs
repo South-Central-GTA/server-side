@@ -10,14 +10,14 @@ namespace Server.Handlers.Admin;
 public class BankAccountCatalogHandler : ISingletonScript
 {
     private readonly BankAccountService _bankAccountService;
-    
+
     public BankAccountCatalogHandler(BankAccountService bankAccountService)
     {
         _bankAccountService = bankAccountService;
-        
+
         AltAsync.OnClient<ServerPlayer>("bankaccountcatalog:open", OnOpen);
     }
-    
+
     private async void OnOpen(ServerPlayer player)
     {
         if (!player.Exists)

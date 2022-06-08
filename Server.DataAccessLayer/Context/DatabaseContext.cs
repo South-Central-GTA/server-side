@@ -32,10 +32,18 @@ public class DatabaseContext
                     .HasForeignKey(ur => ur.AccountModelId);
 
         modelBuilder.Entity<MailAccountCharacterAccessModel>()
-                    .HasKey(m => new { MailAccountModelMailAddress = m.MailAccountModelMailAddress, CharacterModelId = m.CharacterModelId });
+                    .HasKey(m => new
+                    {
+                        MailAccountModelMailAddress = m.MailAccountModelMailAddress,
+                        CharacterModelId = m.CharacterModelId
+                    });
 
         modelBuilder.Entity<MailAccountGroupAccessModel>()
-                    .HasKey(m => new { MailAccountModelMailAddress = m.MailAccountModelMailAddress, GroupId = m.GroupModelId });
+                    .HasKey(m => new
+                    {
+                        MailAccountModelMailAddress = m.MailAccountModelMailAddress,
+                        GroupId = m.GroupModelId
+                    });
 
         modelBuilder.Entity<MailLinkModel>()
                     .HasKey(m => new { m.MailAccountModelMailAddress, MailModelId = m.MailModelId });
@@ -50,7 +58,10 @@ public class DatabaseContext
                     .HasKey(c => new { CharacterModelId = c.CharacterModelId });
 
         modelBuilder.Entity<BankAccountCharacterAccessModel>()
-                    .HasKey(c => new { BankAccountModelId = c.BankAccountModelId, CharacterModelId = c.CharacterModelId });
+                    .HasKey(c => new
+                    {
+                        BankAccountModelId = c.BankAccountModelId, CharacterModelId = c.CharacterModelId
+                    });
 
         modelBuilder.Entity<BankAccountGroupRankAccessModel>()
                     .HasKey(c => new { BankAccountModelId = c.BankAccountModelId, GroupModelId = c.GroupModelId });
@@ -103,8 +114,8 @@ public class DatabaseContext
                     .HasOne(i => i.ClothingInventoryModel)
                     .WithOne(i => i.ItemClothModel)
                     .HasForeignKey<InventoryModel>(i => i.ItemClothModelId);
-        
-        
+
+
         modelBuilder.Entity<RegistrationOfficeEntryModel>()
                     .HasKey(c => new { c.CharacterModelId });
     }
@@ -167,8 +178,8 @@ public class DatabaseContext
     public DbSet<MdcAllergyModel> MdcAllergies { get; set; }
     public DbSet<FileModel> Files { get; set; }
     public DbSet<DirectoryModel> Directories { get; set; }
-    public DbSet<RegistrationOfficeEntryModel> RegistrationOfficeEntries  { get; set; }
-    public DbSet<BulletInEntryModel> BulletInEntries  { get; set; }
+    public DbSet<RegistrationOfficeEntryModel> RegistrationOfficeEntries { get; set; }
+    public DbSet<BulletInEntryModel> BulletInEntries { get; set; }
 
     #endregion
 }

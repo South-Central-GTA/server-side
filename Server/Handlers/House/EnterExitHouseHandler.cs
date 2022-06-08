@@ -22,7 +22,7 @@ public class EnterExitHouseHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (player.Dimension == 0)
         {
             await _houseModule.Enter(player);

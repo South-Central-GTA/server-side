@@ -13,11 +13,11 @@ namespace Server.Handlers.Character;
 public class AnimationWheelHandler : ISingletonScript
 {
     private readonly AnimationService _animationService;
-    
+
     public AnimationWheelHandler(AnimationService animationService)
     {
         _animationService = animationService;
-        
+
         AltAsync.OnClient<ServerPlayer>("animationswheel:requestmenu", OnRequestMenu);
     }
 

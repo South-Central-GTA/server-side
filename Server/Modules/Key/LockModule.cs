@@ -54,13 +54,13 @@ public class LockModule
     public async Task<ILockableEntity?> GetClosestLockableEntity(ServerPlayer player, int maxDistance = 2)
     {
         var lockableEntities = new List<ILockableEntity>();
-        
+
         var vehicle = await _vehicleService.GetByDistance(player.Position, maxDistance);
         if (vehicle != null)
         {
             lockableEntities.Add(vehicle);
         }
-        
+
         var house = player.Dimension == 0
             ? await _houseService.GetByDistance(player.Position, maxDistance)
             : await _houseService.GetByKey(player.Dimension);
@@ -68,13 +68,13 @@ public class LockModule
         {
             lockableEntities.Add(house);
         }
-        
+
         var door = await _doorService.GetByDistance(player.Position, maxDistance);
         if (door != null)
         {
             lockableEntities.Add(door);
         }
-        
+
         var closestDistance = float.MaxValue;
         ILockableEntity lockableEntity = null;
         foreach (var entity in lockableEntities)
@@ -88,7 +88,7 @@ public class LockModule
         }
 
         return lockableEntity;
-    } 
+    }
 
     public async Task<LockState?> Lock(ServerPlayer player, ILockableEntity lockableEntity, bool force = false)
     {
@@ -103,10 +103,13 @@ public class LockModule
             switch (await _keyModule.HasKey(player, lockableEntity))
             {
                 case HasKeyErrorType.HAS_NO_KEY:
-                    player.SendNotification("Dein Charakter hat keinen Schlüssel für dieses Schloss.", NotificationType.ERROR);
+                    player.SendNotification("Dein Charakter hat keinen Schlüssel für dieses Schloss.",
+                                            NotificationType.ERROR);
                     return null;
                 case HasKeyErrorType.HAS_WRONG_GROUP_KEY:
-                    player.SendNotification("Der biometrisch gesicherte Schlüssel lässt sich im Schloss nicht umdrehen.", NotificationType.ERROR);
+                    player.SendNotification(
+                        "Der biometrisch gesicherte Schlüssel lässt sich im Schloss nicht umdrehen.",
+                        NotificationType.ERROR);
                     return null;
             }
         }
@@ -149,7 +152,7 @@ public class LockModule
         {
             return;
         }
-        
+
         switch (vehicleModel.LockState)
         {
             case LockState.OPEN:
@@ -159,7 +162,7 @@ public class LockModule
                 await serverVehicle.SetLockStateAsync(VehicleLockState.Locked);
                 break;
         }
-        
+
         await _vehicleModule.SetSyncedDataAsync(serverVehicle);
     }
 }

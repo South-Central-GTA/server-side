@@ -16,14 +16,14 @@ public class BlipSyncModule : ISingletonScript
     private readonly Dictionary<ulong, ServerBlip> _blips = new();
 
     private readonly CompanyOptions _companyOptions;
-    
+
     public BlipSyncModule(IOptions<CompanyOptions> companyOptions)
     {
         _companyOptions = companyOptions.Value;
     }
-    
-    public ServerBlip Create(string name, int color, float scale, bool shortRange, int spriteId, Position position, 
-                             int dimension = 0, BlipType blipType = BlipType.POINT, ServerPlayer? targetPlayer = null, 
+
+    public ServerBlip Create(string name, int color, float scale, bool shortRange, int spriteId, Position position,
+                             int dimension = 0, BlipType blipType = BlipType.POINT, ServerPlayer? targetPlayer = null,
                              int radius = 0, int alpha = 255, uint streamRange = 5000)
     {
         var blip = new ServerBlip(position, dimension, streamRange)
@@ -65,7 +65,7 @@ public class BlipSyncModule : ISingletonScript
         {
             AltEntitySync.RemoveEntity(serverBlip);
         }
-        
+
         _blips.Clear();
     }
 
@@ -78,7 +78,7 @@ public class BlipSyncModule : ISingletonScript
 
         return entity is not ServerBlip serverBlip ? default : serverBlip;
     }
-    
+
     public List<ServerBlip> GetAll()
     {
         return _blips.Select(entity => entity.Value).ToList();

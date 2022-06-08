@@ -19,31 +19,34 @@ internal class UnJailPlayerCommand : ISingletonScript
     private readonly WorldLocationOptions _worldLocationOptions;
     private readonly GroupFactionService _groupFactionService;
     private readonly CharacterService _characterService;
-    
+
     private readonly PrisonModule _prisonModule;
 
     public UnJailPlayerCommand(
-        IOptions<WorldLocationOptions> worldLocationOptions, 
-        GroupFactionService groupFactionService, 
+        IOptions<WorldLocationOptions> worldLocationOptions,
+        GroupFactionService groupFactionService,
         CharacterService characterService,
-        
         PrisonModule prisonModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
         _groupFactionService = groupFactionService;
         _characterService = characterService;
-        
+
         _prisonModule = prisonModule;
     }
 
-    [Command("unjail", "Entlasse einen Charakter aus dem Gefängnis.", Permission.NONE, new[] { "Charakter Name" }, CommandArgs.GREEDY)]
+    [Command("unjail",
+             "Entlasse einen Charakter aus dem Gefängnis.",
+             Permission.NONE,
+             new[] { "Charakter Name" },
+             CommandArgs.GREEDY)]
     public async void OnExecute(ServerPlayer player, string expectedCharacterName)
     {
         if (!player.Exists)
         {
             return;
         }
-        
+
         var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.POLICE_DEPARTMENT })
         {
@@ -51,13 +54,17 @@ internal class UnJailPlayerCommand : ISingletonScript
             return;
         }
 
-        if (player.Position.Distance(new Position(_worldLocationOptions.JailPositionX, _worldLocationOptions.JailPositionY, _worldLocationOptions.JailPositionZ)) > 5.0f)
+        if (player.Position.Distance(new Position(_worldLocationOptions.JailPositionX,
+                                                  _worldLocationOptions.JailPositionY,
+                                                  _worldLocationOptions.JailPositionZ)) > 5.0f)
         {
-            player.SendNotification("Dein Charakter muss hinter dem Police Department in Davis sein.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter muss hinter dem Police Department in Davis sein.",
+                                    NotificationType.ERROR);
             return;
         }
-        
-        var targetCharacter = await _characterService.Find(c => c.FirstName + " " + c.LastName == expectedCharacterName);
+
+        var targetCharacter =
+            await _characterService.Find(c => c.FirstName + " " + c.LastName == expectedCharacterName);
 
         if (targetCharacter == null)
         {
@@ -70,7 +77,7 @@ internal class UnJailPlayerCommand : ISingletonScript
             player.SendNotification("Der Charakter befindet sich nicht im Gefängnis.", NotificationType.ERROR);
             return;
         }
-        
+
         var target = Alt.GetAllPlayers().FindPlayerByCharacterId(targetCharacter.Id);
         if (target != null)
         {
@@ -81,9 +88,10 @@ internal class UnJailPlayerCommand : ISingletonScript
         {
             targetCharacter.JailedUntil = DateTime.Now;
         }
-        
+
         await _characterService.Update(targetCharacter);
-        
-        player.SendNotification($"Dein Charakter hat {targetCharacter.Name} aus dem Gefängnis entlassen.", NotificationType.SUCCESS);
+
+        player.SendNotification($"Dein Charakter hat {targetCharacter.Name} aus dem Gefängnis entlassen.",
+                                NotificationType.SUCCESS);
     }
 }

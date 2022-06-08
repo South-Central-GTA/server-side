@@ -13,27 +13,31 @@ namespace Server.ChatCommands.Factions.Police;
 internal class GivePlayerTicketCommand : ISingletonScript
 {
     private readonly PoliceTicketModule _policeTicketModule;
-    
+
     private readonly GroupFactionService _groupFactionService;
 
     public GivePlayerTicketCommand(
-        GroupFactionService groupFactionService, 
-        
+        GroupFactionService groupFactionService,
         PoliceTicketModule policeTicketModule)
     {
         _groupFactionService = groupFactionService;
-        
+
         _policeTicketModule = policeTicketModule;
     }
 
-    [Command("giveticket", "Gebe einen anderen Charakter einen Strafzettel.", Permission.NONE, new[] { "Spieler ID", "Kosten", "Grund" }, CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
-    public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedCosts, string expectedReason)
+    [Command("giveticket",
+             "Gebe einen anderen Charakter einen Strafzettel.",
+             Permission.NONE,
+             new[] { "Spieler ID", "Kosten", "Grund" },
+             CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
+    public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedCosts,
+                                string expectedReason)
     {
         if (!player.Exists)
         {
             return;
         }
-        
+
         var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.POLICE_DEPARTMENT })
         {
@@ -46,20 +50,21 @@ internal class GivePlayerTicketCommand : ISingletonScript
         {
             return;
         }
-        
+
         if (!int.TryParse(expectedCosts, out var costs))
         {
             player.SendNotification("Bitte gebe ein richtige Zahl für die Kosten an.", NotificationType.ERROR);
             return;
         }
-        
+
         if (player.Position.Distance(target.Position) > 3.0f)
         {
             player.SendNotification("Dein Charakter ist zu weit entfernt.", NotificationType.ERROR);
             return;
         }
 
-        var success = await _policeTicketModule.GivePlayerTicket(target, player.CharacterModel.Name, expectedReason, costs);
+        var success =
+            await _policeTicketModule.GivePlayerTicket(target, player.CharacterModel.Name, expectedReason, costs);
         if (success)
         {
             player.SendNotification("Du hast dem Charakter ein Ticket übergeben.", NotificationType.INFO);

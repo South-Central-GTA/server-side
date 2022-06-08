@@ -11,11 +11,11 @@ namespace Server.Handlers.Admin;
 public class AnimationCatalogHandler : ISingletonScript
 {
     private readonly AnimationService _animationService;
-    
+
     public AnimationCatalogHandler(AnimationService animationService)
     {
         _animationService = animationService;
-        
+
         AltAsync.OnClient<ServerPlayer>("animationcatalog:open", OnOpenAnimationCatalog);
         AltAsync.OnClient<ServerPlayer>("animationcatalog:useropen", OnUserOpenAnimationCatalog);
     }
@@ -43,6 +43,8 @@ public class AnimationCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("animationcatalog:usersetup", await _animationService.GetAll(), player.CharacterModel.AnimationIds);
+        player.EmitGui("animationcatalog:usersetup",
+                       await _animationService.GetAll(),
+                       player.CharacterModel.AnimationIds);
     }
 }

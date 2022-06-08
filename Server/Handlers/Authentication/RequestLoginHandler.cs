@@ -14,8 +14,8 @@ public class RequestLoginHandler : ISingletonScript
     private readonly DiscordModule _discordModule;
 
     public RequestLoginHandler(
-        AuthenticationModule authenticationModule, 
-        AccountService accountService, 
+        AuthenticationModule authenticationModule,
+        AccountService accountService,
         DiscordModule discordModule)
     {
         _authenticationModule = authenticationModule;
@@ -35,7 +35,7 @@ public class RequestLoginHandler : ISingletonScript
         player.DiscordId = discordId;
 
         await _discordModule.AuthenticatePlayer(player, token);
-        
+
         if (await _accountService.Exists(a => a.SocialClubId == player.SocialClubId))
         {
             await _authenticationModule.SignIn(player);

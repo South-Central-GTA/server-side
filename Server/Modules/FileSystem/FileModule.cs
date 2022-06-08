@@ -18,17 +18,17 @@ public class FileModule : ISingletonScript
     {
         _directoryService = directoryService;
     }
-    
+
     public async Task OpenFileSystem(ServerPlayer player, int groupId)
     {
         if (player.HasData("FILE_SYSTEM_DIRECTORY"))
         {
             player.DeleteData("FILE_SYSTEM_DIRECTORY");
         }
-        
+
         player.EmitGui("filesystem:opendirectory", null, null, await GetAllDirectories(groupId));
     }
-    
+
     public async Task<List<FileData>> GetAllDirectories(int groupId)
     {
         var directories = await _directoryService
@@ -46,7 +46,7 @@ public class FileModule : ISingletonScript
                           })
                           .ToList();
     }
-    
+
     public async Task<List<FileData>> GetAllFilesFromDirectory(int directoryId)
     {
         var mdcFiles = new List<FileData>();

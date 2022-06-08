@@ -27,11 +27,11 @@ public class MailAccountService
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.MailAccounts
                               .Include(m => m.MailLinks)
-                                .ThenInclude(m => m.MailModel)
+                              .ThenInclude(m => m.MailModel)
                               .Include(m => m.GroupAccess)
-                                .ThenInclude(ga => ga.GroupModel)
+                              .ThenInclude(ga => ga.GroupModel)
                               .Include(m => m.CharacterAccesses)
-                                .ThenInclude(access => access.CharacterModel)
+                              .ThenInclude(access => access.CharacterModel)
                               .FirstOrDefaultAsync(m => m.MailAddress == mailAddress);
     }
 
@@ -67,7 +67,8 @@ public class MailAccountService
                               .Include(m => m.GroupAccess)
                               .Include(bank => bank.CharacterAccesses)
                               .ThenInclude(ca => ca.CharacterModel)
-                              .Where(m => m.CharacterAccesses != null && m.CharacterAccesses.Any(m => m.CharacterModelId == characterId))
+                              .Where(m => m.CharacterAccesses != null &&
+                                          m.CharacterAccesses.Any(m => m.CharacterModelId == characterId))
                               .ToListAsync();
     }
 
@@ -80,7 +81,8 @@ public class MailAccountService
                               .Include(m => m.GroupAccess)
                               .Include(m => m.CharacterAccesses)
                               .ThenInclude(ca => ca.CharacterModel)
-                              .Where(m => m.CharacterAccesses != null && m.CharacterAccesses.Any(m => m.CharacterModelId == characterId && m.Owner))
+                              .Where(m => m.CharacterAccesses != null &&
+                                          m.CharacterAccesses.Any(m => m.CharacterModelId == characterId && m.Owner))
                               .ToListAsync();
     }
 
@@ -105,6 +107,7 @@ public class MailAccountService
                               .Include(m => m.GroupAccess)
                               .Include(m => m.CharacterAccesses)
                               .ThenInclude(ca => ca.CharacterModel)
-                              .FirstOrDefaultAsync(m => m.GroupAccess.Any(ga => ga.GroupModelId == groupId && ga.Owner));
+                              .FirstOrDefaultAsync(
+                                  m => m.GroupAccess.Any(ga => ga.GroupModelId == groupId && ga.Owner));
     }
 }

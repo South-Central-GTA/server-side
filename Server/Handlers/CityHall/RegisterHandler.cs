@@ -12,11 +12,11 @@ namespace Server.Handlers.CityHall;
 public class RegisterHandler : ISingletonScript
 {
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     public RegisterHandler(RegistrationOfficeService registrationOfficeService)
     {
         _registrationOfficeService = registrationOfficeService;
-        
+
         AltAsync.OnClient<ServerPlayer>("cityhall:register", OnExecute);
     }
 
@@ -34,7 +34,7 @@ public class RegisterHandler : ISingletonScript
             {
                 CharacterModelId = player.CharacterModel.Id
             });
-            
+
             player.SendNotification("Charakter wurde in das Melderegister eingetragen.", NotificationType.INFO);
         }
     }

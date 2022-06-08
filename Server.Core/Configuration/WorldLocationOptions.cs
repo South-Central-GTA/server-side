@@ -32,8 +32,8 @@ public class WorldLocationOptions
     public InteriorData[] IntPositions { get; set; }
     public List<PublicGarageData> PublicGarages { get; set; }
     public List<DrivingSchoolData> DrivingSchools { get; set; }
-    
-    
+
+
     public float CityHallPositionX { get; set; }
     public float CityHallPositionY { get; set; }
     public float CityHallPositionZ { get; set; }

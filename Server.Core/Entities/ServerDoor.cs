@@ -16,12 +16,9 @@ public class ServerDoor
     public uint Hash
     {
         get => !TryGetData("hash", out uint hash) ? 0 : hash;
-        set
-        {
-            SetData("hash", value);
-        }
-    }        
-        
+        set { SetData("hash", value); }
+    }
+
     public float Heading
     {
         get => !TryGetData("heading", out float heading) ? 0 : heading;
@@ -34,10 +31,7 @@ public class ServerDoor
     public bool? Locked
     {
         get => TryGetData("locked", out bool locked) && locked;
-        set
-        {
-            SetData("locked", value);
-        }
+        set { SetData("locked", value); }
     }
 
     public int HouseId { get; set; }

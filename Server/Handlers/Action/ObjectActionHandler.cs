@@ -19,20 +19,19 @@ public class ObjectActionHandler : ISingletonScript
 {
     private readonly Serializer _serializer;
     private readonly ItemService _itemService;
-    
+
     private readonly ObjectSyncModule _objectSyncModule;
     private readonly ContextModule _contextModule;
-    
+
     public ObjectActionHandler(
-        Serializer serializer, 
+        Serializer serializer,
         ItemService itemService,
-        
-        ObjectSyncModule objectSyncModule, 
+        ObjectSyncModule objectSyncModule,
         ContextModule contextModule)
     {
         _serializer = serializer;
         _itemService = itemService;
-        
+
         _objectSyncModule = objectSyncModule;
         _contextModule = contextModule;
 
@@ -45,34 +44,35 @@ public class ObjectActionHandler : ISingletonScript
         {
             return;
         }
-        
+
         var actions = new List<ActionData>();
-        
-        switch (model) {
+
+        switch (model)
+        {
             case 2930269768: // walledin atms
-            case 3168729781: 
-            case 506770882: 
+            case 3168729781:
+            case 506770882:
                 actions.Add(new ActionData("Menu öffnen", "atm:requestopenmenu"));
                 break;
-            case 3424098598: 
+            case 3424098598:
                 actions.Add(new ActionData("Menu öffnen", "atm:requestopenmenu"));
                 break;
-            case 756199591: 
-            case 2067313593: 
-            case 1437777724: 
-            case 1421582485: 
-            case 4240248142: 
-            case 3762902115: 
-            case 643522702: 
-            case 4074731919: 
-            case 1793329478: 
-            case 3352088677: 
-            case 4241316616: 
-            case 3492728915: 
-            case 1987036371: 
+            case 756199591:
+            case 2067313593:
+            case 1437777724:
+            case 1421582485:
+            case 4240248142:
+            case 3762902115:
+            case 643522702:
+            case 4074731919:
+            case 1793329478:
+            case 3352088677:
+            case 4241316616:
+            case 3492728915:
+            case 1987036371:
                 actions.Add(new ActionData("Einkaufen", "supermarket:requestopenmenu"));
                 break;
-            case 1339433404: 
+            case 1339433404:
             case 1933174915:
             case 2287735495:
             case 3825272565:
@@ -131,6 +131,7 @@ public class ObjectActionHandler : ISingletonScript
                 {
                     return;
                 }
+
                 actions.AddRange(await HandlePickupAbleItem(player, objId.Value));
                 break;
             default:
@@ -167,12 +168,14 @@ public class ObjectActionHandler : ISingletonScript
 
         if (player.IsAduty)
         {
-            actions.Add(new ActionData($"[Admin] {GetItemName(item)} löschen", "placeableitem:deleteitem", serverObject.Id));
+            actions.Add(new ActionData($"[Admin] {GetItemName(item)} löschen",
+                                       "placeableitem:deleteitem",
+                                       serverObject.Id));
         }
-        
+
         return actions;
     }
-    
+
     private string GetItemName(ItemModel itemModel)
     {
         if (ClothingModule.IsClothesOrProp(itemModel.CatalogItemModelId))
@@ -181,7 +184,7 @@ public class ObjectActionHandler : ISingletonScript
             {
                 return "";
             }
-            
+
             var data = _serializer.Deserialize<ClothingData>(itemModel.CustomData);
             return data.Title;
         }

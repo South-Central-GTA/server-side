@@ -2,8 +2,10 @@
 <project version="4">
   <component name="UserContentModel">
     <attachedFolders>
+      <Path>../client-side</Path>
       <Path>../client-side-ts</Path>
-      <Path>../webview</Path>
+      <Path>../shared</Path>
+      <Path>../webview/src</Path>
     </attachedFolders>
     <explicitIncludes />
     <explicitExcludes />

@@ -18,9 +18,8 @@ public class AccountModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public ulong SocialClubId { get; set; }
-    
-    [NotMapped]
-    public string? AvatarUrl { get; set; }
+
+    [NotMapped] public string? AvatarUrl { get; set; }
 
     public ulong DiscordId { get; set; }
     public string CurrentName { get; set; }
@@ -28,7 +27,7 @@ public class AccountModel
 
     public List<CharacterModel> Characters { get; init; } = new();
     public List<CommandLogModel> CommandLogs { get; init; } = new();
-    public List<ChatLogModel> ChatLogs { get; init; } = new(); 
+    public List<ChatLogModel> ChatLogs { get; init; } = new();
     public List<UserRecordLogModel> UserRecords { get; init; } = new();
 
     public ulong? HardwareIdHash { get; set; }

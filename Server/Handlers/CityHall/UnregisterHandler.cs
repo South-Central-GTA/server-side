@@ -11,11 +11,11 @@ namespace Server.Handlers.CityHall;
 public class UnregisterHandler : ISingletonScript
 {
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     public UnregisterHandler(RegistrationOfficeService registrationOfficeService)
     {
         _registrationOfficeService = registrationOfficeService;
-        
+
         AltAsync.OnClient<ServerPlayer>("cityhall:unregister", OnExecute);
     }
 

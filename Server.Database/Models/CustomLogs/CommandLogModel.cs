@@ -22,11 +22,9 @@ public class CommandLogModel
     public int CharacterModelId { get; set; }
     public CharacterModel? CharacterModel { get; set; }
 
-    [MaxLength(2048)] 
-    public string Name { get; set; }
+    [MaxLength(2048)] public string Name { get; set; }
 
-    [MaxLength(2048)] 
-    public string Arguments { get; set; }
+    [MaxLength(2048)] public string Arguments { get; set; }
 
     public DateTime LoggedAt { get; set; }
 

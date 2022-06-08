@@ -7,9 +7,7 @@ using AltV.Net;
 using AltV.Net.Async;
 using AltV.Net.Data;
 using AltV.Net.Enums;
-using Discord;
 using Microsoft.Extensions.Options;
-using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.CommandSystem;
 using Server.Core.Configuration;
 using Server.Core.Entities;
@@ -19,13 +17,11 @@ using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models;
-using Server.Database.Models.Character;
 using Server.Database.Models.CustomLogs;
 using Server.Database.Models.Group;
 using Server.Database.Models.Housing;
 using Server.Database.Models.Inventory;
 using Server.Database.Models.Vehicles;
-using Server.Modules;
 using Server.Modules.Admin;
 using Server.Modules.Animation;
 using Server.Modules.Bank;
@@ -42,6 +38,7 @@ using Server.Modules.Key;
 using Server.Modules.Mail;
 using Server.Modules.Vehicles;
 using Server.Modules.World;
+using Server.Core.Abstractions.ScriptStrategy;
 using VehicleModel = AltV.Net.Enums.VehicleModel;
 
 namespace Server.ChatCommands;
@@ -170,7 +167,12 @@ public class Administration : ISingletonScript
         _reviveModule = reviveModule;
     }
 
-    [Command("aduty", "Gehe in den Admindienst sowie wieder in den Feierabend.", Permission.STAFF, null, CommandArgs.NOT_GREEDY, new[] { "adminduty" })]
+    [Command("aduty",
+             "Gehe in den Admindienst sowie wieder in den Feierabend.",
+             Permission.STAFF,
+             null,
+             CommandArgs.NOT_GREEDY,
+             new[] { "adminduty" })]
     public async void OnAduty(ServerPlayer player)
     {
         if (!player.Exists)
@@ -199,7 +201,10 @@ public class Administration : ISingletonScript
         }
     }
 
-    [Command("addflag", "Setzt eine bestimmte Permission für den User.", Permission.TEAM_MANAGEMENT, new[] { "Spieler ID", "Permission" })]
+    [Command("addflag",
+             "Setzt eine bestimmte Permission für den User.",
+             Permission.TEAM_MANAGEMENT,
+             new[] { "Spieler ID", "Permission" })]
     public async void OnAddFlag(ServerPlayer player, string expectedPlayerId, string expectedPermission)
     {
         if (!player.Exists)
@@ -237,13 +242,18 @@ public class Administration : ISingletonScript
         target.EmitLocked("chat:setcommands", _commandModule.GetAllCommand(player));
         target.EmitLocked("account:setpermissions", (int)player.AccountModel.Permission);
 
-        target.SendNotification($"Du hast die Permission {permission} von {player.AccountName} hinzugefügt bekommen.", NotificationType.INFO);
-        player.SendNotification($"Du hast {target.AccountName} die Permission {permission} hinzugefügt.", NotificationType.SUCCESS);
+        target.SendNotification($"Du hast die Permission {permission} von {player.AccountName} hinzugefügt bekommen.",
+                                NotificationType.INFO);
+        player.SendNotification($"Du hast {target.AccountName} die Permission {permission} hinzugefügt.",
+                                NotificationType.SUCCESS);
 
         await _accountService.Update(target.AccountModel);
     }
 
-    [Command("removeflag", "Entfernt eine bestimmte Permission von dem User.", Permission.TEAM_MANAGEMENT, new[] { "Spieler ID", "Permission" })]
+    [Command("removeflag",
+             "Entfernt eine bestimmte Permission von dem User.",
+             Permission.TEAM_MANAGEMENT,
+             new[] { "Spieler ID", "Permission" })]
     public async void OnRemoveFlag(ServerPlayer player, string expectedPlayerId, string expectedPermission)
     {
         if (!player.Exists)
@@ -281,13 +291,18 @@ public class Administration : ISingletonScript
         target.EmitLocked("chat:setcommands", _commandModule.GetAllCommand(player));
         target.EmitLocked("account:setpermissions", (int)player.AccountModel.Permission);
 
-        target.SendNotification($"Du hast die Permission {permission} von {player.AccountName} entzogen bekommen.", NotificationType.INFO);
-        player.SendNotification($"Du hast {target.AccountName} die Permission {permission} entzogen.", NotificationType.SUCCESS);
+        target.SendNotification($"Du hast die Permission {permission} von {player.AccountName} entzogen bekommen.",
+                                NotificationType.INFO);
+        player.SendNotification($"Du hast {target.AccountName} die Permission {permission} entzogen.",
+                                NotificationType.SUCCESS);
 
         await _accountService.Update(target.AccountModel);
     }
 
-    [Command("setflag", "Setzt die Permissions eines Users auf eine bestimmte.", Permission.TEAM_MANAGEMENT, new[] { "Spieler ID", "Permission" })]
+    [Command("setflag",
+             "Setzt die Permissions eines Users auf eine bestimmte.",
+             Permission.TEAM_MANAGEMENT,
+             new[] { "Spieler ID", "Permission" })]
     public async void OnSetFlag(ServerPlayer player, string expectedPlayerId, string expectedPermission)
     {
         if (!player.Exists)
@@ -325,8 +340,10 @@ public class Administration : ISingletonScript
         target.EmitLocked("chat:setcommands", _commandModule.GetAllCommand(player));
         target.EmitLocked("account:setpermissions", (int)player.AccountModel.Permission);
 
-        target.SendNotification($"Du hast die Permission {permission} von {player.AccountName} gesetzt bekommen.", NotificationType.INFO);
-        player.SendNotification($"Du hast {target.AccountName} die Permission {permission} gesetzt.", NotificationType.SUCCESS);
+        target.SendNotification($"Du hast die Permission {permission} von {player.AccountName} gesetzt bekommen.",
+                                NotificationType.INFO);
+        player.SendNotification($"Du hast {target.AccountName} die Permission {permission} gesetzt.",
+                                NotificationType.SUCCESS);
 
         await _accountService.Update(target.AccountModel);
     }
@@ -365,7 +382,9 @@ public class Administration : ISingletonScript
         });
     }
 
-    [Command("bigears", "Schalte für dich den Umgebungschat ab und höre jeder Nachricht auf dem Server zu.", Permission.STAFF)]
+    [Command("bigears",
+             "Schalte für dich den Umgebungschat ab und höre jeder Nachricht auf dem Server zu.",
+             Permission.STAFF)]
     public async void OnBigEars(ServerPlayer player)
     {
         await AltAsync.Do(() =>
@@ -416,7 +435,10 @@ public class Administration : ISingletonScript
         });
     }
 
-    [Command("gethere", "Teleportiere den angegebenen Spieler zu deiner Position.", Permission.STAFF, new[] { "Spieler ID" })]
+    [Command("gethere",
+             "Teleportiere den angegebenen Spieler zu deiner Position.",
+             Permission.STAFF,
+             new[] { "Spieler ID" })]
     public async void OnGetHere(ServerPlayer player, string expectedPlayerId)
     {
         if (!player.Exists)
@@ -434,7 +456,8 @@ public class Administration : ISingletonScript
         await target.SetDimensionAsync(player.Dimension);
 
         target.SendNotification($"Du wurdest von {player.AccountName} teleportiert.", NotificationType.INFO);
-        player.SendNotification($"Du hast erfolgreich {target.AccountName} zu dir teleportiert.", NotificationType.INFO);
+        player.SendNotification($"Du hast erfolgreich {target.AccountName} zu dir teleportiert.",
+                                NotificationType.INFO);
     }
 
     [Command("goto", "Teleportiere dich zu einem angegebenen Spieler.", Permission.STAFF, new[] { "Spieler ID" })]
@@ -500,8 +523,12 @@ public class Administration : ISingletonScript
         });
     }
 
-    [Command("giveitem", "Gebe dem angegebenen Spieler ein Item aus dem Katalog.", Permission.TESTER, new[] { "Spieler ID", "Katalog Item Id", "Anzahl" })]
-    public async void OnGiveItem(ServerPlayer player, string expectedPlayerId, string expectedCatalogItemId, string expectedAmount)
+    [Command("giveitem",
+             "Gebe dem angegebenen Spieler ein Item aus dem Katalog.",
+             Permission.TESTER,
+             new[] { "Spieler ID", "Katalog Item Id", "Anzahl" })]
+    public async void OnGiveItem(ServerPlayer player, string expectedPlayerId, string expectedCatalogItemId,
+                                 string expectedAmount)
     {
         if (!player.Exists)
         {
@@ -541,7 +568,8 @@ public class Administration : ISingletonScript
 
         if (catalogItem.Id == ItemCatalogIds.POLICE_TICKET)
         {
-            player.SendNotification("Strafzettel kannst du so aus dem Katalog nicht erstellen.", NotificationType.ERROR);
+            player.SendNotification("Strafzettel kannst du so aus dem Katalog nicht erstellen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -569,11 +597,18 @@ public class Administration : ISingletonScript
 
         await _itemCreationModule.AddItemAsync(target, catalogItem.Id, amount);
 
-        target.SendNotification($"Dir wurde administrativ von {player.AccountName} x{amount} das Item '{catalogItem.Name}' gegeben.", NotificationType.INFO);
-        player.SendNotification($"Du hast erfolgreich {target.AccountName} x{amount} das Item '{catalogItem.Name}' gegeben.", NotificationType.INFO);
+        target.SendNotification(
+            $"Dir wurde administrativ von {player.AccountName} x{amount} das Item '{catalogItem.Name}' gegeben.",
+            NotificationType.INFO);
+        player.SendNotification(
+            $"Du hast erfolgreich {target.AccountName} x{amount} das Item '{catalogItem.Name}' gegeben.",
+            NotificationType.INFO);
     }
 
-    [Command("gotocoords", "Teleportiere dich zu einer bestimmte Koordinate.", Permission.STAFF, new[] { "X", "Y", "Z" })]
+    [Command("gotocoords",
+             "Teleportiere dich zu einer bestimmte Koordinate.",
+             Permission.STAFF,
+             new[] { "X", "Y", "Z" })]
     public async void OnGoToCoords(ServerPlayer player, string expectedX, string expectedY, string expectedZ)
     {
         if (!player.Exists)
@@ -603,7 +638,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast dich erfolgreich teleportiert.", NotificationType.INFO);
     }
 
-    [Command("savecam", "Speichere die aktuelle Position deiner Freecam Kamera ab.", Permission.STAFF, new[] { "Name" })]
+    [Command("savecam",
+             "Speichere die aktuelle Position deiner Freecam Kamera ab.",
+             Permission.STAFF,
+             new[] { "Name" })]
     public void OnSaveCam(ServerPlayer player, string name)
     {
         if (!player.Exists)
@@ -619,7 +657,8 @@ public class Administration : ISingletonScript
 
         if (string.IsNullOrEmpty(name))
         {
-            player.SendNotification("Du musst einen Namen angeben unter welchem du die Position abspeichern möchtest.", NotificationType.ERROR);
+            player.SendNotification("Du musst einen Namen angeben unter welchem du die Position abspeichern möchtest.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -642,7 +681,8 @@ public class Administration : ISingletonScript
 
         if (string.IsNullOrEmpty(name))
         {
-            player.SendNotification("Du musst einen Namen angeben unter welchem du die Position abspeichern möchtest.", NotificationType.ERROR);
+            player.SendNotification("Du musst einen Namen angeben unter welchem du die Position abspeichern möchtest.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -657,27 +697,29 @@ public class Administration : ISingletonScript
             pos = player.Vehicle.Position;
             rot = player.Vehicle.Rotation;
 
-            savedPositionText = string.Format("VehiclePosition: new LocationData(new Position({0}f, {1}f, {2}f), new Rotation({3}f, {4}f, {5}f)), Dimenson: {6}); // {7}\n",
-                                              pos.X.ToString().Replace(",", "."),
-                                              pos.Y.ToString().Replace(",", "."),
-                                              (pos.Z - 1).ToString().Replace(",", "."),
-                                              rot.Pitch.ToString().Replace(",", "."),
-                                              rot.Roll.ToString().Replace(",", "."),
-                                              rot.Yaw.ToString().Replace(",", "."),
-                                              dim,
-                                              name).ToString(new CultureInfo("en-US"));
+            savedPositionText = string.Format(
+                "VehiclePosition: new LocationData(new Position({0}f, {1}f, {2}f), new Rotation({3}f, {4}f, {5}f)), Dimenson: {6}); // {7}\n",
+                pos.X.ToString().Replace(",", "."),
+                pos.Y.ToString().Replace(",", "."),
+                (pos.Z - 1).ToString().Replace(",", "."),
+                rot.Pitch.ToString().Replace(",", "."),
+                rot.Roll.ToString().Replace(",", "."),
+                rot.Yaw.ToString().Replace(",", "."),
+                dim,
+                name).ToString(new CultureInfo("en-US"));
         }
         else
         {
-            savedPositionText = string.Format("PedPosition: new LocationData(new Position({0}f, {1}f, {2}f), new Rotation({3}f, {4}f, {5}f)), Dimenson: {6}); // {7}\n",
-                                              pos.X.ToString().Replace(",", "."),
-                                              pos.Y.ToString().Replace(",", "."),
-                                              (pos.Z - 1f).ToString().Replace(",", "."),
-                                              rot.Pitch.ToString().Replace(",", "."),
-                                              rot.Roll.ToString().Replace(",", "."),
-                                              rot.Yaw.ToString().Replace(",", "."),
-                                              dim,
-                                              name).ToString(new CultureInfo("en-US"));
+            savedPositionText = string.Format(
+                "PedPosition: new LocationData(new Position({0}f, {1}f, {2}f), new Rotation({3}f, {4}f, {5}f)), Dimenson: {6}); // {7}\n",
+                pos.X.ToString().Replace(",", "."),
+                pos.Y.ToString().Replace(",", "."),
+                (pos.Z - 1f).ToString().Replace(",", "."),
+                rot.Pitch.ToString().Replace(",", "."),
+                rot.Roll.ToString().Replace(",", "."),
+                rot.Yaw.ToString().Replace(",", "."),
+                dim,
+                name).ToString(new CultureInfo("en-US"));
         }
 
         await File.AppendAllTextAsync(@"savedpositions.txt", savedPositionText);
@@ -685,7 +727,10 @@ public class Administration : ISingletonScript
         player.SendNotification($"Position {name} wurde erfolgreich gespeichert", NotificationType.SUCCESS);
     }
 
-    [Command("sethp", "Setze dem angegebenen Spieler die Lebenspunkte.", Permission.STAFF, new[] { "Spieler ID", "Lebenspunket" })]
+    [Command("sethp",
+             "Setze dem angegebenen Spieler die Lebenspunkte.",
+             Permission.STAFF,
+             new[] { "Spieler ID", "Lebenspunket" })]
     public async void OnSetHp(ServerPlayer player, string expectedPlayerId, string expectedHp)
     {
         if (!player.Exists)
@@ -708,7 +753,10 @@ public class Administration : ISingletonScript
         await target.SetHealthAsync(hp);
     }
 
-    [Command("setarmor", "Setze dem angegebenen Spieler die Rüstungspunkte.", Permission.STAFF, new[] { "Spieler ID", "Rüstungspunkte" })]
+    [Command("setarmor",
+             "Setze dem angegebenen Spieler die Rüstungspunkte.",
+             Permission.STAFF,
+             new[] { "Spieler ID", "Rüstungspunkte" })]
     public async void OnSetArmor(ServerPlayer player, string expectedPlayerId, string expectedArmor)
     {
         if (!player.Exists)
@@ -745,10 +793,14 @@ public class Administration : ISingletonScript
             return;
         }
 
-        await _characterSpawnModule.Spawn(target, 
-              new Position(_characterSpawnModule.GetSpawn(0).X, _characterSpawnModule.GetSpawn(0).Y, _characterSpawnModule.GetSpawn(0).Z),
-              new Rotation(_characterSpawnModule.GetSpawn(0).Roll, _characterSpawnModule.GetSpawn(0).Pitch, _characterSpawnModule.GetSpawn(0).Yaw),
-              0);
+        await _characterSpawnModule.Spawn(target,
+                                          new Position(_characterSpawnModule.GetSpawn(0).X,
+                                                       _characterSpawnModule.GetSpawn(0).Y,
+                                                       _characterSpawnModule.GetSpawn(0).Z),
+                                          new Rotation(_characterSpawnModule.GetSpawn(0).Roll,
+                                                       _characterSpawnModule.GetSpawn(0).Pitch,
+                                                       _characterSpawnModule.GetSpawn(0).Yaw),
+                                          0);
     }
 
     [Command("alock", "Schließt ein Schloss administrativ auf oder zu.", Permission.STAFF)]
@@ -766,11 +818,14 @@ public class Administration : ISingletonScript
             player.SendNotification("Es befindet sich kein Schloss in der Nähe.", NotificationType.ERROR);
             return;
         }
-        
+
         await _lockModule.Lock(player, entity, true);
     }
 
-    [Command("auncuff", "Nehmen einen Charakter administrativ Handschellen ab.", Permission.STAFF, new[] { "Spieler ID" })]
+    [Command("auncuff",
+             "Nehmen einen Charakter administrativ Handschellen ab.",
+             Permission.STAFF,
+             new[] { "Spieler ID" })]
     public async void OnAUncuff(ServerPlayer player, string expectedPlayerId)
     {
         if (!player.Exists)
@@ -785,7 +840,9 @@ public class Administration : ISingletonScript
         }
 
         var itemHandCuff = (ItemHandCuffModel)target.CharacterModel.InventoryModel.Items
-                                               .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.HANDCUFF && i.ItemState == ItemState.FORCE_EQUIPPED);
+                                                    .FirstOrDefault(
+                                                        i => i.CatalogItemModelId == ItemCatalogIds.HANDCUFF &&
+                                                             i.ItemState == ItemState.FORCE_EQUIPPED);
         if (itemHandCuff == null)
         {
             player.SendNotification("Der Charakter hat keine Handschellen angelegt.", NotificationType.ERROR);
@@ -803,18 +860,25 @@ public class Administration : ISingletonScript
         itemHandCuff.ItemState = ItemState.NOT_EQUIPPED;
 
         await _itemService.Update(itemHandCuff);
-        
+
         target.Cuffed = false;
         target.UpdateClothes();
 
         await _inventoryModule.UpdateInventoryUiAsync(player);
         await _inventoryModule.UpdateInventoryUiAsync(target);
 
-        target.SendNotification($"Deinem Charakter wurden von {player.AccountName} administartiv die Handschellen abgenommen.", NotificationType.INFO);
-        player.SendNotification($"Du hast Charakter {target.CharacterModel.Name} administrativ Handschellen abgenommen.", NotificationType.SUCCESS);
+        target.SendNotification(
+            $"Deinem Charakter wurden von {player.AccountName} administartiv die Handschellen abgenommen.",
+            NotificationType.INFO);
+        player.SendNotification(
+            $"Du hast Charakter {target.CharacterModel.Name} administrativ Handschellen abgenommen.",
+            NotificationType.SUCCESS);
     }
 
-    [Command("aopeninventory", "Öffne administrativ das Inventar eines Charakters.", Permission.STAFF, new[] { "Charakter ID" })]
+    [Command("aopeninventory",
+             "Öffne administrativ das Inventar eines Charakters.",
+             Permission.STAFF,
+             new[] { "Charakter ID" })]
     public async void OnAOpenCharacterInventory(ServerPlayer player, string expectedCharacterId)
     {
         if (!player.Exists)
@@ -831,19 +895,24 @@ public class Administration : ISingletonScript
         var inventory = await _inventoryService.Find(i => i.CharacterModelId == characterId);
         if (inventory == null)
         {
-            player.SendNotification("Es wurde kein Inventar zum Charakter mit der Id gefunden.", NotificationType.ERROR);
+            player.SendNotification("Es wurde kein Inventar zum Charakter mit der Id gefunden.",
+                                    NotificationType.ERROR);
             return;
         }
 
-        player.OpenInventories = new List<OpenInventoryData> { new (InventoryType.FRISK, inventory.Id)};
+        player.OpenInventories = new List<OpenInventoryData> { new(InventoryType.FRISK, inventory.Id) };
 
         await _inventoryModule.OpenInventoryUiAsync(player);
 
         player.SendNotification("Du hast administrativ das Inventar geöffnet.", NotificationType.INFO);
     }
 
-    [Command("aopenginventory", "Öffne administrativ das Gruppen Inventar eines Charakters.", Permission.MOD, new[] { "Charakter ID", "Gruppen ID" })]
-    public async void OnAOpenGroupCharacterInventory(ServerPlayer player, string expectedCharacterId, string expectedGroupId)
+    [Command("aopenginventory",
+             "Öffne administrativ das Gruppen Inventar eines Charakters.",
+             Permission.MOD,
+             new[] { "Charakter ID", "Gruppen ID" })]
+    public async void OnAOpenGroupCharacterInventory(ServerPlayer player, string expectedCharacterId,
+                                                     string expectedGroupId)
     {
         if (!player.Exists)
         {
@@ -865,18 +934,22 @@ public class Administration : ISingletonScript
         var inventory = await _inventoryService.Find(i => i.GroupCharacterId == characterId && i.GroupId == groupId);
         if (inventory == null)
         {
-            player.SendNotification("Es wurde kein Gruppen Inventar zum Charakter mit der Id gefunden.", NotificationType.ERROR);
+            player.SendNotification("Es wurde kein Gruppen Inventar zum Charakter mit der Id gefunden.",
+                                    NotificationType.ERROR);
             return;
         }
 
-        player.OpenInventories = new List<OpenInventoryData> { new (inventory.InventoryType, inventory.Id) };
+        player.OpenInventories = new List<OpenInventoryData> { new(inventory.InventoryType, inventory.Id) };
 
         await _inventoryModule.OpenInventoryUiAsync(player);
 
         player.SendNotification("Du hast administrativ das Gruppen Inventar geöffnet.", NotificationType.INFO);
     }
 
-    [Command("setweather", "Ändere das aktuelle Wetter.", Permission.LEAD_AMIN, new[] { "Wetter ID", "Übergangszeit in Sekunden" })]
+    [Command("setweather",
+             "Ändere das aktuelle Wetter.",
+             Permission.LEAD_AMIN,
+             new[] { "Wetter ID", "Übergangszeit in Sekunden" })]
     public async void OnSetWeather(ServerPlayer player, string expectedWeather, string expectedTransitionTime)
     {
         await AltAsync.Do(() =>
@@ -925,13 +998,20 @@ public class Administration : ISingletonScript
 
         await _reviveModule.AutoRevivePlayer(target, target.Position);
 
-        player.SendNotification("Du hast den Charakter " + target.CharacterModel.Name + " administrativ wiederbelebt.", NotificationType.SUCCESS);
-        target.SendNotification("Du wurdest von " + player.AccountName + " administrativ wiederbelebt.", NotificationType.SUCCESS);
+        player.SendNotification("Du hast den Charakter " + target.CharacterModel.Name + " administrativ wiederbelebt.",
+                                NotificationType.SUCCESS);
+        target.SendNotification("Du wurdest von " + player.AccountName + " administrativ wiederbelebt.",
+                                NotificationType.SUCCESS);
     }
-    
+
     #region Lore and Event Management
 
-    [Command("globalemote", "Definiere eine sichtbare Aktion für den ganzen Server.", Permission.HEAD_LORE_AND_EVENT_MANAGEMENT, new[] { "Tätigkeit" }, CommandArgs.GREEDY, new[] { "gme" })]
+    [Command("globalemote",
+             "Definiere eine sichtbare Aktion für den ganzen Server.",
+             Permission.HEAD_LORE_AND_EVENT_MANAGEMENT,
+             new[] { "Tätigkeit" },
+             CommandArgs.GREEDY,
+             new[] { "gme" })]
     public async void OnGlobalEmote(ServerPlayer player, string message)
     {
         if (!player.Exists)
@@ -952,8 +1032,13 @@ public class Administration : ISingletonScript
             _chatModule.SendMessage(target, null, ChatType.EMOTE, message, "#C2A2DA");
         }
     }
-    
-    [Command("globalooc", "Definiere eine sichtbare Aktion für den ganzen Server.", Permission.ADMIN, new[] { "Nachricht" }, CommandArgs.GREEDY, new[] { "gooc" })]
+
+    [Command("globalooc",
+             "Definiere eine sichtbare Aktion für den ganzen Server.",
+             Permission.ADMIN,
+             new[] { "Nachricht" },
+             CommandArgs.GREEDY,
+             new[] { "gooc" })]
     public async void OnGlobalOoc(ServerPlayer player, string message)
     {
         if (!player.Exists)
@@ -974,12 +1059,15 @@ public class Administration : ISingletonScript
             _chatModule.SendMessage(target, player.AccountName, ChatType.OOC, message, "#E6E6E6");
         }
     }
-    
+
     #endregion
 
     #region Vehicle Management
 
-    [Command("addvehiclekey", "Füge dem angegebenen Spieler einen Fahrzeugschlüssel im Inventar dazu.", Permission.ADMIN, new[] { "Spieler ID", "Fahrzeug ID" })]
+    [Command("addvehiclekey",
+             "Füge dem angegebenen Spieler einen Fahrzeugschlüssel im Inventar dazu.",
+             Permission.ADMIN,
+             new[] { "Spieler ID", "Fahrzeug ID" })]
     public async void OnAddVehicle(ServerPlayer player, string expectedPlayerId, string expectedVehicleId)
     {
         if (!player.Exists)
@@ -1013,12 +1101,20 @@ public class Administration : ISingletonScript
 
         await _vehicleModule.CreateVehicleKey(target, vehicle);
 
-        player.SendNotification($"Du hast {target.AccountName}, mit seinem Charakter {target.CharacterModel.Name} administrativ einen Schlüssel für das Fahrzeug Model {(VehicleModel)vehicle.Model} gegeben.", NotificationType.SUCCESS);
-        target.SendNotification($"Du hast von {player.AccountName}, administrativ einen Schlüssel für das Fahrzeug Model {(VehicleModel)vehicle.Model} erhalten.", NotificationType.INFO);
+        player.SendNotification(
+            $"Du hast {target.AccountName}, mit seinem Charakter {target.CharacterModel.Name} administrativ einen Schlüssel für das Fahrzeug Model {(VehicleModel)vehicle.Model} gegeben.",
+            NotificationType.SUCCESS);
+        target.SendNotification(
+            $"Du hast von {player.AccountName}, administrativ einen Schlüssel für das Fahrzeug Model {(VehicleModel)vehicle.Model} erhalten.",
+            NotificationType.INFO);
     }
 
-    [Command("veh", "Spawnt ein beliebiges Fahrzeug.", Permission.TESTER, new[] { "Fahrzeug Model", "Primärfarbe", "Sekundärfarbe" })]
-    public async void OnSpawnVehicle(ServerPlayer player, string expectedModelName, string expectedPrimaryColor, string expectedSecondaryColor)
+    [Command("veh",
+             "Spawnt ein beliebiges Fahrzeug.",
+             Permission.TESTER,
+             new[] { "Fahrzeug Model", "Primärfarbe", "Sekundärfarbe" })]
+    public async void OnSpawnVehicle(ServerPlayer player, string expectedModelName, string expectedPrimaryColor,
+                                     string expectedSecondaryColor)
     {
         if (!player.Exists)
         {
@@ -1043,7 +1139,8 @@ public class Administration : ISingletonScript
             return;
         }
 
-        if (primaryColor > 159 || secondaryColor > 159 || primaryColor < 0 || secondaryColor < 0) // Max colors for vehicles
+        if (primaryColor > 159 || secondaryColor > 159 || primaryColor < 0 ||
+            secondaryColor < 0) // Max colors for vehicles
         {
             player.SendNotification("Deine Farben müssen zwischen 0 und 159 liegen.", NotificationType.ERROR);
             return;
@@ -1059,7 +1156,15 @@ public class Administration : ISingletonScript
             maxTank = catalogVehicle.MaxTank;
         }
 
-        var vehicle = await _vehicleModule.Create(expectedModelName, playerPosition, playerRotation, primaryColor, secondaryColor, 0, 1000, 1000, maxTank);
+        var vehicle = await _vehicleModule.Create(expectedModelName,
+                                                  playerPosition,
+                                                  playerRotation,
+                                                  primaryColor,
+                                                  secondaryColor,
+                                                  0,
+                                                  1000,
+                                                  1000,
+                                                  maxTank);
         if (vehicle != null)
         {
             player.SendNotification("Fahrzeug erfolgreich gespawnt.", NotificationType.SUCCESS);
@@ -1116,7 +1221,10 @@ public class Administration : ISingletonScript
         });
     }
 
-    [Command("arespawnveh", "Respawnt ein zerstörtes persistentes Fahrzeug an deiner Position.", Permission.STAFF, new[] { "Persistente Fahrzeug ID" })]
+    [Command("arespawnveh",
+             "Respawnt ein zerstörtes persistentes Fahrzeug an deiner Position.",
+             Permission.STAFF,
+             new[] { "Persistente Fahrzeug ID" })]
     public async void OnAdminVehicleRespawn(ServerPlayer player, string expectedVehicleId)
     {
         if (!player.Exists)
@@ -1157,7 +1265,8 @@ public class Administration : ISingletonScript
 
         await _vehicleModule.Create(vehicle.DbEntity);
 
-        player.SendNotification($"Du hast das Fahrzeug Model: {vehicle.DbEntity.Model} respawnt.", NotificationType.SUCCESS);
+        player.SendNotification($"Du hast das Fahrzeug Model: {vehicle.DbEntity.Model} respawnt.",
+                                NotificationType.SUCCESS);
 
         await _vehicleService.Update(vehicle.DbEntity);
     }
@@ -1188,7 +1297,8 @@ public class Administration : ISingletonScript
         await vehicle.SetDimensionAsync(player.Dimension);
         await player.SetPositionAsync(new Position(player.Position.X, player.Position.Y, player.Position.Z + 3));
 
-        player.SendNotification($"Du hast das Fahrzeug Model: {vehicle.DbEntity.Model} zu dir teleportiert.", NotificationType.SUCCESS);
+        player.SendNotification($"Du hast das Fahrzeug Model: {vehicle.DbEntity.Model} zu dir teleportiert.",
+                                NotificationType.SUCCESS);
     }
 
     [Command("gotoveh", "Teleportiere dich zu einem Fahrzeug.", Permission.STAFF, new[] { "Persistente Fahrzeug ID" })]
@@ -1215,11 +1325,17 @@ public class Administration : ISingletonScript
         await player.SetPositionAsync(vehicle.Position);
         await player.SetDimensionAsync(vehicle.Dimension);
 
-        player.SendNotification($"Du hast das dich zum Fahrzeug Model: {vehicle.DbEntity.Model} teleportiert.", NotificationType.SUCCESS);
+        player.SendNotification($"Du hast das dich zum Fahrzeug Model: {vehicle.DbEntity.Model} teleportiert.",
+                                NotificationType.SUCCESS);
     }
 
-    [Command("pveh", "Spawnt ein beliebiges Fahrzeug.", Permission.ADMIN, new[] { "Spieler ID", "Fahrzeug Model", "Primärfarbe", "Sekundärfarbe" })]
-    public async void OnSpawnPlayerPersistentVehicle(ServerPlayer player, string targetPlayerName, string expectedModelName, string expectedPrimaryColor, string expectedSecondaryColor)
+    [Command("pveh",
+             "Spawnt ein beliebiges Fahrzeug.",
+             Permission.ADMIN,
+             new[] { "Spieler ID", "Fahrzeug Model", "Primärfarbe", "Sekundärfarbe" })]
+    public async void OnSpawnPlayerPersistentVehicle(ServerPlayer player, string targetPlayerName,
+                                                     string expectedModelName, string expectedPrimaryColor,
+                                                     string expectedSecondaryColor)
     {
         if (!player.Exists)
         {
@@ -1250,7 +1366,8 @@ public class Administration : ISingletonScript
             return;
         }
 
-        if (primaryColor > 159 || secondaryColor > 159 || primaryColor < 0 || secondaryColor < 0) // Max colors for vehicles
+        if (primaryColor > 159 || secondaryColor > 159 || primaryColor < 0 ||
+            secondaryColor < 0) // Max colors for vehicles
         {
             player.SendNotification("Deine Farben müssen zwischen 0 und 159 liegen.", NotificationType.ERROR);
             return;
@@ -1260,18 +1377,30 @@ public class Administration : ISingletonScript
         var playerRotation = await player.GetRotationAsync();
         var playerDimention = await player.GetDimensionAsync();
 
-        var vehicle = await _vehicleModule.CreatePersistent(expectedModelName, target, playerPosition, playerRotation, playerDimention, primaryColor, secondaryColor);
+        var vehicle = await _vehicleModule.CreatePersistent(expectedModelName,
+                                                            target,
+                                                            playerPosition,
+                                                            playerRotation,
+                                                            playerDimention,
+                                                            primaryColor,
+                                                            secondaryColor);
         if (vehicle == null)
         {
             player.SendNotification("Bitte gebe ein Fahrzeug an.", NotificationType.ERROR);
             return;
         }
 
-        player.SendNotification($"Fahrzeug erfolgreich für {target.CharacterModel.Name} gespawnt.", NotificationType.SUCCESS);
+        player.SendNotification($"Fahrzeug erfolgreich für {target.CharacterModel.Name} gespawnt.",
+                                NotificationType.SUCCESS);
     }
 
-    [Command("gveh", "Spawnt ein beliebiges Fahrzeug.", Permission.ADMIN, new[] { "Gruppen ID", "Fahrzeug Model", "Primärfarbe", "Sekundärfarbe" })]
-    public async void OnSpawnGroupPersistentVehicle(ServerPlayer player, string expectedGroupId, string expectedModelName, string expectedPrimaryColor, string expectedSecondaryColor)
+    [Command("gveh",
+             "Spawnt ein beliebiges Fahrzeug.",
+             Permission.ADMIN,
+             new[] { "Gruppen ID", "Fahrzeug Model", "Primärfarbe", "Sekundärfarbe" })]
+    public async void OnSpawnGroupPersistentVehicle(ServerPlayer player, string expectedGroupId,
+                                                    string expectedModelName, string expectedPrimaryColor,
+                                                    string expectedSecondaryColor)
     {
         if (!player.Exists)
         {
@@ -1309,7 +1438,8 @@ public class Administration : ISingletonScript
             return;
         }
 
-        if (primaryColor > 159 || secondaryColor > 159 || primaryColor < 0 || secondaryColor < 0) // Max colors for vehicles
+        if (primaryColor > 159 || secondaryColor > 159 || primaryColor < 0 ||
+            secondaryColor < 0) // Max colors for vehicles
         {
             player.SendNotification("Deine Farben müssen zwischen 0 und 159 liegen.", NotificationType.ERROR);
             return;
@@ -1319,7 +1449,13 @@ public class Administration : ISingletonScript
         var playerRotation = await player.GetRotationAsync();
         var playerDimention = await player.GetDimensionAsync();
 
-        await _vehicleModule.CreatePersistent(expectedModelName, group, playerPosition, playerRotation, playerDimention, primaryColor, secondaryColor);
+        await _vehicleModule.CreatePersistent(expectedModelName,
+                                              group,
+                                              playerPosition,
+                                              playerRotation,
+                                              playerDimention,
+                                              primaryColor,
+                                              secondaryColor);
 
         player.SendNotification($"Fahrzeug erfolgreich für Gruppe {group.Name} gespawnt.", NotificationType.SUCCESS);
     }
@@ -1354,7 +1490,7 @@ public class Administration : ISingletonScript
 
         player.SendNotification("Du hast das Fahrzeug zerstört.", NotificationType.SUCCESS);
     }
-    
+
     [Command("setlivery", "Setze die Lackierung von einem Fahrzeug.", Permission.TESTER, new[] { "Livery" })]
     public async void OnAdminSetVehicleLivery(ServerPlayer player, string expectedLivery)
     {
@@ -1380,7 +1516,9 @@ public class Administration : ISingletonScript
         {
             if (!vehicleDumpData.Flags.Contains("FLAG_HAS_LIVERY"))
             {
-                player.SendNotification("Dieses Fahrzeug hat keine extra Lackierungen. (unterschiedliche Sorten wie Aufkleber etc.)", NotificationType.ERROR);
+                player.SendNotification(
+                    "Dieses Fahrzeug hat keine extra Lackierungen. (unterschiedliche Sorten wie Aufkleber etc.)",
+                    NotificationType.ERROR);
                 return;
             }
         }
@@ -1397,7 +1535,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast die Livery des Fahrzeuges geändert.", NotificationType.SUCCESS);
     }
 
-    [Command("setvehprice", "Setze den Preis für das Fahrzeug im Fahrzeugkatalog.", Permission.STAFF, new[] { "Preis in Dollar" })]
+    [Command("setvehprice",
+             "Setze den Preis für das Fahrzeug im Fahrzeugkatalog.",
+             Permission.STAFF,
+             new[] { "Preis in Dollar" })]
     public async void OnSetVehiclePrice(ServerPlayer player, string expectedPrice)
     {
         if (!player.Exists)
@@ -1427,7 +1568,8 @@ public class Administration : ISingletonScript
         var catalogVehicle = await _vehicleCatalogService.GetByKey(modelName);
         if (catalogVehicle == null)
         {
-            player.EmitLocked("vehiclecatalog:getcatalogveh", new CatalogVehicleModel { Model = modelName, Price = price });
+            player.EmitLocked("vehiclecatalog:getcatalogveh",
+                              new CatalogVehicleModel { Model = modelName, Price = price });
             return;
         }
 
@@ -1438,7 +1580,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast den Preis des Fahrzeuges geändert.", NotificationType.SUCCESS);
     }
 
-    [Command("setvehfueltype", "Setze die Treibstoff Art für das Fahrzeug im Fahrzeugkatalog", Permission.STAFF, new[] { "Treibstoff Art (Muscle_Power, Diesel, Petrol, Kerosene, Electricity)" })]
+    [Command("setvehfueltype",
+             "Setze die Treibstoff Art für das Fahrzeug im Fahrzeugkatalog",
+             Permission.STAFF,
+             new[] { "Treibstoff Art (Muscle_Power, Diesel, Petrol, Kerosene, Electricity)" })]
     public async void OnSetVehFuelType(ServerPlayer player, string expectedFuelType)
     {
         if (!player.Exists)
@@ -1462,7 +1607,8 @@ public class Administration : ISingletonScript
         var catalogVehicle = await _vehicleCatalogService.GetByKey(modelName);
         if (catalogVehicle == null)
         {
-            player.EmitLocked("vehiclecatalog:getcatalogveh", new CatalogVehicleModel { Model = modelName, FuelType = fuelType });
+            player.EmitLocked("vehiclecatalog:getcatalogveh",
+                              new CatalogVehicleModel { Model = modelName, FuelType = fuelType });
             return;
         }
 
@@ -1473,7 +1619,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast die Treibstoff Art des Fahrzeuges geändert.", NotificationType.SUCCESS);
     }
 
-    [Command("setvehmaxfuel", "Setze die maximale Treibstoffmenge für den Tank im Fahrzeugkatalog", Permission.STAFF, new[] { "Maximal Anzahl in Liter" })]
+    [Command("setvehmaxfuel",
+             "Setze die maximale Treibstoffmenge für den Tank im Fahrzeugkatalog",
+             Permission.STAFF,
+             new[] { "Maximal Anzahl in Liter" })]
     public async void OnSetVehMaxFuel(ServerPlayer player, string expectedMaxFuel)
     {
         if (!player.Exists)
@@ -1489,7 +1638,8 @@ public class Administration : ISingletonScript
 
         if (!int.TryParse(expectedMaxFuel, out var maxFuel))
         {
-            player.SendNotification("Keine richtige Zahl als maximale Treibstoffmenge angegeben.", NotificationType.ERROR);
+            player.SendNotification("Keine richtige Zahl als maximale Treibstoffmenge angegeben.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1497,7 +1647,8 @@ public class Administration : ISingletonScript
         var catalogVehicle = await _vehicleCatalogService.GetByKey(modelName);
         if (catalogVehicle == null)
         {
-            player.EmitLocked("vehiclecatalog:getcatalogveh", new CatalogVehicleModel { Model = modelName, MaxTank = maxFuel });
+            player.EmitLocked("vehiclecatalog:getcatalogveh",
+                              new CatalogVehicleModel { Model = modelName, MaxTank = maxFuel });
             return;
         }
 
@@ -1505,7 +1656,8 @@ public class Administration : ISingletonScript
 
         await _vehicleCatalogService.Update(catalogVehicle);
 
-        player.SendNotification("Du hast die maximale Treibstoffmenge des Fahrzeuges geändert.", NotificationType.SUCCESS);
+        player.SendNotification("Du hast die maximale Treibstoffmenge des Fahrzeuges geändert.",
+                                NotificationType.SUCCESS);
     }
 
     [Command("setvehfuel", "Setze die Treibstoffmenge für den Tank.", Permission.STAFF, new[] { "Anzahl in Liter" })]
@@ -1537,7 +1689,8 @@ public class Administration : ISingletonScript
 
         if (fuel > catalogVehicle.MaxTank)
         {
-            player.SendNotification($"Du kannst nicht mehr als {catalogVehicle.MaxTank} Liter in den Tank füllen.", NotificationType.ERROR);
+            player.SendNotification($"Du kannst nicht mehr als {catalogVehicle.MaxTank} Liter in den Tank füllen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1555,7 +1708,10 @@ public class Administration : ISingletonScript
 
     #region House Management
 
-    [Command("addhousekey", "Füge dem angegebenen Spieler ein Hausschlüssel im Inventar dazu.", Permission.ECONOMY_MANAGEMENT, new[] { "Spieler ID", "Haus ID" })]
+    [Command("addhousekey",
+             "Füge dem angegebenen Spieler ein Hausschlüssel im Inventar dazu.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Spieler ID", "Haus ID" })]
     public async void OnAddHouseKey(ServerPlayer player, string expectedPlayerId, string expectedHouseId)
     {
         if (!player.Exists)
@@ -1589,14 +1745,22 @@ public class Administration : ISingletonScript
 
         await _houseModule.CreateHouseKey(player, house);
 
-        player.SendNotification($"Du hast {target.AccountName}, mit seinem Charakter {target.CharacterModel.Name} administrativ einen Schlüssel für das Haus {houseId} gegeben.", NotificationType.SUCCESS);
-        target.SendNotification($"Du hast von {player.AccountName}, administrativ einen Schlüssel für Haus Id {houseId} erhalten.", NotificationType.INFO);
+        player.SendNotification(
+            $"Du hast {target.AccountName}, mit seinem Charakter {target.CharacterModel.Name} administrativ einen Schlüssel für das Haus {houseId} gegeben.",
+            NotificationType.SUCCESS);
+        target.SendNotification(
+            $"Du hast von {player.AccountName}, administrativ einen Schlüssel für Haus Id {houseId} erhalten.",
+            NotificationType.INFO);
 
         await _inventoryModule.UpdateInventoryUiAsync(target);
     }
 
-    [Command("createhouse", "Erstelle an deiner aktuellen Position ein neues Haus.", Permission.HEAD_ECONOMY_MANAGEMENT, new[] { "Interior ID", "Preis", "Hausnummer", "Straßenrichtung", "Name (Kein Name = 'FREI')" })]
-    public async void OnCreateHouse(ServerPlayer player, string expectedInteriorId, string expectedPrice, string expectedHouseNumber, string expectedStreetDirection, string expectedName)
+    [Command("createhouse",
+             "Erstelle an deiner aktuellen Position ein neues Haus.",
+             Permission.HEAD_ECONOMY_MANAGEMENT,
+             new[] { "Interior ID", "Preis", "Hausnummer", "Straßenrichtung", "Name (Kein Name = 'FREI')" })]
+    public async void OnCreateHouse(ServerPlayer player, string expectedInteriorId, string expectedPrice,
+                                    string expectedHouseNumber, string expectedStreetDirection, string expectedName)
     {
         if (!player.Exists)
         {
@@ -1647,7 +1811,8 @@ public class Administration : ISingletonScript
 
         if (streetDirection < 1 || streetDirection > 2)
         {
-            player.SendNotification("Die Straßenrichtung muss zwischen entweder 1 oder 2 sein.", NotificationType.ERROR);
+            player.SendNotification("Die Straßenrichtung muss zwischen entweder 1 oder 2 sein.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1663,12 +1828,21 @@ public class Administration : ISingletonScript
             return;
         }
 
-        await _houseModule.CreateHouse(new Position(player.Position.X, player.Position.Y, player.Position.Z - 1), player.Rotation, interiorId, houseNumber, price, expectedName, streetDirection);
+        await _houseModule.CreateHouse(new Position(player.Position.X, player.Position.Y, player.Position.Z - 1),
+                                       player.Rotation,
+                                       interiorId,
+                                       houseNumber,
+                                       price,
+                                       expectedName,
+                                       streetDirection);
 
         player.SendNotification("Du hast ein Haus erstellt.", NotificationType.SUCCESS);
     }
 
-    [Command("deletehouse", "Löscht das Haus an deiner aktuellen Position.", Permission.HEAD_ECONOMY_MANAGEMENT, new[] { "Haus ID" })]
+    [Command("deletehouse",
+             "Löscht das Haus an deiner aktuellen Position.",
+             Permission.HEAD_ECONOMY_MANAGEMENT,
+             new[] { "Haus ID" })]
     public async void OnDestroyHouse(ServerPlayer player, string expectedHouseId)
     {
         if (!player.Exists)
@@ -1692,7 +1866,9 @@ public class Administration : ISingletonScript
         if (house.GroupModelId.HasValue)
         {
             var group = await _groupService.GetByKey(house.GroupModelId.Value);
-            player.SendNotification($"Diese Haus hat das Unternehmen #{house.GroupModelId} {group.Name} als Hauptsitz und kann daher nicht gelöscht werden.", NotificationType.ERROR);
+            player.SendNotification(
+                $"Diese Haus hat das Unternehmen #{house.GroupModelId} {group.Name} als Hauptsitz und kann daher nicht gelöscht werden.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -1701,7 +1877,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast das Haus gelöscht.", NotificationType.SUCCESS);
     }
 
-    [Command("sethouseowner", "Setze einen bestimmten Spieler als Eigentümer des Hauses.", Permission.ECONOMY_MANAGEMENT, new[] { "Spieler ID", "Haus ID" })]
+    [Command("sethouseowner",
+             "Setze einen bestimmten Spieler als Eigentümer des Hauses.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Spieler ID", "Haus ID" })]
     public async void OnSetHouseOwner(ServerPlayer player, string expectedPlayerId, string expectedHouseId)
     {
         if (!player.Exists)
@@ -1730,10 +1909,15 @@ public class Administration : ISingletonScript
 
         await _houseModule.SetOwner(target, house);
 
-        player.SendNotification($"Du hast {target.AccountName} mit dem Charakter {target.CharacterModel.Name} als Eigentümer gesetzt.", NotificationType.SUCCESS);
+        player.SendNotification(
+            $"Du hast {target.AccountName} mit dem Charakter {target.CharacterModel.Name} als Eigentümer gesetzt.",
+            NotificationType.SUCCESS);
     }
 
-    [Command("clearhouseowner", "Entferne den Eigentümer eines Hauses.", Permission.ECONOMY_MANAGEMENT, new[] { "Haus ID" })]
+    [Command("clearhouseowner",
+             "Entferne den Eigentümer eines Hauses.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Haus ID" })]
     public async void OnClearHouseOwner(ServerPlayer player, string expectedHouseId)
     {
         if (!player.Exists)
@@ -1765,7 +1949,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast ehemalige Eigentümer entfernt.", NotificationType.SUCCESS);
     }
 
-    [Command("gethouse", "Verschiebt die angegebene Haus Id an deine aktuelle Position.", Permission.ECONOMY_MANAGEMENT, new[] { "Haus ID" })]
+    [Command("gethouse",
+             "Verschiebt die angegebene Haus Id an deine aktuelle Position.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Haus ID" })]
     public async void OnGetHouse(ServerPlayer player, string expectedHouseId)
     {
         if (!player.Exists)
@@ -1786,7 +1973,9 @@ public class Administration : ISingletonScript
             return;
         }
 
-        await _houseModule.SetHouseLocation(house, new Position(player.Position.X, player.Position.Y, player.Position.Z - 1), player.Rotation);
+        await _houseModule.SetHouseLocation(house,
+                                            new Position(player.Position.X, player.Position.Y, player.Position.Z - 1),
+                                            player.Rotation);
 
         player.SendNotification("Du hast das Haus verschoben.", NotificationType.SUCCESS);
     }
@@ -1817,7 +2006,11 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast dich zum Haus teleportiert.", NotificationType.SUCCESS);
     }
 
-    [Command("sethousename", "Ändere den Namen welcher beim Haus angezeigt wird.", Permission.ECONOMY_MANAGEMENT, new[] { "Haus ID", "Name (Kein Name = 'FREI')" }, CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
+    [Command("sethousename",
+             "Ändere den Namen welcher beim Haus angezeigt wird.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Haus ID", "Name (Kein Name = 'FREI')" },
+             CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
     public async void OnSetHouseName(ServerPlayer player, string expectedHouseId, string expectedName)
     {
         if (!player.Exists)
@@ -1852,7 +2045,10 @@ public class Administration : ISingletonScript
         }
     }
 
-    [Command("sethousenumber", "Ändere die Hausnummer welche beim Haus angezeigt wird.", Permission.MOD, new[] { "Haus ID", "Hausnummer" })]
+    [Command("sethousenumber",
+             "Ändere die Hausnummer welche beim Haus angezeigt wird.",
+             Permission.MOD,
+             new[] { "Haus ID", "Hausnummer" })]
     public async void OnSetHouseNumber(ServerPlayer player, string expectedHouseId, string expectedNumber)
     {
         if (!player.Exists)
@@ -1884,7 +2080,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Hausnummer wurde angepasst.", NotificationType.SUCCESS);
     }
 
-    [Command("sethouseprice", "Ändere den Preis welcher das Haus kosten soll.", Permission.ECONOMY_MANAGEMENT, new[] { "Haus ID", "Preis" })]
+    [Command("sethouseprice",
+             "Ändere den Preis welcher das Haus kosten soll.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Haus ID", "Preis" })]
     public async void OnSetHousePrice(ServerPlayer player, string expectedHouseId, string expectedPrice)
     {
         if (!player.Exists)
@@ -1916,7 +2115,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Preis wurde angepasst.", NotificationType.SUCCESS);
     }
 
-    [Command("sethousedirection", "Ändere den Namen der Straße welche beim Haus angezeigt wird.", Permission.MOD, new[] { "Haus ID", "Kreuzungsrichtung" })]
+    [Command("sethousedirection",
+             "Ändere den Namen der Straße welche beim Haus angezeigt wird.",
+             Permission.MOD,
+             new[] { "Haus ID", "Kreuzungsrichtung" })]
     public async void OnSetHouseStreetDirection(ServerPlayer player, string expectedHouseId, string expectedDirection)
     {
         if (!player.Exists)
@@ -1945,7 +2147,8 @@ public class Administration : ISingletonScript
 
         if (streetDirection < 1 || streetDirection > 2)
         {
-            player.SendNotification("Die Straßenrichtung muss zwischen entweder 1 oder 2 sein.", NotificationType.ERROR);
+            player.SendNotification("Die Straßenrichtung muss zwischen entweder 1 oder 2 sein.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -1953,9 +2156,13 @@ public class Administration : ISingletonScript
 
         player.SendNotification("Kreuzungsrichtung wurde angepasst.", NotificationType.SUCCESS);
     }
-    
-    [Command("addhousedoor", "Füge einem Haus eine bestimmte Tür hinzu.", Permission.ECONOMY_MANAGEMENT, new[] { "Haus ID", "Tür Mesh", "Tür X Position", "Tür Y Position", "Tür Z Position" })]
-    public async void OnAddHouseDoor(ServerPlayer player, string expectedHouseId, string expectedDoorMesh, string expectedDoorX, string expectedDoorY, string expectedDoorZ)
+
+    [Command("addhousedoor",
+             "Füge einem Haus eine bestimmte Tür hinzu.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Haus ID", "Tür Mesh", "Tür X Position", "Tür Y Position", "Tür Z Position" })]
+    public async void OnAddHouseDoor(ServerPlayer player, string expectedHouseId, string expectedDoorMesh,
+                                     string expectedDoorX, string expectedDoorY, string expectedDoorZ)
     {
         if (!player.Exists)
         {
@@ -2003,8 +2210,11 @@ public class Administration : ISingletonScript
 
         player.SendNotification("Tür wurde hinzugefügt.", NotificationType.SUCCESS);
     }
-    
-    [Command("removehousedoor", "Entferne eine bestimmte Tür von einem Haus.", Permission.ECONOMY_MANAGEMENT, new[] { "Haus ID", "Tür ID" })]
+
+    [Command("removehousedoor",
+             "Entferne eine bestimmte Tür von einem Haus.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Haus ID", "Tür ID" })]
     public async void OnRemoveHouseDoor(ServerPlayer player, string expectedHouseId, string expectedDoorId)
     {
         if (!player.Exists)
@@ -2017,7 +2227,7 @@ public class Administration : ISingletonScript
             player.SendNotification("Keine richtige Zahl als Haus ID angegeben.", NotificationType.ERROR);
             return;
         }
-        
+
         if (!int.TryParse(expectedDoorId, out var doorId))
         {
             player.SendNotification("Keine richtige Zahl als Tür ID angegeben.", NotificationType.ERROR);
@@ -2037,11 +2247,14 @@ public class Administration : ISingletonScript
             player.SendNotification("Es konnte keine Tür gefunden werden.", NotificationType.ERROR);
             return;
         }
-        
+
         player.SendNotification("Tür wurde hinzugefügt.", NotificationType.SUCCESS);
     }
-    
-    [Command("sethouseinterior", "Setze oder entferne das Interior eines Hauses.", Permission.ECONOMY_MANAGEMENT, new[] { "Haus ID", "Interior ID (-1 für kein Interior)" })]
+
+    [Command("sethouseinterior",
+             "Setze oder entferne das Interior eines Hauses.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Haus ID", "Interior ID (-1 für kein Interior)" })]
     public async void OnSetHouseInterior(ServerPlayer player, string expectedHouseId, string expectedInteriorId)
     {
         if (!player.Exists)
@@ -2054,7 +2267,7 @@ public class Administration : ISingletonScript
             player.SendNotification("Keine richtige Zahl als Haus ID angegeben.", NotificationType.ERROR);
             return;
         }
-        
+
         if (!int.TryParse(expectedInteriorId, out var interiorId))
         {
             player.SendNotification("Keine richtige Zahl als InteriorId ID angegeben.", NotificationType.ERROR);
@@ -2066,9 +2279,9 @@ public class Administration : ISingletonScript
             player.SendNotification("Du kannst nicht weniger als -1 nehmen.", NotificationType.ERROR);
             return;
         }
-        
+
         var maxInts = _worldLocationOptions.IntPositions.Length - 1;
-        
+
         if (maxInts < interiorId)
         {
             player.SendNotification("Die maximale Anzahl an Interiors ist " + maxInts + ".", NotificationType.ERROR);
@@ -2085,10 +2298,10 @@ public class Administration : ISingletonScript
         house.InteriorId = interiorId != -1 ? interiorId : null;
 
         await _houseService.Update(house);
-        
+
         player.SendNotification("Interior wurde geupdated.", NotificationType.SUCCESS);
     }
-    
+
     // TODO: Remove command when going live.
     [Command("resetallhouses", "Resete alle Häuser damit sie ordentlich gespeichert werden können.", Permission.OWNER)]
     public async void OnResetAllHouses(ServerPlayer player)
@@ -2107,7 +2320,7 @@ public class Administration : ISingletonScript
             house.CharacterModelId = null;
             house.GroupModelId = null;
         }
-        
+
         await _houseService.UpdateRange(houses);
 
         player.SendNotification($"Alle Häuser wurden erfolgreich vorbereitet.", NotificationType.SUCCESS);
@@ -2117,7 +2330,11 @@ public class Administration : ISingletonScript
 
     #region Group Management
 
-    [Command("creategroup", "Erstelle eine Gruppe.", Permission.ADMIN, new[] { "Type", "Name" }, CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
+    [Command("creategroup",
+             "Erstelle eine Gruppe.",
+             Permission.ADMIN,
+             new[] { "Type", "Name" },
+             CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
     public async void OnCreateGroup(ServerPlayer player, string expectedType, string expectedName)
     {
         if (!player.Exists)
@@ -2153,7 +2370,8 @@ public class Administration : ISingletonScript
         }
         else
         {
-            player.SendNotification("Der Name ist schon vergeben, Gruppe konnte nicht erstellt werden.", NotificationType.ERROR);
+            player.SendNotification("Der Name ist schon vergeben, Gruppe konnte nicht erstellt werden.",
+                                    NotificationType.ERROR);
         }
     }
 
@@ -2199,19 +2417,20 @@ public class Administration : ISingletonScript
                 return;
             }
 
-            await _groupMemberService.Add(
-                new GroupMemberModel
-                {
-                    GroupModelId = group.Id, 
-                    CharacterModelId = target.CharacterModel.Id, 
-                    Owner = true, 
-                    RankLevel = 1,
-                    BankAccountId = bankAccounts[0].Id
-                });
+            await _groupMemberService.Add(new GroupMemberModel
+            {
+                GroupModelId = group.Id,
+                CharacterModelId = target.CharacterModel.Id,
+                Owner = true,
+                RankLevel = 1,
+                BankAccountId = bankAccounts[0].Id
+            });
         }
 
         await _groupModule.UpdateUi(target);
-        player.SendNotification($"Du hast erfolgreich {target.CharacterModel.Name} als Owner der Gruppe {group.Name} gesetzt.", NotificationType.SUCCESS);
+        player.SendNotification(
+            $"Du hast erfolgreich {target.CharacterModel.Name} als Owner der Gruppe {group.Name} gesetzt.",
+            NotificationType.SUCCESS);
     }
 
     [Command("cleargroupowner", "Entferne den Owner einer Gruppe.", Permission.ADMIN, new[] { "Gruppen ID" })]
@@ -2243,10 +2462,15 @@ public class Administration : ISingletonScript
 
         await _groupService.Update(group);
 
-        player.SendNotification($"Du hast erfolgreich den Owner Gruppe {group.Name} entfernt.", NotificationType.SUCCESS);
+        player.SendNotification($"Du hast erfolgreich den Owner Gruppe {group.Name} entfernt.",
+                                NotificationType.SUCCESS);
     }
 
-    [Command("setgroupname", "Setze den Namen einer Gruppe.", Permission.ADMIN, new[] { "Gruppen ID", "Name" }, CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
+    [Command("setgroupname",
+             "Setze den Namen einer Gruppe.",
+             Permission.ADMIN,
+             new[] { "Gruppen ID", "Name" },
+             CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
     public async void OnSetGroupName(ServerPlayer player, string expectedGroupId, string expectedName)
     {
         if (!player.Exists)
@@ -2279,7 +2503,8 @@ public class Administration : ISingletonScript
 
         await _groupService.Update(group);
 
-        player.SendNotification($"Du hast erfolgreich den Namen der Gruppe {oldName} auf {group.Name} geändert.", NotificationType.SUCCESS);
+        player.SendNotification($"Du hast erfolgreich den Namen der Gruppe {oldName} auf {group.Name} geändert.",
+                                NotificationType.SUCCESS);
     }
 
     [Command("setgrouptype", "Setze den Typen einer Gruppe.", Permission.ADMIN, new[] { "Gruppen ID", "Typen" })]
@@ -2321,10 +2546,15 @@ public class Administration : ISingletonScript
 
         await _groupService.Update(group);
 
-        player.SendNotification($"Du hast erfolgreich den Typen der Gruppe von {oldType} auf {group.GroupType} geändert.", NotificationType.SUCCESS);
+        player.SendNotification(
+            $"Du hast erfolgreich den Typen der Gruppe von {oldType} auf {group.GroupType} geändert.",
+            NotificationType.SUCCESS);
     }
 
-    [Command("setfactiontype", "Setze den Faction Typen einer Fraktion.", Permission.ADMIN, new[] { "Fraktion ID", "Typen" })]
+    [Command("setfactiontype",
+             "Setze den Faction Typen einer Fraktion.",
+             Permission.ADMIN,
+             new[] { "Fraktion ID", "Typen" })]
     public async void OnSetFactionType(ServerPlayer player, string expectedFactionId, string expectedType)
     {
         if (!player.Exists)
@@ -2363,10 +2593,15 @@ public class Administration : ISingletonScript
 
         await _groupFactionService.Update(faction);
 
-        player.SendNotification($"Du hast erfolgreich den Typen der Fraktion von {oldType} auf {faction.FactionType} geändert.", NotificationType.SUCCESS);
+        player.SendNotification(
+            $"Du hast erfolgreich den Typen der Fraktion von {oldType} auf {faction.FactionType} geändert.",
+            NotificationType.SUCCESS);
     }
 
-    [Command("setgroupproducts", "Setze die Produkte einer Gruppe.", Permission.ADMIN, new[] { "Gruppen ID", "Anzahl" })]
+    [Command("setgroupproducts",
+             "Setze die Produkte einer Gruppe.",
+             Permission.ADMIN,
+             new[] { "Gruppen ID", "Anzahl" })]
     public async void OnSetGroupProducts(ServerPlayer player, string expectedGroupId, string expectedAmount)
     {
         if (!player.Exists)
@@ -2397,7 +2632,8 @@ public class Administration : ISingletonScript
 
         if (amount > _companyOptions.MaxProducts)
         {
-            player.SendNotification($"Du kannst nicht mehr als {_companyOptions.MaxProducts} Produkte setzen.", NotificationType.ERROR);
+            player.SendNotification($"Du kannst nicht mehr als {_companyOptions.MaxProducts} Produkte setzen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -2405,10 +2641,14 @@ public class Administration : ISingletonScript
 
         await _groupService.Update(group);
 
-        player.SendNotification($"Du hast erfolgreich die Produkte der Gruppe auf {amount} gesetzt.", NotificationType.SUCCESS);
+        player.SendNotification($"Du hast erfolgreich die Produkte der Gruppe auf {amount} gesetzt.",
+                                NotificationType.SUCCESS);
     }
 
-    [Command("addplayergroup", "Füge einen Spieler als Member einer Gruppe hinzu.", Permission.ADMIN, new[] { "Spieler ID", "Gruppen ID" })]
+    [Command("addplayergroup",
+             "Füge einen Spieler als Member einer Gruppe hinzu.",
+             Permission.ADMIN,
+             new[] { "Spieler ID", "Gruppen ID" })]
     public async void OnAddPlayerGroup(ServerPlayer player, string expectedPlayerId, string expectedGroupId)
     {
         if (!player.Exists)
@@ -2446,10 +2686,15 @@ public class Administration : ISingletonScript
             }
         }
 
-        player.SendNotification($"Du hast erfolgreich {target.CharacterModel.Name} der Gruppe {group.Name} hinzugefügt.", NotificationType.SUCCESS);
+        player.SendNotification(
+            $"Du hast erfolgreich {target.CharacterModel.Name} der Gruppe {group.Name} hinzugefügt.",
+            NotificationType.SUCCESS);
     }
 
-    [Command("removeplayergroup", "Entferne einen Spieler aus einer Gruppe.", Permission.ADMIN, new[] { "Spieler ID", "Gruppen ID" })]
+    [Command("removeplayergroup",
+             "Entferne einen Spieler aus einer Gruppe.",
+             Permission.ADMIN,
+             new[] { "Spieler ID", "Gruppen ID" })]
     public async void OnRemovePlayerGroup(ServerPlayer player, string expectedPlayerId, string expectedGroupId)
     {
         if (!player.Exists)
@@ -2468,25 +2713,33 @@ public class Administration : ISingletonScript
         {
             return;
         }
-        
+
         var group = await _groupService.GetByKey(groupId);
         if (group == null)
         {
             player.SendNotification("Es wurde keine Gruppe gefunden.", NotificationType.ERROR);
             return;
         }
-        
+
         await _groupModule.AdminKick(target, player, groupId);
 
-        player.SendNotification($"Du hast erfolgreich {target.CharacterModel.Name} aus der Gruppe {group.Name} entfernt.", NotificationType.SUCCESS);
+        player.SendNotification(
+            $"Du hast erfolgreich {target.CharacterModel.Name} aus der Gruppe {group.Name} entfernt.",
+            NotificationType.SUCCESS);
     }
 
     #endregion
 
     #region Lease Company
 
-    [Command("createcompany", "Erstelle an deiner aktuellen Position ein pachtbaren Unternehmenssitz.", Permission.HEAD_ECONOMY_MANAGEMENT, new[] { "Type", "Preis", "Name (Kein Name = 'FREI')" }, CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT, new[] { "cc" })]
-    public async void OnCreateLeaseCompany(ServerPlayer player, string expectedType, string expectedPrice, string expectedName)
+    [Command("createcompany",
+             "Erstelle an deiner aktuellen Position ein pachtbaren Unternehmenssitz.",
+             Permission.HEAD_ECONOMY_MANAGEMENT,
+             new[] { "Type", "Preis", "Name (Kein Name = 'FREI')" },
+             CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT,
+             new[] { "cc" })]
+    public async void OnCreateLeaseCompany(ServerPlayer player, string expectedType, string expectedPrice,
+                                           string expectedName)
     {
         if (!player.Exists)
         {
@@ -2540,7 +2793,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast ein pachtbaren Unternehmenssitz erstellt.", NotificationType.SUCCESS);
     }
 
-    [Command("sethousegroupowner", "Setze eine bestimmte Gruppe als Eigentümer des Hauses.", Permission.ADMIN, new[] { "Gruppen ID", "Haus ID" })]
+    [Command("sethousegroupowner",
+             "Setze eine bestimmte Gruppe als Eigentümer des Hauses.",
+             Permission.ADMIN,
+             new[] { "Gruppen ID", "Haus ID" })]
     public async void OnSetHouseGroupOwner(ServerPlayer player, string expectedPlayerId, string expectedLeaseCompanyId)
     {
         if (!player.Exists)
@@ -2581,7 +2837,10 @@ public class Administration : ISingletonScript
         player.SendNotification($"Du hast {group.Name} als Eigentümer des Hauses gesetzt.", NotificationType.SUCCESS);
     }
 
-    [Command("setcompanytype", "Ändere den Type welcher das Unternehmen hat.", Permission.ADMIN, new[] { "Haus ID", "Type" })]
+    [Command("setcompanytype",
+             "Ändere den Type welcher das Unternehmen hat.",
+             Permission.ADMIN,
+             new[] { "Haus ID", "Type" })]
     public async void OnSetLeaseCompanyType(ServerPlayer player, string expectedLeaseCompanyId, string expectedType)
     {
         if (!player.Exists)
@@ -2591,7 +2850,8 @@ public class Administration : ISingletonScript
 
         if (!int.TryParse(expectedLeaseCompanyId, out var leaseCompanyId))
         {
-            player.SendNotification("Keine richtige Zahl als pachtbarer Unternehmenssitz ID angegeben.", NotificationType.ERROR);
+            player.SendNotification("Keine richtige Zahl als pachtbarer Unternehmenssitz ID angegeben.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -2619,7 +2879,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Type wurde angepasst.", NotificationType.SUCCESS);
     }
 
-    [Command("sethouserentable", "Stell ein ob ein Haus gemietet werden muss.", Permission.ECONOMY_MANAGEMENT, new[] { "Haus ID", "Status (Ja, Nein)" })]
+    [Command("sethouserentable",
+             "Stell ein ob ein Haus gemietet werden muss.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Haus ID", "Status (Ja, Nein)" })]
     public async void OnSetHouseRentable(ServerPlayer player, string expectedHouseId, string expectedState)
     {
         if (!player.Exists)
@@ -2635,7 +2898,7 @@ public class Administration : ISingletonScript
 
         var state = expectedState.ToLower() == "ja";
         var house = await _houseService.GetByKey(houseId);
-        
+
         if (house == null)
         {
             player.SendNotification("Es wurde keine Immobilie gefunden.", NotificationType.ERROR);
@@ -2647,7 +2910,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Type wurde angepasst.", NotificationType.SUCCESS);
     }
 
-    [Command("sethouseblocked", "Blockiert den Besitztum des Hauses.", Permission.HEAD_ECONOMY_MANAGEMENT, new[] { "Haus ID", "Status (Ja, Nein)" })]
+    [Command("sethouseblocked",
+             "Blockiert den Besitztum des Hauses.",
+             Permission.HEAD_ECONOMY_MANAGEMENT,
+             new[] { "Haus ID", "Status (Ja, Nein)" })]
     public async void OnSetHouseBlocked(ServerPlayer player, string expectedHouseId, string expectedState)
     {
         if (!player.Exists)
@@ -2663,7 +2929,7 @@ public class Administration : ISingletonScript
 
         var state = expectedState.ToLower() == "ja";
         var house = await _houseService.GetByKey(houseId);
-        
+
         if (house == null)
         {
             player.SendNotification("Es wurde keine Immobilie gefunden.", NotificationType.ERROR);
@@ -2675,7 +2941,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Besitztum wurde angepasst.", NotificationType.SUCCESS);
     }
 
-    [Command("setcompanycashier", "Setze den Kassierer eines Unternehmen auf deine aktuelle Position.", Permission.MOD, new[] { "Haus ID" })]
+    [Command("setcompanycashier",
+             "Setze den Kassierer eines Unternehmen auf deine aktuelle Position.",
+             Permission.MOD,
+             new[] { "Haus ID" })]
     public async void OnSetLeaseCompanyCashier(ServerPlayer player, string expectedLeaseCompanyId)
     {
         if (!player.Exists)
@@ -2685,7 +2954,8 @@ public class Administration : ISingletonScript
 
         if (!int.TryParse(expectedLeaseCompanyId, out var leaseCompanyId))
         {
-            player.SendNotification("Keine richtige Zahl als pachtbarer Unternehmenssitz ID angegeben.", NotificationType.ERROR);
+            player.SendNotification("Keine richtige Zahl als pachtbarer Unternehmenssitz ID angegeben.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -2696,7 +2966,9 @@ public class Administration : ISingletonScript
         }
 
         DegreeRotation degreeRotation = player.Rotation;
-        await _houseModule.SetCashier(leaseCompany, new Position(player.Position.X, player.Position.Y, player.Position.Z - 1), degreeRotation.Yaw);
+        await _houseModule.SetCashier(leaseCompany,
+                                      new Position(player.Position.X, player.Position.Y, player.Position.Z - 1),
+                                      degreeRotation.Yaw);
 
         player.SendNotification("Kassierer wurde gesetzt.", NotificationType.SUCCESS);
     }
@@ -2711,7 +2983,8 @@ public class Administration : ISingletonScript
 
         if (!int.TryParse(expectedLeaseCompanyId, out var leaseCompanyId))
         {
-            player.SendNotification("Keine richtige Zahl als pachtbarer Unternehmenssitz ID angegeben.", NotificationType.ERROR);
+            player.SendNotification("Keine richtige Zahl als pachtbarer Unternehmenssitz ID angegeben.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -2794,8 +3067,13 @@ public class Administration : ISingletonScript
         });
     }
 
-    [Command("addanim", "Füge eine Animation zum Catalog hinzu.", Permission.MANAGE_ANIMATIONS, new[] { "Dictionary", "Clip", "Name" }, CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
-    public async void OnAddAnimation(ServerPlayer player, string expectedDictionary, string expectedClip, string expectedName)
+    [Command("addanim",
+             "Füge eine Animation zum Catalog hinzu.",
+             Permission.MANAGE_ANIMATIONS,
+             new[] { "Dictionary", "Clip", "Name" },
+             CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
+    public async void OnAddAnimation(ServerPlayer player, string expectedDictionary, string expectedClip,
+                                     string expectedName)
     {
         if (!player.Exists)
         {
@@ -2806,7 +3084,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast eine neue Animation hinzugefügt.", NotificationType.INFO);
     }
 
-    [Command("deleteanim", "Entferne eine Animation vom Catalog.", Permission.MANAGE_ANIMATIONS, new[] { "Animation ID" })]
+    [Command("deleteanim",
+             "Entferne eine Animation vom Catalog.",
+             Permission.MANAGE_ANIMATIONS,
+             new[] { "Animation ID" })]
     public async void OnDeleteAnimation(ServerPlayer player, string expectedId)
     {
         if (!player.Exists)
@@ -2831,7 +3112,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast eine Animation entfernt.", NotificationType.INFO);
     }
 
-    [Command("addanimflag", "Füge eine Flag zu einer Animation hinzu.", Permission.MANAGE_ANIMATIONS, new[] { "Animation ID", "Flag" })]
+    [Command("addanimflag",
+             "Füge eine Flag zu einer Animation hinzu.",
+             Permission.MANAGE_ANIMATIONS,
+             new[] { "Animation ID", "Flag" })]
     public async void OnAddAnimationFlag(ServerPlayer player, string expectedId, string expectedFlag)
     {
         if (!player.Exists)
@@ -2864,7 +3148,10 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast eine Animation bearbeitet.", NotificationType.INFO);
     }
 
-    [Command("removeanimflag", "Entferne eine Flag zu einer Animation hinzu.", Permission.MANAGE_ANIMATIONS, new[] { "Animation ID", "Flag" })]
+    [Command("removeanimflag",
+             "Entferne eine Flag zu einer Animation hinzu.",
+             Permission.MANAGE_ANIMATIONS,
+             new[] { "Animation ID", "Flag" })]
     public async void OnRemoveAnimationFlag(ServerPlayer player, string expectedId, string expectedFlag)
     {
         if (!player.Exists)
@@ -2897,7 +3184,11 @@ public class Administration : ISingletonScript
         player.SendNotification("Du hast eine Animation bearbeitet.", NotificationType.INFO);
     }
 
-    [Command("renameanim", "Animation umbenennen", Permission.MANAGE_ANIMATIONS, new[] { "Animation ID", "Neuer Name" }, CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
+    [Command("renameanim",
+             "Animation umbenennen",
+             Permission.MANAGE_ANIMATIONS,
+             new[] { "Animation ID", "Neuer Name" },
+             CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
     public async void OnRenameAnimationFlag(ServerPlayer player, string expectedId, string expectedName)
     {
         if (!player.Exists)
@@ -2928,8 +3219,13 @@ public class Administration : ISingletonScript
 
     #region Punishment
 
-    [Command("setaprison", "Setze den Spieler ins Admin Prison.", Permission.STAFF, new[] { "Spieler ID", "Anzahl der Checkpoints", "Grund" }, CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
-    public async void OnSetAdminPrison(ServerPlayer player, string expectedPlayerId, string expectedCheckpointsAmount, string reason)
+    [Command("setaprison",
+             "Setze den Spieler ins Admin Prison.",
+             Permission.STAFF,
+             new[] { "Spieler ID", "Anzahl der Checkpoints", "Grund" },
+             CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
+    public async void OnSetAdminPrison(ServerPlayer player, string expectedPlayerId, string expectedCheckpointsAmount,
+                                       string reason)
     {
         if (!player.Exists)
         {
@@ -2971,7 +3267,9 @@ public class Administration : ISingletonScript
 
         await _accountService.Update(target.AccountModel);
 
-        player.SendNotification($"Du hast den Spieler {target.AccountName} für {checkpointsAmount} Checkpoints in das Admin Prison gesteckt.", NotificationType.INFO);
+        player.SendNotification(
+            $"Du hast den Spieler {target.AccountName} für {checkpointsAmount} Checkpoints in das Admin Prison gesteckt.",
+            NotificationType.INFO);
     }
 
     [Command("clearaprison", "Befreie den Spieler aus dem Admin Prison.", Permission.STAFF, new[] { "Spieler ID" })]
@@ -3005,10 +3303,15 @@ public class Administration : ISingletonScript
         await _adminPrisonModule.ClearPlayerFromPrison(target, player);
         await _accountService.Update(target.AccountModel);
 
-        player.SendNotification($"Du hast den Spieler {target.AccountName} aus dem Admin Prison befreit.", NotificationType.INFO);
+        player.SendNotification($"Du hast den Spieler {target.AccountName} aus dem Admin Prison befreit.",
+                                NotificationType.INFO);
     }
 
-    [Command("kick", "Kicke den Spieler vom Server.", Permission.STAFF, new[] { "Spieler ID", "Grund" }, CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
+    [Command("kick",
+             "Kicke den Spieler vom Server.",
+             Permission.STAFF,
+             new[] { "Spieler ID", "Grund" },
+             CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
     public async void OnAdminKick(ServerPlayer player, string expectedPlayerId, string expectedReason)
     {
         if (!player.Exists)
@@ -3038,17 +3341,24 @@ public class Administration : ISingletonScript
             StaffAccountModelId = player.AccountModel.SocialClubId,
             CharacterModelId = target.CharacterModel.Id,
             UserRecordType = UserRecordType.AUTOMATIC,
-            Text = "Spieler wurde mit dem Grund '" + expectedReason + "' vom Server gekickt.",
+            Text = "Spieler wurde mit dem Grund '" + expectedReason +
+                   "' vom Server gekickt.",
             LoggedAt = DateTime.Now
         });
 
         await target.KickAsync($"Du wurdest von {player.AccountName} gekickt! Grund: {expectedReason}");
 
-        player.SendNotification($"Du hast den Spieler {target.AccountName} für den Grund: '{expectedReason}' gekickt.", NotificationType.INFO);
+        player.SendNotification($"Du hast den Spieler {target.AccountName} für den Grund: '{expectedReason}' gekickt.",
+                                NotificationType.INFO);
     }
 
-    [Command("timeban", "Banne den Spieler temporär vom Server.", Permission.STAFF, new[] { "Spieler ID", "Dauer in Stunden", "Grund" }, CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
-    public async void OnAdminTimeBan(ServerPlayer player, string expectedPlayerId, string expectedDuration, string expectedReason)
+    [Command("timeban",
+             "Banne den Spieler temporär vom Server.",
+             Permission.STAFF,
+             new[] { "Spieler ID", "Dauer in Stunden", "Grund" },
+             CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
+    public async void OnAdminTimeBan(ServerPlayer player, string expectedPlayerId, string expectedDuration,
+                                     string expectedReason)
     {
         if (!player.Exists)
         {
@@ -3085,7 +3395,8 @@ public class Administration : ISingletonScript
             StaffAccountModelId = player.AccountModel.SocialClubId,
             CharacterModelId = target.CharacterModel.Id,
             UserRecordType = UserRecordType.AUTOMATIC,
-            Text = "Spieler wurde mit dem Grund '" + expectedReason + "' für '" + hours + "' Stunden temporär vom Server ausgeschlossen.",
+            Text = "Spieler wurde mit dem Grund '" + expectedReason + "' für '" +
+                   hours + "' Stunden temporär vom Server ausgeschlossen.",
             LoggedAt = DateTime.Now
         });
 
@@ -3093,10 +3404,16 @@ public class Administration : ISingletonScript
                                $"Grund: {target.AccountModel.BannedReason}\n\n" +
                                $"Ablauf: {target.AccountModel.BannedUntil:HH:mm:ss dd.MM.yyyy}.");
 
-        player.SendNotification($"Du hast den Spieler {target.AccountName} für den Grund: '{expectedReason}' '{hours}' Stunde/n temporär ausgeschlossen.", NotificationType.INFO);
+        player.SendNotification(
+            $"Du hast den Spieler {target.AccountName} für den Grund: '{expectedReason}' '{hours}' Stunde/n temporär ausgeschlossen.",
+            NotificationType.INFO);
     }
 
-    [Command("ban", "Banne den Spieler permanent vom Server.", Permission.ADMIN, new[] { "Spieler ID", "Grund" }, CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
+    [Command("ban",
+             "Banne den Spieler permanent vom Server.",
+             Permission.ADMIN,
+             new[] { "Spieler ID", "Grund" },
+             CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
     public async void OnAdminBan(ServerPlayer player, string expectedPlayerId, string expectedReason)
     {
         if (!player.Exists)
@@ -3129,16 +3446,24 @@ public class Administration : ISingletonScript
             StaffAccountModelId = player.AccountModel.SocialClubId,
             CharacterModelId = target.CharacterModel.Id,
             UserRecordType = UserRecordType.AUTOMATIC,
-            Text = "Spieler wurde mit dem Grund '" + expectedReason + "' vom Server ausgeschlossen.",
+            Text = "Spieler wurde mit dem Grund '" + expectedReason +
+                   "' vom Server ausgeschlossen.",
             LoggedAt = DateTime.Now
         });
 
-        await target.KickAsync($"Du wurdest von unserer Community ausgeschlossen! Grund: {target.AccountModel.BannedReason}");
+        await target.KickAsync(
+            $"Du wurdest von unserer Community ausgeschlossen! Grund: {target.AccountModel.BannedReason}");
 
-        player.SendNotification($"Du hast den Spieler {target.AccountName} für den Grund: '{expectedReason}' permanent ausgeschlossen.", NotificationType.INFO);
+        player.SendNotification(
+            $"Du hast den Spieler {target.AccountName} für den Grund: '{expectedReason}' permanent ausgeschlossen.",
+            NotificationType.INFO);
     }
 
-    [Command("unban", "Entbanne den Spieler vom Server.", Permission.ADMIN, new[] { "Discord ID", "Grund" }, CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
+    [Command("unban",
+             "Entbanne den Spieler vom Server.",
+             Permission.ADMIN,
+             new[] { "Discord ID", "Grund" },
+             CommandArgs.GREEDY_BUT_WITH_ONE_FIXED_ARGUMENT)]
     public async void OnAdminUnban(ServerPlayer player, string expectedDiscordId, string expectedReason)
     {
         if (!player.Exists)
@@ -3154,7 +3479,8 @@ public class Administration : ISingletonScript
         var bannedAccount = await _accountService.Find(a => a.DiscordId == discordId);
         if (bannedAccount == null)
         {
-            player.SendNotification("Es konnte kein Account mit der Discord ID gefunden werden.", NotificationType.ERROR);
+            player.SendNotification("Es konnte kein Account mit der Discord ID gefunden werden.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -3174,7 +3500,8 @@ public class Administration : ISingletonScript
 
         await _accountService.Update(bannedAccount);
 
-        player.SendNotification($"Du hast den Spieler mit der Discord ID {bannedAccount.DiscordId} wieder entbannt.", NotificationType.INFO);
+        player.SendNotification($"Du hast den Spieler mit der Discord ID {bannedAccount.DiscordId} wieder entbannt.",
+                                NotificationType.INFO);
     }
 
     #endregion

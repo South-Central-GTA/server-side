@@ -26,7 +26,7 @@ public class CharacterSelectionModule
 {
     private readonly ILogger<CharacterSelectionModule> _logger;
     private readonly WorldLocationOptions _worldLocationOptions;
-    
+
     private readonly AccountService _accountService;
     private readonly CharacterService _characterService;
     private readonly DeliveryService _deliveryService;
@@ -53,7 +53,7 @@ public class CharacterSelectionModule
         CommandModule commandModule,
         BankModule bankModule,
         GroupModule groupModule,
-        VehicleLocatingModule vehicleLocatingModule, 
+        VehicleLocatingModule vehicleLocatingModule,
         PrisonModule prisonModule, PedSyncModule pedSyncModule)
     {
         _logger = logger;
@@ -78,7 +78,7 @@ public class CharacterSelectionModule
         {
             return;
         }
-        
+
         player.ClearData();
         player.ClearAllTimer();
 
@@ -127,7 +127,8 @@ public class CharacterSelectionModule
 
         if (character.AccountModelId != player.AccountModel.SocialClubId)
         {
-            _logger.LogError($"{player.AccountName} tries to play {character.Name} but the character ownership is wrong.");
+            _logger.LogError(
+                $"{player.AccountName} tries to play {character.Name} but the character ownership is wrong.");
             return;
         }
 
@@ -166,7 +167,7 @@ public class CharacterSelectionModule
                 {
                     return;
                 }
-                
+
                 player.SetWaypoint(new Position(house.PositionX, house.PositionY, house.PositionZ), 5, 1);
             }
 
@@ -174,14 +175,20 @@ public class CharacterSelectionModule
 
             await _deliveryService.Update(delivery);
 
-            player.SendNotification($"Der Lieferauftrag für '{delivery.OrderGroupModel.Name}' wurde gespeichert, das Ziel wurde auf der Karte markiert.", NotificationType.SUCCESS);
+            player.SendNotification(
+                $"Der Lieferauftrag für '{delivery.OrderGroupModel.Name}' wurde gespeichert, das Ziel wurde auf der Karte markiert.",
+                NotificationType.SUCCESS);
         }
 
         await _characterSpawnModule.Spawn(player,
-          new Position(player.CharacterModel.PositionX, player.CharacterModel.PositionY, player.CharacterModel.PositionZ),
-          new Rotation(player.CharacterModel.Roll, player.CharacterModel.Pitch, player.CharacterModel.Yaw),
-          player.CharacterModel.Dimension);
-        
+                                          new Position(player.CharacterModel.PositionX,
+                                                       player.CharacterModel.PositionY,
+                                                       player.CharacterModel.PositionZ),
+                                          new Rotation(player.CharacterModel.Roll,
+                                                       player.CharacterModel.Pitch,
+                                                       player.CharacterModel.Yaw),
+                                          player.CharacterModel.Dimension);
+
         // Check if player is in jail
         if (player.CharacterModel.JailedUntil.HasValue)
         {

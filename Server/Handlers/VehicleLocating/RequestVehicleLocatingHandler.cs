@@ -22,7 +22,7 @@ public class RequestVehicleLocatingHandler : ISingletonScript
         _vehicleCatalogService = vehicleCatalogService;
         _vehicleService = vehicleService;
         _groupService = groupService;
-        
+
         AltAsync.OnClient<ServerPlayer>("locating:requestapp", OnRequestApp);
     }
 
@@ -32,7 +32,7 @@ public class RequestVehicleLocatingHandler : ISingletonScript
         {
             return;
         }
-        
+
         var ownedVehicles = await _vehicleService.Where(v => v.CharacterModelId == player.CharacterModel.Id);
 
         var ownedGroups = await _groupService.GetByOwner(player.CharacterModel.Id);
@@ -50,10 +50,16 @@ public class RequestVehicleLocatingHandler : ISingletonScript
             {
                 continue;
             }
-            
-            vehicleDatas.Add(new VehicleData { Id = vehicle.Id, DisplayName = catalogVehicle.DisplayName, DisplayClass = catalogVehicle.DisplayClass, IsGroupVehicle = vehicle.GroupModelOwnerId.HasValue });
+
+            vehicleDatas.Add(new VehicleData
+            {
+                Id = vehicle.Id,
+                DisplayName = catalogVehicle.DisplayName,
+                DisplayClass = catalogVehicle.DisplayClass,
+                IsGroupVehicle = vehicle.GroupModelOwnerId.HasValue
+            });
         }
-        
+
         player.EmitGui("locating:setvehicles", vehicleDatas);
     }
 }

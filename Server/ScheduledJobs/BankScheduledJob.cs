@@ -5,16 +5,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Core.Configuration;
 using Server.Core.Extensions;
+using Server.Core.ScheduledJobs;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Modules;
 using Server.Modules.Bank;
 using Server.Modules.Phone;
 
-namespace Server.ScheduledJob;
+namespace Server.ScheduledJobs;
 
-public class BankScheduledJob
-    : ScheduledJob
+public class BankScheduledJob : ScheduledJob
 {
     private readonly BankAccountService _bankAccountService;
 

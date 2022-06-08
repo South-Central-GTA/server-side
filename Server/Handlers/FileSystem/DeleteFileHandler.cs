@@ -15,15 +15,14 @@ public class DeleteFileHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
     private readonly SyncFileModule _syncFileModule;
-    
+
     public DeleteFileHandler(
         FileService fileService,
-        
-        GroupModule groupModule, 
+        GroupModule groupModule,
         SyncFileModule syncFileModule)
     {
         _fileService = fileService;
-        
+
         _groupModule = groupModule;
         _syncFileModule = syncFileModule;
 
@@ -43,7 +42,9 @@ public class DeleteFileHandler : ISingletonScript
             return;
         }
 
-        if (!await _groupModule.HasPermission(player.CharacterModel.Id, file.DirectoryModel.GroupModelId, GroupPermission.MDC_OPERATOR))
+        if (!await _groupModule.HasPermission(player.CharacterModel.Id,
+                                              file.DirectoryModel.GroupModelId,
+                                              GroupPermission.MDC_OPERATOR))
         {
             return;
         }

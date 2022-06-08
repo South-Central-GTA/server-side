@@ -18,7 +18,7 @@ namespace Server.Handlers.LeaseCompany.Types;
 
 public class TattooStudioHandler : ISingletonScript
 {
-    private readonly CompanyOptions _companyOptions; 
+    private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
     private readonly CharacterService _characterService;
@@ -197,7 +197,8 @@ public class TattooStudioHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
+                                    NotificationType.ERROR);
             return;
         }
 

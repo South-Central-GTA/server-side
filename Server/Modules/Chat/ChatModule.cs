@@ -65,7 +65,8 @@ public class ChatModule
         });
     }
 
-    public void SendProxMessage(string name, float radius, ChatType type, string context, Position position, int dimension)
+    public void SendProxMessage(string name, float radius, ChatType type, string context, Position position,
+                                int dimension)
     {
         var afterName = GetChatAfterName(type);
         var beforeChat = GetBeforeChat(type);

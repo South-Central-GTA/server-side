@@ -9,11 +9,11 @@ namespace Server.Handlers.Prison;
 public class PrisonTimeHandler : ISingletonScript
 {
     private readonly PrisonModule _prisonModule;
-    
+
     public PrisonTimeHandler(PrisonModule prisonModule)
     {
         _prisonModule = prisonModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("prison:checktime", OnExecute);
     }
 
@@ -28,7 +28,7 @@ public class PrisonTimeHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (player.CharacterModel.JailedUntil.Value < DateTime.Now)
         {
             await _prisonModule.ClearPlayerFromPrison(player);

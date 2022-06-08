@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
@@ -48,7 +47,7 @@ public class InventoryHandler : ISingletonScript
         _itemCreationModule = itemCreationModule;
         _attachmentModule = attachmentModule;
 
-        AltAsync.OnClient<ServerPlayer>("inventory:close", OnCloseInventory);
+        AltAsync.OnClient<ServerPlayer>("inventory:requestclose", OnRequestCloseInventory);
         AltAsync.OnClient<ServerPlayer>("inventory:request", OnRequestInventory);
         AltAsync.OnClient<ServerPlayer, int, int>("inventory:swapitem", OnPlayerSwapItem);
         AltAsync.OnClient<ServerPlayer, int, int>("inventory:switchitem", OnPlayerSwitchItem);
@@ -58,14 +57,9 @@ public class InventoryHandler : ISingletonScript
         AltAsync.OnClient<ServerPlayer, int>("item:consume", OnConsumeItem);
     }
 
-    private async void OnCloseInventory(ServerPlayer player)
+    private async void OnRequestCloseInventory(ServerPlayer player)
     {
-        if (!player.Exists)
-        {
-            return;
-        }
-
-        player.DefaultInventories = new List<InventoryModel>();
+        _inventoryModule.CloseInventory(player);
     }
 
     private async void OnRequestInventory(ServerPlayer player)
@@ -85,13 +79,13 @@ public class InventoryHandler : ISingletonScript
         {
             return;
         }
-        
+
         var droppedItem = await _itemService.GetByKey(droppedItemId);
         if (droppedItem == null)
         {
             return;
         }
-        
+
         if (!draggingItem.IsBought || !droppedItem.IsBought)
         {
             player.SendNotification("Dies würde dein Charakter nicht tun.", NotificationType.ERROR);
@@ -104,8 +98,10 @@ public class InventoryHandler : ISingletonScript
         }
 
         // Check if we are trying to swap the backpack item into an backpack inventory.
-        if (draggingItem.CatalogItemModelId == ItemCatalogIds.CLOTHING_BACKPACK && droppedItem.InventoryModel.ItemClothModelId.HasValue
-            || droppedItem.CatalogItemModelId == ItemCatalogIds.CLOTHING_BACKPACK && draggingItem.InventoryModel.ItemClothModelId.HasValue)
+        if (draggingItem.CatalogItemModelId == ItemCatalogIds.CLOTHING_BACKPACK &&
+            droppedItem.InventoryModel.ItemClothModelId.HasValue
+            || droppedItem.CatalogItemModelId == ItemCatalogIds.CLOTHING_BACKPACK &&
+            draggingItem.InventoryModel.ItemClothModelId.HasValue)
         {
             player.SendNotification("Du kannst kein Rucksack in einen Rucksack packen.", NotificationType.ERROR);
             return;
@@ -138,7 +134,8 @@ public class InventoryHandler : ISingletonScript
                 }
 
                 (draggingItem.Slot, droppedItem.Slot) = (droppedItem.Slot, draggingItem.Slot);
-                (draggingItem.InventoryModelId, droppedItem.InventoryModelId) = (droppedItem.InventoryModelId, draggingItem.InventoryModelId);
+                (draggingItem.InventoryModelId, droppedItem.InventoryModelId) =
+                    (droppedItem.InventoryModelId, draggingItem.InventoryModelId);
 
                 await _itemService.Update(draggingItem);
             }
@@ -162,14 +159,14 @@ public class InventoryHandler : ISingletonScript
             player.SendNotification("Item konnte nicht gefunden werden.", NotificationType.ERROR);
             return;
         }
-        
+
         var inv = await _inventoryService.GetByKey(invId);
         if (inv == null)
         {
             player.SendNotification("Das ehemalige Inventar existiert nicht mehr.", NotificationType.ERROR);
             return;
         }
-        
+
         if (await _antiCheatModule.DetectSwitchItemHack(player, inv, item))
         {
             return;
@@ -185,7 +182,9 @@ public class InventoryHandler : ISingletonScript
         switch (result)
         {
             case CanCarryErrorType.LIMIT:
-                player.SendNotification($"In einem Inventar können maximal {item.CatalogItemModel.MaxLimit} Stück des Items '{item.CatalogItemModel.Name}' liegen.", NotificationType.ERROR);
+                player.SendNotification(
+                    $"In einem Inventar können maximal {item.CatalogItemModel.MaxLimit} Stück des Items '{item.CatalogItemModel.Name}' liegen.",
+                    NotificationType.ERROR);
                 return;
             case CanCarryErrorType.NO_SPACE:
                 player.SendNotification("Das Inventar hat nicht genug Platz.", NotificationType.ERROR);
@@ -259,14 +258,17 @@ public class InventoryHandler : ISingletonScript
 
         var freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id);
         await _itemService.Add(new ItemModel(splittedItem.CatalogItemModelId,
-                                        freeSlot,
-                                        splittedItem.CustomData,
-                                        "",
-                                        amount,
-                                        splittedItem.Condition,
-                                        splittedItem.IsBought,
-                                        splittedItem.IsStolen,
-                                        ItemState.NOT_EQUIPPED) { InventoryModelId = splittedItem.InventoryModelId });
+                                             freeSlot,
+                                             splittedItem.CustomData,
+                                             "",
+                                             amount,
+                                             splittedItem.Condition,
+                                             splittedItem.IsBought,
+                                             splittedItem.IsStolen,
+                                             ItemState.NOT_EQUIPPED)
+        {
+            InventoryModelId = splittedItem.InventoryModelId
+        });
 
         splittedItem.Amount -= amount;
 

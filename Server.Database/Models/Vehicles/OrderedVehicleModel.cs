@@ -17,7 +17,7 @@ public class OrderedVehicleModel
     public string OrderedBy { get; set; }
     public string CatalogVehicleModelId { get; set; }
     public CatalogVehicleModel? CatalogVehicleModel { get; set; }
-    
+
     public int GroupModelId { get; set; }
 
     public DateTime DeliverdAt { get; set; }

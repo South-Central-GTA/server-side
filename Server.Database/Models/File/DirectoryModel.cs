@@ -14,25 +14,24 @@ public class DirectoryModel
     public DirectoryModel()
     {
     }
-    
+
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
-    
+
     public int GroupModelId { get; set; }
 
     public GroupModel GroupModel { get; set; }
 
     public List<FileModel> Files { get; set; } = new();
-     
-    [MaxLength(50)] 
-    public string Title { get; set; }
-    
+
+    [MaxLength(50)] public string Title { get; set; }
+
     public int ReadGroupLevel { get; set; }
     public int WriteGroupLevel { get; set; }
 
     public string LastEditCharacterName { get; set; }
-    
+
     public int CreatorCharacterId { get; set; }
     public string CreatorCharacterName { get; set; }
 }

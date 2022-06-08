@@ -13,16 +13,16 @@ public class CloseCharacterCreatorHandler : ISingletonScript
     private readonly WorldLocationOptions _worldLocationOptions;
     private readonly CharacterCreationModule _characterCreationModule;
     private readonly CharacterSelectionModule _characterSelectionModule;
-    
+
     public CloseCharacterCreatorHandler(
         IOptions<WorldLocationOptions> worldLocationOptions,
-        CharacterCreationModule characterCreationModule, 
+        CharacterCreationModule characterCreationModule,
         CharacterSelectionModule characterSelectionModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
         _characterCreationModule = characterCreationModule;
         _characterSelectionModule = characterSelectionModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("charcreator:close", OnClose);
         AltAsync.OnClient<ServerPlayer>("charcreator:resetcamera", OnResetCamera);
     }
@@ -37,6 +37,7 @@ public class CloseCharacterCreatorHandler : ISingletonScript
         await _characterCreationModule.CloseAsync(player);
         await _characterSelectionModule.OpenAsync(player);
     }
+
     private async void OnResetCamera(ServerPlayer player)
     {
         if (!player.Exists)

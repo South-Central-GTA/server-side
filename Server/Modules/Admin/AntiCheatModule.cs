@@ -99,6 +99,11 @@ public class AntiCheatModule
             return false;
         }
 
+        if (player.OpenInventories.Any(i => i.InventoryId == inv.Id))
+        {
+            return false;
+        }
+
         return true;
     }
 

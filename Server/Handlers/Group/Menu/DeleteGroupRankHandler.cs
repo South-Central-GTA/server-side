@@ -46,7 +46,8 @@ public class DeleteGroupRankHandler : ISingletonScript
         var success = await _groupModule.DeleteRank(group, level);
         if (!success)
         {
-            player.SendNotification("Der Rang konnte nicht gelöscht werden, da er noch genutzt wird.", NotificationType.ERROR);
+            player.SendNotification("Der Rang konnte nicht gelöscht werden, da er noch genutzt wird.",
+                                    NotificationType.ERROR);
             return;
         }
 

@@ -14,7 +14,7 @@ public enum Permission
     HEAD_FACTION_MANAGEMENT = TESTER | STAFF | (1 << 3),
 
     EVENT_MANAGEMENT = TESTER | STAFF | (1 << 4),
-    HEAD_EVENT_MANAGEMENT = TESTER | STAFF | EVENT_MANAGEMENT |(1 << 5),
+    HEAD_EVENT_MANAGEMENT = TESTER | STAFF | EVENT_MANAGEMENT | (1 << 5),
 
     TEAM_MANAGEMENT = TESTER | STAFF | (1 << 6),
     HEAD_TEAM_MANAGEMENT = TESTER | STAFF | TEAM_MANAGEMENT | (1 << 7),
@@ -30,6 +30,7 @@ public enum Permission
     MOD = STAFF | (1 << 13),
     ADMIN = MOD | (1 << 14),
     DEV = ADMIN | (1 << 15),
+
     LEAD_AMIN = ADMIN |
                 HEAD_FACTION_MANAGEMENT |
                 HEAD_EVENT_MANAGEMENT |
@@ -37,7 +38,7 @@ public enum Permission
                 HEAD_ECONOMY_MANAGEMENT |
                 HEAD_LORE_AND_EVENT_MANAGEMENT |
                 MANAGE_ANIMATIONS | (1 << 16),
-    
+
     FOUNDER = (1 << 17),
 
     OWNER = LEAD_AMIN |

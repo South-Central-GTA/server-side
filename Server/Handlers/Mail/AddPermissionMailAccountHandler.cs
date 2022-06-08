@@ -27,7 +27,8 @@ public class AddPermissionMailAccount : ISingletonScript
         AltAsync.OnClient<ServerPlayer, string, int, string>("mailing:addpermission", OnAddPermission);
     }
 
-    private async void OnAddPermission(ServerPlayer player, string mailAddress, int characterId, string expectedPermission)
+    private async void OnAddPermission(ServerPlayer player, string mailAddress, int characterId,
+                                       string expectedPermission)
     {
         if (!player.Exists)
         {

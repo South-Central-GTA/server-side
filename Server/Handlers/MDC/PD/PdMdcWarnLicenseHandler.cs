@@ -15,20 +15,19 @@ public class PdMdcWarnLicenseHandler : ISingletonScript
 {
     private readonly PersonalLicenseService _personalLicenseService;
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly PoliceMdcModule _policeMdcModule;
     private readonly CriminalRecordModule _criminalRecordModule;
- 
+
     public PdMdcWarnLicenseHandler(
         PersonalLicenseService personalLicenseService,
         GroupFactionService groupFactionService,
-        
-        PoliceMdcModule policeMdcModule, 
+        PoliceMdcModule policeMdcModule,
         CriminalRecordModule criminalRecordModule)
     {
         _personalLicenseService = personalLicenseService;
         _groupFactionService = groupFactionService;
-        
+
         _policeMdcModule = policeMdcModule;
         _criminalRecordModule = criminalRecordModule;
 
@@ -47,7 +46,7 @@ public class PdMdcWarnLicenseHandler : ISingletonScript
         {
             return;
         }
-        
+
         var personalLicense = await _personalLicenseService.GetByKey(id);
         if (personalLicense == null)
         {
@@ -68,20 +67,24 @@ public class PdMdcWarnLicenseHandler : ISingletonScript
         var targetPlayer = Alt.GetAllPlayers().FindPlayerByCharacterId(personalLicense.CharacterModelId);
         if (targetPlayer != null)
         {
-            targetPlayer.CharacterModel.Licenses = await _personalLicenseService.Where(l => l.CharacterModelId == personalLicense.CharacterModelId);
-            targetPlayer.SendNotification($"Deinem Charakter wurde eine Verwarnung {personalLicense.Warnings}/3 ausgesprochen für den {GetLicenseName(personalLicense.Type)}.", NotificationType.WARNING);
+            targetPlayer.CharacterModel.Licenses =
+                await _personalLicenseService.Where(l => l.CharacterModelId == personalLicense.CharacterModelId);
+            targetPlayer.SendNotification(
+                $"Deinem Charakter wurde eine Verwarnung {personalLicense.Warnings}/3 ausgesprochen für den {GetLicenseName(personalLicense.Type)}.",
+                NotificationType.WARNING);
             if (personalLicense.Warnings >= 3)
             {
-                targetPlayer.SendNotification($"Dein Charakter wurde der {GetLicenseName(personalLicense.Type)} von {player.CharacterModel.Name} entzogen.", NotificationType.ERROR);
+                targetPlayer.SendNotification(
+                    $"Dein Charakter wurde der {GetLicenseName(personalLicense.Type)} von {player.CharacterModel.Name} entzogen.",
+                    NotificationType.ERROR);
             }
         }
-        
+
         if (personalLicense.Warnings < 3)
         {
             await _criminalRecordModule.Add(personalLicense.CharacterModelId,
                                             player.CharacterModel.Name,
                                             $"Hat eine Verwarnung {personalLicense.Warnings}/3 für den {GetLicenseName(personalLicense.Type)} erhalten.");
-
         }
         else
         {
@@ -89,7 +92,7 @@ public class PdMdcWarnLicenseHandler : ISingletonScript
                                             player.CharacterModel.Name,
                                             $"Der {GetLicenseName(personalLicense.Type)} wurde nach 3/3 Verwarnungen automatisch entzogen.");
         }
-        
+
         await _policeMdcModule.OpenCharacterRecord(player, personalLicense.CharacterModelId.ToString());
     }
 

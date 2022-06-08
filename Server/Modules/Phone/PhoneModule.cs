@@ -80,7 +80,6 @@ public class PhoneModule : ISingletonScript
     }
 
     /// Lost connection boolean is true for example when the player dies.
-
     public async Task HandleDropPhoneItem(ServerPlayer player, ItemPhoneModel phoneModel)
     {
         if (!player.Exists)
@@ -130,7 +129,8 @@ public class PhoneModule : ISingletonScript
         await UpdatePhone(phone);
     }
 
-    public async Task TryToSendMessage(ItemPhoneModel senderPhoneModel, string targetNumber, int ownerId, string context)
+    public async Task TryToSendMessage(ItemPhoneModel senderPhoneModel, string targetNumber, int ownerId,
+                                       string context)
     {
         var targetPhone = await GetByNumber(targetNumber);
         if (targetPhone == null)
@@ -155,7 +155,8 @@ public class PhoneModule : ISingletonScript
         else
         {
             // Check if the sender phone number is in the contacts, if take the name, if not just take the number.
-            var senderInContacts = targetPhone.Contacts.FirstOrDefault(c => c.PhoneNumber == senderPhoneModel.PhoneNumber);
+            var senderInContacts =
+                targetPhone.Contacts.FirstOrDefault(c => c.PhoneNumber == senderPhoneModel.PhoneNumber);
             var displayedName = senderInContacts != null ? senderInContacts.Name : senderPhoneModel.PhoneNumber;
 
             var messages = new List<PhoneMessageModel>
@@ -191,10 +192,13 @@ public class PhoneModule : ISingletonScript
         var contactPlayer = Alt.GetAllPlayers().FindPlayerByCharacterId(targetPhone.CurrentOwnerId.Value);
         if (contactPlayer != null)
         {
-            var contactPhoneItem = contactPlayer.CharacterModel.InventoryModel.Items.FirstOrDefault(i => i.CustomData == targetPhone.Id.ToString()
-                                                                                               && i.CatalogItemModelId == ItemCatalogIds.PHONE);
+            var contactPhoneItem = contactPlayer.CharacterModel.InventoryModel.Items.FirstOrDefault(
+                i => i.CustomData == targetPhone.Id.ToString()
+                     && i.CatalogItemModelId == ItemCatalogIds.PHONE);
 
-            var handyName = contactPhoneItem?.Note != null ? $"Du hast auf dem Handy ({contactPhoneItem.Note})" : "Du hast auf deinem Handy";
+            var handyName = contactPhoneItem?.Note != null
+                ? $"Du hast auf dem Handy ({contactPhoneItem.Note})"
+                : "Du hast auf deinem Handy";
 
             contactPlayer.SendNotification($"{handyName} eine SMS bekommen.", NotificationType.INFO);
             contactPlayer.EmitLocked("phone:update", targetPhone);
@@ -204,10 +208,7 @@ public class PhoneModule : ISingletonScript
     public async Task SetActive(ServerPlayer player, int phoneId)
     {
         var phones = await Where(p => p.CurrentOwnerId == player.CharacterModel.Id || p.Id == phoneId);
-        phones.ForEach(p =>
-        {
-            p.Active = false;
-        });
+        phones.ForEach(p => { p.Active = false; });
 
         var phone = phones.Find(p => p.Id == phoneId);
         if (phone != null)
@@ -244,7 +245,8 @@ public class PhoneModule : ISingletonScript
             if (player != null)
             {
                 var handyName = phoneItem.Note != null ? $"Das Handy ({phoneItem.Note})" : "Das Handy";
-                player.SendNotification($"{handyName} deines Charakters hat eine Benachrichtigung erhalten.", NotificationType.INFO);
+                player.SendNotification($"{handyName} deines Charakters hat eine Benachrichtigung erhalten.",
+                                        NotificationType.INFO);
 
                 await UpdateUi(player, phoneId);
             }

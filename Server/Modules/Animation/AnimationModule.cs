@@ -28,7 +28,7 @@ public class AnimationModule : ISingletonScript
         {
             return;
         }
-        
+
         player.EmitLocked("animation:clear");
     }
 }

@@ -21,7 +21,7 @@ public class ConsumeableItemModule
             case ItemCatalogIds.SWEETS:
             case ItemCatalogIds.CANDY:
             case ItemCatalogIds.DRUG_MARIJUANA:
-            case ItemCatalogIds.DRUG_COCAINE: 
+            case ItemCatalogIds.DRUG_COCAINE:
             case ItemCatalogIds.DRUG_MDMA:
             case ItemCatalogIds.DRUG_XANAX:
             case ItemCatalogIds.DRUG_CODEINE:

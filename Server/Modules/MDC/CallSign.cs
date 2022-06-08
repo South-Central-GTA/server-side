@@ -16,7 +16,7 @@ public class CallSign
     public Dictionary<string, List<CharacterModel>> CallSigns { get; } = new();
 
     private readonly GroupFactionService _groupFactionService;
-    
+
     public CallSign(GroupFactionService groupFactionService)
     {
         _groupFactionService = groupFactionService;
@@ -32,14 +32,14 @@ public class CallSign
         {
             CallSigns.Add(callSign, new List<CharacterModel>() { player.CharacterModel });
         }
-        
+
         await UpdateUi(player);
     }
 
     public async Task RemoveCallSign(ServerPlayer player)
     {
         var key = string.Empty;
-        
+
         foreach (var callSign in CallSigns)
         {
             foreach (var character in callSign.Value)
@@ -57,7 +57,7 @@ public class CallSign
         }
 
         CallSigns.TryGetValue(key, out var characters);
-        
+
         characters?.RemoveAll(c => c.Id == player.CharacterModel.Id);
         if (characters?.Count == 0)
         {
@@ -66,8 +66,8 @@ public class CallSign
         else
         {
             CallSigns[key] = characters;
-        }        
-        
+        }
+
         await UpdateUi(player);
     }
 
@@ -76,7 +76,7 @@ public class CallSign
         CallSigns.Remove(callSign);
         await UpdateUi(player);
     }
-    
+
     public List<CallSignData> GetCallSigns()
     {
         return CallSigns.Select(callSign => new CallSignData()
@@ -103,12 +103,14 @@ public class CallSign
         {
             return;
         }
-        
+
         foreach (var target in factionGroup.Members
-                                           .Select(groupMember => Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                                           .Select(groupMember =>
+                                                       Alt.GetAllPlayers()
+                                                          .FindPlayerByCharacterId(groupMember.CharacterModelId))
                                            .Where(serverPlayer => serverPlayer != null))
         {
-            target.EmitGui("mdc:updatecallsigns",GetCallSigns(), HasCallSign(target.CharacterModel)); 
+            target.EmitGui("mdc:updatecallsigns", GetCallSigns(), HasCallSign(target.CharacterModel));
         }
     }
 }

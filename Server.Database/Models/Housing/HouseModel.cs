@@ -19,7 +19,8 @@ public class HouseModel
     {
     }
 
-    public HouseModel(float x, float y, float z, float roll, float pitch, float yaw, int interiorId, int houseNumber, int price, string subName, int streetDirection)
+    public HouseModel(float x, float y, float z, float roll, float pitch, float yaw, int interiorId, int houseNumber,
+                      int price, string subName, int streetDirection)
     {
         PositionX = x;
         PositionY = y;
@@ -67,7 +68,7 @@ public class HouseModel
 
     public int? GroupModelId { get; set; }
     public GroupModel? GroupModel { get; set; }
-    
+
     public InventoryModel? Inventory { get; set; }
 
     public HouseType HouseType { get; set; }
@@ -78,7 +79,7 @@ public class HouseModel
 
     public int? InteriorId { get; set; }
 
-    
+
     public bool Rentable { get; set; }
     public bool BlockedOwnership { get; set; }
     public int? RentBankAccountId { get; set; }
@@ -87,11 +88,9 @@ public class HouseModel
     public List<int> Keys { get; set; } = new();
     public List<DoorModel> Doors { get; set; } = new();
 
-    [NotMapped] 
-    public bool HasOwner => CharacterModelId.HasValue || GroupModelId.HasValue;
-    
-    [NotMapped] 
-    public bool HasNoOwner => !CharacterModelId.HasValue && !GroupModelId.HasValue;
+    [NotMapped] public bool HasOwner => CharacterModelId.HasValue || GroupModelId.HasValue;
+
+    [NotMapped] public bool HasNoOwner => !CharacterModelId.HasValue && !GroupModelId.HasValue;
 
     public virtual void OnWrite(IMValueWriter writer)
     {
@@ -147,16 +146,16 @@ public class HouseModel
 
         writer.Name("positionZ");
         writer.Value(PositionZ);
-        
+
         writer.Name("rentable");
         writer.Value(Rentable);
-        
+
         writer.Name("blockedOwnership");
         writer.Value(BlockedOwnership);
-        
+
         writer.Name("keyItemIds");
         writer.Value(Keys.Count != 0 ? string.Join(", ", Keys.ToArray()) : "Keine Schlüssel");
-        
+
         writer.Name("doors");
 
         writer.BeginArray();
@@ -182,10 +181,10 @@ public class HouseModel
 
             writer.Name("positionZ");
             writer.Value(door.PositionZ);
-            
+
             writer.EndObject();
         }
-        
+
         writer.EndArray();
 
         writer.EndObject();

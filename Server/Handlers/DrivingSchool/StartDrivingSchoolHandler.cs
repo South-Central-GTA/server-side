@@ -46,10 +46,14 @@ public class StartDrivingSchoolHandler : ISingletonScript
             return;
         }
 
-        var drivingSchoolData = _worldLocationOptions.DrivingSchools.Find(g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
+        var drivingSchoolData =
+            _worldLocationOptions.DrivingSchools.Find(
+                g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
         if (drivingSchoolData == null)
         {
-            player.SendNotification("Es befindet sich keine Fahrschule in der Nähe deines Charakters die Prüfung konnte nicht begonnen werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Es befindet sich keine Fahrschule in der Nähe deines Charakters die Prüfung konnte nicht begonnen werden.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -69,7 +73,8 @@ public class StartDrivingSchoolHandler : ISingletonScript
                                                                         drivingSchoolData.StartPointY,
                                                                         drivingSchoolData.StartPointZ)) <= 2) != null)
         {
-            player.SendNotification("Die Prüfung konnte nicht begonnen werden, da der Parkplatz besetzt ist.", NotificationType.ERROR);
+            player.SendNotification("Die Prüfung konnte nicht begonnen werden, da der Parkplatz besetzt ist.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -81,18 +86,23 @@ public class StartDrivingSchoolHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.", NotificationType.ERROR);
+            player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
+                                    NotificationType.ERROR);
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount, drivingSchoolData.DrivingLicensePrice, false, "Führerscheinprüfung");
+        var success = await _bankModule.Withdraw(bankAccount,
+                                                 drivingSchoolData.DrivingLicensePrice,
+                                                 false,
+                                                 "Führerscheinprüfung");
         if (success)
         {
             await _drivingSchoolModule.SetPlayerInExam(drivingSchoolData, player);
         }
         else
         {
-            player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für die Prüfung.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für die Prüfung.",
+                                    NotificationType.ERROR);
         }
     }
 }

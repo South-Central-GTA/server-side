@@ -5,17 +5,16 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Core.Configuration;
 using Server.Core.Extensions;
+using Server.Core.ScheduledJobs;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Modules;
 using Server.Modules.Group;
 using Server.Modules.Mail;
 using Server.Modules.Phone;
 
-namespace Server.ScheduledJob;
+namespace Server.ScheduledJobs;
 
-public class CompanyScheduledJob
-    : ScheduledJob
+public class CompanyScheduledJob : ScheduledJob
 {
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;

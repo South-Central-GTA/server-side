@@ -10,21 +10,21 @@ namespace Server.Handlers.CharacterCreator;
 public class CharacterCreatorHouseHandler : ISingletonScript
 {
     private readonly CharacterCreatorOptions _characterCreatorOptions;
-    
+
     private readonly HouseModule _houseModule;
-    
+
     public CharacterCreatorHouseHandler(
-        IOptions<CharacterCreatorOptions> characterCreatorOptions, 
+        IOptions<CharacterCreatorOptions> characterCreatorOptions,
         HouseModule houseModule)
     {
         _characterCreatorOptions = characterCreatorOptions.Value;
         _houseModule = houseModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("charcreatorhouse:open", OnOpenHouseMenu);
         AltAsync.OnClient<ServerPlayer, int>("houseselector:tryselect", OnTrySelectHouse);
         AltAsync.OnClient<ServerPlayer>("houseselector:unselect", OnUnselectHouse);
     }
-    
+
     private async void OnOpenHouseMenu(ServerPlayer player)
     {
         player.EmitLocked("houseselector:open", _characterCreatorOptions.MaxSouthCentralPointsHouses);

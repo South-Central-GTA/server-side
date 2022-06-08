@@ -11,18 +11,17 @@ namespace Server.Handlers.MDC.PD;
 public class PdMdcCreateRecordHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly CriminalRecordModule _criminalRecordModule;
     private readonly PoliceMdcModule _policeMdcModule;
- 
+
     public PdMdcCreateRecordHandler(
         GroupFactionService groupFactionService,
-
         CriminalRecordModule criminalRecordModule,
-        PoliceMdcModule policeMdcModule) 
+        PoliceMdcModule policeMdcModule)
     {
         _groupFactionService = groupFactionService;
-        
+
         _criminalRecordModule = criminalRecordModule;
         _policeMdcModule = policeMdcModule;
 
@@ -43,7 +42,7 @@ public class PdMdcCreateRecordHandler : ISingletonScript
         }
 
         await _criminalRecordModule.Add(characterId, player.CharacterModel.Name, input);
-        
+
         await _policeMdcModule.OpenCharacterRecord(player, characterId.ToString());
     }
 }

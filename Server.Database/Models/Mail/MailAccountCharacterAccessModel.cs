@@ -19,6 +19,7 @@ public class MailAccountCharacterAccessModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int CharacterModelId { get; set; }
+
     public CharacterModel CharacterModel { get; set; }
 
     public MailingPermission Permission { get; set; }

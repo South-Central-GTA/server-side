@@ -22,17 +22,16 @@ public class BuyLicenseCompanyHandler : ISingletonScript
     private readonly BankAccountService _bankAccountService;
     private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     private readonly BankModule _bankModule;
     private readonly GroupModule _groupModule;
-    private readonly PhoneModule _phoneModule;  
+    private readonly PhoneModule _phoneModule;
 
     public BuyLicenseCompanyHandler(
         IOptions<CompanyOptions> companyOptions,
         GroupService groupService,
         BankAccountService bankAccountService,
         RegistrationOfficeService registrationOfficeService,
-        
         GroupModule groupModule,
         PhoneModule phoneModule,
         BankModule bankModule)
@@ -58,19 +57,20 @@ public class BuyLicenseCompanyHandler : ISingletonScript
         {
             return;
         }
-        
+
         var companyGroup = (CompanyGroupModel)group;
 
         if (!await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.BUY_LICENSES))
         {
             return;
         }
-        
+
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
 
         if (companyGroup.PurchasedLicenses + 1 > _companyOptions.MaxLicenses)
@@ -90,7 +90,8 @@ public class BuyLicenseCompanyHandler : ISingletonScript
 
         var bankAccount = await _bankAccountService.Find(ba =>
                                                              ba.Type == OwnableAccountType.GROUP
-                                                             && ba.GroupRankAccess.Any(gra => gra.GroupModelId == companyGroup.Id));
+                                                             && ba.GroupRankAccess.Any(
+                                                                 gra => gra.GroupModelId == companyGroup.Id));
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {

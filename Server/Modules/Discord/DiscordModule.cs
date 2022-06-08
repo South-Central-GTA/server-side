@@ -34,7 +34,26 @@ public class DiscordModule : ISingletonScript
 
     private DiscordSocketClient _client;
 
-    private readonly ulong[] _notLoggedChannels = { 653892719562850327, 838485945640157215, 797060947503087636, 837621889866137620, 767725204252131358, 834439331262234685, 835938380591529984, 837607641302695936, 833319354023804959, 831430838532702208, 849300632715919381, 684018624167542814, 568457139622903820, 826443913689563186, 915224578698125332, 831432353649000488, 932394258034487416 };
+    private readonly ulong[] _notLoggedChannels =
+    {
+        653892719562850327,
+        838485945640157215,
+        797060947503087636,
+        837621889866137620,
+        767725204252131358,
+        834439331262234685,
+        835938380591529984,
+        837607641302695936,
+        833319354023804959,
+        831430838532702208,
+        849300632715919381,
+        684018624167542814,
+        568457139622903820,
+        826443913689563186,
+        915224578698125332,
+        831432353649000488,
+        932394258034487416
+    };
 
     private SocketGuild _serverGuild;
 
@@ -42,8 +61,8 @@ public class DiscordModule : ISingletonScript
         ILogger<DiscordModule> logger,
         IOptions<DiscordOptions> discordOptions,
         CommandModule commandModule,
-        AccountService accountService, 
-        IDiscordApi discordApi, 
+        AccountService accountService,
+        IDiscordApi discordApi,
         Serializer serializer)
     {
         _logger = logger;
@@ -234,7 +253,8 @@ public class DiscordModule : ISingletonScript
         _serverGuild = server;
     }
 
-    private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel socketMessageChannel, SocketReaction reaction)
+    private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> message,
+                                       ISocketMessageChannel socketMessageChannel, SocketReaction reaction)
     {
         if (message.Id == _discordOptions.WecomeMessageId && reaction.Emote.Name == "✅")
         {
@@ -246,7 +266,8 @@ public class DiscordModule : ISingletonScript
         }
     }
 
-    private async Task OnReactionRemoved(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel socketMessageChannel,
+    private async Task OnReactionRemoved(Cacheable<IUserMessage, ulong> message,
+                                         ISocketMessageChannel socketMessageChannel,
                                          SocketReaction reaction)
     {
         if (message.Id == _discordOptions.WecomeMessageId && reaction.Emote.Name == "✅")
@@ -319,19 +340,21 @@ public class DiscordModule : ISingletonScript
                     {
                         x.Embed = embedBuilder.WithColor(Color.LightGrey)
                                               .WithTitle("Herzlich Willkommen auf South Central")
-                                              .WithDescription("Wir sind ein deutscher chatbasierter Rollenspiel Server in Grand Theft Auto:V, und nutzen die Multiplayer Modifikation alt:V.\n\n" +
-                                                               "Solltest du mit uns quatschen wollen, besuche uns auf unserem Teamspeak³ Server: ts.sc-rp.de - ansonsten findest du hier im Discord alle nötigen Informationen.\n\n" +
-                                                               "1. Wir spielen zwar in einem recht rauen Stadtbild jedoch verhalten wir uns im Discord nicht so, behandle andere so, wie du von ihnen behandelt werden willst.\n" +
-                                                               "2. Jeglicher Inhalt von pornografischen, beleidigenden, rassistischen, extremistischen, anfeindenden, anstößigen u.o. diskriminierenden Medien, Themen u.o. Beiträgen ist auf allen Plattformen verboten.\n" +
-                                                               "3. Das erwähnen oder werben für andere Projekte jeglicher Art ist ohne ausdrücklicher Erlaubnis eines Team Mitgliedes verboten. Ausnahme hier ist der Discord Status.\n" +
-                                                               "4. Grand Theft Auto: V ist in Deutschland ab dem achtzehnten (18) Lebensjahr erhältlich wir empfehlen dieses Alter für unsere Community.\n" +
-                                                               "   Solltet ihr nicht laut deutschem Gesetz Volljährig sein und dennoch hier spielen, übernehmen wir keine Verantwortung oder gar Haftung.\n" +
-                                                               "5. Achte auf deinen Umgangston, egal auf welcher Plattform von uns.\n" +
-                                                               "6. Auf dem Discord ist nur Deutsch als Sprache erlaubt.\n" +
-                                                               "7. Auf all unseren Plattformen ist es untersagt mit einem VPN / Proxy sich zu verbinden.\n" +
-                                                               "8. Auf all unseren Plattformen beziehen wir uns auf §§ 858, 903, 1004 BGB in Anwendung des Virtuellen Hausrechtes.\n" +
-                                                               "9. Shitposts ohne jeglichen sinnvollen Inhalt welche zum trollen, triggern oder denunzieren von anderen Mitgliedern dienen, sind verboten.\n\n(Zuletzt geupdated 16.05.2021 22:26)")
-                                              .WithFooter("*Reagiere auf diesen Post mit dem ✅ um unsere allgemeinen Regeln zu akzeptieren und aktiviert zu werden.*")
+                                              .WithDescription(
+                                                  "Wir sind ein deutscher chatbasierter Rollenspiel Server in Grand Theft Auto:V, und nutzen die Multiplayer Modifikation alt:V.\n\n" +
+                                                  "Solltest du mit uns quatschen wollen, besuche uns auf unserem Teamspeak³ Server: ts.sc-rp.de - ansonsten findest du hier im Discord alle nötigen Informationen.\n\n" +
+                                                  "1. Wir spielen zwar in einem recht rauen Stadtbild jedoch verhalten wir uns im Discord nicht so, behandle andere so, wie du von ihnen behandelt werden willst.\n" +
+                                                  "2. Jeglicher Inhalt von pornografischen, beleidigenden, rassistischen, extremistischen, anfeindenden, anstößigen u.o. diskriminierenden Medien, Themen u.o. Beiträgen ist auf allen Plattformen verboten.\n" +
+                                                  "3. Das erwähnen oder werben für andere Projekte jeglicher Art ist ohne ausdrücklicher Erlaubnis eines Team Mitgliedes verboten. Ausnahme hier ist der Discord Status.\n" +
+                                                  "4. Grand Theft Auto: V ist in Deutschland ab dem achtzehnten (18) Lebensjahr erhältlich wir empfehlen dieses Alter für unsere Community.\n" +
+                                                  "   Solltet ihr nicht laut deutschem Gesetz Volljährig sein und dennoch hier spielen, übernehmen wir keine Verantwortung oder gar Haftung.\n" +
+                                                  "5. Achte auf deinen Umgangston, egal auf welcher Plattform von uns.\n" +
+                                                  "6. Auf dem Discord ist nur Deutsch als Sprache erlaubt.\n" +
+                                                  "7. Auf all unseren Plattformen ist es untersagt mit einem VPN / Proxy sich zu verbinden.\n" +
+                                                  "8. Auf all unseren Plattformen beziehen wir uns auf §§ 858, 903, 1004 BGB in Anwendung des Virtuellen Hausrechtes.\n" +
+                                                  "9. Shitposts ohne jeglichen sinnvollen Inhalt welche zum trollen, triggern oder denunzieren von anderen Mitgliedern dienen, sind verboten.\n\n(Zuletzt geupdated 16.05.2021 22:26)")
+                                              .WithFooter(
+                                                  "*Reagiere auf diesen Post mit dem ✅ um unsere allgemeinen Regeln zu akzeptieren und aktiviert zu werden.*")
                                               .WithImageUrl("https://images.sc-rp.de/logo.png")
                                               .Build();
                     });
@@ -404,7 +427,7 @@ public class DiscordModule : ISingletonScript
         {
             throw new NullReferenceException();
         }
-        
+
         return _serializer.Deserialize<DiscordUserDto>(userResponseJson.Content);
     }
 }

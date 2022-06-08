@@ -11,7 +11,7 @@ public class StopDrivingSchoolHandler : ISingletonScript
 {
     private readonly DrivingSchoolModule _drivingSchoolModule;
 
-    public StopDrivingSchoolHandler(DrivingSchoolModule drivingSchoolModule) 
+    public StopDrivingSchoolHandler(DrivingSchoolModule drivingSchoolModule)
     {
         _drivingSchoolModule = drivingSchoolModule;
 

@@ -39,21 +39,21 @@ public class PoliceMdcModule
     private readonly MailAccountService _mailAccountService;
     private readonly RegistrationOfficeService _registrationOfficeService;
     private readonly PoliceTicketService _policeTicketService;
-    
+
     public PoliceMdcModule(
-        GroupFactionService groupFactionService, 
+        GroupFactionService groupFactionService,
         EmergencyCallService emergencyCallService,
-        CriminalRecordService criminalRecordService, 
+        CriminalRecordService criminalRecordService,
         MdcNoteService mdcNoteService,
-        CharacterService characterService, 
-        VehicleService vehicleService, 
+        CharacterService characterService,
+        VehicleService vehicleService,
         VehicleCatalogService vehicleCatalogService,
-        HouseService houseService, 
-        BankAccountService bankAccountService, 
-        ItemPhoneService itemPhoneService, 
-        ItemWeaponService itemWeaponService, 
-        MailAccountService mailAccountService, 
-        RegistrationOfficeService registrationOfficeService, 
+        HouseService houseService,
+        BankAccountService bankAccountService,
+        ItemPhoneService itemPhoneService,
+        ItemWeaponService itemWeaponService,
+        MailAccountService mailAccountService,
+        RegistrationOfficeService registrationOfficeService,
         PoliceTicketService policeTicketService)
     {
         CallSign = new CallSign(groupFactionService);
@@ -86,12 +86,14 @@ public class PoliceMdcModule
         {
             return;
         }
-        
+
         foreach (var target in factionGroup.Members
-                                           .Select(groupMember => Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                                           .Select(groupMember =>
+                                                       Alt.GetAllPlayers()
+                                                          .FindPlayerByCharacterId(groupMember.CharacterModelId))
                                            .Where(serverPlayer => serverPlayer != null))
         {
-            target.EmitGui("policemdc:updateemergencycalls", await GetEmergencyCalls()); 
+            target.EmitGui("policemdc:updateemergencycalls", await GetEmergencyCalls());
         }
     }
 
@@ -106,9 +108,10 @@ public class PoliceMdcModule
         var isRegistered = await _registrationOfficeService.IsRegistered(character.Id);
 
         var records = await _criminalRecordService.Where(r => r.CharacterModelId == character.Id);
-        var notes = await _mdcNoteService.Where(r => r.TargetModelId == targetCharacterId && r.Type == MdcSearchType.NAME);
+        var notes = await _mdcNoteService.Where(r => r.TargetModelId == targetCharacterId &&
+                                                     r.Type == MdcSearchType.NAME);
 
-       
+
         var vehicles = await _vehicleService.Where(v => v.CharacterModelId == character.Id);
         var vehicleDatas = new List<VehicleData>();
 
@@ -121,11 +124,11 @@ public class PoliceMdcModule
                 {
                     continue;
                 }
-                
+
                 vehicleDatas.Add(new VehicleData
                 {
-                    Id = vehicle.Id, 
-                    DisplayName = catalogVehicle.DisplayName, 
+                    Id = vehicle.Id,
+                    DisplayName = catalogVehicle.DisplayName,
                     DisplayClass = catalogVehicle.DisplayClass,
                     NumberPlateText = vehicle.NumberplateText
                 });
@@ -136,24 +139,33 @@ public class PoliceMdcModule
         var houses = isRegistered
             ? await _houseService.Where(h => h.CharacterModelId == character.Id)
             : new List<HouseModel>();
-        
-        var bankAccounts = isRegistered 
-            ? await _bankAccountService.GetByCharacter(character.Id) 
+
+        var bankAccounts = isRegistered
+            ? await _bankAccountService.GetByCharacter(character.Id)
             : new List<BankAccountModel>();
-        
+
         var phoneModels = await _itemPhoneService.Where(p => p.InitialOwnerId == character.Id);
-        var phoneNumbers = isRegistered 
+        var phoneNumbers = isRegistered
             ? phoneModels.Select(p => p.PhoneNumber).ToList()
             : new List<string>();
 
         var tickets = await _policeTicketService.Where(pt => pt.TargetCharacterId == character.Id);
-        
-        player.EmitLocked("policemdc:opencharacterrecord", character, records, tickets, notes, vehicleDatas, houses, bankAccounts, phoneNumbers);
+
+        player.EmitLocked("policemdc:opencharacterrecord",
+                          character,
+                          records,
+                          tickets,
+                          notes,
+                          vehicleDatas,
+                          houses,
+                          bankAccounts,
+                          phoneNumbers);
     }
 
     public async Task OpenPhoneRecord(ServerPlayer player, string targetPhoneId)
-    {        
-        var nodes = await _mdcNoteService.Where(r => r.TargetModelId == targetPhoneId && r.Type == MdcSearchType.NUMBER);
+    {
+        var nodes = await _mdcNoteService.Where(r => r.TargetModelId == targetPhoneId &&
+                                                     r.Type == MdcSearchType.NUMBER);
         var phone = await _itemPhoneService.GetByKey(int.Parse(targetPhoneId));
         if (phone == null)
         {
@@ -166,25 +178,26 @@ public class PoliceMdcModule
         {
             ownerCharacterName = ownerCharacter.Name;
         }
-        
+
         player.EmitGui("policemdc:openphonerecord", phone.Id, phone.PhoneNumber, ownerCharacterName, nodes);
     }
 
     public async Task OpenVehicleRecord(ServerPlayer player, string targetVehicleId)
     {
-        var nodes = await _mdcNoteService.Where(r => r.TargetModelId == targetVehicleId && r.Type == MdcSearchType.VEHICLE);
+        var nodes = await _mdcNoteService.Where(r => r.TargetModelId == targetVehicleId &&
+                                                     r.Type == MdcSearchType.VEHICLE);
         var vehicle = await _vehicleService.GetByKey(int.Parse(targetVehicleId));
         if (vehicle == null)
         {
             return;
         }
-        
+
         var catalogVehicle = await _vehicleCatalogService.GetByKey(vehicle.Model.ToLower());
         if (catalogVehicle == null)
         {
             return;
         }
-        
+
         var ownerName = string.Empty;
         if (vehicle.CharacterModelId.HasValue && vehicle.CharacterModel != null)
         {
@@ -194,19 +207,26 @@ public class PoliceMdcModule
         {
             ownerName = vehicle.GroupModelOwner.Name;
         }
-        
-        player.EmitGui("policemdc:openvehiclerecord", vehicle.Id, catalogVehicle.DisplayName, catalogVehicle.DisplayClass, vehicle.NumberplateText, ownerName, nodes);
+
+        player.EmitGui("policemdc:openvehiclerecord",
+                       vehicle.Id,
+                       catalogVehicle.DisplayName,
+                       catalogVehicle.DisplayClass,
+                       vehicle.NumberplateText,
+                       ownerName,
+                       nodes);
     }
 
     public async Task OpenBankAccountRecord(ServerPlayer player, string targetBankAccountId)
     {
-        var nodes = await _mdcNoteService.Where(r => r.TargetModelId == targetBankAccountId && r.Type == MdcSearchType.BANK_ACCOUNT);
+        var nodes = await _mdcNoteService.Where(r => r.TargetModelId == targetBankAccountId &&
+                                                     r.Type == MdcSearchType.BANK_ACCOUNT);
         var bankAccount = await _bankAccountService.GetByKey(int.Parse(targetBankAccountId));
         if (bankAccount == null)
         {
             return;
         }
-        
+
         player.EmitGui("policemdc:openbankaccountrecord", bankAccount, nodes);
     }
 
@@ -218,27 +238,33 @@ public class PoliceMdcModule
         {
             return;
         }
-        
+
         player.EmitGui("policemdc:openmailaccountrecord", mailAccount, nodes);
     }
 
     public async Task OpenWeaponRecord(ServerPlayer player, string targetWeaponId)
     {
-        var nodes = await _mdcNoteService.Where(r => r.TargetModelId == targetWeaponId && r.Type == MdcSearchType.WEAPON);
+        var nodes = await _mdcNoteService.Where(
+            r => r.TargetModelId == targetWeaponId && r.Type == MdcSearchType.WEAPON);
         var weaponModel = await _itemWeaponService.GetByKey(int.Parse(targetWeaponId));
         if (weaponModel == null)
         {
             return;
         }
-        
+
         var ownerCharacterName = string.Empty;
         var ownerCharacter = await _characterService.GetByKey(weaponModel.InitialOwnerId);
         if (ownerCharacter != null)
         {
             ownerCharacterName = ownerCharacter.Name;
         }
-        
-        player.EmitGui("policemdc:openweaponrecord", weaponModel.Id, weaponModel.SerialNumber, ownerCharacterName, weaponModel.CatalogItemModel.Name, nodes);
+
+        player.EmitGui("policemdc:openweaponrecord",
+                       weaponModel.Id,
+                       weaponModel.SerialNumber,
+                       ownerCharacterName,
+                       weaponModel.CatalogItemModel.Name,
+                       nodes);
     }
 
     public async Task UpdateCurrentRecord(ServerPlayer player, MdcSearchType type, string id)

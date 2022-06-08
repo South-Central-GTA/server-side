@@ -15,9 +15,9 @@ public class GetGroupRanksHandler : ISingletonScript
 {
     private readonly GroupRankService _groupRankService;
     private readonly DirectoryService _directoryService;
-    
+
     public GetGroupRanksHandler(
-        GroupRankService groupRankService, 
+        GroupRankService groupRankService,
         DirectoryService directoryService)
     {
         _groupRankService = groupRankService;
@@ -39,14 +39,15 @@ public class GetGroupRanksHandler : ISingletonScript
         if (directory == null)
         {
             return;
-        }        
-        
-        player.EmitGui("filesystem:getranksetup", new FileSystemRankSetup()
-        {
-            CanReadLevel = directory.ReadGroupLevel,
-            CanWriteLevel = directory.WriteGroupLevel,
-            Ranks = groupRanks
-        });
+        }
+
+        player.EmitGui("filesystem:getranksetup",
+                       new FileSystemRankSetup()
+                       {
+                           CanReadLevel = directory.ReadGroupLevel,
+                           CanWriteLevel = directory.WriteGroupLevel,
+                           Ranks = groupRanks
+                       });
     }
 
     private struct FileSystemRankSetup : IWritable
@@ -54,17 +55,17 @@ public class GetGroupRanksHandler : ISingletonScript
         public int CanReadLevel { get; set; }
         public int CanWriteLevel { get; set; }
         public List<GroupRankModel> Ranks { get; set; }
-        
+
         public void OnWrite(IMValueWriter writer)
         {
             writer.BeginObject();
 
             writer.Name("canReadLevel");
             writer.Value(CanReadLevel);
-            
+
             writer.Name("canWriteLevel");
             writer.Value(CanWriteLevel);
-            
+
             writer.Name("ranks");
             writer.BeginArray();
 
@@ -90,7 +91,7 @@ public class GetGroupRanksHandler : ISingletonScript
             }
 
             writer.EndArray();
-            
+
             writer.EndObject();
         }
     }

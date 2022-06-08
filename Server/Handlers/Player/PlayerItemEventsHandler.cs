@@ -93,7 +93,7 @@ public class PlayerItemEventsHandler : ISingletonScript
             {
                 return;
             }
-            
+
             lockableEntity = house;
         }
         else if (itemKey.PlayerVehicleModelId.HasValue)
@@ -103,22 +103,23 @@ public class PlayerItemEventsHandler : ISingletonScript
             {
                 return;
             }
-            
+
             lockableEntity = vehicle;
         }
 
         if (lockableEntity == null)
         {
-            player.SendNotification("Du bist nicht der Eigentümer des Objektes zu welchem der Schlüssel passt.", NotificationType.ERROR);
-            return;   
+            player.SendNotification("Du bist nicht der Eigentümer des Objektes zu welchem der Schlüssel passt.",
+                                    NotificationType.ERROR);
+            return;
         }
 
         var newKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player,
-            ItemCatalogIds.KEY,
-            1,
-            null,
-            null,
-        "Kopie von " + itemKey.Note);
+                                                                          ItemCatalogIds.KEY,
+                                                                          1,
+                                                                          null,
+                                                                          null,
+                                                                          "Kopie von " + itemKey.Note);
 
         if (newKey == null)
         {
@@ -241,7 +242,9 @@ public class PlayerItemEventsHandler : ISingletonScript
         if (vehicle.BodyHealth >= 600
             && vehicle.EngineHealth >= 600)
         {
-            player.SendNotification("Dein Charakter kann das Fahrzeug nicht mit den aktuellen Begebenheiten weiter reparieren.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter kann das Fahrzeug nicht mit den aktuellen Begebenheiten weiter reparieren.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -255,7 +258,8 @@ public class PlayerItemEventsHandler : ISingletonScript
             player.SendNotification("Bei der Reperatur ging leider das Werkzeug kaputt.", NotificationType.WARNING);
         }
 
-        player.SendNotification("Du hast das Fahrzeug notdürftig repariert, suche dennoch lieber einen Mechaniker auf.", NotificationType.SUCCESS);
+        player.SendNotification("Du hast das Fahrzeug notdürftig repariert, suche dennoch lieber einen Mechaniker auf.",
+                                NotificationType.SUCCESS);
     }
 
     private async void OnRepairDialogSuccess(ServerPlayer player, int groupId, int neededProducts, int vehicleDbId)
@@ -302,6 +306,7 @@ public class PlayerItemEventsHandler : ISingletonScript
         await _groupModule.UpdateGroupUi(companyGroup);
 
         vehicle.SetRepairValue();
-        player.SendNotification("Du hast das Fahrzeug erfolgreich repariert, spiele die Reperatur nun im Roleplay aus.", NotificationType.SUCCESS);
+        player.SendNotification("Du hast das Fahrzeug erfolgreich repariert, spiele die Reperatur nun im Roleplay aus.",
+                                NotificationType.SUCCESS);
     }
 }

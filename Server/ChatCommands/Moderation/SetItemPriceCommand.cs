@@ -12,13 +12,16 @@ namespace Server.ChatCommands.Moderation;
 public class SetItemPriceCommand : ISingletonScript
 {
     private readonly ItemCatalogService _itemCatalogService;
-    
+
     public SetItemPriceCommand(ItemCatalogService itemCatalogService)
     {
         _itemCatalogService = itemCatalogService;
     }
-    
-    [Command("setitemprice", "Setze den Preis eines bestimmten Items.", Permission.ECONOMY_MANAGEMENT, new[] { "Item ID", "Preis (Dollar)" })]
+
+    [Command("setitemprice",
+             "Setze den Preis eines bestimmten Items.",
+             Permission.ECONOMY_MANAGEMENT,
+             new[] { "Item ID", "Preis (Dollar)" })]
     public async void OnExecute(ServerPlayer player, string expectedItemId, string expectedPrice)
     {
         if (!player.Exists)
@@ -48,7 +51,7 @@ public class SetItemPriceCommand : ISingletonScript
         catalogItem.Price = price;
 
         await _itemCatalogService.Update(catalogItem);
-        
+
         player.SendNotification("Item Preis erfolgreich angepasst.", NotificationType.SUCCESS);
     }
 }

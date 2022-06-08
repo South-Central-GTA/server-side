@@ -12,12 +12,12 @@ public class CharacterCreatorVehicleHandler : ISingletonScript
     private readonly VehicleSelectionModule _vehicleSelectorModule;
 
     public CharacterCreatorVehicleHandler(
-        VehicleModule vehicleModule, 
+        VehicleModule vehicleModule,
         VehicleSelectionModule vehicleSelectorModule)
     {
         _vehicleModule = vehicleModule;
         _vehicleSelectorModule = vehicleSelectorModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("charcreatorvehicle:open", OnRequestOpenVehicleMenu);
     }
 

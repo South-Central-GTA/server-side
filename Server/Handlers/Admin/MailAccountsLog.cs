@@ -14,7 +14,7 @@ public class MailAccountsLog : ISingletonScript
     public MailAccountsLog(MailAccountService mailAccountService)
     {
         _mailAccountService = mailAccountService;
-        
+
         AltAsync.OnClient<ServerPlayer>("mailaccountslog:open", OnOpenMailAccountsLog);
     }
 

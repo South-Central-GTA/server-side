@@ -10,7 +10,7 @@ public class CharacterHandler : ISingletonScript
     {
         AltAsync.OnClient<ServerPlayer>("character:requestmenu", OnRequestMenu);
     }
-    
+
     private async void OnRequestMenu(ServerPlayer player)
     {
         if (!player.Exists)

@@ -34,7 +34,6 @@ public class PlayerDisconnectHandler : ISingletonScript
         HouseService houseService,
         HouseModule houseModule,
         FileService fileService,
-        
         PedSyncModule pedSyncModule)
     {
         _characterService = characterService;
@@ -45,7 +44,8 @@ public class PlayerDisconnectHandler : ISingletonScript
         _houseModule = houseModule;
         _pedSyncModule = pedSyncModule;
 
-        AltAsync.OnPlayerDisconnect += (player, reason) => OnPlayerDisconnect(player as ServerPlayer ?? throw new InvalidOperationException(), reason);
+        AltAsync.OnPlayerDisconnect += (player, reason) =>
+            OnPlayerDisconnect(player as ServerPlayer ?? throw new InvalidOperationException(), reason);
     }
 
     private async Task OnPlayerDisconnect(ServerPlayer player, string reason)
@@ -72,7 +72,8 @@ public class PlayerDisconnectHandler : ISingletonScript
 
             if (player.IsDuty)
             {
-                if (await _houseService.GetByKey(player.DutyLeaseCompanyHouseId) is LeaseCompanyHouseModel leaseCompanyHouse)
+                if (await _houseService.GetByKey(player.DutyLeaseCompanyHouseId) is LeaseCompanyHouseModel
+                    leaseCompanyHouse)
                 {
                     leaseCompanyHouse.PlayerDuties--;
 
@@ -100,7 +101,7 @@ public class PlayerDisconnectHandler : ISingletonScript
             }
 
             var file = await _fileService.Find(f => f.IsBlocked && f.BlockedByCharacterName != null &&
-                                                     f.BlockedByCharacterName == player.CharacterModel.Name);
+                                                    f.BlockedByCharacterName == player.CharacterModel.Name);
             if (file != null)
             {
                 file.IsBlocked = false;

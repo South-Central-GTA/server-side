@@ -74,7 +74,8 @@ public class PlayerVehicleDealerHandler : ISingletonScript
         }
 
         var vehicles = await _vehicleService.Where(v =>
-                                                       v.GroupModelOwnerId == groupId && v.VehicleState == VehicleState.IN_STORAGE);
+                                                       v.GroupModelOwnerId == groupId &&
+                                                       v.VehicleState == VehicleState.IN_STORAGE);
 
         var vehicleDatas = new List<VehicleData>();
 
@@ -85,8 +86,13 @@ public class PlayerVehicleDealerHandler : ISingletonScript
             {
                 continue;
             }
-            
-            vehicleDatas.Add(new VehicleData { Id = vehicle.Id, DisplayName = catalogVehicle.DisplayName, DisplayClass = catalogVehicle.DisplayClass });
+
+            vehicleDatas.Add(new VehicleData
+            {
+                Id = vehicle.Id,
+                DisplayName = catalogVehicle.DisplayName,
+                DisplayClass = catalogVehicle.DisplayClass
+            });
         }
 
         player.EmitGui("groupmenuvehicledealer:sendvehicles", vehicleDatas);
@@ -137,8 +143,13 @@ public class PlayerVehicleDealerHandler : ISingletonScript
         {
             return;
         }
-        
-        var vehicleData = new VehicleData { Id = vehicle.DbEntity.Id, DisplayName = catalogVehicle.DisplayName, DisplayClass = catalogVehicle.DisplayClass };
+
+        var vehicleData = new VehicleData
+        {
+            Id = vehicle.DbEntity.Id,
+            DisplayName = catalogVehicle.DisplayName,
+            DisplayClass = catalogVehicle.DisplayClass
+        };
 
         player.EmitGui("groupmenuvehicledealer:showparkinbutton", vehicleData);
     }
@@ -165,7 +176,7 @@ public class PlayerVehicleDealerHandler : ISingletonScript
         var vehicle = await _vehicleService.GetByKey(vehicleDbId);
         if (vehicle == null)
         {
-            return;   
+            return;
         }
 
         if (vehicle.GroupModelOwnerId.HasValue
@@ -236,14 +247,18 @@ public class PlayerVehicleDealerHandler : ISingletonScript
     {
         var groupPlayers = Alt.GetAllPlayers()
                               .Where(p => p.Exists && p.IsSpawned && groupModel.Members
-                                                                          .Any(m => m.CharacterModelId == p.CharacterModel.Id));
+                                                                               .Any(m => m.CharacterModelId ==
+                                                                                         p.CharacterModel.Id));
 
         var callback = new Action<ServerPlayer>(async player =>
         {
-            if (await _groupModule.HasPermission(player.CharacterModel.Id, groupModel.Id, GroupPermission.STORE_VEHICLES))
+            if (await _groupModule.HasPermission(player.CharacterModel.Id,
+                                                 groupModel.Id,
+                                                 GroupPermission.STORE_VEHICLES))
             {
                 var vehicles = await _vehicleService.Where(v =>
-                                                               v.GroupModelOwnerId == groupModel.Id && v.VehicleState == VehicleState.IN_STORAGE);
+                                                               v.GroupModelOwnerId == groupModel.Id &&
+                                                               v.VehicleState == VehicleState.IN_STORAGE);
 
                 var vehicleDatas = new List<VehicleData>();
 
@@ -254,8 +269,13 @@ public class PlayerVehicleDealerHandler : ISingletonScript
                     {
                         continue;
                     }
-                    
-                    vehicleDatas.Add(new VehicleData { Id = vehicle.Id, DisplayName = catalogVehicle.DisplayName, DisplayClass = catalogVehicle.DisplayClass });
+
+                    vehicleDatas.Add(new VehicleData
+                    {
+                        Id = vehicle.Id,
+                        DisplayName = catalogVehicle.DisplayName,
+                        DisplayClass = catalogVehicle.DisplayClass
+                    });
                 }
 
                 player.EmitGui("groupmenuvehicledealer:sendvehicles", vehicleDatas);

@@ -35,7 +35,7 @@ public class GroupFactionService
 
         return memberFaction;
     }
-    
+
     public override async Task<FactionGroupModel?> GetByKey(object id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -64,7 +64,9 @@ public class GroupFactionService
                               .ThenInclude(member => member.CharacterModel)
                               .Include(group => group.Ranks)
                               .FirstOrDefaultAsync(group =>
-                                                       group.Members != null && group.Members.Any(m => m.CharacterModelId == characterId && m.Owner));
+                                                       group.Members != null &&
+                                                       group.Members.Any(
+                                                           m => m.CharacterModelId == characterId && m.Owner));
     }
 
     public async Task<FactionGroupModel?> GetByMember(int characterId)
@@ -75,7 +77,9 @@ public class GroupFactionService
                               .ThenInclude(member => member.CharacterModel)
                               .Include(group => group.Ranks)
                               .FirstOrDefaultAsync(group =>
-                                                       group.Members != null && group.Members.Any(m => m.CharacterModelId == characterId && !m.Owner));
+                                                       group.Members != null &&
+                                                       group.Members.Any(
+                                                           m => m.CharacterModelId == characterId && !m.Owner));
     }
 
     public override async Task<List<FactionGroupModel>> Where(Expression<Func<FactionGroupModel, bool>> expression)

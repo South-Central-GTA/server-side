@@ -14,7 +14,7 @@ namespace Server.ChatCommands.Factions;
 internal class MdcCommand : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-    
+
     public MdcCommand(GroupFactionService groupFactionService)
     {
         _groupFactionService = groupFactionService;
@@ -33,7 +33,7 @@ internal class MdcCommand : ISingletonScript
             player.SendNotification("Dein Charakter muss in einem Fahrzeug sitzen.", NotificationType.ERROR);
             return;
         }
-        
+
         if (player.Vehicle is not ServerVehicle vehicle)
         {
             return;
@@ -43,7 +43,7 @@ internal class MdcCommand : ISingletonScript
         {
             return;
         }
-        
+
         if (!vehicle.DbEntity.GroupModelOwnerId.HasValue)
         {
             player.SendNotification("Dieses Fahrzeug hat keinen Mobile Data Computer.", NotificationType.ERROR);
@@ -60,7 +60,7 @@ internal class MdcCommand : ISingletonScript
         var canLogin = false;
         string rankName = null;
         var factionType = FactionType.CITIZEN;
-        
+
         var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
         if (factionGroup is not null && factionGroup.FactionType == vehicleFactionGroup.FactionType)
         {
@@ -74,7 +74,7 @@ internal class MdcCommand : ISingletonScript
                     canLogin = true;
                     factionType = factionGroup.FactionType;
                 }
-            } 
+            }
         }
 
         player.EmitLocked("mdc:open", (int)factionType, canLogin, player.CharacterModel.Name, rankName);

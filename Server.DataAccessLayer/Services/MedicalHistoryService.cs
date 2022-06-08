@@ -21,7 +21,7 @@ public class MedicalHistoryService
     {
         _dbContextFactory = dbContextFactory;
     }
-    
+
     public async Task<MdcMedicalEntryModel?> GetByKey(int id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -29,8 +29,9 @@ public class MedicalHistoryService
                               .Include(i => i.CharacterModel)
                               .FirstOrDefaultAsync(i => i.Id == id);
     }
-    
-    public override async Task<List<MdcMedicalEntryModel>> Where(Expression<Func<MdcMedicalEntryModel, bool>> expression)
+
+    public override async Task<List<MdcMedicalEntryModel>> Where(
+        Expression<Func<MdcMedicalEntryModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.MdcMedicalEntries

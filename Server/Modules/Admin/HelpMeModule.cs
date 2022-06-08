@@ -32,7 +32,10 @@ public class HelpMeModule : ISingletonScript
             return;
         }
 
-        _tickets.Add(new HelpMeTicketData { CreatorName = player.AccountName, CreatorDiscordId = player.DiscordId, Context = message });
+        _tickets.Add(new HelpMeTicketData
+        {
+            CreatorName = player.AccountName, CreatorDiscordId = player.DiscordId, Context = message
+        });
 
         var staff = _adminModule.GetAllStaffPlayers();
 
@@ -82,10 +85,7 @@ public class HelpMeModule : ISingletonScript
 
     private void UpdateTicketsUi()
     {
-        var callback = new Action<ServerPlayer>(player =>
-        {
-            player.EmitGui("helpme:update", GetAllTickets());
-        });
+        var callback = new Action<ServerPlayer>(player => { player.EmitGui("helpme:update", GetAllTickets()); });
 
         _adminModule.GetAllStaffPlayers().ForEach(callback);
     }

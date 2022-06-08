@@ -17,15 +17,15 @@ public class PhoneCallModule : ISingletonScript
 {
     private readonly ItemPhoneService _itemPhoneService;
     private readonly EmergencyCallDialogModule _emergencyCallDialogModule;
-    
+
     public PhoneCallModule(
-        ItemPhoneService itemPhoneService, 
+        ItemPhoneService itemPhoneService,
         EmergencyCallDialogModule emergencyCallDialogModule)
     {
         _itemPhoneService = itemPhoneService;
         _emergencyCallDialogModule = emergencyCallDialogModule;
     }
-    
+
     /// Lost connection boolean is true for example when the player dies.
     public void Hangup(ServerPlayer player, bool lostConnection = false)
     {
@@ -56,7 +56,7 @@ public class PhoneCallModule : ISingletonScript
                 _emergencyCallDialogModule.Stop(player);
                 return;
             }
-            
+
             var caller = Alt.GetAllPlayers().GetPlayerById(player, player.PhoneCallData.PartnerPlayerId, false);
             if (caller is { Exists: true })
             {
@@ -67,7 +67,7 @@ public class PhoneCallModule : ISingletonScript
                 caller.PhoneCallData = null;
             }
         }
-    
+
         player.PhoneCallData = null;
     }
 
@@ -189,7 +189,7 @@ public class PhoneCallModule : ISingletonScript
         {
             return;
         }
-        
+
         await AltAsync.Do(() =>
         {
             if (player.PhoneCallData == null)
@@ -211,7 +211,8 @@ public class PhoneCallModule : ISingletonScript
             var contact = playerPhone.Contacts.Find(c => c.PhoneNumber == player.PhoneCallData.PartnerPhoneNumber);
 
             caller.EmitGui("phone:connectcall");
-            player.EmitGui("phone:openactivecall", contact != null ? contact.Name : player.PhoneCallData.PartnerPhoneNumber);
+            player.EmitGui("phone:openactivecall",
+                           contact != null ? contact.Name : player.PhoneCallData.PartnerPhoneNumber);
         });
     }
 }

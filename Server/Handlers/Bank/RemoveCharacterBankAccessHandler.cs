@@ -24,11 +24,11 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
 
     public RemoveCharacterBankAccessHandler(
         PhoneModule phoneModule,
-        BankModule bankModule, 
-        BankAccountCharacterAccessService bankAccountCharacterAccessService, 
-        BankAccountService bankAccountService, 
-        CharacterService characterService, 
-        GroupService groupService, 
+        BankModule bankModule,
+        BankAccountCharacterAccessService bankAccountCharacterAccessService,
+        BankAccountService bankAccountService,
+        CharacterService characterService,
+        GroupService groupService,
         RegistrationOfficeService registrationOfficeService)
     {
         _phoneModule = phoneModule;
@@ -48,14 +48,15 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
         {
             return;
         }
-        
+
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
-        
+
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
         if (bankAccount == null)
         {

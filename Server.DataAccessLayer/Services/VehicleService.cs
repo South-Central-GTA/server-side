@@ -59,7 +59,7 @@ public class VehicleService
                               .Include(v => v.CharacterModel)
                               .ToListAsync();
     }
-    
+
     public async Task<PlayerVehicleModel?> GetByDistance(Position position, float maxDistance = 1.5f)
     {
         var closestDistance = float.MaxValue;

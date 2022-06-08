@@ -18,16 +18,15 @@ public class VehicleLastDriverHandler : ISingletonScript
     private readonly Serializer _serializer;
 
     private readonly NarratorModule _narratorModule;
-    
+
     public VehicleLastDriverHandler(
         Serializer serializer,
-        CharacterService characterService, 
-        
+        CharacterService characterService,
         NarratorModule narratorModule)
     {
         _serializer = serializer;
         _characterService = characterService;
-        
+
         _narratorModule = narratorModule;
 
         AltAsync.OnClient<ServerPlayer, int>("vehiclemenu:requestlastdrivers", OnRequestLastDrivers);
@@ -43,7 +42,8 @@ public class VehicleLastDriverHandler : ISingletonScript
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleDbId);
         if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
-            player.SendNotification("Bei diesem Fahrzeug kannst du dir die letzten Fahrer nicht anzeigen.", NotificationType.ERROR);
+            player.SendNotification("Bei diesem Fahrzeug kannst du dir die letzten Fahrer nicht anzeigen.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -53,7 +53,7 @@ public class VehicleLastDriverHandler : ISingletonScript
             _narratorModule.SendMessage(player, $"Das Fahrzeug hat noch keine letzten Fahrer.");
             return;
         }
-        
+
         for (var index = vehicle.DbEntity.LastDrivers.Count - 1; index >= 0; index--)
         {
             var lastDriverData =

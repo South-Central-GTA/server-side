@@ -8,12 +8,11 @@ using Server.Core.Configuration;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Housing;
-using Server.Modules;
 using Server.Modules.EntitySync;
 
 namespace Server.ServerJobs;
 
-public class Peds : IServerJob
+public class Peds : IJob
 {
     private readonly DevelopmentOptions _devOptions;
 
@@ -68,13 +67,16 @@ public class Peds : IServerJob
         foreach (var drivingSchool in _worldLocationOptions.DrivingSchools)
         {
             _pedSyncModule.Create(drivingSchool.PedModel,
-                                  new Position(drivingSchool.PedPointX, drivingSchool.PedPointY, drivingSchool.PedPointZ),
+                                  new Position(drivingSchool.PedPointX,
+                                               drivingSchool.PedPointY,
+                                               drivingSchool.PedPointZ),
                                   drivingSchool.PedHeading,
                                   0);
         }
 
         var houses = await _houseService.GetAll();
-        foreach (var leaseCompanyHouse in houses.Where(h => h.HouseType == HouseType.COMPANY).Cast<LeaseCompanyHouseModel>())
+        foreach (var leaseCompanyHouse in houses.Where(h => h.HouseType == HouseType.COMPANY)
+                                                .Cast<LeaseCompanyHouseModel>())
         {
             _pedSyncModule.CreateCashier(leaseCompanyHouse);
         }

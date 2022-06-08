@@ -74,9 +74,13 @@ public class CharacterService
 
     public async Task Update(ServerPlayer player)
     {
-        player.CharacterModel.PositionX = player.Position.X;
-        player.CharacterModel.PositionY = player.Position.Y;
-        player.CharacterModel.PositionZ = player.Position.Z;
+        player.CharacterModel = player.CharacterModel;
+
+        var position = player.IsInVehicle ? player.Vehicle.Position : player.Position;
+
+        player.CharacterModel.PositionX = position.X;
+        player.CharacterModel.PositionY = position.Y;
+        player.CharacterModel.PositionZ = position.Z;
 
         player.CharacterModel.Roll = player.Rotation.Roll;
         player.CharacterModel.Pitch = player.Rotation.Pitch;

@@ -25,12 +25,12 @@ public class MdcSearchHandler : ISingletonScript
     private readonly ItemWeaponService _itemWeaponService;
 
     public MdcSearchHandler(
-        CharacterService characterService, 
-        ItemPhoneService itemPhoneService, 
+        CharacterService characterService,
+        ItemPhoneService itemPhoneService,
         VehicleService vehicleService,
-        BankAccountService bankAccountService, 
+        BankAccountService bankAccountService,
         MailAccountService mailAccountService,
-        GroupFactionService groupFactionService, 
+        GroupFactionService groupFactionService,
         ItemWeaponService itemWeaponService)
     {
         _characterService = characterService;
@@ -50,7 +50,7 @@ public class MdcSearchHandler : ISingletonScript
         {
             return;
         }
-        
+
         var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
         if (factionGroup is null)
         {
@@ -63,29 +63,33 @@ public class MdcSearchHandler : ISingletonScript
             {
                 await FindBankAccounts(player, searchInput);
                 return;
-            } 
+            }
+
             if (Regex.Match(searchInput, @"^[0-9]+$").Success)
             {
                 await FindPhoneNumbers(player, searchInput);
                 return;
             }
+
             if (Regex.Match(searchInput, @"([0-9]{1})([A-Z])").Success)
             {
                 await FindVehicles(player, searchInput);
                 return;
             }
+
             if (Regex.Match(searchInput, "@mail.sa").Success)
             {
                 await FindMail(player, searchInput);
                 return;
-            }            
+            }
+
             if (Regex.Match(searchInput, @"([A-Z]{2})(\d*)").Success)
             {
                 await FindWeapons(player, searchInput);
                 return;
             }
         }
-        
+
         await FindCharacterNames(player, searchInput);
     }
 
@@ -96,14 +100,14 @@ public class MdcSearchHandler : ISingletonScript
         {
             searchInput = searchInput.Substring(0, index);
         }
-        
+
         var mails = await _mailAccountService.Where(m => m.MailAddress.ToLower().Contains(searchInput.ToLower()));
-        var mdcEntities = mails.Select(mail => new MdcSearchEntity() 
-        { 
+        var mdcEntities = mails.Select(mail => new MdcSearchEntity()
+        {
             Id = -1,
-            StringId = mail.MailAddress, 
-            Name = mail.MailAddress + "@mail.sa", 
-            Type = MdcSearchType.MAIL 
+            StringId = mail.MailAddress,
+            Name = mail.MailAddress + "@mail.sa",
+            Type = MdcSearchType.MAIL
         }).Take(50).ToList();
 
         player.EmitGui("mdc:sendentities", mdcEntities);
@@ -111,12 +115,12 @@ public class MdcSearchHandler : ISingletonScript
 
     private async Task FindCharacterNames(ServerPlayer player, string searchInput)
     {
-        var characters = await _characterService.Where(c => (c.FirstName + " " + c.LastName).ToLower().Contains(searchInput.ToLower()));
-        var mdcEntities = characters.Select(character => new MdcSearchEntity() 
-        { 
-            Id = character.Id, 
-            Name = character.Name, 
-            Type = MdcSearchType.NAME 
+        var characters =
+            await _characterService.Where(c => (c.FirstName + " " + c.LastName).ToLower()
+                                                                               .Contains(searchInput.ToLower()));
+        var mdcEntities = characters.Select(character => new MdcSearchEntity()
+        {
+            Id = character.Id, Name = character.Name, Type = MdcSearchType.NAME
         }).Take(50).ToList();
 
         player.EmitGui("mdc:sendentities", mdcEntities);
@@ -125,50 +129,50 @@ public class MdcSearchHandler : ISingletonScript
     private async Task FindPhoneNumbers(ServerPlayer player, string searchInput)
     {
         var phones = await _itemPhoneService.Where(p => p.PhoneNumber.Contains(searchInput));
-        var mdcEntities = phones.Select(phone => new MdcSearchEntity() 
-        { 
-            Id = phone.Id, 
-            Name = phone.PhoneNumber, 
-            Type = MdcSearchType.NUMBER 
+        var mdcEntities = phones.Select(phone => new MdcSearchEntity()
+        {
+            Id = phone.Id, Name = phone.PhoneNumber, Type = MdcSearchType.NUMBER
         }).Take(50).ToList();
 
         player.EmitGui("mdc:sendentities", mdcEntities);
     }
 
     private async Task FindVehicles(ServerPlayer player, string searchInput)
-    { 
+    {
         var vehicles = await _vehicleService.Where(p => p.NumberplateText.ToLower().Contains(searchInput.ToLower()));
-        var mdcEntities = vehicles.Select(vehicle => new MdcSearchEntity() 
-        { 
-            Id = vehicle.Id, 
-            Name = vehicle.NumberplateText, 
-            Type = MdcSearchType.VEHICLE 
+        var mdcEntities = vehicles.Select(vehicle => new MdcSearchEntity()
+        {
+            Id = vehicle.Id,
+            Name = vehicle.NumberplateText,
+            Type = MdcSearchType.VEHICLE
         }).Take(50).ToList();
 
         player.EmitGui("mdc:sendentities", mdcEntities);
     }
 
     private async Task FindBankAccounts(ServerPlayer player, string searchInput)
-    { 
-        var bankAccounts = await _bankAccountService.Where(p => p.BankDetails.ToLower().Contains(searchInput.ToLower()));
-        var mdcEntities = bankAccounts.Select(bankAccount => new MdcSearchEntity() 
-        { 
-            Id = bankAccount.Id, 
-            Name = bankAccount.BankDetails, 
-            Type = MdcSearchType.BANK_ACCOUNT 
+    {
+        var bankAccounts =
+            await _bankAccountService.Where(p => p.BankDetails.ToLower().Contains(searchInput.ToLower()));
+        var mdcEntities = bankAccounts.Select(bankAccount => new MdcSearchEntity()
+        {
+            Id = bankAccount.Id,
+            Name = bankAccount.BankDetails,
+            Type = MdcSearchType.BANK_ACCOUNT
         }).Take(50).ToList();
 
         player.EmitGui("mdc:sendentities", mdcEntities);
     }
 
     private async Task FindWeapons(ServerPlayer player, string searchInput)
-    { 
-        var weaponModels = await _itemWeaponService.Where(p => p.SerialNumber.ToLower().Contains(searchInput.ToLower()));
-        var mdcEntities = weaponModels.Select(weapon => new MdcSearchEntity() 
-        { 
-            Id = weapon.Id, 
-            Name = weapon.SerialNumber, 
-            Type = MdcSearchType.WEAPON 
+    {
+        var weaponModels =
+            await _itemWeaponService.Where(p => p.SerialNumber.ToLower().Contains(searchInput.ToLower()));
+        var mdcEntities = weaponModels.Select(weapon => new MdcSearchEntity()
+        {
+            Id = weapon.Id,
+            Name = weapon.SerialNumber,
+            Type = MdcSearchType.WEAPON
         }).Take(50).ToList();
 
         player.EmitGui("mdc:sendentities", mdcEntities);

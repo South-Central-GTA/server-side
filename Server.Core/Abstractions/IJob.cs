@@ -2,7 +2,7 @@
 
 namespace Server.Core.Abstractions;
 
-public interface IServerJob
+public interface IJob
 {
     Task OnStartup();
 

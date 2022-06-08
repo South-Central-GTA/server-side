@@ -14,14 +14,13 @@ public class SetFileReadPermissionHandler : ISingletonScript
     private readonly DirectoryService _directoryService;
 
     private readonly GroupModule _groupModule;
-    
+
     public SetFileReadPermissionHandler(
         DirectoryService directoryService,
-        
         GroupModule groupModule)
     {
         _directoryService = directoryService;
-        
+
         _groupModule = groupModule;
 
         AltAsync.OnClient<ServerPlayer, int, int>("filesystem:setreadpermission", OnExecuteEvent);
@@ -46,7 +45,7 @@ public class SetFileReadPermissionHandler : ISingletonScript
         }
 
         directory.ReadGroupLevel = groupLevel;
-        
+
         await _directoryService.Update(directory);
     }
 }

@@ -23,12 +23,14 @@ namespace Server.Handlers.Delivery
             DeliveryService deliveryService,
             DeliveryModule deliveryModule)
         {
-            _deliveryPointColShape = Alt.CreateColShapeSphere(new Position(worldLocationOptions.Value.HarbourSelectionPositionX,
-                                                                           worldLocationOptions.Value.HarbourSelectionPositionY,
-                                                                           worldLocationOptions.Value.HarbourSelectionPositionZ),
+            _deliveryPointColShape = Alt.CreateColShapeSphere(new Position(
+                                                                  worldLocationOptions.Value.HarbourSelectionPositionX,
+                                                                  worldLocationOptions.Value.HarbourSelectionPositionY,
+                                                                  worldLocationOptions.Value.HarbourSelectionPositionZ),
                                                               4f);
-  
-            AltAsync.OnColShape += ((IColShape colShape, IEntity targetEntity, bool state) => OnColShape(colShape, targetEntity, state));
+
+            AltAsync.OnColShape += ((IColShape colShape, IEntity targetEntity, bool state) =>
+                OnColShape(colShape, targetEntity, state));
         }
 
         private async Task OnColShape(IColShape colShape, IEntity targetEntity, bool state)

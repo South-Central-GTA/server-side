@@ -67,7 +67,8 @@ public class PublicGarageModule
         });
     }
 
-    public async Task Unpark(ServerPlayer player, PlayerVehicleModel vehicleModel, PublicGarageData publicGarageData, PublicGarageEntryModel publicGarageEntryModel)
+    public async Task Unpark(ServerPlayer player, PlayerVehicleModel vehicleModel, PublicGarageData publicGarageData,
+                             PublicGarageEntryModel publicGarageEntryModel)
     {
         var bankAccount = await _bankAccountService.GetByKey(publicGarageEntryModel.BankAccountId);
         if (bankAccount == null)
@@ -78,7 +79,9 @@ public class PublicGarageModule
 
         if (bankAccount.Amount < 0)
         {
-            player.SendNotification("Dein Fahrzeug ist gepfandet solang das angegebene Bankkonto deines Charakters im negativen Bereich liegt.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Fahrzeug ist gepfandet solang das angegebene Bankkonto deines Charakters im negativen Bereich liegt.",
+                NotificationType.ERROR);
             return;
         }
 
@@ -93,14 +96,21 @@ public class PublicGarageModule
         await _vehicleModule.Create(vehicleModel);
 
         var genderString = player.CharacterModel.Gender == GenderType.MALE ? "sein" : "ihr";
-        player.SendNotification($"Dein Charakter hat erfolgreich {genderString} Fahrzeug ausgeparkt.", NotificationType.SUCCESS);
+        player.SendNotification($"Dein Charakter hat erfolgreich {genderString} Fahrzeug ausgeparkt.",
+                                NotificationType.SUCCESS);
 
         await _publicGarageEntryService.Remove(publicGarageEntryModel);
     }
 
     public async Task Park(ServerPlayer player, ServerVehicle vehicle, int garageId, int bankAccountId)
     {
-        await _publicGarageEntryService.Add(new PublicGarageEntryModel { CharacterModelId = player.CharacterModel.Id, PlayerVehicleModelId = vehicle.DbEntity.Id, GarageId = garageId, BankAccountId = bankAccountId });
+        await _publicGarageEntryService.Add(new PublicGarageEntryModel
+        {
+            CharacterModelId = player.CharacterModel.Id,
+            PlayerVehicleModelId = vehicle.DbEntity.Id,
+            GarageId = garageId,
+            BankAccountId = bankAccountId
+        });
 
         vehicle.DbEntity.Position = Position.Zero;
         vehicle.DbEntity.Rotation = Rotation.Zero;

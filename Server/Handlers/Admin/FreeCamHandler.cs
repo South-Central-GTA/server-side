@@ -13,7 +13,7 @@ public class FreeCamHandler : ISingletonScript
     public FreeCamHandler(CharacterSpawnModule characterSpawnModule)
     {
         _characterSpawnModule = characterSpawnModule;
-        
+
         AltAsync.OnClient<ServerPlayer, float, float, float>("freecam:stop", OnFreeCamStop);
         AltAsync.OnClient<ServerPlayer, float, float, float>("freecam:update", OnUpdate);
     }

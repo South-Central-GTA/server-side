@@ -17,31 +17,31 @@ public class PoliceTicketModule : ISingletonScript
     private readonly ItemService _itemService;
     private readonly GroupFactionService _groupFactionService;
     private readonly BankAccountService _bankAccountService;
-    
+
     private readonly ItemCreationModule _itemCreationModule;
     private readonly InventoryModule _inventoryModule;
 
     public PoliceTicketModule(
         PoliceTicketService policeTicketService,
-        ItemService itemService, 
-        GroupFactionService groupFactionService, 
+        ItemService itemService,
+        GroupFactionService groupFactionService,
         BankAccountService bankAccountService,
-        
-        ItemCreationModule itemCreationModule, 
+        ItemCreationModule itemCreationModule,
         InventoryModule inventoryModule)
     {
         _policeTicketService = policeTicketService;
         _itemService = itemService;
         _groupFactionService = groupFactionService;
         _bankAccountService = bankAccountService;
-        
+
         _itemCreationModule = itemCreationModule;
         _inventoryModule = inventoryModule;
     }
 
     public async Task<bool> GivePlayerTicket(ServerPlayer player, string creatorCharacterName, string reason, int price)
     {
-        if (await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.POLICE_TICKET, 1) is not ItemPoliceTicketModel item)
+        if (await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.POLICE_TICKET, 1) is not ItemPoliceTicketModel
+            item)
         {
             return false;
         }
@@ -53,13 +53,13 @@ public class PoliceTicketModule : ISingletonScript
         item.TargetCharacterId = player.CharacterModel.Id;
 
         await _itemService.Update(item);
-        
+
         await _inventoryModule.UpdateInventoryUiAsync(player);
         player.SendNotification("Dein Charakter hat ein Ticket erhalten.", NotificationType.INFO);
-        
+
         return true;
     }
-    
+
     public async Task<string> GetRandomReferenceId()
     {
         var rnd = new Random();
@@ -78,7 +78,8 @@ public class PoliceTicketModule : ISingletonScript
         return await _policeTicketService.Find(p => p.ReferenceId == referenceId);
     }
 
-    public async Task CheckPoliceTickets(ServerPlayer player, string receiverBankAccountDetails, string useOfPurpose, int value)
+    public async Task CheckPoliceTickets(ServerPlayer player, string receiverBankAccountDetails, string useOfPurpose,
+                                         int value)
     {
         var pdFaction = await _groupFactionService.Find(gf => gf.FactionType == FactionType.POLICE_DEPARTMENT);
         if (pdFaction == null)
@@ -87,7 +88,7 @@ public class PoliceTicketModule : ISingletonScript
         }
 
         var pdBankAccount = await _bankAccountService.GetByGroup(pdFaction.Id);
-        if (pdBankAccount == null) 
+        if (pdBankAccount == null)
         {
             return;
         }
@@ -115,7 +116,7 @@ public class PoliceTicketModule : ISingletonScript
         }
 
         policeTicket.Payed = true;
-        
+
         player.SendNotification("Ein Strafzettel wurde bezahlt.", NotificationType.SUCCESS);
 
         await _policeTicketService.Update(policeTicket);

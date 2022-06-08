@@ -5,12 +5,11 @@ using Microsoft.Extensions.Logging;
 using Server.Core.Abstractions;
 using Server.Data.Dumps;
 using Server.Helper;
-using Server.Modules;
 using Server.Modules.Dump;
 
 namespace Server.ServerJobs;
 
-public class LoadDumps : IServerJob
+public class LoadDumps : IJob
 {
     private readonly ILogger<LoadDumps> _logger;
     private readonly Serializer _serializer;
@@ -40,7 +39,11 @@ public class LoadDumps : IServerJob
     {
         _logger.LogInformation("Try to load all required dump informations.");
 
-        var vehicleJson = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "resources", "southcentral-assets", "dumps", "vehicles.json"));
+        var vehicleJson = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),
+                                                                   "resources",
+                                                                   "southcentral-assets",
+                                                                   "dumps",
+                                                                   "vehicles.json"));
         _vehicleDumpModule.SetData(_serializer.Deserialize<List<VehicleDumpEntry>>(vehicleJson));
         _logger.LogInformation($"Loaded {_vehicleDumpModule.Dump.Count} vehicle dump informations.");
 

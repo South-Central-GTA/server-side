@@ -13,22 +13,21 @@ public class ItemPoliceTicketHandler : ISingletonScript
     private readonly CharacterService _characterService;
     private readonly GroupFactionService _groupFactionService;
     private readonly BankAccountService _bankAccountService;
-    
-    private readonly NarratorModule _narratorModule; 
-    
+
+    private readonly NarratorModule _narratorModule;
+
     public ItemPoliceTicketHandler(
-        PoliceTicketService policeTicketService, 
+        PoliceTicketService policeTicketService,
         CharacterService characterService,
         GroupFactionService groupFactionService,
         BankAccountService bankAccountService,
-        
         NarratorModule narratorModule)
     {
         _policeTicketService = policeTicketService;
         _characterService = characterService;
         _groupFactionService = groupFactionService;
         _bankAccountService = bankAccountService;
-        
+
         _narratorModule = narratorModule;
 
         AltAsync.OnClient<ServerPlayer, int>("ticket:show", OnRequestShowTicket);
@@ -55,11 +54,12 @@ public class ItemPoliceTicketHandler : ISingletonScript
         }
 
         var pdBankAccount = await _bankAccountService.GetByGroup(pdFaction.Id);
-        if (pdBankAccount == null) 
+        if (pdBankAccount == null)
         {
             return;
         }
 
-        _narratorModule.SendMessage(player, $"Dein Charakter schaut sich einen Strafzettel für {targetCharacter.Name} an wo folgende Informationen draufstehen, Grund: {policeTicketItem.Reason}, Kosten {policeTicketItem.Costs}$, Referenznummer {policeTicketItem.ReferenceId}, Police Department Bankverbindung: {pdBankAccount.BankDetails} unterschrieben von {policeTicketItem.CreatorCharacterName}.");
+        _narratorModule.SendMessage(player,
+                                    $"Dein Charakter schaut sich einen Strafzettel für {targetCharacter.Name} an wo folgende Informationen draufstehen, Grund: {policeTicketItem.Reason}, Kosten {policeTicketItem.Costs}$, Referenznummer {policeTicketItem.ReferenceId}, Police Department Bankverbindung: {pdBankAccount.BankDetails} unterschrieben von {policeTicketItem.CreatorCharacterName}.");
     }
 }

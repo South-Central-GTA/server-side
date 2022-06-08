@@ -11,18 +11,17 @@ namespace Server.Handlers.MDC.FD;
 public class FdMdcDeleteAllergyEntryHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly AllergiesModule _allergiesModule;
     private readonly FireMdcModule _fireMdcModule;
 
     public FdMdcDeleteAllergyEntryHandler(
         GroupFactionService groupFactionService,
-        
-        AllergiesModule allergiesModule, 
-        FireMdcModule fireMdcModule) 
+        AllergiesModule allergiesModule,
+        FireMdcModule fireMdcModule)
     {
         _groupFactionService = groupFactionService;
-        
+
         _allergiesModule = allergiesModule;
         _fireMdcModule = fireMdcModule;
 
@@ -47,9 +46,9 @@ public class FdMdcDeleteAllergyEntryHandler : ISingletonScript
         {
             return;
         }
-        
+
         await _allergiesModule.Remove(allergyModel);
-        
+
         await _fireMdcModule.OpenPatientRecords(player, allergyModel.CharacterModelId);
     }
 }

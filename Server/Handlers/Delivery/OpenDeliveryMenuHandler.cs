@@ -55,7 +55,10 @@ namespace Server.Handlers.Delivery
             {
                 var companyGroup = (CompanyGroupModel)group;
 
-                canUseThisApp = await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.ORDER_PRODUCTS);
+                canUseThisApp =
+                    await _groupModule.HasPermission(player.CharacterModel.Id,
+                                                     group.Id,
+                                                     GroupPermission.ORDER_PRODUCTS);
                 canSeeOpenDeliveries = companyGroup.LicensesFlags.HasFlag(LicensesFlags.GOODS_TRANSPORT);
                 products = companyGroup.Products;
             }
@@ -65,7 +68,12 @@ namespace Server.Handlers.Delivery
                 hasOpenDelivery = true;
             }
 
-            player.EmitGui("delivery:setup", canUseThisApp, canSeeOpenDeliveries, hasOpenDelivery, products, _companyOptions.MaxProducts);
+            player.EmitGui("delivery:setup",
+                           canUseThisApp,
+                           canSeeOpenDeliveries,
+                           hasOpenDelivery,
+                           products,
+                           _companyOptions.MaxProducts);
         }
     }
 }

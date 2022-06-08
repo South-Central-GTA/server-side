@@ -27,7 +27,6 @@ public class CancelLeaseableCompanyContractHandler : ISingletonScript
         PhoneModule phoneModule,
         HouseModule houseModule)
     {
-
         _groupService = groupService;
         _houseService = houseService;
 
@@ -54,7 +53,8 @@ public class CancelLeaseableCompanyContractHandler : ISingletonScript
 
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.",
+                                    NotificationType.ERROR);
             return;
         }
 

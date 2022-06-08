@@ -21,13 +21,12 @@ public class CreateBankAccountHandler : ISingletonScript
     public CreateBankAccountHandler(
         BankAccountService bankAccountService,
         RegistrationOfficeService registrationOfficeService,
-        
         BankModule bankModule,
         PhoneModule phoneModule)
     {
         _bankAccountService = bankAccountService;
         _registrationOfficeService = registrationOfficeService;
-        
+
         _bankModule = bankModule;
         _phoneModule = phoneModule;
 
@@ -47,9 +46,9 @@ public class CreateBankAccountHandler : ISingletonScript
             await _phoneModule.SendNotification(phoneId,
                                                 PhoneNotificationType.MAZE_BANK,
                                                 "Leider können wir Sie unter Ihrem Namen nicht im Registration Office finden. Die Accounterstellung wurde abgebrochen.");
-            return;       
+            return;
         }
-        
+
         var bankAccounts = await _bankAccountService.GetByOwner(player.CharacterModel.Id);
         if (bankAccounts.Count >= 10)
         {

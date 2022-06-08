@@ -15,26 +15,19 @@ public class CatalogVehicleModel
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public string Model { get; set; }
 
-    [JsonPropertyName("displayName")] 
-    public string DisplayName { get; set; }
+    [JsonPropertyName("displayName")] public string DisplayName { get; set; }
 
-    [JsonPropertyName("displayClass")] 
-    public string DisplayClass { get; set; }
+    [JsonPropertyName("displayClass")] public string DisplayClass { get; set; }
 
-    [JsonPropertyName("classId")] 
-    public string ClassId { get; set; }
+    [JsonPropertyName("classId")] public string ClassId { get; set; }
 
-    [JsonPropertyName("maxTank")] 
-    public int MaxTank { get; set; }
+    [JsonPropertyName("maxTank")] public int MaxTank { get; set; }
 
-    [JsonPropertyName("fuelType")] 
-    public FuelType FuelType { get; set; }
+    [JsonPropertyName("fuelType")] public FuelType FuelType { get; set; }
 
-    [JsonPropertyName("price")] 
-    public int Price { get; set; }
+    [JsonPropertyName("price")] public int Price { get; set; }
 
-    [JsonPropertyName("dlcName")] 
-    public string DlcName { get; set; }
+    [JsonPropertyName("dlcName")] public string DlcName { get; set; }
 
     /// <summary>
     ///     Value has to be set before using on client side. Use points module to calculate the points.

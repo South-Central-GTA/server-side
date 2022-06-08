@@ -32,19 +32,19 @@ public class CreateCharacterHandler : ISingletonScript
     private readonly CharacterService _characterService;
     private readonly RegistrationOfficeService _registrationOfficeService;
     private readonly PersonalLicenseService _personalLicenseService;
-    
+
     private readonly Random _rand = new();
 
-    public CreateCharacterHandler(Serializer serializer, 
-                                  CharacterCreationModule characterCreationModule, 
-                                  CharacterSelectionModule characterSelectionModule, 
-                                  CharacterSpawnModule characterSpawnModule, 
-                                  HouseModule houseModule, 
-                                  ItemCreationModule itemCreationModule, 
-                                  SouthCentralPointsModule southCentralPointsModule, 
-                                  VehicleModule vehicleModule, 
-                                  CharacterService characterService, 
-                                  RegistrationOfficeService registrationOfficeService, 
+    public CreateCharacterHandler(Serializer serializer,
+                                  CharacterCreationModule characterCreationModule,
+                                  CharacterSelectionModule characterSelectionModule,
+                                  CharacterSpawnModule characterSpawnModule,
+                                  HouseModule houseModule,
+                                  ItemCreationModule itemCreationModule,
+                                  SouthCentralPointsModule southCentralPointsModule,
+                                  VehicleModule vehicleModule,
+                                  CharacterService characterService,
+                                  RegistrationOfficeService registrationOfficeService,
                                   PersonalLicenseService personalLicenseService)
     {
         _serializer = serializer;
@@ -71,10 +71,12 @@ public class CreateCharacterHandler : ISingletonScript
 
         var characterCreatorData = _serializer.Deserialize<CharacterCreatorData>(characterCreatorDataJson);
 
-        if (await _characterService.Exists(c => c.FirstName.ToLower() + " " + c.LastName.ToLower() == characterCreatorData.CharacterModel.Name.ToLower()))
+        if (await _characterService.Exists(c => c.FirstName.ToLower() + " " + c.LastName.ToLower() ==
+                                                characterCreatorData.CharacterModel.Name.ToLower()))
         {
-            player.SendNotification("Leider hat ein anderer Charakter exakt den selben Namen. Das können wir bedingt durch einige Systeme nicht supporten.",
-                                    NotificationType.ERROR);
+            player.SendNotification(
+                "Leider hat ein anderer Charakter exakt den selben Namen. Das können wir bedingt durch einige Systeme nicht supporten.",
+                NotificationType.ERROR);
             player.EmitLocked("charcreator:cantfinishedcreation");
             return;
         }
@@ -83,16 +85,19 @@ public class CreateCharacterHandler : ISingletonScript
 
         if (player.AccountModel.SouthCentralPoints < characterCosts)
         {
-            player.SendNotification("Du hast nicht genug South Central Points um dir diesen Charakter leisten zu können.",
-                                    NotificationType.ERROR);
+            player.SendNotification(
+                "Du hast nicht genug South Central Points um dir diesen Charakter leisten zu können.",
+                NotificationType.ERROR);
             player.EmitLocked("charcreator:cantfinishedcreation");
             return;
         }
 
-        _southCentralPointsModule.ReducePoints(player, -characterCosts, $"Charakter '{characterCreatorData.CharacterModel.Name}' gekauft");
+        _southCentralPointsModule.ReducePoints(player,
+                                               -characterCosts,
+                                               $"Charakter '{characterCreatorData.CharacterModel.Name}' gekauft");
         InitalizeCharacter(player, characterCreatorData);
     }
-    
+
     private async void InitalizeCharacter(ServerPlayer player, CharacterCreatorData characterCreatorData)
     {
         if (!player.Exists)
@@ -116,11 +121,23 @@ public class CreateCharacterHandler : ISingletonScript
 
         characterCreatorData.CharacterModel.AccountModelId = player.SocialClubId;
 
-        player.CharacterModel = await _characterService.Add(new CharacterModel(characterCreatorData.CharacterModel, characterCreatorData.StartMoney));
+        player.CharacterModel =
+            await _characterService.Add(
+                new CharacterModel(characterCreatorData.CharacterModel, characterCreatorData.StartMoney));
 
         foreach (var item in characterCreatorData.CharacterModel.InventoryModel.Items)
         {
-            await _itemCreationModule.AddItemAsync(player, item.CatalogItemModelId, item.Amount, item.Condition, item.CustomData, item.Note, true, true, false, null, ItemState.EQUIPPED);
+            await _itemCreationModule.AddItemAsync(player,
+                                                   item.CatalogItemModelId,
+                                                   item.Amount,
+                                                   item.Condition,
+                                                   item.CustomData,
+                                                   item.Note,
+                                                   true,
+                                                   true,
+                                                   false,
+                                                   null,
+                                                   ItemState.EQUIPPED);
         }
 
         var house = await _houseModule.GetStarterHouse(player);
@@ -129,7 +146,8 @@ public class CreateCharacterHandler : ISingletonScript
             await _houseModule.SetOwner(player, house);
         }
 
-        var vehicleOrders = characterCreatorData.PurchaseOrders.FindAll(po => po.Type == CharacterCreatorPurchaseType.VEHICLE);
+        var vehicleOrders =
+            characterCreatorData.PurchaseOrders.FindAll(po => po.Type == CharacterCreatorPurchaseType.VEHICLE);
         foreach (var vehicleOrder in vehicleOrders)
         {
             if (vehicleOrder.OrderedVehicle != null
@@ -139,7 +157,13 @@ public class CreateCharacterHandler : ISingletonScript
 
                 var randomColor = _rand.Next(0, 111);
 
-                await _vehicleModule.CreatePersistent(vehicleModel.ToString(), player, location.Position, location.Rotation, 0, randomColor, randomColor);
+                await _vehicleModule.CreatePersistent(vehicleModel.ToString(),
+                                                      player,
+                                                      location.Position,
+                                                      location.Rotation,
+                                                      0,
+                                                      randomColor,
+                                                      randomColor);
             }
         }
 
@@ -163,7 +187,7 @@ public class CreateCharacterHandler : ISingletonScript
                 CharacterModelId = player.CharacterModel.Id,
                 Type = PersonalLicensesType.DRIVING
             });
-            
+
             await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.LICENSES, 1);
         }
 

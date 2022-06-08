@@ -17,13 +17,13 @@ public class PrisonModule
 {
     private readonly WorldLocationOptions _worldLocationOptions;
     private readonly CharacterService _characterService;
-    
+
     public PrisonModule(
         IOptions<WorldLocationOptions> worldLocationOptions,
         CharacterService characterService)
     {
         _worldLocationOptions = worldLocationOptions.Value;
-        
+
         _characterService = characterService;
     }
 
@@ -35,7 +35,9 @@ public class PrisonModule
         }
 
         player.SetUniqueDimension();
-        player.SetPositionLocked(new Position(_worldLocationOptions.FreeJailPositionX, _worldLocationOptions.FreeJailPositionY, _worldLocationOptions.FreeJailPositionZ));
+        player.SetPositionLocked(new Position(_worldLocationOptions.FreeJailPositionX,
+                                              _worldLocationOptions.FreeJailPositionY,
+                                              _worldLocationOptions.FreeJailPositionZ));
 
         player.EmitLocked("prison:start", JsonSerializer.Serialize(player.CharacterModel.JailedUntil));
     }
@@ -48,7 +50,9 @@ public class PrisonModule
         }
 
         await player.SetDimensionAsync(0);
-        player.SetPositionLocked(new Position(_worldLocationOptions.FreeJailPositionX, _worldLocationOptions.FreeJailPositionY, _worldLocationOptions.FreeJailPositionZ));
+        player.SetPositionLocked(new Position(_worldLocationOptions.FreeJailPositionX,
+                                              _worldLocationOptions.FreeJailPositionY,
+                                              _worldLocationOptions.FreeJailPositionZ));
 
         player.CharacterModel.JailedUntil = null;
         await _characterService.Update(player.CharacterModel);

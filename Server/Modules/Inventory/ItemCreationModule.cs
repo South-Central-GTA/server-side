@@ -52,10 +52,22 @@ public class ItemCreationModule
     }
 
     public async Task<ItemModel?> AddItemAsync(ServerPlayer player, ItemCatalogIds catalogId, int amount,
-                                          int? condition = null, string? customData = null, string? note = null, bool asNew = true,
-                                          bool isBought = true, bool isStolen = false, int? slot = null, ItemState itemState = ItemState.NOT_EQUIPPED)
+                                               int? condition = null, string? customData = null, string? note = null,
+                                               bool asNew = true,
+                                               bool isBought = true, bool isStolen = false, int? slot = null,
+                                               ItemState itemState = ItemState.NOT_EQUIPPED)
     {
-        var createdItem = await AddItemAsync(player.CharacterModel.InventoryModel, catalogId, amount, condition, customData, note, asNew, isBought, isStolen, slot, itemState);
+        var createdItem = await AddItemAsync(player.CharacterModel.InventoryModel,
+                                             catalogId,
+                                             amount,
+                                             condition,
+                                             customData,
+                                             note,
+                                             asNew,
+                                             isBought,
+                                             isStolen,
+                                             slot,
+                                             itemState);
 
         if (createdItem == null)
         {
@@ -90,8 +102,10 @@ public class ItemCreationModule
     /// <param name="slot"></param>
     /// <returns>New added item that are already saved to the database.</returns>
     public async Task<ItemModel?> AddItemAsync(InventoryModel inventoryModel, ItemCatalogIds catalogId, int amount,
-                                          int? condition = null, string? customData = "", string? note = "", bool asNew = true, bool isBought = true,
-                                          bool isStolen = false, int? slot = null, ItemState itemState = ItemState.NOT_EQUIPPED)
+                                               int? condition = null, string? customData = "", string? note = "",
+                                               bool asNew = true, bool isBought = true,
+                                               bool isStolen = false, int? slot = null,
+                                               ItemState itemState = ItemState.NOT_EQUIPPED)
     {
         if (slot != null)
         {
@@ -126,7 +140,16 @@ public class ItemCreationModule
 
         slot = freeSlot;
 
-        return await AddItemAsync(inventoryModel, slot.Value, catalogId, amount, condition, customData, note, isBought, isStolen, itemState);
+        return await AddItemAsync(inventoryModel,
+                                  slot.Value,
+                                  catalogId,
+                                  amount,
+                                  condition,
+                                  customData,
+                                  note,
+                                  isBought,
+                                  isStolen,
+                                  itemState);
     }
 
     public async Task HandleGiveSpecialItems(ServerPlayer player, ItemModel itemModel)
@@ -139,7 +162,10 @@ public class ItemCreationModule
         {
             var itemWeapon = itemModel as ItemWeaponModel;
 
-            _weaponModule.Give(player, WeaponModule.GetModelFromId(itemModel.CatalogItemModelId), false, itemWeapon.Amount);
+            _weaponModule.Give(player,
+                               WeaponModule.GetModelFromId(itemModel.CatalogItemModelId),
+                               false,
+                               itemWeapon.Amount);
             if (itemWeapon.ComponentHashes != null)
             {
                 foreach (var componentHash in itemWeapon.ComponentHashes)
@@ -179,7 +205,9 @@ public class ItemCreationModule
     }
 
     private async Task<ItemModel> AddItemAsync(InventoryModel inventoryModel, int slot, ItemCatalogIds catalogId,
-                                          int amount, int? condition, string? customData = "", string? note = "", bool isBought = true, bool isStolen = false, ItemState itemState = ItemState.NOT_EQUIPPED)
+                                               int amount, int? condition, string? customData = "", string? note = "",
+                                               bool isBought = true, bool isStolen = false,
+                                               ItemState itemState = ItemState.NOT_EQUIPPED)
     {
         var existingItem = inventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == catalogId);
 
@@ -288,7 +316,7 @@ public class ItemCreationModule
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen,
-                    SerialNumber = WeaponModule.CreateSerialNumber(),                    
+                    SerialNumber = WeaponModule.CreateSerialNumber(),
                     InitialOwnerId = inventoryModel.CharacterModelId ?? -1
                 });
                 break;
@@ -329,7 +357,12 @@ public class ItemCreationModule
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen,
-                    ClothingInventoryModel = new InventoryModel { Name = "Rucksack", InventoryType = InventoryType.CLOTHINGS, MaxWeight = 15 }
+                    ClothingInventoryModel = new InventoryModel
+                    {
+                        Name = "Rucksack",
+                        InventoryType = InventoryType.CLOTHINGS,
+                        MaxWeight = 15
+                    }
                 });
                 break;
             case ItemCatalogIds.CLOTHING_BODY_ARMOR:
@@ -345,7 +378,12 @@ public class ItemCreationModule
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen,
-                    ClothingInventoryModel = new InventoryModel { Name = "Schutzweste", InventoryType = InventoryType.CLOTHINGS, MaxWeight = 12 }
+                    ClothingInventoryModel = new InventoryModel
+                    {
+                        Name = "Schutzweste",
+                        InventoryType = InventoryType.CLOTHINGS,
+                        MaxWeight = 12
+                    }
                 });
                 break;
             case ItemCatalogIds.CLOTHING_HAT:
@@ -386,9 +424,12 @@ public class ItemCreationModule
                     IsBought = isBought,
                     IsStolen = isStolen,
                     BackgroundImageId = 0,
-                    InitialOwnerId = inventoryModel.CharacterModelId ?? -1,
-                    CurrentOwnerId = inventoryModel.CharacterModelId ?? null,
-                    PhoneNumber = await _phoneModule.GetRandomPhoneNumber(),
+                    InitialOwnerId =
+                        inventoryModel.CharacterModelId ?? -1,
+                    CurrentOwnerId =
+                        inventoryModel.CharacterModelId ?? null,
+                    PhoneNumber =
+                        await _phoneModule.GetRandomPhoneNumber(),
                     LastTimeOpenedNotifications = DateTime.Now,
                     Contacts = new List<PhoneContactModel>(),
                     Chats = new List<PhoneChatModel>(),
@@ -616,7 +657,10 @@ public class ItemCreationModule
         }
         else if (WeaponModule.IsItemWeapon(newItemModel.CatalogItemModelId))
         {
-            _weaponModule.Give(player, WeaponModule.GetModelFromId(newItemModel.CatalogItemModelId), true, newItemModel.Amount);
+            _weaponModule.Give(player,
+                               WeaponModule.GetModelFromId(newItemModel.CatalogItemModelId),
+                               true,
+                               newItemModel.Amount);
         }
         else if (AmmoModule.IsItemAmmo(newItemModel.CatalogItemModelId))
         {

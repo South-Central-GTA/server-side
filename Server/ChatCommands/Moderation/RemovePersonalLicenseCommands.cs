@@ -20,7 +20,10 @@ public class RemovePersonalLicenseCommands : ISingletonScript
         _personalLicenseService = personalLicenseService;
     }
 
-    [Command("removeclicense", "Entferne einem Charakter eine bestimmte Lizenz.", Permission.STAFF, new[] { "Spieler ID", "Lizenz" })]
+    [Command("removeclicense",
+             "Entferne einem Charakter eine bestimmte Lizenz.",
+             Permission.STAFF,
+             new[] { "Spieler ID", "Lizenz" })]
     public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedLicense)
     {
         if (!player.Exists)
@@ -47,12 +50,17 @@ public class RemovePersonalLicenseCommands : ISingletonScript
             player.SendNotification("Es wurde keine Lizenz gefunden.", NotificationType.ERROR);
             return;
         }
-        
+
         await _personalLicenseService.Remove(personalLicenseModel);
 
-        player.CharacterModel.Licenses = await _personalLicenseService.Where(l => l.CharacterModelId == player.CharacterModel.Id);
+        player.CharacterModel.Licenses =
+            await _personalLicenseService.Where(l => l.CharacterModelId == player.CharacterModel.Id);
 
-        player.SendNotification("Du hast dem Charakter " + target.CharacterModel.Name + " die Lizenz " + characterLicense + " entfernt.", NotificationType.SUCCESS);
-        target.SendNotification("Du hast von " + player.AccountName + " die Lizenz " + characterLicense + " administrativ entfernt bekommen.", NotificationType.SUCCESS);
+        player.SendNotification("Du hast dem Charakter " + target.CharacterModel.Name + " die Lizenz " +
+                                characterLicense + " entfernt.",
+                                NotificationType.SUCCESS);
+        target.SendNotification("Du hast von " + player.AccountName + " die Lizenz " + characterLicense +
+                                " administrativ entfernt bekommen.",
+                                NotificationType.SUCCESS);
     }
 }

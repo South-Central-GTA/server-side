@@ -28,7 +28,7 @@ public class DeleteItemHandler : ISingletonScript
         {
             return;
         }
-        
+
         await _itemDestructionModule.Destroy(itemId);
 
         player.SendNotification("Du hast das Item administrativ gelöscht.", NotificationType.INFO);

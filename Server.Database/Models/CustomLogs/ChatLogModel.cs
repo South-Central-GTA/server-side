@@ -8,7 +8,7 @@ using Server.Database.Models.Character;
 namespace Server.Database.Models.CustomLogs;
 
 public class ChatLogModel
-: ModelBase
+    : ModelBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

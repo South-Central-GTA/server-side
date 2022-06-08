@@ -37,19 +37,24 @@ public class SelectDefinedJobHandler : ISingletonScript
 
         if (!await _bankModule.HasBankAccount(player))
         {
-            player.SendNotification("Dein Charakter braucht ein Bankkonto damit du ihm einen Job definieren kannst.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter braucht ein Bankkonto damit du ihm einen Job definieren kannst.",
+                                    NotificationType.ERROR);
             return;
         }
 
         if (await _groupModule.IsPlayerInGroupType(player, GroupType.COMPANY))
         {
-            player.SendNotification("Dein Charakter ist schon in einem spielerbasierten Unternehmen und kann deswegen keinen definierten Job haben.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter ist schon in einem spielerbasierten Unternehmen und kann deswegen keinen definierten Job haben.",
+                NotificationType.ERROR);
             return;
         }
 
         if (await _groupModule.IsPlayerInGroupType(player, GroupType.FACTION))
         {
-            player.SendNotification("Dein Charakter ist schon in einer Fraktion und kann deswegen keinen definierten Job haben.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter ist schon in einer Fraktion und kann deswegen keinen definierten Job haben.",
+                NotificationType.ERROR);
             return;
         }
 

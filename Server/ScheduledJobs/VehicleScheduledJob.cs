@@ -4,22 +4,20 @@ using System.Threading.Tasks;
 using AltV.Net;
 using AltV.Net.Async;
 using AltV.Net.Elements.Entities;
-using AltV.Net.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Core.Callbacks;
 using Server.Core.Configuration;
 using Server.Core.Entities;
+using Server.Core.ScheduledJobs;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models.Vehicles;
-using Server.Modules;
 using Server.Modules.Vehicles;
 using VehicleModel = AltV.Net.Enums.VehicleModel;
 
-namespace Server.ScheduledJob;
+namespace Server.ScheduledJobs;
 
-public class VehicleScheduledJob
-    : ScheduledJob
+public class VehicleScheduledJob : ScheduledJob
 {
     private readonly VehicleOptions _vehicleOptions;
     private readonly ILogger<VehicleScheduledJob> _logger;
@@ -78,7 +76,7 @@ public class VehicleScheduledJob
 
         await Task.CompletedTask;
     }
-    
+
     private async Task HandleFuel(ServerVehicle vehicle, CatalogVehicleModel catalogVehicleModel, float speed)
     {
         var classId = catalogVehicleModel.ClassId.ToLower();
@@ -139,16 +137,16 @@ public class VehicleScheduledJob
             await vehicle.SetEngineOnAsync(false);
         }
     }
-    
+
     private async Task HandleKilometre(ServerVehicle vehicle)
     {
         vehicle.LastCheckPosition ??= vehicle.Position;
         var distance = vehicle.Position.Distance(vehicle.LastCheckPosition.Value);
 
         vehicle.DrivenKilometre += distance / 1000;
-        
+
         vehicle.LastCheckPosition = vehicle.Position;
-        
+
         await vehicle.SetSyncedMetaDataAsync("DRIVEN_KILOMETRE", vehicle.DrivenKilometre);
     }
 }

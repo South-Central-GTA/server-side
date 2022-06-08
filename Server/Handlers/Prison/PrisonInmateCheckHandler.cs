@@ -16,14 +16,14 @@ public class PrisonInmateCheckHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
     private readonly CharacterService _characterService;
-    
+
     public PrisonInmateCheckHandler(
         GroupFactionService groupFactionService,
         CharacterService characterService)
     {
         _groupFactionService = groupFactionService;
         _characterService = characterService;
-     
+
         AltAsync.OnClient<ServerPlayer>("prison:requestinmates", OnExecute);
     }
 
@@ -47,14 +47,15 @@ public class PrisonInmateCheckHandler : ISingletonScript
             player.SendNotification("Es sind keine Charaktere im Gefängnis.", NotificationType.INFO);
             return;
         }
-        
+
         var characterList = new List<string>();
         prisonCharacters.ForEach(model =>
         {
             var span = model.JailedUntil.Value - DateTime.Now;
-            characterList.Add($"<li>Name: {model.Name}, Haftzeit: {(int)span.TotalMinutes} Minuten, Eingesperrt von: {model.JailedByCharacterName}</li>");
+            characterList.Add(
+                $"<li>Name: {model.Name}, Haftzeit: {(int)span.TotalMinutes} Minuten, Eingesperrt von: {model.JailedByCharacterName}</li>");
         });
-        
+
         player.CreateDialog(new DialogData
         {
             Type = DialogType.ONE_BUTTON_DIALOG,

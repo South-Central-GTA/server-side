@@ -13,20 +13,19 @@ namespace Server.Handlers.MDC.PD;
 public class PdMdcOpenPageHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly PoliceMdcModule _policeMdcModule;
     private readonly BaseMdcModule _baseMdcModule;
     private readonly FileModule _fileModule;
 
     public PdMdcOpenPageHandler(
         GroupFactionService groupFactionService,
-        
-        PoliceMdcModule policeMdcModule, 
-        BaseMdcModule baseMdcModule, 
+        PoliceMdcModule policeMdcModule,
+        BaseMdcModule baseMdcModule,
         FileModule fileModule)
     {
         _groupFactionService = groupFactionService;
-        
+
         _policeMdcModule = policeMdcModule;
         _baseMdcModule = baseMdcModule;
         _fileModule = fileModule;
@@ -55,21 +54,29 @@ public class PdMdcOpenPageHandler : ISingletonScript
                 await OpenFileScreen(player);
                 break;
         }
+
+        if (pageId != 2)
+        {
+            if (player.HasData("APB_SCREEN_OPEN"))
+            {
+                player.DeleteData("APB_SCREEN_OPEN");
+            }
+        }
     }
 
     private async Task OpenHomeScreen(ServerPlayer player)
     {
-        player.EmitGui("policemdc:openhomescreen",  
-                       await _policeMdcModule.GetEmergencyCalls(), 
-                       _policeMdcModule.CallSign.GetCallSigns(), 
+        player.EmitGui("policemdc:openhomescreen",
+                       await _policeMdcModule.GetEmergencyCalls(),
+                       _policeMdcModule.CallSign.GetCallSigns(),
                        _policeMdcModule.CallSign.HasCallSign(player.CharacterModel));
     }
 
     private async Task OpenApbScreen(ServerPlayer player)
     {
-        var test = await _baseMdcModule.GetBulletInEntries(FactionType.POLICE_DEPARTMENT);
-        player.EmitGui("policemdc:openapbscreen",  
-                       test);
+        player.SetData("APB_SCREEN_OPEN", true);
+        player.EmitGui("policemdc:openapbscreen",
+                       await _baseMdcModule.GetBulletInEntries(FactionType.POLICE_DEPARTMENT));
     }
 
     private async Task OpenFileScreen(ServerPlayer player)

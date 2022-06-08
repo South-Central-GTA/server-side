@@ -12,13 +12,13 @@ public class PdMdcCreateNoteHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
     private readonly MdcNoteService _mdcNoteService;
-    
+
     private readonly PoliceMdcModule _policeMdcModule;
- 
+
     public PdMdcCreateNoteHandler(
         GroupFactionService groupFactionService,
         MdcNoteService mdcNoteService,
-        PoliceMdcModule policeMdcModule) 
+        PoliceMdcModule policeMdcModule)
     {
         _policeMdcModule = policeMdcModule;
         _mdcNoteService = mdcNoteService;
@@ -42,13 +42,13 @@ public class PdMdcCreateNoteHandler : ISingletonScript
 
         await _mdcNoteService.Add(new MdcNoteModel()
         {
-           TargetModelId = targetDbId,
-           Type = mdcSearchType,
-           CreatorCharacterName = player.CharacterModel.Name,
-           Note = input
+            TargetModelId = targetDbId,
+            Type = mdcSearchType,
+            CreatorCharacterName = player.CharacterModel.Name,
+            Note = input
         });
-        
-        
+
+
         await _policeMdcModule.UpdateCurrentRecord(player, mdcSearchType, targetDbId);
     }
 }

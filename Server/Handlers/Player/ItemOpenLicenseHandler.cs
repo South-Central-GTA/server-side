@@ -18,16 +18,15 @@ public class ItemOpenLicenseHandler : ISingletonScript
     private readonly ItemService _itemService;
 
     private readonly NarratorModule _narratorModule;
-    
+
     public ItemOpenLicenseHandler(
         CharacterService characterService,
-        ItemService itemService, 
-        
+        ItemService itemService,
         NarratorModule narratorModule)
     {
         _characterService = characterService;
         _itemService = itemService;
-        
+
         _narratorModule = narratorModule;
 
         AltAsync.OnClient<ServerPlayer, int>("licenses:requestopen", OnLicensesRequestOpen);
@@ -45,7 +44,7 @@ public class ItemOpenLicenseHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (player.CharacterModel.InventoryModel.Id != licItem.InventoryModelId)
         {
             return;
@@ -56,7 +55,7 @@ public class ItemOpenLicenseHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (character.Licenses.Count == 0)
         {
             _narratorModule.SendMessage(player, $"{character.Name} hat keine eingetragenden Lizenzen.");
@@ -83,6 +82,7 @@ public class ItemOpenLicenseHandler : ISingletonScript
             }
         }
 
-        _narratorModule.SendMessage(player, $"{character.Name} besitzt folgende Lizenzen: {string.Join(", ", licenseStrings)}.");
+        _narratorModule.SendMessage(player,
+                                    $"{character.Name} besitzt folgende Lizenzen: {string.Join(", ", licenseStrings)}.");
     }
 }

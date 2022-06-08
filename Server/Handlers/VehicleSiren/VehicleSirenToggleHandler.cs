@@ -10,7 +10,7 @@ public class VehicleSirenToggleHandler : ISingletonScript
 {
     private readonly ILogger<VehicleSirenToggleHandler> _logger;
     private readonly VehicleCatalogService _vehicleCatalogService;
-    
+
     public VehicleSirenToggleHandler(
         ILogger<VehicleSirenToggleHandler> logger,
         VehicleCatalogService vehicleCatalogService)
@@ -32,17 +32,17 @@ public class VehicleSirenToggleHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (player.Vehicle is not ServerVehicle vehicle)
         {
             return;
         }
-        
+
         if (vehicle.DbEntity == null)
         {
             return;
         }
-        
+
         var catalogVehicle = await _vehicleCatalogService.GetByKey(vehicle.DbEntity.Model.ToLower());
         if (catalogVehicle == null)
         {

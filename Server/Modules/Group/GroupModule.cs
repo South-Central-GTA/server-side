@@ -85,15 +85,19 @@ public class GroupModule
         var existingMember = await _groupMemberService.Find(m => m.CharacterModelId == player.CharacterModel.Id);
         return existingMember != null;
     }
-    
+
     public async Task<bool> IsPlayerInGroup(ServerPlayer player, int groupId)
     {
-        var existingMember = await _groupMemberService.Find(m => m.CharacterModelId == player.CharacterModel.Id && m.GroupModelId == groupId);
+        var existingMember =
+            await _groupMemberService.Find(m => m.CharacterModelId == player.CharacterModel.Id &&
+                                                m.GroupModelId == groupId);
         return existingMember != null;
     }
+
     public async Task<GroupMemberModel?> GetGroupMember(ServerPlayer player, int groupId)
     {
-        return await _groupMemberService.Find(m => m.CharacterModelId == player.CharacterModel.Id && m.GroupModelId == groupId);
+        return await _groupMemberService.Find(m => m.CharacterModelId == player.CharacterModel.Id &&
+                                                   m.GroupModelId == groupId);
     }
 
     public async Task<GroupModel?> CreateGroup(GroupType groupType, string name)
@@ -121,7 +125,7 @@ public class GroupModule
                 newGroupModel = new GroupModel(name);
                 break;
         }
-        
+
         return await _groupService.Add(newGroupModel);
     }
 
@@ -134,10 +138,12 @@ public class GroupModule
             switch (groupModel.GroupType)
             {
                 case GroupType.FACTION:
-                    target.SendNotification("Dein Charakter befindet sich schon in einer Fraktion.", NotificationType.ERROR);
+                    target.SendNotification("Dein Charakter befindet sich schon in einer Fraktion.",
+                                            NotificationType.ERROR);
                     break;
                 case GroupType.COMPANY:
-                    target.SendNotification("Dein Charakter befindet sich schon in einem Unternehmen.", NotificationType.ERROR);
+                    target.SendNotification("Dein Charakter befindet sich schon in einem Unternehmen.",
+                                            NotificationType.ERROR);
                     break;
             }
 
@@ -149,7 +155,10 @@ public class GroupModule
             return false;
         }
 
-        var member = new GroupMemberModel { GroupModelId = groupModel.Id, CharacterModelId = target.CharacterModel.Id, RankLevel = 1 };
+        var member = new GroupMemberModel
+        {
+            GroupModelId = groupModel.Id, CharacterModelId = target.CharacterModel.Id, RankLevel = 1
+        };
 
         target.SendNotification("Du hast die Einladung angenommen.", NotificationType.SUCCESS);
 
@@ -178,7 +187,9 @@ public class GroupModule
             return;
         }
 
-        target.SendNotification($"Du wurdest von {player.CharacterModel.Name} aus der Gruppe {groupMemberModel.GroupModel.Name} entfernt.", NotificationType.WARNING);
+        target.SendNotification(
+            $"Du wurdest von {player.CharacterModel.Name} aus der Gruppe {groupMemberModel.GroupModel.Name} entfernt.",
+            NotificationType.WARNING);
         await UpdateUi(target);
 
         await UpdateGroupUi(groupMemberModel.GroupModel);
@@ -204,15 +215,18 @@ public class GroupModule
 
         await _groupMemberService.Remove(member);
 
-        player.SendNotification($"Du wurdest von administrativ von {adminPlayer.AccountName} aus der Gruppe {group.Name} entfernt.", NotificationType.WARNING);
-        
+        player.SendNotification(
+            $"Du wurdest von administrativ von {adminPlayer.AccountName} aus der Gruppe {group.Name} entfernt.",
+            NotificationType.WARNING);
+
         await UpdateUi(player);
 
         await UpdateGroupUi(group);
-        
+
         await RemoveMemberInventory(player, group);
 
-        adminPlayer.SendNotification($"Du hast {player.CharacterModel.Name} aus der Gruppe freigesetzt.", NotificationType.INFO);
+        adminPlayer.SendNotification($"Du hast {player.CharacterModel.Name} aus der Gruppe freigesetzt.",
+                                     NotificationType.INFO);
     }
 
     public async Task Leave(ServerPlayer player, GroupModel groupModel)
@@ -291,10 +305,13 @@ public class GroupModule
 
     public async Task SetSalary(ServerPlayer player, ServerPlayer target, GroupModel groupModel, uint salary)
     {
-        var groupMember = await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id && m.CharacterModelId == target.CharacterModel.Id);
+        var groupMember =
+            await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id &&
+                                                m.CharacterModelId == target.CharacterModel.Id);
         if (groupMember == null)
         {
-            player.SendNotification("Der Charakter ist nicht in deiner Gruppe. (Unternehmen, Fraktion)", NotificationType.ERROR);
+            player.SendNotification("Der Charakter ist nicht in deiner Gruppe. (Unternehmen, Fraktion)",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -328,7 +345,10 @@ public class GroupModule
     public async Task UpdateGroupUi(GroupModel groupModel)
     {
         foreach (var serverPlayer in groupModel.Members.Select(groupMember =>
-                                                              Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId)).Where(serverPlayer => serverPlayer != null))
+                                                                   Alt.GetAllPlayers()
+                                                                      .FindPlayerByCharacterId(
+                                                                          groupMember.CharacterModelId))
+                                               .Where(serverPlayer => serverPlayer != null))
         {
             await UpdateUi(serverPlayer);
         }
@@ -363,7 +383,7 @@ public class GroupModule
         {
             return false;
         }
-        
+
         await _groupRankService.Remove(rank);
         return true;
     }
@@ -398,17 +418,23 @@ public class GroupModule
 
     public async Task SetMemberRank(ServerPlayer player, GroupModel groupModel, int characterId, uint level)
     {
-        var groupMember = await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id && m.CharacterModelId == characterId);
+        var groupMember =
+            await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id && m.CharacterModelId == characterId);
         if (groupMember == null)
         {
-            player.SendNotification("Der Charakter ist nicht in deiner Gruppe. (Unternehmen, Fraktion)", NotificationType.ERROR);
+            player.SendNotification("Der Charakter ist nicht in deiner Gruppe. (Unternehmen, Fraktion)",
+                                    NotificationType.ERROR);
             return;
         }
 
-        var playerMember = await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id && m.CharacterModelId == player.CharacterModel.Id);
+        var playerMember =
+            await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id &&
+                                                m.CharacterModelId == player.CharacterModel.Id);
         if (!playerMember.Owner && playerMember.RankLevel < level)
         {
-            player.SendNotification($"Dein Charakter ist Level {playerMember.RankLevel} in der aktuellen Gruppe, du kannst kein höheres Level vergeben.", NotificationType.ERROR);
+            player.SendNotification(
+                $"Dein Charakter ist Level {playerMember.RankLevel} in der aktuellen Gruppe, du kannst kein höheres Level vergeben.",
+                NotificationType.ERROR);
             return;
         }
 

@@ -507,7 +507,8 @@ public class WeaponModule
     {
         var catalogItemId = GetItemIdFromModel(weaponModel);
 
-        var amountOfWeapon = player.CharacterModel.InventoryModel.Items.Count(i => i.CatalogItemModelId == catalogItemId);
+        var amountOfWeapon =
+            player.CharacterModel.InventoryModel.Items.Count(i => i.CatalogItemModelId == catalogItemId);
         if (amountOfWeapon != 1)
         {
             return;

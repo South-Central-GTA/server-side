@@ -13,14 +13,14 @@ public class PlayerVehicleCatalogHandler : ISingletonScript
 {
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
-    
+
     public PlayerVehicleCatalogHandler(
-        VehicleCatalogService vehicleCatalogService, 
+        VehicleCatalogService vehicleCatalogService,
         VehicleService vehicleService)
     {
         _vehicleCatalogService = vehicleCatalogService;
         _vehicleService = vehicleService;
-        
+
         AltAsync.OnClient<ServerPlayer>("playervehiclecatalog:open", OnOpen);
     }
 
@@ -46,7 +46,7 @@ public class PlayerVehicleCatalogHandler : ISingletonScript
             {
                 continue;
             }
-            
+
             vehicleDatas.Add(new VehicleData
             {
                 Id = vehicle.Id,

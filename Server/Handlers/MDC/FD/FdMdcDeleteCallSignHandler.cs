@@ -12,18 +12,17 @@ namespace Server.Handlers.MDC.FD;
 public class FdMdcDeleteCallSignHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly FireMdcModule _fireMdcModule;
     private readonly GroupModule _groupModule;
 
     public FdMdcDeleteCallSignHandler(
-        GroupFactionService groupFactionService, 
-        
+        GroupFactionService groupFactionService,
         FireMdcModule fireMdcModule,
         GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;
-        
+
         _fireMdcModule = fireMdcModule;
         _groupModule = groupModule;
 
@@ -36,7 +35,7 @@ public class FdMdcDeleteCallSignHandler : ISingletonScript
         {
             return;
         }
-        
+
         var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
@@ -47,7 +46,7 @@ public class FdMdcDeleteCallSignHandler : ISingletonScript
         {
             return;
         }
-        
+
         await _fireMdcModule.CallSign.DeleteCallSign(player, callSign);
     }
 }

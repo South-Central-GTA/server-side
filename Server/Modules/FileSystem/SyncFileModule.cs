@@ -14,14 +14,13 @@ public class SyncFileModule : ISingletonScript
     private readonly DirectoryService _directoryService;
 
     public SyncFileModule(
-        GroupService groupService, 
+        GroupService groupService,
         DirectoryService directoryService,
-        
         FileModule fileModule)
     {
         _groupService = groupService;
         _directoryService = directoryService;
-        
+
         _fileModule = fileModule;
     }
 
@@ -32,10 +31,11 @@ public class SyncFileModule : ISingletonScript
         {
             return;
         }
-        
+
         foreach (var serverPlayer in groupModel.Members
                                                .Select(groupMember => Alt.GetAllPlayers()
-                                                                         .FindPlayerByCharacterId(groupMember.CharacterModelId))
+                                                                         .FindPlayerByCharacterId(
+                                                                             groupMember.CharacterModelId))
                                                .Where(serverPlayer => serverPlayer != null))
         {
             if (directoryId.HasValue)
@@ -49,19 +49,24 @@ public class SyncFileModule : ISingletonScript
                 {
                     continue;
                 }
-                
+
                 var directory = await _directoryService.Find(d => d.Id == directoryId);
                 if (directory == null)
                 {
                     return;
                 }
-                
-                serverPlayer.EmitGui("filesystem:opendirectory", directoryId.Value, directory.Title,
+
+                serverPlayer.EmitGui("filesystem:opendirectory",
+                                     directoryId.Value,
+                                     directory.Title,
                                      await _fileModule.GetAllFilesFromDirectory(directoryId.Value));
             }
             else
             {
-                serverPlayer.EmitGui("filesystem:opendirectory", null, null, await _fileModule.GetAllDirectories(groupId));
+                serverPlayer.EmitGui("filesystem:opendirectory",
+                                     null,
+                                     null,
+                                     await _fileModule.GetAllDirectories(groupId));
             }
         }
     }

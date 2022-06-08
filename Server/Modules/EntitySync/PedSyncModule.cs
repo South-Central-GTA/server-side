@@ -7,6 +7,7 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Data.Enums.EntitySync;
+using Server.Database.Models.Character;
 using Server.Database.Models.Housing;
 
 namespace Server.Modules.EntitySync;
@@ -18,22 +19,30 @@ public class PedSyncModule : ISingletonScript
     private readonly Dictionary<int, ServerPed> _cashierPeds = new();
 
     private readonly CompanyOptions _companyOptions;
-    
+
     public PedSyncModule(IOptions<CompanyOptions> companyOptions)
     {
         _companyOptions = companyOptions.Value;
     }
-    
-    public void CreateTemp(ServerPlayer player, string model, Position position, float heading, int dimension, ServerVehicle vehicle, int seat = 0, uint streamRange = 200)
+
+    public void CreateTemp(ServerPlayer player, string model, Position position, float heading, int dimension,
+                           ServerVehicle vehicle, int seat = 0, uint streamRange = 200)
     {
         var serverPed = Create(model, position, heading, dimension, streamRange, vehicle, seat);
         _playerPeds.Add(player.Id, serverPed);
     }
 
     public ServerPed Create(string model, Position position, float heading, int dimension, uint streamRange = 200,
-                            ServerVehicle? vehicle = null, int seat = 0)
+                            ServerVehicle? vehicle = null, int seat = 0, CharacterModel? characterModel = null)
     {
-        var serverPed = new ServerPed(position, dimension, streamRange) { Model = model, Heading = heading, Vehicle = vehicle, Seat = seat };
+        var serverPed = new ServerPed(position, dimension, streamRange)
+        {
+            Model = model,
+            Heading = heading,
+            Vehicle = vehicle,
+            Seat = seat,
+            CharacterModel = characterModel
+        };
 
         AltEntitySync.AddEntity(serverPed);
         _peds.Add(serverPed.Id, serverPed);
@@ -66,7 +75,7 @@ public class PedSyncModule : ISingletonScript
         _playerPeds.Remove(player.Id);
         _peds.Remove(serverPed.Id);
     }
-    
+
 
     public void DeleteAll()
     {
@@ -79,7 +88,7 @@ public class PedSyncModule : ISingletonScript
         _playerPeds.Clear();
         _cashierPeds.Clear();
     }
-    
+
     public ServerPed? GetPlayer(ServerPlayer player)
     {
         return !_peds.TryGetValue(player.Id, out var serverPed) ? null : serverPed;
@@ -99,7 +108,7 @@ public class PedSyncModule : ISingletonScript
     {
         return _peds.Select(entity => entity.Value).ToList();
     }
-    
+
     public void CreateCashier(LeaseCompanyHouseModel leaseCompanyHouseModel)
     {
         if (leaseCompanyHouseModel.PlayerDuty ||
@@ -113,7 +122,9 @@ public class PedSyncModule : ISingletonScript
         }
 
         var serverPed = Create(_companyOptions.Types[leaseCompanyHouseModel.LeaseCompanyType].Cashier,
-                               new Position(leaseCompanyHouseModel.CashierX.Value, leaseCompanyHouseModel.CashierY.Value, leaseCompanyHouseModel.CashierZ.Value),
+                               new Position(leaseCompanyHouseModel.CashierX.Value,
+                                            leaseCompanyHouseModel.CashierY.Value,
+                                            leaseCompanyHouseModel.CashierZ.Value),
                                leaseCompanyHouseModel.CashierHeading.Value,
                                0);
 

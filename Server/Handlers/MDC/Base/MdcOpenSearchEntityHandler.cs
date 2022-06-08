@@ -18,12 +18,11 @@ public class MdcOpenSearchEntityHandler : ISingletonScript
 
     public MdcOpenSearchEntityHandler(
         GroupFactionService groupFactionService,
-        
         FireMdcModule fireMdcModule,
         PoliceMdcModule policeMdcModule)
     {
         _groupFactionService = groupFactionService;
-        
+
         _fireMdcModule = fireMdcModule;
         _policeMdcModule = policeMdcModule;
 

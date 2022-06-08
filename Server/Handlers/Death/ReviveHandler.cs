@@ -12,7 +12,7 @@ public class ReviveHandler : ISingletonScript
     public ReviveHandler(ReviveModule reviveModule)
     {
         _reviveModule = reviveModule;
-        
+
         AltAsync.OnClient<ServerPlayer, ushort>("revive:reviveplayer", OnPlayerRevive);
     }
 

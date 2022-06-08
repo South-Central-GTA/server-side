@@ -52,11 +52,12 @@ public class VehicleSelectionModule
             catalogVehicle.SouthCentralPoints = _southCentralPointsModule.GetPointsPrice(catalogVehicle.Price);
         }
 
-        return catalogVehicles.FindAll(veh => veh.SouthCentralPoints <= _characterCreatorOptions.MaxSouthCentralPointsVehicles
-                                              && veh.Price != 0
-                                              && _characterCreatorOptions.WhitelistedClasses.Contains(veh.ClassId)
-                                              && !_characterCreatorOptions.BlacklistedModels.Contains(veh.Model.ToLower())
-                                              && !_characterCreatorOptions.BlacklistedDlcs.Contains(veh.DlcName.ToLower()));
+        return catalogVehicles.FindAll(
+            veh => veh.SouthCentralPoints <= _characterCreatorOptions.MaxSouthCentralPointsVehicles
+                   && veh.Price != 0
+                   && _characterCreatorOptions.WhitelistedClasses.Contains(veh.ClassId)
+                   && !_characterCreatorOptions.BlacklistedModels.Contains(veh.Model.ToLower())
+                   && !_characterCreatorOptions.BlacklistedDlcs.Contains(veh.DlcName.ToLower()));
     }
 
     public async Task<List<CatalogVehicleModel>> GetTransportVehicles()

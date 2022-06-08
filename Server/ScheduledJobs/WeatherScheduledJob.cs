@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Server.Modules;
+using Server.Core.ScheduledJobs;
 using Server.Modules.World;
 
-namespace Server.ScheduledJob;
+namespace Server.ScheduledJobs;
 
-public class WeatherScheduledJob
-    : ScheduledJob
+public class WeatherScheduledJob : ScheduledJob
 {
     private static readonly Random Random = new();
     private readonly ILogger<WeatherScheduledJob> _logger;

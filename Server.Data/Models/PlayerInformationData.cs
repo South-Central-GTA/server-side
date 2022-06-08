@@ -27,7 +27,7 @@ public class PlayerInformationData
 
         writer.Name("characterId");
         writer.Value(CharacterId);
-        
+
         writer.Name("characterName");
         writer.Value(CharacterName);
 

@@ -12,14 +12,13 @@ public class RevokeEditFileHandler : ISingletonScript
     private readonly FileService _fileService;
 
     private readonly GroupModule _groupModule;
-    
+
     public RevokeEditFileHandler(
         FileService fileService,
-        
         GroupModule groupModule)
     {
         _fileService = fileService;
-        
+
         _groupModule = groupModule;
 
         AltAsync.OnClient<ServerPlayer, int>("filesystem:revokeeditfile", OnRevokeEditFile);
@@ -37,7 +36,7 @@ public class RevokeEditFileHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (!await _groupModule.IsPlayerInGroup(player, file.DirectoryModel.GroupModelId))
         {
             return;

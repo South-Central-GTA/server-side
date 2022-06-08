@@ -20,24 +20,23 @@ public class TransferBankHandler : ISingletonScript
     private readonly BankHistoryService _bankHistoryService;
     private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     private readonly BankModule _bankModule;
     private readonly PoliceTicketModule _policeTicketModule;
 
     public TransferBankHandler(
-        BankAccountService bankAccountService, 
-        BankHistoryService bankHistoryService, 
+        BankAccountService bankAccountService,
+        BankHistoryService bankHistoryService,
         RegistrationOfficeService registrationOfficeService,
-        GroupService groupService, 
-        
-        BankModule bankModule, 
+        GroupService groupService,
+        BankModule bankModule,
         PoliceTicketModule policeTicketModule)
     {
         _bankAccountService = bankAccountService;
         _bankHistoryService = bankHistoryService;
         _groupService = groupService;
         _registrationOfficeService = registrationOfficeService;
-        
+
         _bankModule = bankModule;
         _policeTicketModule = policeTicketModule;
 
@@ -55,10 +54,11 @@ public class TransferBankHandler : ISingletonScript
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
-        
+
         if (0 >= value)
         {
             player.SendNotification("Es muss eine positive Zahl welche größer ist als Null genutzt werden.",
@@ -132,7 +132,8 @@ public class TransferBankHandler : ISingletonScript
         foreach (var targetPlayer
                  in bankAccount.CharacterAccesses.Select(characterAccess =>
                                                              Alt.GetAllPlayers()
-                                                                .FindPlayerByCharacterId(characterAccess.CharacterModelId))
+                                                                .FindPlayerByCharacterId(
+                                                                    characterAccess.CharacterModelId))
                                .Where(serverPlayer => serverPlayer != null))
         {
             await _bankModule.UpdateUi(targetPlayer);

@@ -15,7 +15,7 @@ public class ReviveModule : ISingletonScript
     private readonly CharacterService _characterService;
     private readonly GroupFactionService _groupFactionService;
 
-    public ReviveModule(CharacterService characterService, 
+    public ReviveModule(CharacterService characterService,
                         GroupFactionService groupFactionService)
     {
         _characterService = characterService;
@@ -63,10 +63,12 @@ public class ReviveModule : ISingletonScript
         player.SetSyncedMetaData("DEATH_STATE", player.CharacterModel.DeathState);
 
         await _characterService.Update(player.CharacterModel);
-        
+
         await player.SetInvincibleAsync(false);
         await player.SetPositionAsync(position ?? player.Position);
 
         player.ClearTimer("player_respawn");
+        player.EmitLocked("death:revive");
+        player.Invincible = false;
     }
 }

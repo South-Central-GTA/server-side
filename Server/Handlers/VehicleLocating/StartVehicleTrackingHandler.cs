@@ -12,7 +12,7 @@ public class StartVehicleTrackingHandler : ISingletonScript
     public StartVehicleTrackingHandler(VehicleLocatingModule vehicleLocatingModule)
     {
         _vehicleLocatingModule = vehicleLocatingModule;
-        
+
         AltAsync.OnClient<ServerPlayer, int>("locating:trackvehicle", OnStartTracking);
     }
 

@@ -14,14 +14,11 @@ public class ActionData
         CustomData = customData;
     }
 
-    [JsonPropertyName("title")] 
-    public string Title { get; set; }
+    [JsonPropertyName("title")] public string Title { get; set; }
 
-    [JsonPropertyName("event")] 
-    public string Event { get; set; }
+    [JsonPropertyName("event")] public string Event { get; set; }
 
-    [JsonPropertyName("customData")] 
-    public object? CustomData { get; set; }
+    [JsonPropertyName("customData")] public object? CustomData { get; set; }
 
     public void OnWrite(IMValueWriter writer)
     {

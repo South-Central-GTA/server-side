@@ -11,15 +11,15 @@ namespace Server.Handlers.MDC.PD;
 public class PdMdcDeleteCriminalRecord : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly PoliceMdcModule _policeMdcModule;
     private readonly CriminalRecordModule _criminalRecordModule;
     private readonly GroupModule _groupModule;
- 
+
     public PdMdcDeleteCriminalRecord(
         GroupFactionService groupFactionService,
         PoliceMdcModule policeMdcModule,
-        CriminalRecordModule criminalRecordModule, 
+        CriminalRecordModule criminalRecordModule,
         GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;
@@ -36,7 +36,7 @@ public class PdMdcDeleteCriminalRecord : ISingletonScript
         {
             return;
         }
-        
+
         var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
@@ -47,15 +47,15 @@ public class PdMdcDeleteCriminalRecord : ISingletonScript
         {
             return;
         }
-        
+
         var criminalRecord = await _criminalRecordModule.GetById(id);
         if (criminalRecord == null)
         {
             return;
         }
-        
+
         await _criminalRecordModule.Remove(criminalRecord);
-        
+
         await _policeMdcModule.OpenCharacterRecord(player, criminalRecord.CharacterModelId.ToString());
     }
 }

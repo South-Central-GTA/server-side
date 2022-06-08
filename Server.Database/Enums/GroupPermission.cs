@@ -27,6 +27,6 @@ public enum GroupPermission
     MAILING_SENDING = 1 << 15,
     MAILING_READING = 1 << 16,
     MAILING_DELETING = 1 << 17,
-    
+
     MDC_OPERATOR = 1 << 17
 }

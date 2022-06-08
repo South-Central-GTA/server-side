@@ -22,7 +22,7 @@ public class SellLicenseHandler : ISingletonScript
     private readonly BankAccountService _bankAccountService;
     private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     private readonly BankModule _bankModule;
     private readonly GroupModule _groupModule;
     private readonly PhoneModule _phoneModule;
@@ -32,9 +32,8 @@ public class SellLicenseHandler : ISingletonScript
         GroupService groupService,
         BankAccountService bankAccountService,
         RegistrationOfficeService registrationOfficeService,
-        
         GroupModule groupModule,
-        BankModule bankModule, 
+        BankModule bankModule,
         PhoneModule phoneModule)
     {
         _companyOptions = companyOptions.Value;
@@ -65,14 +64,15 @@ public class SellLicenseHandler : ISingletonScript
         {
             return;
         }
-        
+
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
-        
+
         var license = _companyOptions.Licenses.Find(l => l.License == licensesFlags);
         if (license == null)
         {
@@ -81,7 +81,8 @@ public class SellLicenseHandler : ISingletonScript
 
         var bankAccount = await _bankAccountService.Find(ba =>
                                                              ba.Type == OwnableAccountType.GROUP
-                                                             && ba.GroupRankAccess.Any(gra => gra.GroupModelId == companyGroup.Id));
+                                                             && ba.GroupRankAccess.Any(
+                                                                 gra => gra.GroupModelId == companyGroup.Id));
 
         var price = (int)(license.Price * 0.5f);
 

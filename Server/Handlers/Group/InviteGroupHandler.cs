@@ -50,7 +50,8 @@ public class InviteGroupHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.DEPOSIT))
         {
-            player.SendNotification("Dein Charakter hat keine Einzahlrechte auf dem Bankkonto.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat keine Einzahlrechte auf dem Bankkonto.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -69,19 +70,23 @@ public class InviteGroupHandler : ISingletonScript
 
         if (await _groupModule.IsPlayerInGroupType(player, GroupType.COMPANY))
         {
-            player.SendNotification("Dein Charakter ist schon in einem spielerbasierten Unternehmen und kann deswegen nicht beitreten.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter ist schon in einem spielerbasierten Unternehmen und kann deswegen nicht beitreten.",
+                NotificationType.ERROR);
             return;
         }
 
         if (await _groupModule.IsPlayerInGroupType(player, GroupType.FACTION))
         {
-            player.SendNotification("Dein Charakter ist schon in einer Fraktion und kann deswegen nicht beitreten.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist schon in einer Fraktion und kann deswegen nicht beitreten.",
+                                    NotificationType.ERROR);
             return;
         }
 
         if (player.CharacterModel.JobModel != null)
         {
-            player.SendNotification("Dein Charakter hat einen definierten Job und kann deswegen nicht beitreten.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat einen definierten Job und kann deswegen nicht beitreten.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -102,6 +107,8 @@ public class InviteGroupHandler : ISingletonScript
         }
 
         player.SendNotification("Du hast die Einladung abgelehnt.", NotificationType.INFO);
-        inviter.SendNotification($"Der Charakter {player.CharacterModel.Name} hat die Anfrage das Unternehmen beizutreten abgelehnt.", NotificationType.WARNING);
+        inviter.SendNotification(
+            $"Der Charakter {player.CharacterModel.Name} hat die Anfrage das Unternehmen beizutreten abgelehnt.",
+            NotificationType.WARNING);
     }
 }

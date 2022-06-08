@@ -52,7 +52,8 @@ public class LeaseCompanyHandler : ISingletonScript
 
         if (await _houseService.GetByDistance(player.Position) is not LeaseCompanyHouseModel leaseCompanyHouse)
         {
-            player.SendNotification("Es ist kein pachtbarer Unternehmenssitz in der Nähe deines Charakters.", NotificationType.ERROR);
+            player.SendNotification("Es ist kein pachtbarer Unternehmenssitz in der Nähe deines Charakters.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -66,7 +67,8 @@ public class LeaseCompanyHandler : ISingletonScript
 
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -92,6 +94,8 @@ public class LeaseCompanyHandler : ISingletonScript
         await _houseService.Update(leaseCompanyHouse);
         await _houseModule.UpdateOnClient(leaseCompanyHouse);
 
-        player.SendNotification("Erfolgreich Unternehmenssitz gepachtet erstelle dir mit /creategkey einen Gruppenschlüssel.", NotificationType.SUCCESS);
+        player.SendNotification(
+            "Erfolgreich Unternehmenssitz gepachtet erstelle dir mit /creategkey einen Gruppenschlüssel.",
+            NotificationType.SUCCESS);
     }
 }

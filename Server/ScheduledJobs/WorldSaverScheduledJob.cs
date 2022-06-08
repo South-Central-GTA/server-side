@@ -3,7 +3,7 @@
 // using System.Threading.Tasks;
 // using Microsoft.Extensions.Logging;
 // using Microsoft.Extensions.Options;
-// using Server.Core.Abstractions;
+// using Shared.Core.Abstractions;
 // using Server.Core.Configuration;
 //
 // namespace Server.ScheduledJob

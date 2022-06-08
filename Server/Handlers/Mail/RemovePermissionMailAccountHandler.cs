@@ -27,7 +27,8 @@ public class RemovePermissionMailAccountHandler : ISingletonScript
         AltAsync.OnClient<ServerPlayer, string, int, string>("mailing:removepermission", OnRemovePermission);
     }
 
-    private async void OnRemovePermission(ServerPlayer player, string mailAddress, int characterId, string expectedPermission)
+    private async void OnRemovePermission(ServerPlayer player, string mailAddress, int characterId,
+                                          string expectedPermission)
     {
         if (!player.Exists)
         {

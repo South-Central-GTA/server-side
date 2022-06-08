@@ -8,11 +8,11 @@ namespace Server.Handlers.Bank;
 public class AtmHandler : ISingletonScript
 {
     private readonly BankModule _bankModule;
-    
+
     public AtmHandler(BankModule bankModule)
     {
         _bankModule = bankModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("atm:requestopenmenu", OnRequestOpenMenu);
     }
 

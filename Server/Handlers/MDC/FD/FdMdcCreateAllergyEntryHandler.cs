@@ -11,18 +11,17 @@ namespace Server.Handlers.MDC.FD;
 public class FdMdcCreateAllergyEntryHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly AllergiesModule _allergiesModule;
     private readonly FireMdcModule _fireMdcModule;
 
     public FdMdcCreateAllergyEntryHandler(
         GroupFactionService groupFactionService,
-        
-        AllergiesModule allergiesModule, 
-        FireMdcModule fireMdcModule) 
+        AllergiesModule allergiesModule,
+        FireMdcModule fireMdcModule)
     {
         _groupFactionService = groupFactionService;
-        
+
         _allergiesModule = allergiesModule;
         _fireMdcModule = fireMdcModule;
 
@@ -43,7 +42,7 @@ public class FdMdcCreateAllergyEntryHandler : ISingletonScript
         }
 
         await _allergiesModule.Add(characterId, player.CharacterModel.Name, input);
-        
+
         await _fireMdcModule.OpenPatientRecords(player, characterId);
     }
 }

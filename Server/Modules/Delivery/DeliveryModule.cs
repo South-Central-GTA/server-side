@@ -103,12 +103,10 @@ public class DeliveryModule
     {
         var groupPlayers = Alt.GetAllPlayers()
                               .Where(p => p.Exists && p.IsSpawned && groupModel.Members
-                                                                          .Any(m => m.CharacterModelId == p.CharacterModel.Id));
+                                                                               .Any(m => m.CharacterModelId ==
+                                                                                         p.CharacterModel.Id));
 
-        var callback = new Action<ServerPlayer>(async player =>
-        {
-            await UpdatePlayerOpenDeliveriesUi(player);
-        });
+        var callback = new Action<ServerPlayer>(async player => { await UpdatePlayerOpenDeliveriesUi(player); });
 
         groupPlayers.ForEach(callback);
     }
@@ -122,8 +120,9 @@ public class DeliveryModule
         }
 
         var deliveries = await _deliveryService.Where(d => d.Status == DeliveryState.OPEN);
-        deliveries = deliveries.FindAll(d => ((CompanyGroupModel)d.OrderGroupModel).DeliveryVisibilityStatus == VisiblityState.PUBLIC
-                                             || groups.Any(g => g.Id == d.OrderGroupModelId));
+        deliveries = deliveries.FindAll(
+            d => ((CompanyGroupModel)d.OrderGroupModel).DeliveryVisibilityStatus == VisiblityState.PUBLIC
+                 || groups.Any(g => g.Id == d.OrderGroupModelId));
 
         player.EmitGui("delivery:sendopendeliveries", deliveries);
     }
@@ -222,14 +221,20 @@ public class DeliveryModule
 
         UpdateGroupOpenDeliveriesUi(delivery.OrderGroupModel);
 
-        player.SendNotification("Es ist verboten Roleplay zu rushen, spiele das Verladen sowie aber noch viel wichtiger das Abladen korrekt aus, andere Spieler könnten dich sehen.", NotificationType.INFO);
-        player.SendNotification("Waren wurden erfolgreich aufgeladen, fahre nun zum markierten Ziel und gebe die Waren mit /deploy ab.", NotificationType.SUCCESS);
+        player.SendNotification(
+            "Es ist verboten Roleplay zu rushen, spiele das Verladen sowie aber noch viel wichtiger das Abladen korrekt aus, andere Spieler könnten dich sehen.",
+            NotificationType.INFO);
+        player.SendNotification(
+            "Waren wurden erfolgreich aufgeladen, fahre nun zum markierten Ziel und gebe die Waren mit /deploy ab.",
+            NotificationType.SUCCESS);
     }
 
-    private async Task<Database.Models.Delivery.DeliveryModel?> HandleCollectProductDelivery(ServerPlayer player, ServerVehicle vehicle,
-                                                                                        ProductDeliveryModel productDeliveryModel)
+    private async Task<Database.Models.Delivery.DeliveryModel?> HandleCollectProductDelivery(
+        ServerPlayer player, ServerVehicle vehicle,
+        ProductDeliveryModel productDeliveryModel)
     {
-        var maxLoad = _vehicleSelectionModule.GetVehicleTransportSize(((VehicleModel)vehicle.Model).ToString().ToLower());
+        var maxLoad =
+            _vehicleSelectionModule.GetVehicleTransportSize(((VehicleModel)vehicle.Model).ToString().ToLower());
         if (!maxLoad.HasValue)
         {
             player.SendNotification("Mit diesem Fahrzeug können keine Lieferungen getätigt werden.",
@@ -239,8 +244,9 @@ public class DeliveryModule
 
         if (maxLoad < productDeliveryModel.ProductsRemaining)
         {
-            player.SendNotification($"Es passen nicht alle bestellten Produkte in das Fahrzeug, es wurden {maxLoad} Produkte aufgeladen.",
-                                    NotificationType.WARNING);
+            player.SendNotification(
+                $"Es passen nicht alle bestellten Produkte in das Fahrzeug, es wurden {maxLoad} Produkte aufgeladen.",
+                NotificationType.WARNING);
         }
 
         if (productDeliveryModel.ProductsRemaining < maxLoad.Value)
@@ -261,8 +267,9 @@ public class DeliveryModule
         return productDeliveryModel;
     }
 
-    private async Task<Database.Models.Delivery.DeliveryModel?> HandleCollectVehicleDelivery(ServerPlayer player, ServerVehicle vehicle,
-                                                                                        VehicleDeliveryModel vehicleDeliveryModel)
+    private async Task<Database.Models.Delivery.DeliveryModel?> HandleCollectVehicleDelivery(
+        ServerPlayer player, ServerVehicle vehicle,
+        VehicleDeliveryModel vehicleDeliveryModel)
     {
         if ((VehicleModel)vehicle.Model != VehicleModel.Tr2)
         {
@@ -389,8 +396,9 @@ public class DeliveryModule
         }
     }
 
-    private async Task<Database.Models.Delivery.DeliveryModel?> HandleDeployProductDelivery(ServerPlayer player, ProductDeliveryModel deliveryModel,
-                                                                                       IVehicle vehicle)
+    private async Task<Database.Models.Delivery.DeliveryModel?> HandleDeployProductDelivery(
+        ServerPlayer player, ProductDeliveryModel deliveryModel,
+        IVehicle vehicle)
     {
         if (!vehicle.HasData("AMOUNT_OF_PRODUCTS"))
         {
@@ -409,7 +417,9 @@ public class DeliveryModule
         var bankAccount = await _bankAccountService.GetByOwningGroup(deliveryModel.OrderGroupModelId);
         if (bankAccount == null)
         {
-            player.SendNotification("Das Bankkonto des Unternehmens existiert nicht mehr, der Auftrag kann nicht beendet werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Das Bankkonto des Unternehmens existiert nicht mehr, der Auftrag kann nicht beendet werden.",
+                NotificationType.ERROR);
             return null;
         }
 
@@ -419,11 +429,14 @@ public class DeliveryModule
         var supplierGroupBankAccount = await _bankAccountService.GetByOwningGroup(deliveryModel.OrderGroupModel.Id);
         if (supplierGroupBankAccount == null)
         {
-            player.SendNotification("Das Bankkonto deines Unternehmens existiert nicht mehr, der Auftrag kann nicht beendet werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Das Bankkonto deines Unternehmens existiert nicht mehr, der Auftrag kann nicht beendet werden.",
+                NotificationType.ERROR);
             return null;
         }
 
-        var salaryForSupplierGroup = (int)(amountOfProducts * _deliveryOptions.ProductPrice * _deliveryOptions.SharesForSuppliers);
+        var salaryForSupplierGroup =
+            (int)(amountOfProducts * _deliveryOptions.ProductPrice * _deliveryOptions.SharesForSuppliers);
         await _bankModule.Deposit(supplierGroupBankAccount, salaryForSupplierGroup, "Produktlieferung");
 
         vehicle.DeleteData("AMOUNT_OF_PRODUCTS");
@@ -437,16 +450,19 @@ public class DeliveryModule
             player.EmitGui("delivery:stopmydelivery");
             player.ClearWaypoint();
 
-            player.SendNotification("Waren erfolgreich abgeladen und Auftrag abgeschlossen. Das Transportunternehmen, erhält das Geld auf das Unternehmenskonto überwiesen.",
-                                    NotificationType.SUCCESS);
+            player.SendNotification(
+                "Waren erfolgreich abgeladen und Auftrag abgeschlossen. Das Transportunternehmen, erhält das Geld auf das Unternehmenskonto überwiesen.",
+                NotificationType.SUCCESS);
         }
         else
         {
-            player.SendNotification($"Der Lieferauftrag ist noch nicht abgeschlossen. Es konnten nur {amountOfProducts} aufgeladen werden, es fehlen noch {deliveryModel.ProductsRemaining} Produkte.",
-                                    NotificationType.WARNING);
+            player.SendNotification(
+                $"Der Lieferauftrag ist noch nicht abgeschlossen. Es konnten nur {amountOfProducts} aufgeladen werden, es fehlen noch {deliveryModel.ProductsRemaining} Produkte.",
+                NotificationType.WARNING);
 
-            player.SendNotification("Waren erfolgreich abgeladen, Das Transportunternehmen erhält das Geld auf das Unternehmenskonto überwiesen.",
-                                    NotificationType.SUCCESS);
+            player.SendNotification(
+                "Waren erfolgreich abgeladen, Das Transportunternehmen erhält das Geld auf das Unternehmenskonto überwiesen.",
+                NotificationType.SUCCESS);
 
             deliveryModel.Status = DeliveryState.DELIVERD_BACK_TO_HARBOR;
         }
@@ -454,8 +470,9 @@ public class DeliveryModule
         return deliveryModel;
     }
 
-    private async Task<Database.Models.Delivery.DeliveryModel?> HandleDeployVehicleDelivery(ServerPlayer player, VehicleDeliveryModel deliveryModel,
-                                                                                       IVehicle vehicle)
+    private async Task<Database.Models.Delivery.DeliveryModel?> HandleDeployVehicleDelivery(
+        ServerPlayer player, VehicleDeliveryModel deliveryModel,
+        IVehicle vehicle)
     {
         if (!vehicle.HasData("AMOUNT_OF_VEHICLES"))
         {
@@ -466,7 +483,9 @@ public class DeliveryModule
         var bankAccount = await _bankAccountService.GetByOwningGroup(deliveryModel.OrderGroupModelId);
         if (bankAccount == null)
         {
-            player.SendNotification("Das Bankkonto des Unternehmens existiert nicht mehr, der Auftrag kann nicht beendet werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Das Bankkonto des Unternehmens existiert nicht mehr, der Auftrag kann nicht beendet werden.",
+                NotificationType.ERROR);
             return null;
         }
 
@@ -485,12 +504,16 @@ public class DeliveryModule
         var supplierGroupBankAccount = await _bankAccountService.GetByOwningGroup(deliveryModel.OrderGroupModel.Id);
         if (supplierGroupBankAccount == null)
         {
-            player.SendNotification("Das Bankkonto deines Unternehmens existiert nicht mehr, der Auftrag kann nicht beendet werden.", NotificationType.ERROR);
+            player.SendNotification(
+                "Das Bankkonto deines Unternehmens existiert nicht mehr, der Auftrag kann nicht beendet werden.",
+                NotificationType.ERROR);
             return null;
         }
 
         var salaryForSupplierGroup = (int)(price * _deliveryOptions.SharesForSuppliers);
-        await _bankModule.Deposit(supplierGroupBankAccount, salaryForSupplierGroup, $"Fahrzeuglieferung: '{catalogVehicle.DisplayName}'");
+        await _bankModule.Deposit(supplierGroupBankAccount,
+                                  salaryForSupplierGroup,
+                                  $"Fahrzeuglieferung: '{catalogVehicle.DisplayName}'");
 
         if (vehicle.HasData("AMOUNT_OF_VEHICLES"))
         {
@@ -509,15 +532,14 @@ public class DeliveryModule
         var randomColor = _random.Next(0, 111);
 
         await _vehicleModule.CreatePersistent(deliveryModel.VehicleModel,
-            deliveryModel.OrderGroupModel,
-            Position.Zero,
-            Rotation.Zero,
-            0,
-            randomColor,
-            randomColor,
-            VehicleState.IN_STORAGE,
-            _random.Next(60000, 80000)
-            );
+                                              deliveryModel.OrderGroupModel,
+                                              Position.Zero,
+                                              Rotation.Zero,
+                                              0,
+                                              randomColor,
+                                              randomColor,
+                                              VehicleState.IN_STORAGE,
+                                              _random.Next(60000, 80000));
 
         deliveryModel.Status = DeliveryState.DELIVERD;
         deliveryModel.SupplierCharacterId = null;
@@ -526,8 +548,9 @@ public class DeliveryModule
         player.EmitGui("delivery:stopmydelivery");
         player.ClearWaypoint();
 
-        player.SendNotification("Fahrzeug erfolgreich abgeladen und ins Lager gebracht. Das Transportunternehmen, erhält das Geld auf das Unternehmenskonto überwiesen.",
-                                NotificationType.SUCCESS);
+        player.SendNotification(
+            "Fahrzeug erfolgreich abgeladen und ins Lager gebracht. Das Transportunternehmen, erhält das Geld auf das Unternehmenskonto überwiesen.",
+            NotificationType.SUCCESS);
 
         return deliveryModel;
     }

@@ -174,222 +174,222 @@ public class AppearancesModel
     {
         var diffs = 0;
 
-        if (Hair != appearancesModel.Hair) 
+        if (Hair != appearancesModel.Hair)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (PrimHairColor != appearancesModel.PrimHairColor) 
+
+        if (PrimHairColor != appearancesModel.PrimHairColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (SecHairColor != appearancesModel.SecHairColor) 
+
+        if (SecHairColor != appearancesModel.SecHairColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (EyeColor != appearancesModel.EyeColor) 
+
+        if (EyeColor != appearancesModel.EyeColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BlemishesValue != appearancesModel.BlemishesValue) 
+
+        if (BlemishesValue != appearancesModel.BlemishesValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BlemishesOpacity != appearancesModel.BlemishesOpacity) 
+
+        if (BlemishesOpacity != appearancesModel.BlemishesOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BlemishesColor != appearancesModel.BlemishesColor) 
+
+        if (BlemishesColor != appearancesModel.BlemishesColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (FacialhairValue != appearancesModel.FacialhairValue) 
+
+        if (FacialhairValue != appearancesModel.FacialhairValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (FacialhairOpacity != appearancesModel.FacialhairOpacity) 
+
+        if (FacialhairOpacity != appearancesModel.FacialhairOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (FacialhairColor != appearancesModel.FacialhairColor) 
+
+        if (FacialhairColor != appearancesModel.FacialhairColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (EyebrowsValue != appearancesModel.EyebrowsValue) 
+
+        if (EyebrowsValue != appearancesModel.EyebrowsValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (EyebrowsOpacity != appearancesModel.EyebrowsOpacity) 
+
+        if (EyebrowsOpacity != appearancesModel.EyebrowsOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (EyebrowsColor != appearancesModel.EyebrowsColor) 
+
+        if (EyebrowsColor != appearancesModel.EyebrowsColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (AgeingValue != appearancesModel.AgeingValue) 
+
+        if (AgeingValue != appearancesModel.AgeingValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (AgeingOpacity != appearancesModel.AgeingOpacity) 
+
+        if (AgeingOpacity != appearancesModel.AgeingOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (AgeingColor != appearancesModel.AgeingColor) 
+
+        if (AgeingColor != appearancesModel.AgeingColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (MakeupValue != appearancesModel.MakeupValue) 
+
+        if (MakeupValue != appearancesModel.MakeupValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (MakeupOpacity != appearancesModel.MakeupOpacity) 
+
+        if (MakeupOpacity != appearancesModel.MakeupOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (MakeupColor != appearancesModel.MakeupColor) 
+
+        if (MakeupColor != appearancesModel.MakeupColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BlushValue != appearancesModel.BlushValue) 
+
+        if (BlushValue != appearancesModel.BlushValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BlushOpacity != appearancesModel.BlushOpacity) 
+
+        if (BlushOpacity != appearancesModel.BlushOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BlushColor != appearancesModel.BlushColor) 
+
+        if (BlushColor != appearancesModel.BlushColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (ComplexionValue != appearancesModel.ComplexionValue) 
+
+        if (ComplexionValue != appearancesModel.ComplexionValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (ComplexionOpacity != appearancesModel.ComplexionOpacity) 
+
+        if (ComplexionOpacity != appearancesModel.ComplexionOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (ComplexionColor != appearancesModel.ComplexionColor) 
+
+        if (ComplexionColor != appearancesModel.ComplexionColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (SundamageValue != appearancesModel.SundamageValue) 
+
+        if (SundamageValue != appearancesModel.SundamageValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (SundamageOpacity != appearancesModel.SundamageOpacity) 
+
+        if (SundamageOpacity != appearancesModel.SundamageOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (SundamageColor != appearancesModel.SundamageColor) 
+
+        if (SundamageColor != appearancesModel.SundamageColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (LipstickValue != appearancesModel.LipstickValue) 
+
+        if (LipstickValue != appearancesModel.LipstickValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (LipstickOpacity != appearancesModel.LipstickOpacity) 
+
+        if (LipstickOpacity != appearancesModel.LipstickOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (LipstickColor != appearancesModel.LipstickColor) 
+
+        if (LipstickColor != appearancesModel.LipstickColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (FrecklesValue != appearancesModel.FrecklesValue) 
+
+        if (FrecklesValue != appearancesModel.FrecklesValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (FrecklesOpacity != appearancesModel.FrecklesOpacity) 
+
+        if (FrecklesOpacity != appearancesModel.FrecklesOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (FrecklesColor != appearancesModel.FrecklesColor) 
+
+        if (FrecklesColor != appearancesModel.FrecklesColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (ChesthairValue != appearancesModel.ChesthairValue) 
+
+        if (ChesthairValue != appearancesModel.ChesthairValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (ChesthairOpacity != appearancesModel.ChesthairOpacity) 
+
+        if (ChesthairOpacity != appearancesModel.ChesthairOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (ChesthairColor != appearancesModel.ChesthairColor) 
+
+        if (ChesthairColor != appearancesModel.ChesthairColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BodyblemishesValue != appearancesModel.BodyblemishesValue) 
+
+        if (BodyblemishesValue != appearancesModel.BodyblemishesValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BodyblemishesOpacity != appearancesModel.BodyblemishesOpacity) 
+
+        if (BodyblemishesOpacity != appearancesModel.BodyblemishesOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (BodyblemishesColor != appearancesModel.BodyblemishesColor) 
+
+        if (BodyblemishesColor != appearancesModel.BodyblemishesColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (AddbodyblemihesValue != appearancesModel.AddbodyblemihesValue) 
+
+        if (AddbodyblemihesValue != appearancesModel.AddbodyblemihesValue)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (AddbodyblemihesOpacity != appearancesModel.AddbodyblemihesOpacity) 
+
+        if (AddbodyblemihesOpacity != appearancesModel.AddbodyblemihesOpacity)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        if (AddbodyblemihesColor != appearancesModel.AddbodyblemihesColor) 
+
+        if (AddbodyblemihesColor != appearancesModel.AddbodyblemihesColor)
         {
-            diffs ++;
+            diffs++;
         }
-        
-        
+
+
         return diffs;
     }
 }

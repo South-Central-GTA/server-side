@@ -76,9 +76,12 @@ public class VehicleSellHandler : ISingletonScript
 
         if (isGroupVehicle)
         {
-            if (!await _groupModule.HasPermission(player.CharacterModel.Id, vehicle.DbEntity.GroupModelOwnerId.Value, GroupPermission.SELL_VEHICLES))
+            if (!await _groupModule.HasPermission(player.CharacterModel.Id,
+                                                  vehicle.DbEntity.GroupModelOwnerId.Value,
+                                                  GroupPermission.SELL_VEHICLES))
             {
-                player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.", NotificationType.ERROR);
+                player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.",
+                                        NotificationType.ERROR);
                 return;
             }
 
@@ -86,7 +89,8 @@ public class VehicleSellHandler : ISingletonScript
         }
         else
         {
-            if (!vehicle.DbEntity.CharacterModelId.HasValue || vehicle.DbEntity.CharacterModelId.Value != player.CharacterModel.Id)
+            if (!vehicle.DbEntity.CharacterModelId.HasValue ||
+                vehicle.DbEntity.CharacterModelId.Value != player.CharacterModel.Id)
             {
                 player.SendNotification("Du bist nicht der Eigentümer des Fahrzeuges.", NotificationType.ERROR);
                 return;
@@ -179,7 +183,8 @@ public class VehicleSellHandler : ISingletonScript
         {
             Type = DialogType.ONE_BUTTON_DIALOG,
             Title = "Fahrzeug Angebot",
-            Description = $"Möchtest du dieses Fahrzeug für <b>${price}</b> per Banküberweisung erwerben?",
+            Description =
+                $"Möchtest du dieses Fahrzeug für <b>${price}</b> per Banküberweisung erwerben?",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             Data = data,
@@ -211,8 +216,10 @@ public class VehicleSellHandler : ISingletonScript
 
         if (player.Position.Distance(seller.Position) > 3)
         {
-            player.SendNotification("Dein Charakter ist zu weit weg von dem anderen Charakter.", NotificationType.ERROR);
-            seller.SendNotification("Dein Charakter ist zu weit weg von dem anderen Charakter.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist zu weit weg von dem anderen Charakter.",
+                                    NotificationType.ERROR);
+            seller.SendNotification("Dein Charakter ist zu weit weg von dem anderen Charakter.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -239,7 +246,8 @@ public class VehicleSellHandler : ISingletonScript
         }
     }
 
-    private async void OnBuyOverVSellWithBank(ServerPlayer player, int bankAccountId, int price, int targetBankAccountId, int targetPlayerId)
+    private async void OnBuyOverVSellWithBank(ServerPlayer player, int bankAccountId, int price,
+                                              int targetBankAccountId, int targetPlayerId)
     {
         if (!player.Exists)
         {
@@ -268,14 +276,16 @@ public class VehicleSellHandler : ISingletonScript
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
         if (bankAccount == null)
         {
-            player.SendNotification("Dein Charakter hat kein Bankkonto, der Kauf wurde abgebrochen.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat kein Bankkonto, der Kauf wurde abgebrochen.",
+                                    NotificationType.ERROR);
             seller.SendNotification("Kauf konnte nicht abgeschlossen werden.", NotificationType.ERROR);
             return;
         }
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            player.SendNotification("Dein Charakter hat keine Überweisungsrechte auf dem Bankkonto.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat keine Überweisungsrechte auf dem Bankkonto.",
+                                    NotificationType.ERROR);
             seller.SendNotification("Kauf konnte nicht abgeschlossen werden.", NotificationType.ERROR);
             return;
         }
@@ -283,7 +293,8 @@ public class VehicleSellHandler : ISingletonScript
         BankAccountModel targetBankAccountModel = null;
         if (vehicle.DbEntity.GroupModelOwnerId.HasValue)
         {
-            targetBankAccountModel = await _bankAccountService.GetByOwningGroup(vehicle.DbEntity.GroupModelOwnerId.Value);
+            targetBankAccountModel =
+                await _bankAccountService.GetByOwningGroup(vehicle.DbEntity.GroupModelOwnerId.Value);
         }
         else
         {
@@ -292,7 +303,8 @@ public class VehicleSellHandler : ISingletonScript
 
         if (targetBankAccountModel == null)
         {
-            player.SendNotification("Das Bankkonto von der anderen Person existiert nicht mehr.", NotificationType.ERROR);
+            player.SendNotification("Das Bankkonto von der anderen Person existiert nicht mehr.",
+                                    NotificationType.ERROR);
             seller.SendNotification("Kauf konnte nicht abgeschlossen werden.", NotificationType.ERROR);
             return;
         }

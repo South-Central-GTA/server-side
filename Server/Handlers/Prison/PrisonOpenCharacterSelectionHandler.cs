@@ -8,11 +8,11 @@ namespace Server.Handlers.Prison;
 public class PrisonOpenCharacterSelectionHandler : ISingletonScript
 {
     private readonly CharacterSelectionModule _characterSelectionModule;
-    
+
     public PrisonOpenCharacterSelectionHandler(CharacterSelectionModule characterSelectionModule)
     {
         _characterSelectionModule = characterSelectionModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("prison:requestcharacterselection", OnExecute);
     }
 
@@ -27,7 +27,7 @@ public class PrisonOpenCharacterSelectionHandler : ISingletonScript
         {
             return;
         }
-        
+
         await _characterSelectionModule.OpenAsync(player);
     }
 }

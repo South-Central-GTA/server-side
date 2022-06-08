@@ -9,43 +9,46 @@
         <OutputPath>$(SolutionDir)..\altv-server\resources\southcentral\server\</OutputPath>
         <Nullable>annotations</Nullable>
         <RootNamespace>Server</RootNamespace>
-        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-        <OutputPath />
+        <OutputPath>..\..\..\altv-server\resources\southcentral\server\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-        <OutputPath />
+        <OutputPath>..\..\..\altv-server\resources\southcentral\server\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AltV.Net" Version="9.0.2" />
-        <PackageReference Include="AltV.Net.Async" Version="9.0.2" />
-        <PackageReference Include="AltV.Net.EntitySync" Version="1.13.0" />
-        <PackageReference Include="AltV.Net.EntitySync.ServerEvent" Version="9.0.2" />
-        <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
-        <PackageReference Include="Discord.Net" Version="2.4.0" />
-        <PackageReference Include="Discord.Net.Commands" Version="2.4.0" />
-        <PackageReference Include="Discord.Net.Core" Version="2.4.0" />
-        <PackageReference Include="Discord.Net.Rest" Version="2.4.0" />
-        <PackageReference Include="Discord.Net.Webhook" Version="2.4.0" />
-        <PackageReference Include="Discord.Net.WebSocket" Version="2.4.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
+        <PackageReference Include="AltV.Net" Version="10.0.2"/>
+        <PackageReference Include="AltV.Net.Async" Version="10.0.2"/>
+        <PackageReference Include="AltV.Net.EntitySync" Version="1.18.0"/>
+        <PackageReference Include="AltV.Net.EntitySync.ServerEvent" Version="10.0.2"/>
+        <PackageReference Include="BCrypt.Net-Core" Version="1.6.0"/>
+        <PackageReference Include="Discord.Net" Version="2.4.0"/>
+        <PackageReference Include="Discord.Net.Commands" Version="2.4.0"/>
+        <PackageReference Include="Discord.Net.Core" Version="2.4.0"/>
+        <PackageReference Include="Discord.Net.Rest" Version="2.4.0"/>
+        <PackageReference Include="Discord.Net.Webhook" Version="2.4.0"/>
+        <PackageReference Include="Discord.Net.WebSocket" Version="2.4.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3"/>
+        <PackageReference Include="Refit" Version="6.3.2"/>
+        <PackageReference Include="Refit.HttpClientFactory" Version="6.3.2"/>
+        <PackageReference Include="System.Net.Http.Json" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Server.Core\Server.Core.csproj" />
-        <ProjectReference Include="..\Server.DataAccessLayer\Server.DataAccessLayer.csproj" />
+        <ProjectReference Include="..\Server.Core\Server.Core.csproj"/>
+        <ProjectReference Include="..\Server.DataAccessLayer\Server.DataAccessLayer.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -68,10 +71,10 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="Data\2Doors.sql">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="Data\ItemCatalog.sql">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 </Project>

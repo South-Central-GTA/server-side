@@ -21,8 +21,7 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("name", out string name))
-                return null;
+            if (!TryGetData("name", out string name)) return null;
 
             return name;
         }
@@ -36,8 +35,7 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("blipType", out BlipType blipType))
-                return BlipType.POINT;
+            if (!TryGetData("blipType", out BlipType blipType)) return BlipType.POINT;
 
             return blipType;
         }
@@ -51,8 +49,7 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("player", out ServerPlayer player))
-                return null;
+            if (!TryGetData("player", out ServerPlayer player)) return null;
 
             return player;
         }
@@ -66,32 +63,29 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("sprite", out int spriteId))
-                return 0;
+            if (!TryGetData("sprite", out int spriteId)) return 0;
 
             return spriteId;
         }
         set => SetData("sprite", value);
     }
-    
+
     public int Radius
     {
         get
         {
-            if (!TryGetData("radius", out int radius))
-                return 0;
+            if (!TryGetData("radius", out int radius)) return 0;
 
             return radius;
         }
         set => SetData("radius", value);
     }
-    
+
     public int Alpha
     {
         get
         {
-            if (!TryGetData("alpha", out int alpha))
-                return 255;
+            if (!TryGetData("alpha", out int alpha)) return 255;
 
             return alpha;
         }
@@ -105,15 +99,11 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("color", out int color))
-                return 0;
+            if (!TryGetData("color", out int color)) return 0;
 
             return color;
         }
-        set
-        {
-            SetData("color", value);
-        }
+        set { SetData("color", value); }
     }
 
     /// <summary>
@@ -123,15 +113,11 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("scale", out float scale))
-                return 1;
+            if (!TryGetData("scale", out float scale)) return 1;
 
             return scale;
         }
-        set
-        {
-            SetData("scale", value);
-        }
+        set { SetData("scale", value); }
     }
 
     /// <summary>
@@ -141,17 +127,13 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("shortRange", out bool shortRange))
-                return true;
+            if (!TryGetData("shortRange", out bool shortRange)) return true;
 
             return shortRange;
         }
-        set
-        {
-            SetData("shortRange", value);
-        }
+        set { SetData("shortRange", value); }
     }
-    
+
     public void SetPosition(Position position)
     {
         Position = position;

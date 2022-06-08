@@ -15,14 +15,14 @@ public class ItemPhoneModel
 
     public int BackgroundImageId { get; set; }
     public int? CurrentOwnerId { get; set; }
-    
+
     public int InitialOwnerId { get; set; }
 
     [JsonIgnore] public DateTime LastTimeOpenedNotifications { get; set; }
 
-    public List<PhoneContactModel> Contacts { get; set; } = new ();
-    public List<PhoneChatModel> Chats { get; set; } = new ();
-    public List<PhoneNotificationModel> Notifications { get; set; } = new ();
+    public List<PhoneContactModel> Contacts { get; set; } = new();
+    public List<PhoneChatModel> Chats { get; set; } = new();
+    public List<PhoneNotificationModel> Notifications { get; set; } = new();
 
     public override void OnWrite(IMValueWriter writer)
     {

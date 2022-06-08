@@ -12,7 +12,7 @@ public class PdMdcRemoveCallSignHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
     private readonly PoliceMdcModule _policeMdcModule;
- 
+
     public PdMdcRemoveCallSignHandler(
         GroupFactionService groupFactionService,
         PoliceMdcModule policeMdcModule)
@@ -35,7 +35,7 @@ public class PdMdcRemoveCallSignHandler : ISingletonScript
         {
             return;
         }
-        
+
         await _policeMdcModule.CallSign.RemoveCallSign(player);
     }
 }

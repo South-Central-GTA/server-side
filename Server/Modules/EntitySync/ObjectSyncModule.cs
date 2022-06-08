@@ -12,8 +12,10 @@ public class ObjectSyncModule : ISingletonScript
 {
     private readonly Dictionary<ulong, ServerObject> _objects = new();
 
-    public ServerObject Create(string model, string name, Position position, Rotation rotation, int dimension, uint streamRange = 200,
-                               bool freeze = false, bool onFire = false, int itemId = -1, string ownerName = "", string createdAtJson = "")
+    public ServerObject Create(string model, string name, Position position, Rotation rotation, int dimension,
+                               uint streamRange = 200,
+                               bool freeze = false, bool onFire = false, int itemId = -1, string ownerName = "",
+                               string createdAtJson = "")
     {
         var obj = new ServerObject(position, dimension, streamRange)
         {
@@ -43,7 +45,7 @@ public class ObjectSyncModule : ISingletonScript
 
         AltEntitySync.RemoveEntity(serverObject);
         _objects.Remove(objectId);
-        
+
         return true;
     }
 
@@ -66,7 +68,7 @@ public class ObjectSyncModule : ISingletonScript
 
         return entity is not ServerObject serverObject ? default : serverObject;
     }
-    
+
     public List<ServerObject> GetAll()
     {
         return _objects.Select(entity => entity.Value).ToList();

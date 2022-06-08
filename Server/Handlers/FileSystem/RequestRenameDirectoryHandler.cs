@@ -14,15 +14,14 @@ public class RequestRenameDirectoryHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
     private readonly SyncFileModule _syncFileModule;
-    
+
     public RequestRenameDirectoryHandler(
         DirectoryService directoryService,
-        
-        GroupModule groupModule, 
+        GroupModule groupModule,
         SyncFileModule syncFileModule)
     {
         _directoryService = directoryService;
-        
+
         _groupModule = groupModule;
         _syncFileModule = syncFileModule;
 

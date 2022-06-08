@@ -17,13 +17,13 @@ public class CharacterCatalogHandler : ISingletonScript
     private readonly HouseService _houseService;
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
-    
+
     public CharacterCatalogHandler(
-        BankAccountService bankAccountService, 
-        CharacterService characterService, 
-        GroupService groupService, 
-        HouseService houseService, 
-        VehicleCatalogService vehicleCatalogService, 
+        BankAccountService bankAccountService,
+        CharacterService characterService,
+        GroupService groupService,
+        HouseService houseService,
+        VehicleCatalogService vehicleCatalogService,
         VehicleService vehicleService)
     {
         _bankAccountService = bankAccountService;
@@ -32,7 +32,7 @@ public class CharacterCatalogHandler : ISingletonScript
         _houseService = houseService;
         _vehicleCatalogService = vehicleCatalogService;
         _vehicleService = vehicleService;
-        
+
         AltAsync.OnClient<ServerPlayer>("charactercatalog:open", OnOpenCharacterCatalog);
         AltAsync.OnClient<ServerPlayer, int>("charactercatalog:requestdetails", OnRequestDetails);
     }
@@ -75,8 +75,13 @@ public class CharacterCatalogHandler : ISingletonScript
             {
                 continue;
             }
-            
-            vehicleDatas.Add(new VehicleData { Id = vehicle.Id, DisplayName = catalogVehicle.DisplayName, DisplayClass = catalogVehicle.DisplayClass });
+
+            vehicleDatas.Add(new VehicleData
+            {
+                Id = vehicle.Id,
+                DisplayName = catalogVehicle.DisplayName,
+                DisplayClass = catalogVehicle.DisplayClass
+            });
         }
 
         var houses = await _houseService.Where(h => h.CharacterModelId == characterId);

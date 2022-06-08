@@ -15,7 +15,7 @@ public class PlayerVehicleModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
-    
+
     public int? CharacterModelId { get; set; }
     public CharacterModel? CharacterModel { get; set; }
 
@@ -24,7 +24,7 @@ public class PlayerVehicleModel
 
     public InventoryModel? InventoryModel { get; set; }
 
-    public string Model { get; set; } 
+    public string Model { get; set; }
 
     public VehicleState VehicleState { get; set; }
     public int Price { get; set; }

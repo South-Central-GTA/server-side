@@ -12,20 +12,19 @@ public class PdMdcDeleteEmergencyCallHandler : ISingletonScript
 {
     private readonly EmergencyCallService _emergencyCallService;
     private readonly GroupFactionService _groupFactionService;
-    
+
     private readonly PoliceMdcModule _policeMdcModule;
     private readonly GroupModule _groupModule;
- 
+
     public PdMdcDeleteEmergencyCallHandler(
-        EmergencyCallService emergencyCallService, 
-        GroupFactionService groupFactionService, 
-        
+        EmergencyCallService emergencyCallService,
+        GroupFactionService groupFactionService,
         PoliceMdcModule policeMdcModule,
         GroupModule groupModule)
     {
         _emergencyCallService = emergencyCallService;
         _groupFactionService = groupFactionService;
-        
+
         _policeMdcModule = policeMdcModule;
         _groupModule = groupModule;
 
@@ -49,13 +48,13 @@ public class PdMdcDeleteEmergencyCallHandler : ISingletonScript
         {
             return;
         }
-        
+
         var emergencyCallModel = await _emergencyCallService.GetByKey(emergencyCallModelId);
         if (emergencyCallModel == null)
         {
             return;
         }
-        
+
         await _emergencyCallService.Remove(emergencyCallModel);
         await _policeMdcModule.UpdateEmergencyCallsUi(player);
     }

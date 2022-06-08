@@ -62,7 +62,7 @@ public class VehicleRefuelHandler : ISingletonScript
         {
             return;
         }
-        
+
         if (catalogVehicle.MaxTank - vehicle.Fuel < 1)
         {
             player.SendNotification("Dieses Fahrzeug kann nicht weiter aufgetankt werden.", NotificationType.ERROR);
@@ -72,7 +72,10 @@ public class VehicleRefuelHandler : ISingletonScript
         player.SetData("INTERACT_VEHICLE_REFILL", vehicleDbId);
 
         // Check if user is nearby an gas station
-        if (await _houseService.GetByDistance(player.Position, 10) is LeaseCompanyHouseModel { LeaseCompanyType: LeaseCompanyType.GAS_STATION })
+        if (await _houseService.GetByDistance(player.Position, 10) is LeaseCompanyHouseModel
+        {
+            LeaseCompanyType: LeaseCompanyType.GAS_STATION
+        })
         {
             var diff = catalogVehicle.MaxTank - vehicle.Fuel;
             float price = _worldMarketModule.FuelPrice[catalogVehicle.FuelType];

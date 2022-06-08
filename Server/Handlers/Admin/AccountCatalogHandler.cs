@@ -14,10 +14,10 @@ public class AccountCatalogHandler : ISingletonScript
     public AccountCatalogHandler(AccountService accountService)
     {
         _accountService = accountService;
-        
+
         AltAsync.OnClient<ServerPlayer>("accountcatalog:open", OnOpenAccountCatalog);
     }
-    
+
     private async void OnOpenAccountCatalog(ServerPlayer player)
     {
         if (!player.Exists)

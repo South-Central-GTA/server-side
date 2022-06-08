@@ -20,13 +20,13 @@ public class DepositBankHandler : ISingletonScript
     private readonly BankAccountService _bankAccountService;
     private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     public DepositBankHandler(
-        BankModule bankModule, 
-        MoneyModule moneyModule, 
+        BankModule bankModule,
+        MoneyModule moneyModule,
         PhoneModule phoneModule,
-        BankAccountService bankAccountService, 
-        GroupService groupService, 
+        BankAccountService bankAccountService,
+        GroupService groupService,
         RegistrationOfficeService registrationOfficeService)
     {
         _bankModule = bankModule;
@@ -49,8 +49,9 @@ public class DepositBankHandler : ISingletonScript
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
 
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
@@ -67,7 +68,9 @@ public class DepositBankHandler : ISingletonScript
 
         if (!await _moneyModule.WithdrawAsync(player, value))
         {
-            player.SendNotification("Dein Charakter hat nicht genug Geld im Inventar und konnte das Geld nicht einzahlen.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter hat nicht genug Geld im Inventar und konnte das Geld nicht einzahlen.",
+                NotificationType.ERROR);
             return;
         }
 

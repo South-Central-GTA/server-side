@@ -13,9 +13,8 @@ public class EmergencyCallModel
 {
     public EmergencyCallModel()
     {
-        
     }
-    
+
     public EmergencyCallModel(string phoneNumber, FactionType factionType, string situation, string location)
     {
         PhoneNumber = phoneNumber;
@@ -33,7 +32,7 @@ public class EmergencyCallModel
     public string Situation { get; set; } = "";
     public FactionType FactionType { get; set; }
 
-    
+
     public void OnWrite(IMValueWriter writer)
     {
         writer.BeginObject();
@@ -49,7 +48,7 @@ public class EmergencyCallModel
 
         writer.Name("location");
         writer.Value(Location);
-        
+
         writer.Name("createdAtJson");
         writer.Value(JsonSerializer.Serialize(CreatedAt));
 

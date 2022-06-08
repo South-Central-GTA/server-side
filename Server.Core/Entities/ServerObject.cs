@@ -77,7 +77,10 @@ public class ServerObject
                 return default;
             }
 
-            return new Vector3 { X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"]) };
+            return new Vector3
+            {
+                X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"])
+            };
         }
         set
         {

@@ -8,11 +8,11 @@ namespace Server.Handlers.VehicleLocating;
 public class StopVehicleTrackingHandler : ISingletonScript
 {
     private readonly VehicleLocatingModule _vehicleLocatingModule;
-    
+
     public StopVehicleTrackingHandler(VehicleLocatingModule vehicleLocatingModule)
     {
         _vehicleLocatingModule = vehicleLocatingModule;
-        
+
         AltAsync.OnClient<ServerPlayer>("locating:stop", OnStop);
     }
 

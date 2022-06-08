@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using AltV.Net.EntitySync;
 using Server.Data.Enums.EntitySync;
+using Server.Database.Models.Character;
 
 namespace Server.Core.Entities;
 
@@ -32,7 +33,7 @@ public class ServerPed
         set => SetData("heading", value);
     }
 
-    public ServerVehicle Vehicle
+    public ServerVehicle? Vehicle
     {
         get => !TryGetData("vehicle", out ServerVehicle vehicle) ? null : vehicle;
         set => SetData("vehicle", value);
@@ -42,5 +43,11 @@ public class ServerPed
     {
         get => !TryGetData("seat", out int seat) ? null : seat;
         set => SetData("seat", value);
+    }
+
+    public CharacterModel? CharacterModel
+    {
+        get => !TryGetData("characterModel", out CharacterModel value) ? null : value;
+        set => SetData("characterModel", value);
     }
 }

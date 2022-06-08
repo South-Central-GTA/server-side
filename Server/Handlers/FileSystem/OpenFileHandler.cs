@@ -12,14 +12,13 @@ public class OpenFileHandler : ISingletonScript
     private readonly FileService _fileService;
 
     private readonly GroupModule _groupModule;
-    
+
     public OpenFileHandler(
         FileService fileService,
-        
         GroupModule groupModule)
     {
         _fileService = fileService;
-        
+
         _groupModule = groupModule;
 
         AltAsync.OnClient<ServerPlayer, int>("filesystem:requestfile", OnRequestOpenFile);
@@ -43,12 +42,12 @@ public class OpenFileHandler : ISingletonScript
         {
             return;
         }
-       
+
         if (groupMember.RankLevel < file.DirectoryModel.ReadGroupLevel && !groupMember.Owner)
         {
             return;
         }
-        
+
         player.EmitGui("filesystem:openfile", file);
     }
 }

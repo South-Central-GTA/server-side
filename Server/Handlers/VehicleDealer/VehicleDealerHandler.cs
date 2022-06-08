@@ -71,7 +71,9 @@ public class VehicleDealerHandler : ISingletonScript
         {
             if (companyGroup.LicensesFlags.HasFlag(LicensesFlags.VEHICLE_DEALERSHIP))
             {
-                hasAccess = await _groupModule.HasPermission(player.CharacterModel.Id, companyGroup.Id, GroupPermission.ORDER_VEHICLES);
+                hasAccess = await _groupModule.HasPermission(player.CharacterModel.Id,
+                                                             companyGroup.Id,
+                                                             GroupPermission.ORDER_VEHICLES);
             }
         }
 
@@ -109,24 +111,31 @@ public class VehicleDealerHandler : ISingletonScript
 
         if (vehicle.AmountOfOrderableVehicles <= 0)
         {
-            player.EmitGui("vehicledealer:setwarning", "Leider ist das Kontingent für diesen Fahrzeugtypen erschöpft, wir haben kein Fahrzeug mehr auf Lager.");
+            player.EmitGui("vehicledealer:setwarning",
+                           "Leider ist das Kontingent für diesen Fahrzeugtypen erschöpft, wir haben kein Fahrzeug mehr auf Lager.");
             return;
         }
 
         var bankAccount = await _bankAccountService.Find(ba =>
                                                              ba.Type == OwnableAccountType.GROUP
-                                                             && ba.GroupRankAccess.Any(gra => gra.GroupModelId == companyGroup.Id));
+                                                             && ba.GroupRankAccess.Any(
+                                                                 gra => gra.GroupModelId == companyGroup.Id));
 
         if (!await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.ORDER_VEHICLES))
         {
-            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount, vehicle.Price, false, $"Fahrzeugbestellung '{vehicle.DisplayName}'");
+        var success = await _bankModule.Withdraw(bankAccount,
+                                                 vehicle.Price,
+                                                 false,
+                                                 $"Fahrzeugbestellung '{vehicle.DisplayName}'");
         if (!success)
         {
-            player.EmitGui("vehicledealer:setwarning", "Auf dem hinterlegten Unternehmenskonto liegt nicht genügend Geld zur Verfügung für diesen Kauf.");
+            player.EmitGui("vehicledealer:setwarning",
+                           "Auf dem hinterlegten Unternehmenskonto liegt nicht genügend Geld zur Verfügung für diesen Kauf.");
             return;
         }
 
@@ -135,7 +144,10 @@ public class VehicleDealerHandler : ISingletonScript
 
         await _orderedVehicleService.Add(new OrderedVehicleModel
         {
-            GroupModelId = group.Id, CatalogVehicleModelId = vehicle.Model, OrderedBy = player.CharacterModel.Name, DeliverdAt = DateTime.Now.AddMinutes(2).AddSeconds(-DateTime.Now.Second)
+            GroupModelId = group.Id,
+            CatalogVehicleModelId = vehicle.Model,
+            OrderedBy = player.CharacterModel.Name,
+            DeliverdAt = DateTime.Now.AddMinutes(2).AddSeconds(-DateTime.Now.Second)
             // DeliverdAt = DateTime.Now.AddDays(_random.Next(1, 4)) // TODO: Activate when going live
         });
 
@@ -193,7 +205,8 @@ public class VehicleDealerHandler : ISingletonScript
 
         if (!await _groupModule.HasPermission(player.CharacterModel.Id, group.Id, GroupPermission.ORDER_VEHICLES))
         {
-            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat dafür nicht genügend Berechtigungen in der Gruppe.",
+                                    NotificationType.ERROR);
             return;
         }
 
@@ -209,7 +222,9 @@ public class VehicleDealerHandler : ISingletonScript
 
         await _orderedVehicleService.Update(orderedVehicle);
 
-        await _deliveryService.Add(new VehicleDeliveryModel(companyGroup.Id, orderedVehicle.CatalogVehicleModel.Model, orderedVehicle.CatalogVehicleModel.DisplayName));
+        await _deliveryService.Add(new VehicleDeliveryModel(companyGroup.Id,
+                                                            orderedVehicle.CatalogVehicleModel.Model,
+                                                            orderedVehicle.CatalogVehicleModel.DisplayName));
 
         await _deliveryModule.UpdateOpenDeliveriesUi();
 
@@ -220,11 +235,14 @@ public class VehicleDealerHandler : ISingletonScript
     {
         var groupPlayers = Alt.GetAllPlayers()
                               .Where(p => p.Exists && p.IsSpawned && groupModel.Members
-                                                                          .Any(m => m.CharacterModelId == p.CharacterModel.Id));
+                                                                               .Any(m => m.CharacterModelId ==
+                                                                                         p.CharacterModel.Id));
 
         var callback = new Action<ServerPlayer>(async player =>
         {
-            if (await _groupModule.HasPermission(player.CharacterModel.Id, groupModel.Id, GroupPermission.ORDER_VEHICLES))
+            if (await _groupModule.HasPermission(player.CharacterModel.Id,
+                                                 groupModel.Id,
+                                                 GroupPermission.ORDER_VEHICLES))
             {
                 var orderedVehicles = await _orderedVehicleService.Where(ov => ov.GroupModelId == groupModel.Id);
                 player.EmitGui("vehicledealer:setorders", orderedVehicles);

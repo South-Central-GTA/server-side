@@ -70,7 +70,8 @@ public class GroupService
                               .Include(group => group.Members)
                               .ThenInclude(member => member.CharacterModel)
                               .Include(group => group.Ranks)
-                              .Where(group => group.Members != null && group.Members.Any(m => m.CharacterModelId == characterId && m.Owner))
+                              .Where(group => group.Members != null &&
+                                              group.Members.Any(m => m.CharacterModelId == characterId && m.Owner))
                               .Include(group => group.Houses)
                               .ToListAsync();
     }
@@ -82,7 +83,8 @@ public class GroupService
                               .Include(group => group.Members)
                               .ThenInclude(member => member.CharacterModel)
                               .Include(group => group.Ranks)
-                              .Where(group => group.Members != null && group.Members.Any(m => m.CharacterModelId == characterId && !m.Owner))
+                              .Where(group => group.Members != null &&
+                                              group.Members.Any(m => m.CharacterModelId == characterId && !m.Owner))
                               .Include(group => group.Houses)
                               .ToListAsync();
     }

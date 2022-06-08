@@ -58,14 +58,22 @@ public class CharacterModel
 
         if (startMoney > 0)
         {
-            itemsToAdd.Add(new ItemModel(ItemCatalogIds.DOLLAR, 0, null, null, startMoney, null, true, false, ItemState.NOT_EQUIPPED));
+            itemsToAdd.Add(new ItemModel(ItemCatalogIds.DOLLAR,
+                                         0,
+                                         null,
+                                         null,
+                                         startMoney,
+                                         null,
+                                         true,
+                                         false,
+                                         ItemState.NOT_EQUIPPED));
         }
 
         InventoryModel = new InventoryModel
         {
-            InventoryType = InventoryType.PLAYER, 
-            MaxWeight = 12, 
-            Items = itemsToAdd, 
+            InventoryType = InventoryType.PLAYER,
+            MaxWeight = 12,
+            Items = itemsToAdd,
             Name = characterModel.Name + "'s Taschen"
         };
 
@@ -86,21 +94,16 @@ public class CharacterModel
     public AccountModel? AccountModel { get; set; }
     public RegistrationOfficeEntryModel? RegistrationOfficeEntryModel { get; set; }
 
-    [JsonPropertyName("faceFeatures")] 
-    public FaceFeaturesModel FaceFeaturesModel { get; set; }
-    
-    [JsonPropertyName("appearances")] 
-    public AppearancesModel AppearancesModel { get; set; }
-    
-    [JsonPropertyName("inventory")] 
-    public InventoryModel InventoryModel { get; set; }
-    
-    [JsonPropertyName("tattoos")] 
-    public TattoosModel TattoosModel { get; set; }
-    
-    [JsonPropertyName("job")] 
-    public DefinedJobModel? JobModel { get; set; }
-    
+    [JsonPropertyName("faceFeatures")] public FaceFeaturesModel FaceFeaturesModel { get; set; }
+
+    [JsonPropertyName("appearances")] public AppearancesModel AppearancesModel { get; set; }
+
+    [JsonPropertyName("inventory")] public InventoryModel InventoryModel { get; set; }
+
+    [JsonPropertyName("tattoos")] public TattoosModel TattoosModel { get; set; }
+
+    [JsonPropertyName("job")] public DefinedJobModel? JobModel { get; set; }
+
     [JsonIgnore] public DateTime OnlineSince { get; set; }
 
     public string FirstName { get; set; }
@@ -146,8 +149,118 @@ public class CharacterModel
         writer.Name("accountId");
         writer.Value(AccountModelId);
 
-        writer.Name("currentAccountName");
+        writer.Name("accountName");
         writer.Value(AccountModel != null ? AccountModel.CurrentName : "NotSavedCharacter");
+
+        #region Inventory
+
+        writer.Name("inventory");
+
+        writer.BeginObject();
+
+        writer.Name("id");
+        writer.Value(InventoryModel.Id);
+
+        writer.Name("name");
+        writer.Value(InventoryModel.Name);
+
+        writer.Name("inventoryType");
+        writer.Value((int)InventoryModel.InventoryType);
+
+        writer.Name("items");
+
+        writer.BeginArray();
+
+        foreach (var item in InventoryModel.Items)
+        {
+            writer.BeginObject();
+
+            writer.Name("id");
+            writer.Value(item.Id);
+
+            writer.Name("catalogItemName");
+            writer.Value(item.CatalogItemModelId.ToString());
+
+            writer.Name("catalogItem");
+
+            writer.BeginObject();
+
+            writer.Name("id");
+            writer.Value((int)item.CatalogItemModel.Id);
+
+            writer.Name("name");
+            writer.Value(item.CatalogItemModel.Name);
+
+            writer.Name("image");
+            writer.Value(item.CatalogItemModel.Image);
+
+            writer.Name("description");
+            writer.Value(item.CatalogItemModel.Description);
+
+            writer.Name("rarity");
+            writer.Value((int)item.CatalogItemModel.Rarity);
+
+            writer.Name("weight");
+            writer.Value(item.CatalogItemModel.Weight);
+
+            writer.Name("equippable");
+            writer.Value(item.CatalogItemModel.Equippable);
+
+            writer.Name("stackable");
+            writer.Value(item.CatalogItemModel.Stackable);
+
+            writer.Name("buyable");
+            writer.Value(item.CatalogItemModel.Buyable);
+
+            writer.Name("sellable");
+            writer.Value(item.CatalogItemModel.Sellable);
+
+            writer.Name("price");
+            writer.Value(item.CatalogItemModel.Price);
+
+            writer.EndObject();
+
+            writer.Name("slot");
+            writer.Value(item.Slot ?? -1);
+
+            writer.Name("customData");
+            writer.Value(item.CustomData);
+
+            writer.Name("note");
+            writer.Value(item.Note);
+
+            writer.Name("amount");
+            writer.Value(item.Amount);
+
+            writer.Name("condition");
+            writer.Value(item.Condition ?? -1);
+
+            writer.Name("isBought");
+            writer.Value(item.IsBought);
+
+            writer.Name("itemState");
+            writer.Value((int)item.ItemState);
+
+            var value = -1;
+            if (item is ItemWeaponAttachmentModel weaponAttachment)
+            {
+                value = weaponAttachment.ItemWeaponId ?? -1;
+            }
+
+            writer.Name("attachedToWeaponItem");
+            writer.Value(value);
+
+            writer.EndObject();
+        }
+
+        writer.EndArray();
+
+        writer.Name("maxWeight");
+        writer.Value(InventoryModel.MaxWeight);
+
+        writer.EndObject();
+
+        #endregion
 
         #region FaceFeatures
 
@@ -358,65 +471,6 @@ public class CharacterModel
 
         #endregion
 
-        #region Inventory
-
-        writer.Name("inventory");
-
-        writer.BeginObject();
-
-        writer.Name("id");
-        writer.Value(InventoryModel.Id);
-
-        writer.Name("inventoryType");
-        writer.Value((int)InventoryModel.InventoryType);
-
-        writer.Name("items");
-
-        writer.BeginArray();
-
-        foreach (var item in InventoryModel.Items)
-        {
-            writer.BeginObject();
-
-            writer.Name("id");
-            writer.Value(item.Id);
-
-            writer.Name("catalogItemName");
-            writer.Value(item.CatalogItemModelId.ToString());
-
-            writer.Name("slot");
-            writer.Value(item.Slot ?? -1);
-
-            writer.Name("customData");
-            writer.Value(item.CustomData);
-
-            writer.Name("note");
-            writer.Value(item.Note);
-
-            writer.Name("amount");
-            writer.Value(item.Amount);
-
-            writer.Name("condition");
-            writer.Value(item.Condition ?? -1);
-
-            writer.Name("isBought");
-            writer.Value(item.IsBought);
-
-            writer.Name("itemState");
-            writer.Value((int)item.ItemState);
-
-            writer.EndObject();
-        }
-
-        writer.EndArray();
-
-        writer.Name("maxWeight");
-        writer.Value(InventoryModel.MaxWeight);
-
-        writer.EndObject();
-
-        #endregion
-
         #region Tattoos
 
         writer.Name("tattoos");
@@ -460,35 +514,16 @@ public class CharacterModel
         writer.Value(TattoosModel.RightLegHash);
 
         writer.EndObject();
-        
-        #endregion
-
-        #region DefinedJob
-
-        if (JobModel != null)
-        {
-            writer.Name("definedJob");
-
-            writer.BeginObject();
-
-            writer.Name("jobId");
-            writer.Value(JobModel.JobId);
-
-            writer.Name("bankAccountId");
-            writer.Value(JobModel.BankAccountId);
-
-            writer.EndObject();
-        }
 
         #endregion
 
-        writer.Name("onlineSince");
+        writer.Name("onlineSinceJson");
         writer.Value(JsonSerializer.Serialize(OnlineSince));
 
-        writer.Name("lastUsage");
+        writer.Name("lastUsageJson");
         writer.Value(JsonSerializer.Serialize(LastUsage));
 
-        writer.Name("createdAt");
+        writer.Name("createdAtJson");
         writer.Value(JsonSerializer.Serialize(CreatedAt));
 
         writer.Name("firstName");
@@ -560,7 +595,7 @@ public class CharacterModel
         }
 
         writer.EndArray();
-        
+
         writer.EndObject();
     }
 }

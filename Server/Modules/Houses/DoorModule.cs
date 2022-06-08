@@ -27,11 +27,11 @@ public class DoorModule : ISingletonScript
     public async Task AddDoor(HouseModel houseModel, uint doorMesh, Position doorPosition)
     {
         houseModel.Doors.Add(await _doorService.Add(new DoorModel(doorMesh, doorPosition, houseModel.Id)));
-        
+
         _doorSyncModule.Create(doorMesh, doorPosition, 0, houseModel.LockState == LockState.CLOSED, houseModel.Id);
         await _houseService.Update(houseModel);
     }
-    
+
     public async Task<bool> RemoveDoor(HouseModel houseModel, int doorId)
     {
         var door = await _doorService.GetByKey(doorId);
@@ -41,7 +41,7 @@ public class DoorModule : ISingletonScript
         }
 
         houseModel.Doors.Remove(door);
-        
+
         await _doorService.Remove(door);
         await _houseService.Update(houseModel);
 

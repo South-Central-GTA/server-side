@@ -17,7 +17,7 @@ public class ChangeBankAccountCompanyHandler : ISingletonScript
     private readonly GroupMemberService _groupMemberService;
     private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
-    
+
     private readonly BankModule _bankModule;
     private readonly PhoneModule _phoneModule;
 
@@ -26,8 +26,7 @@ public class ChangeBankAccountCompanyHandler : ISingletonScript
         BankAccountService bankAccountService,
         GroupMemberService groupMemberService,
         RegistrationOfficeService registrationOfficeService,
-        
-        BankModule bankModule, 
+        BankModule bankModule,
         PhoneModule phoneModule)
     {
         _groupService = groupService;
@@ -49,12 +48,13 @@ public class ChangeBankAccountCompanyHandler : ISingletonScript
         {
             return;
         }
-        
+
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.", NotificationType.ERROR);
-            return;       
+            player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
+                                    NotificationType.ERROR);
+            return;
         }
 
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
@@ -66,7 +66,9 @@ public class ChangeBankAccountCompanyHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.DEPOSIT))
         {
-            player.SendNotification("Dein Charakter hat nicht genügend Berechtigungen mehr um dieses Bankkonto zu nutzen.", NotificationType.ERROR);
+            player.SendNotification(
+                "Dein Charakter hat nicht genügend Berechtigungen mehr um dieses Bankkonto zu nutzen.",
+                NotificationType.ERROR);
             return;
         }
 

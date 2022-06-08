@@ -18,7 +18,7 @@ public class EventLogHandler : ISingletonScript
     public EventLogHandler(CommandLogService commandLogService)
     {
         _commandLogService = commandLogService;
-        
+
         AltAsync.OnClient<ServerPlayer>("eventlog:open", OnOpenItemCatalog);
     }
 

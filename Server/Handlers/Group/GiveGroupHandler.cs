@@ -51,7 +51,8 @@ public class GiveGroupHandler : ISingletonScript
 
         if (!_groupModule.IsOwner(player, group))
         {
-            player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.",
+                                    NotificationType.ERROR);
             newOwner.SendNotification("Der Gruppentransfer konnte nicht abgeschlossen werden.", NotificationType.ERROR);
             return;
         }
@@ -69,7 +70,8 @@ public class GiveGroupHandler : ISingletonScript
 
         await _groupModule.UpdateUi(player);
 
-        player.SendNotification($"Gruppe wurde erfolgreich an {newOwner.CharacterModel.Name} überschrieben.", NotificationType.SUCCESS);
+        player.SendNotification($"Gruppe wurde erfolgreich an {newOwner.CharacterModel.Name} überschrieben.",
+                                NotificationType.SUCCESS);
         newOwner.SendNotification("Gruppe wurde erfolgreich an dich überschrieben.", NotificationType.SUCCESS);
     }
 }
