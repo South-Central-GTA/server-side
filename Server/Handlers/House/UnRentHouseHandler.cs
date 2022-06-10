@@ -11,16 +11,13 @@ namespace Server.Handlers.House;
 
 public class UnRentHouseHandler : ISingletonScript
 {
-    private readonly HouseService _houseService;
     private readonly GroupService _groupService;
 
     private readonly HouseModule _houseModule;
+    private readonly HouseService _houseService;
 
 
-    public UnRentHouseHandler(
-        HouseService houseService,
-        GroupService groupService,
-        HouseModule houseModule)
+    public UnRentHouseHandler(HouseService houseService, GroupService groupService, HouseModule houseModule)
     {
         _houseService = houseService;
         _groupService = groupService;
@@ -47,7 +44,7 @@ public class UnRentHouseHandler : ISingletonScript
         if (!house.Rentable)
         {
             player.SendNotification("Dies ist eine gekaufte Immobilie du kannst hier kein Mietvertrag kündigen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

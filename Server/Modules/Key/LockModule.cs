@@ -19,27 +19,20 @@ using Server.Modules.Vehicles;
 
 namespace Server.Modules.Key;
 
-public class LockModule
-    : ITransientScript
+public class LockModule : ITransientScript
 {
+    private readonly DoorService _doorService;
+    private readonly DoorSyncModule _doorSyncModule;
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
-    private readonly VehicleService _vehicleService;
-    private readonly DoorService _doorService;
-    private readonly ILogger<LockModule> _logger;
-    private readonly DoorSyncModule _doorSyncModule;
-    private readonly VehicleModule _vehicleModule;
     private readonly KeyModule _keyModule;
+    private readonly ILogger<LockModule> _logger;
+    private readonly VehicleModule _vehicleModule;
+    private readonly VehicleService _vehicleService;
 
-    public LockModule(
-        ILogger<LockModule> logger,
-        GroupService groupService,
-        HouseService houseService,
-        VehicleService vehicleService,
-        DoorService doorService,
-        DoorSyncModule doorSyncModule,
-        VehicleModule vehicleModule,
-        KeyModule keyModule)
+    public LockModule(ILogger<LockModule> logger, GroupService groupService, HouseService houseService,
+        VehicleService vehicleService, DoorService doorService, DoorSyncModule doorSyncModule,
+        VehicleModule vehicleModule, KeyModule keyModule)
     {
         _logger = logger;
         _groupService = groupService;
@@ -80,7 +73,7 @@ public class LockModule
         foreach (var entity in lockableEntities)
         {
             var distance = new Position(entity.PositionX, entity.PositionY, entity.PositionZ).Distance(player.Position);
-            if (distance <= maxDistance && (distance < closestDistance))
+            if (distance <= maxDistance && distance < closestDistance)
             {
                 closestDistance = distance;
                 lockableEntity = entity;
@@ -104,7 +97,7 @@ public class LockModule
             {
                 case HasKeyErrorType.HAS_NO_KEY:
                     player.SendNotification("Dein Charakter hat keinen Schlüssel für dieses Schloss.",
-                                            NotificationType.ERROR);
+                        NotificationType.ERROR);
                     return null;
                 case HasKeyErrorType.HAS_WRONG_GROUP_KEY:
                     player.SendNotification(

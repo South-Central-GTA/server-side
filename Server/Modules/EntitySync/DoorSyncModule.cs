@@ -14,7 +14,7 @@ public class DoorSyncModule : ISingletonScript
     private readonly Dictionary<ulong, ServerDoor> _doors = new();
 
     public ServerDoor Create(uint hash, Position position, float heading, bool locked, int houseId,
-                             uint streamRange = 25)
+        uint streamRange = 25)
     {
         var obj = new ServerDoor(position, 0, streamRange)
         {

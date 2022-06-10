@@ -5,5 +5,5 @@ public enum PersonalLicensesType
     DRIVING,
     BOATS,
     FLYING,
-    WEAPON,
+    WEAPON
 }

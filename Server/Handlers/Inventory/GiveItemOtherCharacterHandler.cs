@@ -22,11 +22,8 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
     private readonly ItemService _itemService;
     private readonly Serializer _serializer;
 
-    public GiveItemOtherCharacterHandler(
-        Serializer serializer,
-        ItemService itemService,
-        InventoryModule inventoryModule,
-        ItemCreationModule itemCreationModule)
+    public GiveItemOtherCharacterHandler(Serializer serializer, ItemService itemService,
+        InventoryModule inventoryModule, ItemCreationModule itemCreationModule)
     {
         _serializer = serializer;
 
@@ -85,21 +82,20 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
         if (player.Position.Distance(target.Position) > 3)
         {
             player.SendNotification("Dein Charakter ist zu weit weg von dem anderen Charakter.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         var canCarry = await _inventoryModule.CanCarry(target, item.CatalogItemModel.Id, item.Amount);
         if (!canCarry)
         {
-            player.SendNotification("Der Charakter hat nicht genug Platz im Inventar.",
-                                    NotificationType.ERROR);
+            player.SendNotification("Der Charakter hat nicht genug Platz im Inventar.", NotificationType.ERROR);
             return;
         }
 
         var freeSlot =
             await _inventoryModule.GetFreeNextSlot(target.CharacterModel.InventoryModel.Id,
-                                                   item.CatalogItemModel.Weight);
+                item.CatalogItemModel.Weight);
         if (freeSlot == null)
         {
             return;

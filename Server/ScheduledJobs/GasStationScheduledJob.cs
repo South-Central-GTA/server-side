@@ -15,10 +15,8 @@ public class GasStationScheduledJob : ScheduledJob
     private readonly WorldMarketModule _worldMarketModule;
 
 
-    public GasStationScheduledJob(
-        ILogger<GasStationScheduledJob> logger,
-        WorldMarketModule worldMarketModule)
-        : base(TimeSpan.FromHours(2))
+    public GasStationScheduledJob(ILogger<GasStationScheduledJob> logger, WorldMarketModule worldMarketModule) : base(
+        TimeSpan.FromHours(2))
     {
         _logger = logger;
 

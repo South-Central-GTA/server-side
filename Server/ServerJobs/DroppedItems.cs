@@ -23,12 +23,8 @@ public class DroppedItems : IJob
     private readonly ObjectSyncModule _objectSyncModule;
     private readonly Serializer _serializer;
 
-    public DroppedItems(
-        ILogger<DroppedItems> logger,
-        IOptions<DevelopmentOptions> developmentOptions,
-        IOptions<GameOptions> gameOptions,
-        Serializer serializer,
-        ItemService itemService,
+    public DroppedItems(ILogger<DroppedItems> logger, IOptions<DevelopmentOptions> developmentOptions,
+        IOptions<GameOptions> gameOptions, Serializer serializer, ItemService itemService,
         ObjectSyncModule objectSyncModule)
     {
         _logger = logger;
@@ -73,17 +69,9 @@ public class DroppedItems : IJob
 
         foreach (var droppedItem in droppedItems)
         {
-            _objectSyncModule.Create(droppedItem.CatalogItemModel.Model,
-                                     droppedItem.CatalogItemModel.Name,
-                                     droppedItem.Position,
-                                     droppedItem.CatalogItemModel.Rotation,
-                                     droppedItem.Dimension,
-                                     200,
-                                     true,
-                                     false,
-                                     droppedItem.Id,
-                                     droppedItem.DroppedByCharacter,
-                                     _serializer.Serialize(droppedItem.CreatedAt));
+            _objectSyncModule.Create(droppedItem.CatalogItemModel.Model, droppedItem.CatalogItemModel.Name,
+                droppedItem.Position, droppedItem.CatalogItemModel.Rotation, droppedItem.Dimension, 200, true, false,
+                droppedItem.Id, droppedItem.DroppedByCharacter, _serializer.Serialize(droppedItem.CreatedAt));
         }
 
         await Task.CompletedTask;

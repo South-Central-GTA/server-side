@@ -17,16 +17,13 @@ namespace Server.Handlers.Action;
 
 public class ObjectActionHandler : ISingletonScript
 {
-    private readonly Serializer _serializer;
+    private readonly ContextModule _contextModule;
     private readonly ItemService _itemService;
 
     private readonly ObjectSyncModule _objectSyncModule;
-    private readonly ContextModule _contextModule;
+    private readonly Serializer _serializer;
 
-    public ObjectActionHandler(
-        Serializer serializer,
-        ItemService itemService,
-        ObjectSyncModule objectSyncModule,
+    public ObjectActionHandler(Serializer serializer, ItemService itemService, ObjectSyncModule objectSyncModule,
         ContextModule contextModule)
     {
         _serializer = serializer;
@@ -156,7 +153,7 @@ public class ObjectActionHandler : ISingletonScript
             return new List<ActionData>();
         }
 
-        var actions = new List<ActionData>()
+        var actions = new List<ActionData>
         {
             new($"{GetItemName(item)} aufheben", "placeableitem:pickup", serverObject.Id)
         };
@@ -168,9 +165,8 @@ public class ObjectActionHandler : ISingletonScript
 
         if (player.IsAduty)
         {
-            actions.Add(new ActionData($"[Admin] {GetItemName(item)} löschen",
-                                       "placeableitem:deleteitem",
-                                       serverObject.Id));
+            actions.Add(new ActionData($"[Admin] {GetItemName(item)} löschen", "placeableitem:deleteitem",
+                serverObject.Id));
         }
 
         return actions;

@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
 using AltV.Net;
 using Server.Database.Enums;
 using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Mail;
 
-public class MailAccountModel
-    : ModelBase, IWritable
+public class MailAccountModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -35,28 +33,9 @@ public class MailAccountModel
 
         writer.BeginArray();
 
-        if (CharacterAccesses != null)
+        foreach (var characterAccesses in CharacterAccesses)
         {
-            for (var i = 0; i < CharacterAccesses.Count; i++)
-            {
-                writer.BeginObject();
-
-                var characterAccesses = CharacterAccesses[i];
-
-                writer.Name("permission");
-                writer.Value((int)characterAccesses.Permission);
-
-                writer.Name("name");
-                writer.Value(characterAccesses.CharacterModel.Name);
-
-                writer.Name("characterId");
-                writer.Value(characterAccesses.CharacterModel.Id);
-
-                writer.Name("owner");
-                writer.Value(characterAccesses.Owner);
-
-                writer.EndObject();
-            }
+            MailAccountCharacterAccessModel.Serialize(characterAccesses, writer);
         }
 
         writer.EndArray();
@@ -65,25 +44,9 @@ public class MailAccountModel
 
         writer.BeginArray();
 
-        if (GroupAccess != null)
+        foreach (var groupAccess in GroupAccess)
         {
-            for (var i = 0; i < GroupAccess.Count; i++)
-            {
-                writer.BeginObject();
-
-                var groupAccesses = GroupAccess[i];
-
-                writer.Name("groupId");
-                writer.Value(groupAccesses.GroupModelId);
-
-                writer.Name("groupName");
-                writer.Value(groupAccesses.GroupModel != null ? groupAccesses.GroupModel.Name : "");
-
-                writer.Name("owner");
-                writer.Value(groupAccesses.Owner);
-
-                writer.EndObject();
-            }
+            MailAccountGroupAccessModel.Serialize(groupAccess, writer);
         }
 
         writer.EndArray();
@@ -92,34 +55,9 @@ public class MailAccountModel
 
         writer.BeginArray();
 
-        if (MailLinks != null)
+        foreach (var link in MailLinks)
         {
-            for (var i = 0; i < MailLinks.Count; i++)
-            {
-                writer.BeginObject();
-
-                var link = MailLinks[i];
-
-                writer.Name("id");
-                writer.Value(link.MailModelId);
-
-                writer.Name("senderMailAddress");
-                writer.Value(link.MailModel.SenderMailAddress);
-
-                writer.Name("title");
-                writer.Value(link.MailModel.Title);
-
-                writer.Name("context");
-                writer.Value(link.MailModel.Context);
-
-                writer.Name("isAuthor");
-                writer.Value(link.IsAuthor);
-
-                writer.Name("sendetAtJson");
-                writer.Value(JsonSerializer.Serialize(link.MailModel.CreatedAt));
-
-                writer.EndObject();
-            }
+            MailLinkModel.Serialize(link, writer);
         }
 
         writer.EndArray();

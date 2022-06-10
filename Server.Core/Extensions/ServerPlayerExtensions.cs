@@ -72,8 +72,8 @@ public static class ServerPlayerExtensions
     public static void UpdateMoneyUi(this ServerPlayer player)
     {
         player.EmitLocked("hud:setmoney",
-                          player.CharacterModel.InventoryModel.Items
-                                .Where(i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR).Sum(i => i.Amount));
+            player.CharacterModel.InventoryModel.Items.Where(i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR)
+                .Sum(i => i.Amount));
     }
 
     public static void CreateDialog(this ServerPlayer player, DialogData dialogData)
@@ -87,7 +87,7 @@ public static class ServerPlayerExtensions
     }
 
     public static void CreateTimer(this ServerPlayer player, string id, ElapsedEventHandler callback, int milliseconds,
-                                   bool restart = false)
+        bool restart = false)
     {
         var timer = new Timer { Interval = milliseconds, AutoReset = false, Enabled = true };
         if (player.Timers.TryAdd(id, timer))

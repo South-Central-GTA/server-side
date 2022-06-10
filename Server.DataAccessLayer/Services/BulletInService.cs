@@ -6,13 +6,11 @@ using Server.Database.Models.Mdc;
 
 namespace Server.DataAccessLayer.Services;
 
-public class BulletInService
-    : BaseService<BulletInEntryModel>, ITransientScript
+public class BulletInService : BaseService<BulletInEntryModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public BulletInService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public BulletInService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }

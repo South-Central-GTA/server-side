@@ -6,11 +6,9 @@ using Server.Database.Models.Inventory.Phone;
 
 namespace Server.DataAccessLayer.Services;
 
-public class PhoneContactService
-    : BaseService<PhoneContactModel>, ITransientScript
+public class PhoneContactService : BaseService<PhoneContactModel>, ITransientScript
 {
-    public PhoneContactService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public PhoneContactService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
     }
 }

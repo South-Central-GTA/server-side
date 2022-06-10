@@ -9,8 +9,7 @@ public class WorldMarketModule : ISingletonScript
 {
     private readonly ILogger<WorldMarketModule> _logger;
 
-    public WorldMarketModule(
-        ILogger<WorldMarketModule> logger)
+    public WorldMarketModule(ILogger<WorldMarketModule> logger)
     {
         _logger = logger;
 

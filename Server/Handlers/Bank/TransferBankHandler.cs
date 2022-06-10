@@ -9,7 +9,6 @@ using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Banking;
 using Server.Modules.Bank;
-using Server.Modules.Phone;
 using Server.Modules.PoliceTicket;
 
 namespace Server.Handlers.Bank;
@@ -18,18 +17,14 @@ public class TransferBankHandler : ISingletonScript
 {
     private readonly BankAccountService _bankAccountService;
     private readonly BankHistoryService _bankHistoryService;
-    private readonly GroupService _groupService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly BankModule _bankModule;
+    private readonly GroupService _groupService;
     private readonly PoliceTicketModule _policeTicketModule;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public TransferBankHandler(
-        BankAccountService bankAccountService,
-        BankHistoryService bankHistoryService,
-        RegistrationOfficeService registrationOfficeService,
-        GroupService groupService,
-        BankModule bankModule,
+    public TransferBankHandler(BankAccountService bankAccountService, BankHistoryService bankHistoryService,
+        RegistrationOfficeService registrationOfficeService, GroupService groupService, BankModule bankModule,
         PoliceTicketModule policeTicketModule)
     {
         _bankAccountService = bankAccountService;
@@ -44,7 +39,7 @@ public class TransferBankHandler : ISingletonScript
     }
 
     private async void OnTransfer(ServerPlayer player, int ownBankAccountId, string receiverBankAccountDetails,
-                                  int value, string useOfPurpose = "")
+        int value, string useOfPurpose = "")
     {
         if (!player.Exists)
         {
@@ -55,14 +50,14 @@ public class TransferBankHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (0 >= value)
         {
             player.SendNotification("Es muss eine positive Zahl welche größer ist als Null genutzt werden.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -77,7 +72,7 @@ public class TransferBankHandler : ISingletonScript
         if (targetBankAccount == null)
         {
             player.SendNotification($"Das Bankkonto {receiverBankAccountDetails} existiert nicht.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -89,7 +84,7 @@ public class TransferBankHandler : ISingletonScript
         if (bankAccount.Id == targetBankAccount.Id)
         {
             player.SendNotification("Dein Charakter kann keine Überweisung auf das selbe Konto tätigen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -129,12 +124,10 @@ public class TransferBankHandler : ISingletonScript
             }
         });
 
-        foreach (var targetPlayer
-                 in bankAccount.CharacterAccesses.Select(characterAccess =>
-                                                             Alt.GetAllPlayers()
-                                                                .FindPlayerByCharacterId(
-                                                                    characterAccess.CharacterModelId))
-                               .Where(serverPlayer => serverPlayer != null))
+        foreach (var targetPlayer in bankAccount.CharacterAccesses
+                     .Select(characterAccess =>
+                         Alt.GetAllPlayers().FindPlayerByCharacterId(characterAccess.CharacterModelId))
+                     .Where(serverPlayer => serverPlayer != null))
         {
             await _bankModule.UpdateUi(targetPlayer);
         }
@@ -155,9 +148,9 @@ public class TransferBankHandler : ISingletonScript
                 }
 
                 var rank = group.Ranks.Find(r => r.Level == member.RankLevel);
-                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
+                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
                 {
                     continue;
                 }

@@ -6,11 +6,10 @@ using Server.Data.Enums.EntitySync;
 
 namespace Server.Core.Entities;
 
-public class ServerObject
-    : Entity
+public class ServerObject : Entity
 {
-    public ServerObject(Vector3 position, int dimension, uint range)
-        : base((ulong)EntityType.OBJECT, position, dimension, range)
+    public ServerObject(Vector3 position, int dimension, uint range) : base((ulong)EntityType.OBJECT, position,
+        dimension, range)
     {
     }
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using AltV.Net;
 using AltV.Net.Async;
 using Microsoft.Extensions.Options;
@@ -17,7 +15,6 @@ using Server.Database.Models.Group;
 using Server.Database.Models.Housing;
 using Server.Database.Models.Inventory;
 using Server.Database.Models.Vehicles;
-using Server.Helper;
 using Server.Modules.Group;
 using Server.Modules.Inventory;
 
@@ -37,15 +34,9 @@ public class PlayerItemEventsHandler : ISingletonScript
     private readonly VehicleOptions _vehicleOptions;
     private readonly VehicleService _vehicleService;
 
-    public PlayerItemEventsHandler(
-        IOptions<VehicleOptions> vehicleOptions,
-        HouseService houseService,
-        VehicleService vehicleService,
-        GroupService groupService,
-        ItemKeyService itemKeyService,
-        ItemService itemService,
-        InventoryModule inventoryModule,
-        GroupModule groupModule,
+    public PlayerItemEventsHandler(IOptions<VehicleOptions> vehicleOptions, HouseService houseService,
+        VehicleService vehicleService, GroupService groupService, ItemKeyService itemKeyService,
+        ItemService itemService, InventoryModule inventoryModule, GroupModule groupModule,
         ItemCreationModule itemCreationModule)
     {
         _vehicleOptions = vehicleOptions.Value;
@@ -110,16 +101,12 @@ public class PlayerItemEventsHandler : ISingletonScript
         if (lockableEntity == null)
         {
             player.SendNotification("Du bist nicht der Eigentümer des Objektes zu welchem der Schlüssel passt.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var newKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player,
-                                                                          ItemCatalogIds.KEY,
-                                                                          1,
-                                                                          null,
-                                                                          null,
-                                                                          "Kopie von " + itemKey.Note);
+        var newKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null, null,
+            "Kopie von " + itemKey.Note);
 
         if (newKey == null)
         {
@@ -193,11 +180,10 @@ public class PlayerItemEventsHandler : ISingletonScript
                         var groupMember = group.Members.Find(m => m.CharacterModelId == player.CharacterModel.Id);
                         if (groupMember != null)
                         {
-                            if (vehicle.BodyHealth >= 1000
-                                && vehicle.EngineHealth >= 1000)
+                            if (vehicle.BodyHealth >= 1000 && vehicle.EngineHealth >= 1000)
                             {
                                 player.SendNotification("Dieses Fahrzeug kann nicht weiter repariert werden.",
-                                                        NotificationType.ERROR);
+                                    NotificationType.ERROR);
                                 return;
                             }
 
@@ -211,7 +197,7 @@ public class PlayerItemEventsHandler : ISingletonScript
                             if (companyGroup.Products < neededProducts)
                             {
                                 player.SendNotification("Das Unternehmen hat nicht genug Produkte.",
-                                                        NotificationType.ERROR);
+                                    NotificationType.ERROR);
                                 return;
                             }
 
@@ -239,8 +225,7 @@ public class PlayerItemEventsHandler : ISingletonScript
             }
         }
 
-        if (vehicle.BodyHealth >= 600
-            && vehicle.EngineHealth >= 600)
+        if (vehicle.BodyHealth >= 600 && vehicle.EngineHealth >= 600)
         {
             player.SendNotification(
                 "Dein Charakter kann das Fahrzeug nicht mit den aktuellen Begebenheiten weiter reparieren.",
@@ -259,7 +244,7 @@ public class PlayerItemEventsHandler : ISingletonScript
         }
 
         player.SendNotification("Du hast das Fahrzeug notdürftig repariert, suche dennoch lieber einen Mechaniker auf.",
-                                NotificationType.SUCCESS);
+            NotificationType.SUCCESS);
     }
 
     private async void OnRepairDialogSuccess(ServerPlayer player, int groupId, int neededProducts, int vehicleDbId)
@@ -307,6 +292,6 @@ public class PlayerItemEventsHandler : ISingletonScript
 
         vehicle.SetRepairValue();
         player.SendNotification("Du hast das Fahrzeug erfolgreich repariert, spiele die Reperatur nun im Roleplay aus.",
-                                NotificationType.SUCCESS);
+            NotificationType.SUCCESS);
     }
 }

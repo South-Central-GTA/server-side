@@ -11,13 +11,10 @@ namespace Server.Modules.Houses;
 public class DoorModule : ISingletonScript
 {
     private readonly DoorService _doorService;
-    private readonly HouseService _houseService;
     private readonly DoorSyncModule _doorSyncModule;
+    private readonly HouseService _houseService;
 
-    public DoorModule(
-        HouseService houseService,
-        DoorService doorService,
-        DoorSyncModule doorSyncModule)
+    public DoorModule(HouseService houseService, DoorService doorService, DoorSyncModule doorSyncModule)
     {
         _houseService = houseService;
         _doorService = doorService;

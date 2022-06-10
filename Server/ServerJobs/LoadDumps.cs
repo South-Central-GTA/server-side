@@ -15,10 +15,7 @@ public class LoadDumps : IJob
     private readonly Serializer _serializer;
     private readonly VehicleDumpModule _vehicleDumpModule;
 
-    public LoadDumps(
-        ILogger<LoadDumps> logger,
-        VehicleDumpModule vehicleDumpModule,
-        Serializer serializer)
+    public LoadDumps(ILogger<LoadDumps> logger, VehicleDumpModule vehicleDumpModule, Serializer serializer)
     {
         _logger = logger;
         _vehicleDumpModule = vehicleDumpModule;
@@ -39,11 +36,8 @@ public class LoadDumps : IJob
     {
         _logger.LogInformation("Try to load all required dump informations.");
 
-        var vehicleJson = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(),
-                                                                   "resources",
-                                                                   "southcentral-assets",
-                                                                   "dumps",
-                                                                   "vehicles.json"));
+        var vehicleJson = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "resources",
+            "southcentral-assets", "dumps", "vehicles.json"));
         _vehicleDumpModule.SetData(_serializer.Deserialize<List<VehicleDumpEntry>>(vehicleJson));
         _logger.LogInformation($"Loaded {_vehicleDumpModule.Dump.Count} vehicle dump informations.");
 

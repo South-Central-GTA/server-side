@@ -1,7 +1,6 @@
 ﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
 using Server.Modules.FileSystem;
 using Server.Modules.Group;
@@ -15,10 +14,7 @@ public class RequestRenameFileHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly SyncFileModule _syncFileModule;
 
-    public RequestRenameFileHandler(
-        FileService fileService,
-        GroupModule groupModule,
-        SyncFileModule syncFileModule)
+    public RequestRenameFileHandler(FileService fileService, GroupModule groupModule, SyncFileModule syncFileModule)
     {
         _fileService = fileService;
 

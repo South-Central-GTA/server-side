@@ -15,10 +15,7 @@ public class OpenDirectoryHandler : ISingletonScript
     private readonly FileModule _fileModule;
     private readonly GroupModule _groupModule;
 
-    public OpenDirectoryHandler(
-        DirectoryService directoryService,
-        FileModule fileModule,
-        GroupModule groupModule)
+    public OpenDirectoryHandler(DirectoryService directoryService, FileModule fileModule, GroupModule groupModule)
     {
         _directoryService = directoryService;
 
@@ -54,9 +51,7 @@ public class OpenDirectoryHandler : ISingletonScript
 
         player.SetData("FILE_SYSTEM_DIRECTORY", directoryId);
 
-        player.EmitGui("filesystem:opendirectory",
-                       directoryId,
-                       directory.Title,
-                       await _fileModule.GetAllFilesFromDirectory(directoryId));
+        player.EmitGui("filesystem:opendirectory", directoryId, directory.Title,
+            await _fileModule.GetAllFilesFromDirectory(directoryId));
     }
 }

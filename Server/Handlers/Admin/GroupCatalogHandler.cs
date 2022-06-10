@@ -6,6 +6,8 @@ using Server.Core.Extensions;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
+using Server.Database.Models.Banking;
+using Server.Database.Models.Group;
 
 namespace Server.Handlers.Admin;
 
@@ -16,11 +18,8 @@ public class GroupCatalogHandler : ISingletonScript
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
 
-    public GroupCatalogHandler(
-        BankAccountService bankAccountService,
-        GroupService groupService,
-        VehicleCatalogService vehicleCatalogService,
-        VehicleService vehicleService)
+    public GroupCatalogHandler(BankAccountService bankAccountService, GroupService groupService,
+        VehicleCatalogService vehicleCatalogService, VehicleService vehicleService)
     {
         _bankAccountService = bankAccountService;
         _groupService = groupService;
@@ -42,7 +41,7 @@ public class GroupCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("groupcatalog:setup", await _groupService.GetAll());
+        player.EmitGui("groupcatalog:open", await _groupService.GetAll());
     }
 
     private async void OnRequestDetails(ServerPlayer player, int groupId)
@@ -78,6 +77,14 @@ public class GroupCatalogHandler : ISingletonScript
             });
         }
 
-        player.EmitGui("groupcatalog:opendetails", group, bankAccount, vehicleDatas);
+        player.EmitGui("groupcatalog:requestdetails",
+            new Data { Group = group, BankAccount = bankAccount, VehicleDatas = vehicleDatas });
+    }
+
+    private struct Data
+    {
+        public GroupModel Group { get; set; }
+        public BankAccountModel BankAccount { get; set; }
+        public List<VehicleData> VehicleDatas { get; set; }
     }
 }

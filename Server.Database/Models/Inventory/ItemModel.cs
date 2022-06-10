@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using AltV.Net;
 using Server.Database.Enums;
@@ -8,15 +7,14 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Inventory;
 
-public class ItemModel
-    : PositionRotationDimensionModelBase, IWritable
+public class ItemModel : PositionRotationDimensionModelBase, IWritable
 {
     public ItemModel()
     {
     }
 
     public ItemModel(ItemCatalogIds itemModelCatalogIds, int? slot, string customData, string note, int amount,
-                     int? condition, bool isBought, bool isStolen, ItemState itemState)
+        int? condition, bool isBought, bool isStolen, ItemState itemState)
     {
         CatalogItemModelId = itemModelCatalogIds;
         Slot = slot;
@@ -54,88 +52,52 @@ public class ItemModel
 
     public virtual void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(ItemModel item, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(item.Id);
 
         writer.Name("catalogItemName");
-        writer.Value(CatalogItemModelId.ToString());
+        writer.Value(item.CatalogItemModelId.ToString());
 
         writer.Name("catalogItem");
 
-        writer.BeginObject();
-
-        writer.Name("id");
-        writer.Value((int)CatalogItemModel.Id);
-
-        writer.Name("name");
-        writer.Value(CatalogItemModel.Name);
-
-        writer.Name("image");
-        writer.Value(CatalogItemModel.Image);
-
-        writer.Name("description");
-        writer.Value(CatalogItemModel.Description);
-
-        writer.Name("rarity");
-        writer.Value((int)CatalogItemModel.Rarity);
-
-        writer.Name("weight");
-        writer.Value(CatalogItemModel.Weight);
-
-        writer.Name("equippable");
-        writer.Value(CatalogItemModel.Equippable);
-
-        writer.Name("stackable");
-        writer.Value(CatalogItemModel.Stackable);
-
-        writer.Name("buyable");
-        writer.Value(CatalogItemModel.Buyable);
-
-        writer.Name("sellable");
-        writer.Value(CatalogItemModel.Sellable);
-
-        writer.Name("price");
-        writer.Value(CatalogItemModel.Price);
-
-        writer.EndObject();
+        CatalogItemModel.Serialize(item.CatalogItemModel, writer);
 
         writer.Name("slot");
-        writer.Value(Slot ?? -1);
-
-        writer.Name("droppedByCharacter");
-        writer.Value(DroppedByCharacter ?? "Unbekannt");
+        writer.Value(item.Slot ?? -1);
 
         writer.Name("customData");
-        writer.Value(CustomData);
+        writer.Value(item.CustomData ?? string.Empty);
 
         writer.Name("note");
-        writer.Value(Note);
+        writer.Value(item.Note ?? string.Empty);
 
         writer.Name("amount");
-        writer.Value(Amount);
+        writer.Value(item.Amount);
 
         writer.Name("condition");
-        writer.Value(Condition ?? -1);
+        writer.Value(item.Condition ?? -1);
 
         writer.Name("isBought");
-        writer.Value(IsBought);
+        writer.Value(item.IsBought);
 
         writer.Name("itemState");
-        writer.Value((int)ItemState);
+        writer.Value((int)item.ItemState);
 
-        writer.Name("positionX");
-        writer.Value(PositionX);
+        var value = -1;
+        if (item is ItemWeaponAttachmentModel weaponAttachment)
+        {
+            value = weaponAttachment.ItemWeaponId ?? -1;
+        }
 
-        writer.Name("positionY");
-        writer.Value(PositionY);
-
-        writer.Name("positionZ");
-        writer.Value(PositionZ);
-
-        writer.Name("lastUsage");
-        writer.Value(JsonSerializer.Serialize(LastUsage));
+        writer.Name("attachedToWeaponItem");
+        writer.Value(value);
 
         writer.EndObject();
     }

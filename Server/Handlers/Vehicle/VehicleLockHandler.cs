@@ -16,9 +16,7 @@ public class VehicleLockHandler : ISingletonScript
     private readonly LockModule _lockModule;
     private readonly VehicleModule _vehicleModule;
 
-    public VehicleLockHandler(
-        VehicleModule vehicleModule,
-        LockModule lockModule)
+    public VehicleLockHandler(VehicleModule vehicleModule, LockModule lockModule)
     {
         _vehicleModule = vehicleModule;
         _lockModule = lockModule;

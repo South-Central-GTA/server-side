@@ -1,11 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Core.Extensions;
-using Server.Data.Enums;
-using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Narrator;
@@ -19,9 +15,7 @@ public class ItemOpenLicenseHandler : ISingletonScript
 
     private readonly NarratorModule _narratorModule;
 
-    public ItemOpenLicenseHandler(
-        CharacterService characterService,
-        ItemService itemService,
+    public ItemOpenLicenseHandler(CharacterService characterService, ItemService itemService,
         NarratorModule narratorModule)
     {
         _characterService = characterService;
@@ -83,6 +77,6 @@ public class ItemOpenLicenseHandler : ISingletonScript
         }
 
         _narratorModule.SendMessage(player,
-                                    $"{character.Name} besitzt folgende Lizenzen: {string.Join(", ", licenseStrings)}.");
+            $"{character.Name} besitzt folgende Lizenzen: {string.Join(", ", licenseStrings)}.");
     }
 }

@@ -11,17 +11,13 @@ using Server.Database.Models.Inventory;
 
 namespace Server.Modules.Chat;
 
-public class RadioModule
-    : ITransientScript
+public class RadioModule : ITransientScript
 {
     private readonly ChatModule _chatModule;
     private readonly ItemRadioService _itemRadioService;
     private readonly ILogger<RadioModule> _logger;
 
-    public RadioModule(
-        ILogger<RadioModule> logger,
-        ItemRadioService itemRadioService,
-        ChatModule chatModule)
+    public RadioModule(ILogger<RadioModule> logger, ItemRadioService itemRadioService, ChatModule chatModule)
     {
         _logger = logger;
         _itemRadioService = itemRadioService;
@@ -30,7 +26,7 @@ public class RadioModule
     }
 
     public async Task SendMessageOnFrequency(ServerPlayer senderPlayer, ChatType chatType, ItemRadioModel radioModel,
-                                             string message)
+        string message)
     {
         switch (radioModel.FactionType)
         {
@@ -49,10 +45,9 @@ public class RadioModule
     }
 
     public async Task SendMessageOnFaction(string senderName, ChatType chatType, FactionType factionType,
-                                           string message, int radioModelId = -1)
+        string message, int radioModelId = -1)
     {
-        var factionRadios = await _itemRadioService.Where(r => r.FactionType == factionType
-                                                               && r.Id != radioModelId);
+        var factionRadios = await _itemRadioService.Where(r => r.FactionType == factionType && r.Id != radioModelId);
         foreach (var otherRadio in factionRadios)
         {
             if (!otherRadio.InventoryModelId.HasValue)
@@ -66,7 +61,7 @@ public class RadioModule
             }
 
             var targetPlayer = Alt.GetAllPlayers()
-                                  .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
+                .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
             if (targetPlayer != null)
             {
                 _chatModule.SendMessage(targetPlayer, senderName, chatType, message, "#eceba9");
@@ -75,7 +70,7 @@ public class RadioModule
     }
 
     public async Task SendMessageOnDepartment(ServerPlayer senderPlayer, ChatType chatType, ItemRadioModel radioModel,
-                                              string message)
+        string message)
     {
         var factionRadios =
             await _itemRadioService.Where(r => r.FactionType != FactionType.CITIZEN && r.Id != radioModel.Id);
@@ -92,7 +87,7 @@ public class RadioModule
             }
 
             var targetPlayer = Alt.GetAllPlayers()
-                                  .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
+                .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
             var displayName = senderPlayer.CharacterModel.FirstName[0] + ". " + senderPlayer.CharacterModel.LastName;
             if (targetPlayer != null)
             {
@@ -102,7 +97,7 @@ public class RadioModule
     }
 
     private async Task SendMessageOnCitizen(ServerPlayer senderPlayer, ChatType chatType, ItemRadioModel radioModel,
-                                            string message)
+        string message)
     {
         var radios = await _itemRadioService.Where(r => r.Frequency == radioModel.Frequency && r.Id != radioModel.Id);
         foreach (var otherRadio in radios)
@@ -118,7 +113,7 @@ public class RadioModule
             }
 
             var targetPlayer = Alt.GetAllPlayers()
-                                  .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
+                .FindPlayerByCharacterId(otherRadio.InventoryModel.CharacterModelId.Value);
             var displayName = senderPlayer.CharacterModel.FirstName[0] + ". " + senderPlayer.CharacterModel.LastName;
             if (targetPlayer != null)
             {

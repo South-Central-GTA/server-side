@@ -7,8 +7,7 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models.Banking;
 
-public class BankAccountCharacterAccessModel
-    : ModelBase, IWritable
+public class BankAccountCharacterAccessModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -28,19 +27,24 @@ public class BankAccountCharacterAccessModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(BankAccountCharacterAccessModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("permission");
-        writer.Value((int)Permission);
+        writer.Value((int)model.Permission);
 
         writer.Name("owner");
-        writer.Value(Owner);
+        writer.Value(model.Owner);
 
         writer.Name("name");
-        writer.Value(CharacterModel.Name);
+        writer.Value(model.CharacterModel.Name);
 
         writer.Name("characterId");
-        writer.Value(CharacterModel.Id);
+        writer.Value(model.CharacterModel.Id);
 
         writer.EndObject();
     }

@@ -14,9 +14,7 @@ public class PlayerVehicleCatalogHandler : ISingletonScript
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
 
-    public PlayerVehicleCatalogHandler(
-        VehicleCatalogService vehicleCatalogService,
-        VehicleService vehicleService)
+    public PlayerVehicleCatalogHandler(VehicleCatalogService vehicleCatalogService, VehicleService vehicleService)
     {
         _vehicleCatalogService = vehicleCatalogService;
         _vehicleService = vehicleService;
@@ -54,10 +52,10 @@ public class PlayerVehicleCatalogHandler : ISingletonScript
                 DisplayName = catalogVehicle.DisplayName,
                 DisplayClass = catalogVehicle.DisplayClass,
                 CharacterId = vehicle.CharacterModelId ?? -1,
-                CharacterName = vehicle.CharacterModel?.Name ?? string.Empty,
+                CharacterName = vehicle.CharacterModel?.Name ?? string.Empty
             });
         }
 
-        player.EmitGui("playervehiclecatalog:setup", vehicleDatas);
+        player.EmitGui("playervehiclecatalog:open", vehicleDatas);
     }
 }

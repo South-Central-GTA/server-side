@@ -9,14 +9,11 @@ namespace Server.Modules.FileSystem;
 
 public class SyncFileModule : ISingletonScript
 {
-    private readonly GroupService _groupService;
-    private readonly FileModule _fileModule;
     private readonly DirectoryService _directoryService;
+    private readonly FileModule _fileModule;
+    private readonly GroupService _groupService;
 
-    public SyncFileModule(
-        GroupService groupService,
-        DirectoryService directoryService,
-        FileModule fileModule)
+    public SyncFileModule(GroupService groupService, DirectoryService directoryService, FileModule fileModule)
     {
         _groupService = groupService;
         _directoryService = directoryService;
@@ -33,10 +30,8 @@ public class SyncFileModule : ISingletonScript
         }
 
         foreach (var serverPlayer in groupModel.Members
-                                               .Select(groupMember => Alt.GetAllPlayers()
-                                                                         .FindPlayerByCharacterId(
-                                                                             groupMember.CharacterModelId))
-                                               .Where(serverPlayer => serverPlayer != null))
+                     .Select(groupMember => Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                     .Where(serverPlayer => serverPlayer != null))
         {
             if (directoryId.HasValue)
             {
@@ -56,17 +51,13 @@ public class SyncFileModule : ISingletonScript
                     return;
                 }
 
-                serverPlayer.EmitGui("filesystem:opendirectory",
-                                     directoryId.Value,
-                                     directory.Title,
-                                     await _fileModule.GetAllFilesFromDirectory(directoryId.Value));
+                serverPlayer.EmitGui("filesystem:opendirectory", directoryId.Value, directory.Title,
+                    await _fileModule.GetAllFilesFromDirectory(directoryId.Value));
             }
             else
             {
-                serverPlayer.EmitGui("filesystem:opendirectory",
-                                     null,
-                                     null,
-                                     await _fileModule.GetAllDirectories(groupId));
+                serverPlayer.EmitGui("filesystem:opendirectory", null, null,
+                    await _fileModule.GetAllDirectories(groupId));
             }
         }
     }

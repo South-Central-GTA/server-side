@@ -5,8 +5,7 @@ using Server.Database.Models.Mdc;
 
 namespace Server.Modules.MDC;
 
-public class CriminalRecordModule
-    : ISingletonScript
+public class CriminalRecordModule : ISingletonScript
 {
     private readonly CriminalRecordService _criminalRecordService;
 
@@ -17,11 +16,9 @@ public class CriminalRecordModule
 
     public async Task Add(int targetCharacterId, string creatorName, string reason)
     {
-        await _criminalRecordService.Add(new CriminalRecordModel()
+        await _criminalRecordService.Add(new CriminalRecordModel
         {
-            CharacterModelId = targetCharacterId,
-            CreatorCharacterName = creatorName,
-            Reason = reason
+            CharacterModelId = targetCharacterId, CreatorCharacterName = creatorName, Reason = reason
         });
     }
 

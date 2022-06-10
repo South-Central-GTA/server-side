@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models.EntitySync;
 
-public class RgbData
-    : IWritable
+public class RgbData : IWritable
 {
     public RgbData(int red, int green, int blue)
     {

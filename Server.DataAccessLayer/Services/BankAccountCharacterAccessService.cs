@@ -6,11 +6,10 @@ using Server.Database.Models.Banking;
 
 namespace Server.DataAccessLayer.Services;
 
-public class BankAccountCharacterAccessService
-    : BaseService<BankAccountCharacterAccessModel>, ITransientScript
+public class BankAccountCharacterAccessService : BaseService<BankAccountCharacterAccessModel>, ITransientScript
 {
-    public BankAccountCharacterAccessService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public BankAccountCharacterAccessService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(
+        dbContextFactory)
     {
     }
 }

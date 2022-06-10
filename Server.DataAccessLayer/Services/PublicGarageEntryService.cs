@@ -11,13 +11,11 @@ using Server.Database.Models.Vehicles;
 
 namespace Server.DataAccessLayer.Services;
 
-public class PublicGarageEntryService
-    : BaseService<PublicGarageEntryModel>, ITransientScript
+public class PublicGarageEntryService : BaseService<PublicGarageEntryModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public PublicGarageEntryService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public PublicGarageEntryService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
@@ -25,22 +23,15 @@ public class PublicGarageEntryService
     public override async Task<PublicGarageEntryModel?> Find(Expression<Func<PublicGarageEntryModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.PublicGarageEntries
-                              .Include(g => g.GroupModel)
-                              .Include(g => g.CharacterModel)
-                              .Include(g => g.PlayerVehicleModel)
-                              .FirstOrDefaultAsync(expression);
+        return await dbContext.PublicGarageEntries.Include(g => g.GroupModel).Include(g => g.CharacterModel)
+            .Include(g => g.PlayerVehicleModel).FirstOrDefaultAsync(expression);
     }
 
     public override async Task<List<PublicGarageEntryModel>> Where(
         Expression<Func<PublicGarageEntryModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.PublicGarageEntries
-                              .Include(g => g.GroupModel)
-                              .Include(g => g.CharacterModel)
-                              .Include(g => g.PlayerVehicleModel)
-                              .Where(expression)
-                              .ToListAsync();
+        return await dbContext.PublicGarageEntries.Include(g => g.GroupModel).Include(g => g.CharacterModel)
+            .Include(g => g.PlayerVehicleModel).Where(expression).ToListAsync();
     }
 }

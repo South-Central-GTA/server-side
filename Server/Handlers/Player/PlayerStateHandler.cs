@@ -17,10 +17,7 @@ public class PlayerStateHandler : ISingletonScript
     private readonly HouseService _houseService;
     private readonly PedSyncModule _pedSyncModule;
 
-    public PlayerStateHandler(
-        HouseService houseService,
-        GroupService groupService,
-        HouseModule houseModule,
+    public PlayerStateHandler(HouseService houseService, GroupService groupService, HouseModule houseModule,
         PedSyncModule pedSyncModule)
     {
         _houseService = houseService;

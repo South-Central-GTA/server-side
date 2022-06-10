@@ -8,12 +8,10 @@ namespace Server.Modules.Chat;
 
 public class CommandModule : ISingletonScript
 {
+    private readonly List<Command> _commands = new();
     private readonly ILogger<CommandModule> _logger;
 
-    private readonly List<Command> _commands = new();
-
-    public CommandModule(
-        ILogger<CommandModule> logger)
+    public CommandModule(ILogger<CommandModule> logger)
     {
         _logger = logger;
     }
@@ -26,7 +24,6 @@ public class CommandModule : ISingletonScript
 
     public List<Command> GetAllCommand(ServerPlayer player)
     {
-        return _commands
-            .FindAll(c => player.AccountModel.Permission.HasFlag(c.RequiredPermission));
+        return _commands.FindAll(c => player.AccountModel.Permission.HasFlag(c.RequiredPermission));
     }
 }

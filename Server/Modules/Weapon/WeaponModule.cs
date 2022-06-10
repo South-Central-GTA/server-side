@@ -11,15 +11,12 @@ using Server.Modules.Inventory;
 
 namespace Server.Modules.Weapon;
 
-public class WeaponModule
-    : ITransientScript
+public class WeaponModule : ITransientScript
 {
     private readonly InventoryModule _inventoryModule;
     private readonly ILogger<WeaponModule> _logger;
 
-    public WeaponModule(
-        ILogger<WeaponModule> logger,
-        InventoryModule inventoryModule)
+    public WeaponModule(ILogger<WeaponModule> logger, InventoryModule inventoryModule)
     {
         _logger = logger;
         _inventoryModule = inventoryModule;

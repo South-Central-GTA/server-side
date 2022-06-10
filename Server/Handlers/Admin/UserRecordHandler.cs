@@ -1,5 +1,4 @@
-﻿using System;
-using AltV.Net.Async;
+﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
@@ -34,9 +33,8 @@ public class UserRecordHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("userrecord:setup",
-                       accountId,
-                       await _userRecordLogService.Where(ur => ur.AccountModelId == accountId));
+        player.EmitGui("userrecord:setup", accountId,
+            await _userRecordLogService.Where(ur => ur.AccountModelId == accountId));
     }
 
     private async void OnRequestSaveUserRecordEntry(ServerPlayer player, ulong accountId, string manuelEntry)
@@ -47,13 +45,11 @@ public class UserRecordHandler : ISingletonScript
             StaffAccountModelId = player.AccountModel.SocialClubId,
             CharacterModelId = player.CharacterModel.Id,
             UserRecordType = UserRecordType.BY_HUMAN,
-            Text = manuelEntry,
-            LoggedAt = DateTime.Now
+            Text = manuelEntry
         });
 
-        player.EmitGui("userrecord:setup",
-                       accountId,
-                       await _userRecordLogService.Where(ur => ur.AccountModelId == accountId));
+        player.EmitGui("userrecord:setup", accountId,
+            await _userRecordLogService.Where(ur => ur.AccountModelId == accountId));
         player.SendNotification("Eintrag wurde erfolgreich gespeichert.", NotificationType.SUCCESS);
     }
 }

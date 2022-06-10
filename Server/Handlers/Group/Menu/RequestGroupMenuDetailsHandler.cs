@@ -15,9 +15,7 @@ public class RequestGroupMenuDetailsHandler : ISingletonScript
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
 
-    public RequestGroupMenuDetailsHandler(
-        GroupService groupService,
-        HouseService houseService)
+    public RequestGroupMenuDetailsHandler(GroupService groupService, HouseService houseService)
     {
         _groupService = groupService;
         _houseService = houseService;
@@ -47,15 +45,11 @@ public class RequestGroupMenuDetailsHandler : ISingletonScript
                 }
 
                 var memberCharacterIds = group.Members.Select(m => m.CharacterModelId);
-                var players = Alt.GetAllPlayers()
-                                 .GetAllServerPlayers()
-                                 .FindAll(p => memberCharacterIds.Contains(p.CharacterModel.Id));
+                var players = Alt.GetAllPlayers().GetAllServerPlayers()
+                    .FindAll(p => memberCharacterIds.Contains(p.CharacterModel.Id));
 
-                onlineGroupPlayers = players
-                                     .Select(target => new PlayerInformationData
-                                     {
-                                         Id = target.Id, CharacterName = target.CharacterModel.Name
-                                     }).ToList();
+                onlineGroupPlayers = players.Select(target =>
+                    new PlayerInformationData { Id = target.Id, CharacterName = target.CharacterModel.Name }).ToList();
             }
         }
 

@@ -11,12 +11,6 @@ namespace Server.ServerJobs;
 
 public class Blip : IJob
 {
-    private readonly ILogger<DroppedItems> _logger;
-    private readonly WorldLocationOptions _worldLocationOptions;
-    private readonly DevelopmentOptions _developmentOptions;
-
-    private readonly BlipSyncModule _blipSyncModule;
-
     private readonly List<Position> _atmPositions = new()
     {
         new Position(129.75f, -1710.50f, 28.52f), // herr kutz
@@ -40,14 +34,16 @@ public class Blip : IJob
         new Position(319.12088f, -1392.6329f, 31.41394f), // ATMKH4
         new Position(321.2967f, -1394.2021f, 31.41394f), // ATMKH5
         new Position(283.55603f, -1444.6549f, 28.953857f), // ATMKH6
-        new Position(315.4286f, -1464.2373f, z: 28.953857f), // ATMKH7
+        new Position(315.4286f, -1464.2373f, 28.953857f) // ATMKH7
     };
 
-    public Blip(
-        ILogger<DroppedItems> logger,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        IOptions<DevelopmentOptions> developmentOptions,
-        BlipSyncModule blipSyncModule)
+    private readonly BlipSyncModule _blipSyncModule;
+    private readonly DevelopmentOptions _developmentOptions;
+    private readonly ILogger<DroppedItems> _logger;
+    private readonly WorldLocationOptions _worldLocationOptions;
+
+    public Blip(ILogger<DroppedItems> logger, IOptions<WorldLocationOptions> worldLocationOptions,
+        IOptions<DevelopmentOptions> developmentOptions, BlipSyncModule blipSyncModule)
     {
         _logger = logger;
         _worldLocationOptions = worldLocationOptions.Value;
@@ -76,55 +72,29 @@ public class Blip : IJob
 
         foreach (var atmPosition in _atmPositions)
         {
-            _blipSyncModule.Create("Geldautomat",
-                                   2,
-                                   1,
-                                   true,
-                                   272,
-                                   new Position(atmPosition.X, atmPosition.Y, atmPosition.Z));
+            _blipSyncModule.Create("Geldautomat", 2, 1, true, 272,
+                new Position(atmPosition.X, atmPosition.Y, atmPosition.Z));
         }
 
-        _blipSyncModule.Create("Hafen Los Santos Aufladestation",
-                               5,
-                               1,
-                               true,
-                               478,
-                               new Position(_worldLocationOptions.HarbourSelectionPositionX,
-                                            _worldLocationOptions.HarbourSelectionPositionY,
-                                            _worldLocationOptions.HarbourSelectionPositionZ));
+        _blipSyncModule.Create("Hafen Los Santos Aufladestation", 5, 1, true, 478,
+            new Position(_worldLocationOptions.HarbourSelectionPositionX,
+                _worldLocationOptions.HarbourSelectionPositionY, _worldLocationOptions.HarbourSelectionPositionZ));
 
         foreach (var publicGarage in _worldLocationOptions.PublicGarages)
         {
-            _blipSyncModule.Create("Öffentliche Garage",
-                                   42,
-                                   1,
-                                   true,
-                                   50,
-                                   new Position(publicGarage.ParkingPointX,
-                                                publicGarage.ParkingPointY,
-                                                publicGarage.ParkingPointZ));
+            _blipSyncModule.Create("Öffentliche Garage", 42, 1, true, 50,
+                new Position(publicGarage.ParkingPointX, publicGarage.ParkingPointY, publicGarage.ParkingPointZ));
         }
 
         foreach (var drivingSchool in _worldLocationOptions.DrivingSchools)
         {
-            _blipSyncModule.Create("Fahrschule",
-                                   45,
-                                   1,
-                                   true,
-                                   498,
-                                   new Position(drivingSchool.PedPointX,
-                                                drivingSchool.PedPointY,
-                                                drivingSchool.PedPointZ));
+            _blipSyncModule.Create("Fahrschule", 45, 1, true, 498,
+                new Position(drivingSchool.PedPointX, drivingSchool.PedPointY, drivingSchool.PedPointZ));
         }
 
-        _blipSyncModule.Create("Stadthalle",
-                               4,
-                               1,
-                               true,
-                               120,
-                               new Position(_worldLocationOptions.CityHallPositionX,
-                                            _worldLocationOptions.CityHallPositionY,
-                                            _worldLocationOptions.CityHallPositionZ));
+        _blipSyncModule.Create("Stadthalle", 4, 1, true, 120,
+            new Position(_worldLocationOptions.CityHallPositionX, _worldLocationOptions.CityHallPositionY,
+                _worldLocationOptions.CityHallPositionZ));
 
         await Task.CompletedTask;
     }

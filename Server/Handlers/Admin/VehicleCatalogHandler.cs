@@ -16,17 +16,14 @@ namespace Server.Handlers.Admin;
 
 public class VehicleCatalogHandler : ISingletonScript
 {
-    private readonly Serializer _serializer;
     private readonly AdminModule _adminModule;
+    private readonly Serializer _serializer;
     private readonly SouthCentralPointsModule _southCentralPointsModule;
-    private readonly VehicleDumpModule _vehicleDumpModule;
     private readonly VehicleCatalogService _vehicleCatalogService;
+    private readonly VehicleDumpModule _vehicleDumpModule;
 
-    public VehicleCatalogHandler(
-        Serializer serializer,
-        AdminModule adminModule,
-        SouthCentralPointsModule southCentralPointsModule,
-        VehicleDumpModule vehicleDumpModule,
+    public VehicleCatalogHandler(Serializer serializer, AdminModule adminModule,
+        SouthCentralPointsModule southCentralPointsModule, VehicleDumpModule vehicleDumpModule,
         VehicleCatalogService vehicleCatalogService)
     {
         _serializer = serializer;
@@ -37,7 +34,7 @@ public class VehicleCatalogHandler : ISingletonScript
 
         AltAsync.OnClient<ServerPlayer>("vehiclecatalog:open", OnOpenVehicleCatalog);
         AltAsync.OnClient<ServerPlayer, string, int>("vehiclecatalog:requestsetorderablevehiclesamount",
-                                                     OnRequestSetOrderableVehicleAmount);
+            OnRequestSetOrderableVehicleAmount);
         AltAsync.OnClient<ServerPlayer, string>("vehiclecatalog:saveveh", OnSaveVeh);
     }
 
@@ -56,11 +53,11 @@ public class VehicleCatalogHandler : ISingletonScript
 
         var catalogVehicles = await _vehicleCatalogService.GetAll();
         catalogVehicles.ForEach(v => v.SouthCentralPoints = _southCentralPointsModule.GetPointsPrice(v.Price));
-        player.EmitGui("vehiclecatalog:setup", catalogVehicles);
+        player.EmitGui("vehiclecatalog:open", catalogVehicles);
     }
 
     private async void OnRequestSetOrderableVehicleAmount(ServerPlayer player, string model,
-                                                          int amountOfOrderableVehicles)
+        int amountOfOrderableVehicles)
     {
         if (!player.Exists)
         {
@@ -82,7 +79,7 @@ public class VehicleCatalogHandler : ISingletonScript
         if (catalogVehicle.Price == 0)
         {
             player.SendNotification("Dieses Fahrzeug hat kein Preis, du kannst es nicht beim Händler anbieten.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -90,10 +87,9 @@ public class VehicleCatalogHandler : ISingletonScript
 
         await _vehicleCatalogService.Update(catalogVehicle);
 
-        player.SendNotification("Du hast die Anzahl der bestellbaren Fahrzeuge für das " +
-                                $"Fahrzeug: {catalogVehicle.DisplayName} auf " +
-                                $"{amountOfOrderableVehicles} Stück gestellt.",
-                                NotificationType.SUCCESS);
+        player.SendNotification(
+            "Du hast die Anzahl der bestellbaren Fahrzeuge für das " + $"Fahrzeug: {catalogVehicle.DisplayName} auf " +
+            $"{amountOfOrderableVehicles} Stück gestellt.", NotificationType.SUCCESS);
 
         UpdateVehicleCatalogUi(catalogVehicle);
     }
@@ -103,8 +99,8 @@ public class VehicleCatalogHandler : ISingletonScript
     {
         var catalogVehicle = _serializer.Deserialize<CatalogVehicleModel>(catalogVehicleJson);
 
-        var dump = _vehicleDumpModule.Dump.Find(
-            v => string.Equals(v.Name, catalogVehicle.Model, StringComparison.CurrentCultureIgnoreCase));
+        var dump = _vehicleDumpModule.Dump.Find(v =>
+            string.Equals(v.Name, catalogVehicle.Model, StringComparison.CurrentCultureIgnoreCase));
 
         catalogVehicle.ClassId = dump == null ? "NOT_FOUND" : dump.Class;
         catalogVehicle.DlcName = dump == null ? "NOT_FOUND" : dump.DlcName;
@@ -120,6 +116,7 @@ public class VehicleCatalogHandler : ISingletonScript
         {
             catalogVehicleModel.SouthCentralPoints =
                 _southCentralPointsModule.GetPointsPrice(catalogVehicleModel.Price);
+
             player.EmitGui("vehiclecatalog:update", catalogVehicleModel);
         });
 

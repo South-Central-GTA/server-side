@@ -2,8 +2,7 @@
 
 namespace Server.Database.Models.Inventory;
 
-public class ItemWeaponModel
-    : ItemModel
+public class ItemWeaponModel : ItemModel
 {
     public string? SerialNumber { get; set; }
     public int InitialOwnerId { get; set; }

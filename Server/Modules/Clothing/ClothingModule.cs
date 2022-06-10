@@ -3,8 +3,7 @@ using Server.Database.Enums;
 
 namespace Server.Modules.Clothing;
 
-public class ClothingModule
-    : ITransientScript
+public class ClothingModule : ITransientScript
 {
     public static bool IsClothesOrProp(ItemCatalogIds catalogId)
     {

@@ -10,17 +10,14 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcDeleteCriminalRecord : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
-
-    private readonly PoliceMdcModule _policeMdcModule;
     private readonly CriminalRecordModule _criminalRecordModule;
+    private readonly GroupFactionService _groupFactionService;
     private readonly GroupModule _groupModule;
 
-    public PdMdcDeleteCriminalRecord(
-        GroupFactionService groupFactionService,
-        PoliceMdcModule policeMdcModule,
-        CriminalRecordModule criminalRecordModule,
-        GroupModule groupModule)
+    private readonly PoliceMdcModule _policeMdcModule;
+
+    public PdMdcDeleteCriminalRecord(GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule,
+        CriminalRecordModule criminalRecordModule, GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;
         _policeMdcModule = policeMdcModule;

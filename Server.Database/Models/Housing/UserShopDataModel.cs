@@ -4,8 +4,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Housing;
 
-public class UserShopDataModel
-    : ModelBase
+public class UserShopDataModel : ModelBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]

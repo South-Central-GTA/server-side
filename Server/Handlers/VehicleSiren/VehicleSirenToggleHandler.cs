@@ -11,8 +11,7 @@ public class VehicleSirenToggleHandler : ISingletonScript
     private readonly ILogger<VehicleSirenToggleHandler> _logger;
     private readonly VehicleCatalogService _vehicleCatalogService;
 
-    public VehicleSirenToggleHandler(
-        ILogger<VehicleSirenToggleHandler> logger,
+    public VehicleSirenToggleHandler(ILogger<VehicleSirenToggleHandler> logger,
         VehicleCatalogService vehicleCatalogService)
     {
         _logger = logger;

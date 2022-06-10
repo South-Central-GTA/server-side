@@ -7,13 +7,8 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Mdc;
 
-public class BulletInEntryModel
-    : ModelBase, IWritable
+public class BulletInEntryModel : ModelBase, IWritable
 {
-    public BulletInEntryModel()
-    {
-    }
-
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
@@ -25,19 +20,24 @@ public class BulletInEntryModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(BulletInEntryModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("content");
-        writer.Value(Content);
+        writer.Value(model.Content);
 
         writer.Name("creatorCharacterName");
-        writer.Value(CreatorCharacterName);
+        writer.Value(model.CreatorCharacterName);
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

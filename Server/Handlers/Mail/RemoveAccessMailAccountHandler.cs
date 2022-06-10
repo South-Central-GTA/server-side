@@ -16,11 +16,8 @@ public class RemoveAccessMailAccountHandler : ISingletonScript
     private readonly MailAccountService _mailAccountService;
     private readonly MailModule _mailModule;
 
-    public RemoveAccessMailAccountHandler(
-        MailAccountService mailAccountService,
-        CharacterService characterService,
-        GroupService groupService,
-        MailModule mailModule)
+    public RemoveAccessMailAccountHandler(MailAccountService mailAccountService, CharacterService characterService,
+        GroupService groupService, MailModule mailModule)
     {
         _mailAccountService = mailAccountService;
         _characterService = characterService;
@@ -54,7 +51,7 @@ public class RemoveAccessMailAccountHandler : ISingletonScript
         if (character == null)
         {
             player.EmitGui("mail:senderror",
-                           "Es konnte keine Person unter diesen Namen gefunden werden, wir konnten Niemanden zu Ihrem Mailkonto hinzufügen, wir entschuldigen die Unannehmlichkeiten.");
+                "Es konnte keine Person unter diesen Namen gefunden werden, wir konnten Niemanden zu Ihrem Mailkonto hinzufügen, wir entschuldigen die Unannehmlichkeiten.");
             return;
         }
 
@@ -71,13 +68,12 @@ public class RemoveAccessMailAccountHandler : ISingletonScript
             if (member.Owner)
             {
                 player.EmitGui("mail:senderror",
-                               "Sie können diese Person nicht von dem Mailkonto entfernen, da sie der Eigentümer einer Gruppe mit Zugriffsrechten ist.");
+                    "Sie können diese Person nicht von dem Mailkonto entfernen, da sie der Eigentümer einer Gruppe mit Zugriffsrechten ist.");
                 return;
             }
         }
 
-        var characterAccess =
-            mailAccount.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == character.Id);
+        var characterAccess = mailAccount.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == character.Id);
         if (characterAccess == null)
         {
             return;
@@ -86,7 +82,7 @@ public class RemoveAccessMailAccountHandler : ISingletonScript
         if (characterAccess.Owner)
         {
             player.EmitGui("mail:senderror",
-                           "Der angegebene Name ist als Eigentümer hinterlegt und kann daher nicht entfernt werden.");
+                "Der angegebene Name ist als Eigentümer hinterlegt und kann daher nicht entfernt werden.");
             return;
         }
 

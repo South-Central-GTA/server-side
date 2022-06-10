@@ -1,59 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using AltV.Net;
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
-using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Banking;
-using Server.Database.Models.File;
 using Server.Database.Models.Housing;
 using Server.Database.Models.Mdc;
-using Server.Modules.FileSystem;
 
 namespace Server.Modules.MDC;
 
-public class PoliceMdcModule
-    : ISingletonScript
+public class PoliceMdcModule : ISingletonScript
 {
-    public CallSign CallSign { get; }
+    private readonly BankAccountService _bankAccountService;
+    private readonly CharacterService _characterService;
+    private readonly CriminalRecordService _criminalRecordService;
 
     private readonly EmergencyCallService _emergencyCallService;
     private readonly GroupFactionService _groupFactionService;
-    private readonly CriminalRecordService _criminalRecordService;
-    private readonly MdcNoteService _mdcNoteService;
-    private readonly CharacterService _characterService;
-    private readonly VehicleService _vehicleService;
-    private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly HouseService _houseService;
-    private readonly BankAccountService _bankAccountService;
     private readonly ItemPhoneService _itemPhoneService;
     private readonly ItemWeaponService _itemWeaponService;
     private readonly MailAccountService _mailAccountService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
+    private readonly MdcNoteService _mdcNoteService;
     private readonly PoliceTicketService _policeTicketService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    private readonly VehicleCatalogService _vehicleCatalogService;
+    private readonly VehicleService _vehicleService;
 
-    public PoliceMdcModule(
-        GroupFactionService groupFactionService,
-        EmergencyCallService emergencyCallService,
-        CriminalRecordService criminalRecordService,
-        MdcNoteService mdcNoteService,
-        CharacterService characterService,
-        VehicleService vehicleService,
-        VehicleCatalogService vehicleCatalogService,
-        HouseService houseService,
-        BankAccountService bankAccountService,
-        ItemPhoneService itemPhoneService,
-        ItemWeaponService itemWeaponService,
-        MailAccountService mailAccountService,
-        RegistrationOfficeService registrationOfficeService,
+    public PoliceMdcModule(GroupFactionService groupFactionService, EmergencyCallService emergencyCallService,
+        CriminalRecordService criminalRecordService, MdcNoteService mdcNoteService, CharacterService characterService,
+        VehicleService vehicleService, VehicleCatalogService vehicleCatalogService, HouseService houseService,
+        BankAccountService bankAccountService, ItemPhoneService itemPhoneService, ItemWeaponService itemWeaponService,
+        MailAccountService mailAccountService, RegistrationOfficeService registrationOfficeService,
         PoliceTicketService policeTicketService)
     {
         CallSign = new CallSign(groupFactionService);
@@ -73,6 +58,8 @@ public class PoliceMdcModule
         _mdcNoteService = mdcNoteService;
     }
 
+    public CallSign CallSign { get; }
+
     public async Task<List<EmergencyCallModel>> GetEmergencyCalls()
     {
         var emergencyCalls = await _emergencyCallService.GetAll();
@@ -88,10 +75,8 @@ public class PoliceMdcModule
         }
 
         foreach (var target in factionGroup.Members
-                                           .Select(groupMember =>
-                                                       Alt.GetAllPlayers()
-                                                          .FindPlayerByCharacterId(groupMember.CharacterModelId))
-                                           .Where(serverPlayer => serverPlayer != null))
+                     .Select(groupMember => Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                     .Where(serverPlayer => serverPlayer != null))
         {
             target.EmitGui("policemdc:updateemergencycalls", await GetEmergencyCalls());
         }
@@ -110,7 +95,6 @@ public class PoliceMdcModule
         var records = await _criminalRecordService.Where(r => r.CharacterModelId == character.Id);
         var notes = await _mdcNoteService.Where(r => r.TargetModelId == targetCharacterId &&
                                                      r.Type == MdcSearchType.NAME);
-
 
         var vehicles = await _vehicleService.Where(v => v.CharacterModelId == character.Id);
         var vehicleDatas = new List<VehicleData>();
@@ -145,21 +129,12 @@ public class PoliceMdcModule
             : new List<BankAccountModel>();
 
         var phoneModels = await _itemPhoneService.Where(p => p.InitialOwnerId == character.Id);
-        var phoneNumbers = isRegistered
-            ? phoneModels.Select(p => p.PhoneNumber).ToList()
-            : new List<string>();
+        var phoneNumbers = isRegistered ? phoneModels.Select(p => p.PhoneNumber).ToList() : new List<string>();
 
         var tickets = await _policeTicketService.Where(pt => pt.TargetCharacterId == character.Id);
 
-        player.EmitLocked("policemdc:opencharacterrecord",
-                          character,
-                          records,
-                          tickets,
-                          notes,
-                          vehicleDatas,
-                          houses,
-                          bankAccounts,
-                          phoneNumbers);
+        player.EmitLocked("policemdc:opencharacterrecord", character, records, tickets, notes, vehicleDatas, houses,
+            bankAccounts, phoneNumbers);
     }
 
     public async Task OpenPhoneRecord(ServerPlayer player, string targetPhoneId)
@@ -208,13 +183,8 @@ public class PoliceMdcModule
             ownerName = vehicle.GroupModelOwner.Name;
         }
 
-        player.EmitGui("policemdc:openvehiclerecord",
-                       vehicle.Id,
-                       catalogVehicle.DisplayName,
-                       catalogVehicle.DisplayClass,
-                       vehicle.NumberplateText,
-                       ownerName,
-                       nodes);
+        player.EmitGui("policemdc:openvehiclerecord", vehicle.Id, catalogVehicle.DisplayName,
+            catalogVehicle.DisplayClass, vehicle.NumberplateText, ownerName, nodes);
     }
 
     public async Task OpenBankAccountRecord(ServerPlayer player, string targetBankAccountId)
@@ -259,12 +229,8 @@ public class PoliceMdcModule
             ownerCharacterName = ownerCharacter.Name;
         }
 
-        player.EmitGui("policemdc:openweaponrecord",
-                       weaponModel.Id,
-                       weaponModel.SerialNumber,
-                       ownerCharacterName,
-                       weaponModel.CatalogItemModel.Name,
-                       nodes);
+        player.EmitGui("policemdc:openweaponrecord", weaponModel.Id, weaponModel.SerialNumber, ownerCharacterName,
+            weaponModel.CatalogItemModel.Name, nodes);
     }
 
     public async Task UpdateCurrentRecord(ServerPlayer player, MdcSearchType type, string id)

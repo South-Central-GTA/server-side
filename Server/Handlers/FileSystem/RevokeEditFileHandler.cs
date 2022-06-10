@@ -1,7 +1,6 @@
 ﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
 using Server.Modules.Group;
 
@@ -13,9 +12,7 @@ public class RevokeEditFileHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
 
-    public RevokeEditFileHandler(
-        FileService fileService,
-        GroupModule groupModule)
+    public RevokeEditFileHandler(FileService fileService, GroupModule groupModule)
     {
         _fileService = fileService;
 

@@ -23,15 +23,14 @@ using Server.Modules.Vehicles;
 
 namespace Server.Modules.DrivingSchool;
 
-public class DrivingSchoolModule
-    : ITransientScript
+public class DrivingSchoolModule : ITransientScript
 {
     private readonly CharacterService _characterService;
-    private readonly PersonalLicenseService _personalLicenseService;
     private readonly ChatModule _chatModule;
     private readonly ItemCreationModule _itemCreationModule;
     private readonly ILogger<DrivingSchoolModule> _logger;
     private readonly PedSyncModule _pedSyncModule;
+    private readonly PersonalLicenseService _personalLicenseService;
 
     private readonly Random _random = new();
 
@@ -62,16 +61,10 @@ public class DrivingSchoolModule
 
     private readonly WorldLocationOptions _worldLocationOptions;
 
-    public DrivingSchoolModule(
-        ILogger<DrivingSchoolModule> logger,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        CharacterService characterService,
-        VehicleCatalogService vehicleCatalogService,
-        PersonalLicenseService personalLicenseService,
-        VehicleModule vehicleModule,
-        PedSyncModule pedSyncModule,
-        ChatModule chatModule,
-        ItemCreationModule itemCreationModule)
+    public DrivingSchoolModule(ILogger<DrivingSchoolModule> logger, IOptions<WorldLocationOptions> worldLocationOptions,
+        CharacterService characterService, VehicleCatalogService vehicleCatalogService,
+        PersonalLicenseService personalLicenseService, VehicleModule vehicleModule, PedSyncModule pedSyncModule,
+        ChatModule chatModule, ItemCreationModule itemCreationModule)
     {
         _logger = logger;
 
@@ -102,18 +95,10 @@ public class DrivingSchoolModule
         }
 
         var vehicle = await _vehicleModule.Create(randomModel,
-                                                  new Position(drivingSchoolData.StartPointX,
-                                                               drivingSchoolData.StartPointY,
-                                                               drivingSchoolData.StartPointZ),
-                                                  new DegreeRotation(drivingSchoolData.StartPointRoll,
-                                                                     drivingSchoolData.StartPointPitch,
-                                                                     drivingSchoolData.StartPointYaw),
-                                                  drivingSchoolData.VehPrimColor,
-                                                  drivingSchoolData.VehSecColor,
-                                                  0,
-                                                  1000,
-                                                  1000,
-                                                  catalogVehicle.MaxTank);
+            new Position(drivingSchoolData.StartPointX, drivingSchoolData.StartPointY, drivingSchoolData.StartPointZ),
+            new DegreeRotation(drivingSchoolData.StartPointRoll, drivingSchoolData.StartPointPitch,
+                drivingSchoolData.StartPointYaw), drivingSchoolData.VehPrimColor, drivingSchoolData.VehSecColor, 0,
+            1000, 1000, catalogVehicle.MaxTank);
 
         if (vehicle == null)
         {
@@ -131,10 +116,8 @@ public class DrivingSchoolModule
 
         await player.SetIntoVehicleAsync(vehicle, 1);
 
-        player.EmitLocked("drivingschool:start",
-                          drivingSchoolData.StartPointX,
-                          drivingSchoolData.StartPointY,
-                          drivingSchoolData.StartPointZ - 0.5f);
+        player.EmitLocked("drivingschool:start", drivingSchoolData.StartPointX, drivingSchoolData.StartPointY,
+            drivingSchoolData.StartPointZ - 0.5f);
     }
 
     public async Task StopPlayerExam(ServerPlayer player, bool passed)
@@ -159,10 +142,9 @@ public class DrivingSchoolModule
 
         if (passed)
         {
-            await _personalLicenseService.Add(new PersonalLicenseModel()
+            await _personalLicenseService.Add(new PersonalLicenseModel
             {
-                CharacterModelId = player.CharacterModel.Id,
-                Type = PersonalLicensesType.DRIVING
+                CharacterModelId = player.CharacterModel.Id, Type = PersonalLicensesType.DRIVING
             });
 
             await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.LICENSES, 1);
@@ -186,11 +168,8 @@ public class DrivingSchoolModule
             return;
         }
 
-        player.EmitLocked("drivingschool:restart",
-                          drivingSchoolData.StartPointX,
-                          drivingSchoolData.StartPointY,
-                          drivingSchoolData.StartPointZ - 0.5f,
-                          checkpointIndex);
+        player.EmitLocked("drivingschool:restart", drivingSchoolData.StartPointX, drivingSchoolData.StartPointY,
+            drivingSchoolData.StartPointZ - 0.5f, checkpointIndex);
     }
 
     public async Task StopVehicleExam(ServerVehicle vehicle)
@@ -204,12 +183,9 @@ public class DrivingSchoolModule
 
     public void ReportSpeeding(ServerPlayer player)
     {
-        _chatModule.SendProxMessage("Fahrlehrer",
-                                    5,
-                                    ChatType.SPEAK,
-                                    "Das ist hier kein Rennen! Halte dich an die maximale Geschwindigkeit innerhalb geschlossener Ortschaften! Das sind 70 km/h!",
-                                    player.Vehicle.Position,
-                                    0);
+        _chatModule.SendProxMessage("Fahrlehrer", 5, ChatType.SPEAK,
+            "Das ist hier kein Rennen! Halte dich an die maximale Geschwindigkeit innerhalb geschlossener Ortschaften! Das sind 70 km/h!",
+            player.Vehicle.Position, 0);
 
         player.EmitLocked("drivingschool:resetreportspeeding");
     }
@@ -249,7 +225,7 @@ public class DrivingSchoolModule
         {
             await StopPlayerExam(player, false);
             player.SendNotification("Du hast das Fahrschulauto zurückgelassen und somit die Prüfung nicht bestanden.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -257,29 +233,21 @@ public class DrivingSchoolModule
         {
             await StopPlayerExam(player, false);
             player.SendNotification("Du hast das Fahrschulauto zurückgelassen und somit die Prüfung nicht bestanden.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (isLastCheckpoint)
         {
-            _chatModule.SendProxMessage("Fahrlehrer",
-                                        5,
-                                        ChatType.SPEAK,
-                                        "Alles klar dann haben wirs...",
-                                        player.Vehicle.Position,
-                                        0);
+            _chatModule.SendProxMessage("Fahrlehrer", 5, ChatType.SPEAK, "Alles klar dann haben wirs...",
+                player.Vehicle.Position, 0);
 
             await StopPlayerExam(player, true);
         }
         else
         {
-            _chatModule.SendProxMessage("Fahrlehrer",
-                                        5,
-                                        ChatType.SPEAK,
-                                        _sentences[checkpointIndex],
-                                        player.Vehicle.Position,
-                                        0);
+            _chatModule.SendProxMessage("Fahrlehrer", 5, ChatType.SPEAK, _sentences[checkpointIndex],
+                player.Vehicle.Position, 0);
         }
 
         serverVehicle.SetData("DRIVING_SCHOOL_VEH_CHECKPOINT_INDEX", checkpointIndex + 1);

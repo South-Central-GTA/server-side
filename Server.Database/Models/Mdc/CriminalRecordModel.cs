@@ -7,13 +7,8 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models.Mdc;
 
-public class CriminalRecordModel
-    : ModelBase, IWritable
+public class CriminalRecordModel : ModelBase, IWritable
 {
-    public CriminalRecordModel()
-    {
-    }
-
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
@@ -27,19 +22,24 @@ public class CriminalRecordModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(CriminalRecordModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("reason");
-        writer.Value(Reason);
+        writer.Value(model.Reason);
 
         writer.Name("creatorCharacterName");
-        writer.Value(CreatorCharacterName);
+        writer.Value(model.CreatorCharacterName);
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

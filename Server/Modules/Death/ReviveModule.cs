@@ -15,8 +15,7 @@ public class ReviveModule : ISingletonScript
     private readonly CharacterService _characterService;
     private readonly GroupFactionService _groupFactionService;
 
-    public ReviveModule(CharacterService characterService,
-                        GroupFactionService groupFactionService)
+    public ReviveModule(CharacterService characterService, GroupFactionService groupFactionService)
     {
         _characterService = characterService;
         _groupFactionService = groupFactionService;

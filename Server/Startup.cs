@@ -21,43 +21,36 @@ using Server.Core.Abstractions;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities.Factories;
+using Server.Core.ScheduledJobs;
 using Server.DataAccessLayer.Context;
 using Server.Extensions;
 using Server.Modules.Discord;
-using Server.Core.ScheduledJobs;
 
 namespace Server;
 
-public class Startup
-    : AsyncResource
+public class Startup : AsyncResource
 {
-    public IConfiguration Configuration { get; }
     private readonly ServiceProvider _serviceProvider;
 
-    public Startup()
-        : base(new ActionTickSchedulerFactory())
+    public Startup() : base(new ActionTickSchedulerFactory())
     {
         // Read and build configuration
         var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-        Configuration = new ConfigurationBuilder()
-                        .SetBasePath(basePath)
-                        .AddJsonFile("appsettings.json", false, true)
-                        .Build();
+        Configuration = new ConfigurationBuilder().SetBasePath(basePath).AddJsonFile("appsettings.json", false, true)
+            .Build();
 
         // Initialize dependency injection
         var services = new ServiceCollection();
 
         var loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder
-                .AddConfiguration(Configuration.GetSection("Logging"));
+            builder.AddConfiguration(Configuration.GetSection("Logging"));
         });
 
         var logger = loggerFactory.CreateLogger(typeof(ServiceCollectionExtensions));
 
-        services
-            .AddRefitClient<IDiscordApi>()
+        services.AddRefitClient<IDiscordApi>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://discordapp.com/api"));
 
         services.Configure<JsonSerializerOptions>(options =>
@@ -83,9 +76,7 @@ public class Startup
 
         // Configure and register loggers
         services.AddLogging(config => config
-                                      .AddConfiguration(Configuration.GetSection("Logging"))
-                                      .AddDebug()
-                                      .AddConsole());
+            .AddConfiguration(Configuration.GetSection("Logging")).AddDebug().AddConsole());
 
         // Register factory for database context
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -93,24 +84,15 @@ public class Startup
         if (useLocal)
         {
             services.AddDbContextFactory<DatabaseContext>(options => options
-                                                                     .UseNpgsql(
-                                                                         Configuration.GetConnectionString(
-                                                                             "LocalDatabase"),
-                                                                         o => o.UseQuerySplittingBehavior(
-                                                                             QuerySplittingBehavior.SplitQuery))
-                                                                     .EnableSensitiveDataLogging()
-                                                                     .ConfigureWarnings(
-                                                                         w => w.Throw(
-                                                                             RelationalEventId
-                                                                                 .MultipleCollectionIncludeWarning)));
+                .UseNpgsql(Configuration.GetConnectionString("LocalDatabase"),
+                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)).EnableSensitiveDataLogging()
+                .ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning)));
         }
         else
         {
-            services.AddDbContextFactory<DatabaseContext>(options => options
-                                                              .UseNpgsql(
-                                                                  Configuration.GetConnectionString("LiveDatabase"),
-                                                                  o => o.UseQuerySplittingBehavior(
-                                                                      QuerySplittingBehavior.SplitQuery)));
+            services.AddDbContextFactory<DatabaseContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("LiveDatabase"),
+                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
         }
 
         //Register all dependency injectable services.
@@ -129,30 +111,28 @@ public class Startup
         logger.LogDebug("Dependency Injection initialized successfully.");
     }
 
+    public IConfiguration Configuration { get; }
+
     public override void OnStart()
     {
-        AltEntitySync.Init(8,
-                           syncRate => 200,
-                           threadId => false,
-                           (threadCount, repository) => new ServerEventNetworkLayer(threadCount, repository),
-                           (entity, threadCount) => entity.Type % threadCount,
-                           (entityId, entityType, threadCount) => entityType % threadCount,
-                           threadId =>
-                           {
-                               return threadId switch
-                               {
-                                   // Objects
-                                   0 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
-                                   // Marker
-                                   1 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
-                                   // Ped
-                                   2 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
-                                   // Blips
-                                   3 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
-                                   _ => new LimitedGrid3(50_000, 50_000, 175, 10_000, 10_000, 115)
-                               };
-                           },
-                           new IdProvider());
+        AltEntitySync.Init(8, syncRate => 200, threadId => false,
+            (threadCount, repository) => new ServerEventNetworkLayer(threadCount, repository),
+            (entity, threadCount) => entity.Type % threadCount,
+            (entityId, entityType, threadCount) => entityType % threadCount, threadId =>
+            {
+                return threadId switch
+                {
+                    // Objects
+                    0 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
+                    // Marker
+                    1 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
+                    // Ped
+                    2 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
+                    // Blips
+                    3 => new LimitedGrid3(50_000, 50_000, 75, 10_000, 10_000, 64),
+                    _ => new LimitedGrid3(50_000, 50_000, 175, 10_000, 10_000, 115)
+                };
+            }, new IdProvider());
 
         // Instantiate startup scripts
         _serviceProvider.InstantiateStartupScripts();

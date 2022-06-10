@@ -14,17 +14,14 @@ namespace Server.Handlers.Bank;
 
 public class RemovePermissionBankHandler : ISingletonScript
 {
-    private readonly BankModule _bankModule;
-    private readonly PhoneModule _phoneModule;
     private readonly BankAccountService _bankAccountService;
+    private readonly BankModule _bankModule;
     private readonly CharacterService _characterService;
+    private readonly PhoneModule _phoneModule;
     private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public RemovePermissionBankHandler(
-        BankModule bankModule,
-        PhoneModule phoneModule,
-        BankAccountService bankAccountService,
-        CharacterService characterService,
+    public RemovePermissionBankHandler(BankModule bankModule, PhoneModule phoneModule,
+        BankAccountService bankAccountService, CharacterService characterService,
         RegistrationOfficeService registrationOfficeService)
     {
         _bankModule = bankModule;
@@ -37,7 +34,7 @@ public class RemovePermissionBankHandler : ISingletonScript
     }
 
     private async void OnRemovePermission(ServerPlayer player, int phoneId, int bankAccountId, int characterId,
-                                          string expectedPermission)
+        string expectedPermission)
     {
         if (!player.Exists)
         {
@@ -48,7 +45,7 @@ public class RemovePermissionBankHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -61,9 +58,8 @@ public class RemovePermissionBankHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.MANAGEMENT))
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Leider sind unter Ihren Namen nicht genügen Zugriffsrechte gesetzt, Sie können keine Management Aufträge für dieses Konto einreichen.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Leider sind unter Ihren Namen nicht genügen Zugriffsrechte gesetzt, Sie können keine Management Aufträge für dieses Konto einreichen.");
             return;
         }
 

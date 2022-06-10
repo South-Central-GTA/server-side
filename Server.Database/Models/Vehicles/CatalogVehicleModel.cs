@@ -7,8 +7,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Vehicles;
 
-public class CatalogVehicleModel
-    : ModelBase, IWritable
+public class CatalogVehicleModel : ModelBase, IWritable
 {
     [Key]
     [JsonPropertyName("model")]
@@ -39,37 +38,42 @@ public class CatalogVehicleModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(CatalogVehicleModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("model");
-        writer.Value(Model);
+        writer.Value(model.Model);
 
         writer.Name("displayName");
-        writer.Value(DisplayName);
+        writer.Value(model.DisplayName);
 
         writer.Name("displayClass");
-        writer.Value(DisplayClass);
+        writer.Value(model.DisplayClass);
 
         writer.Name("classId");
-        writer.Value(ClassId);
+        writer.Value(model.ClassId);
 
         writer.Name("maxTank");
-        writer.Value(MaxTank);
+        writer.Value(model.MaxTank);
 
         writer.Name("fuelType");
-        writer.Value((int)FuelType);
+        writer.Value((int)model.FuelType);
 
         writer.Name("price");
-        writer.Value(Price);
+        writer.Value(model.Price);
 
         writer.Name("southCentralPoints");
-        writer.Value(SouthCentralPoints);
+        writer.Value(model.SouthCentralPoints);
 
         writer.Name("dlcName");
-        writer.Value(DlcName);
+        writer.Value(model.DlcName);
 
         writer.Name("amountOfOrderableVehicles");
-        writer.Value(AmountOfOrderableVehicles);
+        writer.Value(model.AmountOfOrderableVehicles);
 
         writer.EndObject();
     }

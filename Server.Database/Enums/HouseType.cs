@@ -3,5 +3,5 @@
 public enum HouseType
 {
     HOUSE,
-    COMPANY,
+    COMPANY
 }

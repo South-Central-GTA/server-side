@@ -49,7 +49,7 @@ public class VehicleTrunkHandler : ISingletonScript
         if (vehicle.DbEntity.VehicleState == VehicleState.DESTROYED)
         {
             player.SendNotification("Dein Charakter bekommt den Kofferraum nicht mehr geöffnet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -63,7 +63,7 @@ public class VehicleTrunkHandler : ISingletonScript
         if (dumpEntry is { Class: "CYCLE" })
         {
             player.SendNotification("Fahrräder haben keine Kofferräume oder sonstige Lagerpositionen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

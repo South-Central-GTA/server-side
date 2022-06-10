@@ -13,9 +13,7 @@ public class DeleteGroupRankHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
 
-    public DeleteGroupRankHandler(
-        GroupService groupService,
-        GroupModule groupModule)
+    public DeleteGroupRankHandler(GroupService groupService, GroupModule groupModule)
     {
         _groupService = groupService;
 
@@ -47,7 +45,7 @@ public class DeleteGroupRankHandler : ISingletonScript
         if (!success)
         {
             player.SendNotification("Der Rang konnte nicht gelöscht werden, da er noch genutzt wird.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

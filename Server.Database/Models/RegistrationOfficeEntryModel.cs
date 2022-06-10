@@ -7,8 +7,7 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models;
 
-public class RegistrationOfficeEntryModel
-    : ModelBase, IWritable
+public class RegistrationOfficeEntryModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -18,13 +17,18 @@ public class RegistrationOfficeEntryModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(RegistrationOfficeEntryModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("lastUsage");
-        writer.Value(JsonSerializer.Serialize(LastUsage));
+        writer.Value(JsonSerializer.Serialize(model.LastUsage));
 
         writer.Name("createdAt");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

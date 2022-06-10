@@ -11,9 +11,7 @@ public class CheckpointDrivingSchoolHandler : ISingletonScript
     private readonly DrivingSchoolModule _drivingSchoolModule;
     private readonly PedSyncModule _pedSyncModule;
 
-    public CheckpointDrivingSchoolHandler(
-        DrivingSchoolModule drivingSchoolModule,
-        PedSyncModule pedSyncModule)
+    public CheckpointDrivingSchoolHandler(DrivingSchoolModule drivingSchoolModule, PedSyncModule pedSyncModule)
     {
         _drivingSchoolModule = drivingSchoolModule;
         _pedSyncModule = pedSyncModule;

@@ -18,9 +18,9 @@ namespace Server.Handlers.LeaseCompany.Types.Base;
 
 public class BaseItemShopHandler : ISingletonScript
 {
-    private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
+    private readonly CompanyOptions _companyOptions;
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
 
@@ -32,18 +32,10 @@ public class BaseItemShopHandler : ISingletonScript
     private readonly MoneyModule _moneyModule;
     private readonly UserShopDataService _userShopDataService;
 
-    public BaseItemShopHandler(
-        IOptions<CompanyOptions> companyOptions,
-        ItemCatalogService itemCatalogService,
-        HouseService houseService,
-        BankAccountService bankAccountService,
-        ItemService itemService,
-        GroupService groupService,
-        UserShopDataService userShopDataService,
-        InventoryService inventoryService,
-        InventoryModule inventoryModule,
-        ItemCreationModule itemCreationModule,
-        MoneyModule moneyModule,
+    public BaseItemShopHandler(IOptions<CompanyOptions> companyOptions, ItemCatalogService itemCatalogService,
+        HouseService houseService, BankAccountService bankAccountService, ItemService itemService,
+        GroupService groupService, UserShopDataService userShopDataService, InventoryService inventoryService,
+        InventoryModule inventoryModule, ItemCreationModule itemCreationModule, MoneyModule moneyModule,
         BankModule bankModule)
     {
         _companyOptions = companyOptions.Value;
@@ -100,21 +92,15 @@ public class BaseItemShopHandler : ISingletonScript
                 await _itemCreationModule.AddItemAsync(player, catalogItemId, 1, null, null, null, true, false);
             }
 
-            player.SendNotification(amount <= 1
-                                        ? $"{catalogItem.Name} wurde dem Warenkorb hinzugefügt."
-                                        : $"{catalogItem.Name} wurde {amount} mal dem Warenkorb hinzugefügt.",
-                                    NotificationType.SUCCESS);
+            player.SendNotification(
+                amount <= 1
+                    ? $"{catalogItem.Name} wurde dem Warenkorb hinzugefügt."
+                    : $"{catalogItem.Name} wurde {amount} mal dem Warenkorb hinzugefügt.", NotificationType.SUCCESS);
         }
         else
         {
-            var item = await _itemCreationModule.AddItemAsync(player,
-                                                              catalogItemId,
-                                                              amount,
-                                                              null,
-                                                              null,
-                                                              null,
-                                                              true,
-                                                              false);
+            var item = await _itemCreationModule.AddItemAsync(player, catalogItemId, amount, null, null, null, true,
+                false);
             if (item == null)
             {
                 return;
@@ -144,7 +130,7 @@ public class BaseItemShopHandler : ISingletonScript
         if (costs == 0)
         {
             player.SendNotification("Dein Charakter hat keine Waren von dem Supermarkt im Inventar.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -158,14 +144,12 @@ public class BaseItemShopHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount,
-                                                 costs,
-                                                 false,
-                                                 $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
+        var success = await _bankModule.Withdraw(bankAccount, costs, false,
+            $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
         if (success)
         {
             player.SendNotification("Dein Charakter hat den Einkauf bezahlt.", NotificationType.SUCCESS);
@@ -184,7 +168,7 @@ public class BaseItemShopHandler : ISingletonScript
         else
         {
             player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
         }
     }
 
@@ -290,9 +274,7 @@ public class BaseItemShopHandler : ISingletonScript
         {
             await _userShopDataService.Add(new UserShopDataModel
             {
-                CharacterModelId = player.CharacterModel.Id,
-                GotWarned = false,
-                BillToPay = price
+                CharacterModelId = player.CharacterModel.Id, GotWarned = false, BillToPay = price
             });
         }
     }

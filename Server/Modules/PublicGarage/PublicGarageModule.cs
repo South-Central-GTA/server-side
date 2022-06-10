@@ -19,8 +19,7 @@ using Server.Modules.Vehicles;
 
 namespace Server.Modules.PublicGarage;
 
-public class PublicGarageModule
-    : ITransientScript
+public class PublicGarageModule : ITransientScript
 {
     private readonly BankAccountService _bankAccountService;
 
@@ -30,11 +29,8 @@ public class PublicGarageModule
     private readonly VehicleModule _vehicleModule;
     private readonly WorldLocationOptions _worldLocationOptions;
 
-    public PublicGarageModule(
-        ILogger<PublicGarageModule> logger,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        BankAccountService bankAccountService,
-        PublicGarageEntryService publicGarageEntryService,
+    public PublicGarageModule(ILogger<PublicGarageModule> logger, IOptions<WorldLocationOptions> worldLocationOptions,
+        BankAccountService bankAccountService, PublicGarageEntryService publicGarageEntryService,
         VehicleModule vehicleModule)
     {
         _logger = logger;
@@ -60,15 +56,14 @@ public class PublicGarageModule
             foreach (var garage in _worldLocationOptions.PublicGarages)
             {
                 ColShapes.Add(garage.Id,
-                              Alt.CreateColShapeSphere(
-                                  new Position(garage.ParkingPointX, garage.ParkingPointY, garage.ParkingPointZ),
-                                  4f));
+                    Alt.CreateColShapeSphere(
+                        new Position(garage.ParkingPointX, garage.ParkingPointY, garage.ParkingPointZ), 4f));
             }
         });
     }
 
     public async Task Unpark(ServerPlayer player, PlayerVehicleModel vehicleModel, PublicGarageData publicGarageData,
-                             PublicGarageEntryModel publicGarageEntryModel)
+        PublicGarageEntryModel publicGarageEntryModel)
     {
         var bankAccount = await _bankAccountService.GetByKey(publicGarageEntryModel.BankAccountId);
         if (bankAccount == null)
@@ -97,7 +92,7 @@ public class PublicGarageModule
 
         var genderString = player.CharacterModel.Gender == GenderType.MALE ? "sein" : "ihr";
         player.SendNotification($"Dein Charakter hat erfolgreich {genderString} Fahrzeug ausgeparkt.",
-                                NotificationType.SUCCESS);
+            NotificationType.SUCCESS);
 
         await _publicGarageEntryService.Remove(publicGarageEntryModel);
     }

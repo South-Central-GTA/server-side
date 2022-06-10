@@ -1,12 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using AltV.Net;
-using Server.Data.Enums;
 using Server.Database.Enums;
 
 namespace Server.Data.Models;
 
-public class MdcSearchEntity
-    : IWritable
+public class MdcSearchEntity : IWritable
 {
     [JsonPropertyName("id")] public int Id { get; set; }
     public string StringId { get; set; }

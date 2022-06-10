@@ -1,7 +1,6 @@
 ﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.FileSystem;
@@ -16,10 +15,7 @@ public class DeleteFileHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly SyncFileModule _syncFileModule;
 
-    public DeleteFileHandler(
-        FileService fileService,
-        GroupModule groupModule,
-        SyncFileModule syncFileModule)
+    public DeleteFileHandler(FileService fileService, GroupModule groupModule, SyncFileModule syncFileModule)
     {
         _fileService = fileService;
 
@@ -42,9 +38,8 @@ public class DeleteFileHandler : ISingletonScript
             return;
         }
 
-        if (!await _groupModule.HasPermission(player.CharacterModel.Id,
-                                              file.DirectoryModel.GroupModelId,
-                                              GroupPermission.MDC_OPERATOR))
+        if (!await _groupModule.HasPermission(player.CharacterModel.Id, file.DirectoryModel.GroupModelId,
+                GroupPermission.MDC_OPERATOR))
         {
             return;
         }

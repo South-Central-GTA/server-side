@@ -18,10 +18,8 @@ public class SetItemPriceCommand : ISingletonScript
         _itemCatalogService = itemCatalogService;
     }
 
-    [Command("setitemprice",
-             "Setze den Preis eines bestimmten Items.",
-             Permission.ECONOMY_MANAGEMENT,
-             new[] { "Item ID", "Preis (Dollar)" })]
+    [Command("setitemprice", "Setze den Preis eines bestimmten Items.", Permission.ECONOMY_MANAGEMENT,
+        new[] { "Item ID", "Preis (Dollar)" })]
     public async void OnExecute(ServerPlayer player, string expectedItemId, string expectedPrice)
     {
         if (!player.Exists)

@@ -21,39 +21,29 @@ using Server.Modules.Vehicles;
 
 namespace Server.Modules.Character;
 
-public class CharacterSelectionModule
-    : ITransientScript
+public class CharacterSelectionModule : ITransientScript
 {
-    private readonly ILogger<CharacterSelectionModule> _logger;
-    private readonly WorldLocationOptions _worldLocationOptions;
-
     private readonly AccountService _accountService;
-    private readonly CharacterService _characterService;
-    private readonly DeliveryService _deliveryService;
-    private readonly HouseService _houseService;
 
     private readonly BankModule _bankModule;
+    private readonly CharacterService _characterService;
     private readonly CharacterSpawnModule _characterSpawnModule;
     private readonly CommandModule _commandModule;
+    private readonly DeliveryService _deliveryService;
     private readonly GroupModule _groupModule;
     private readonly HouseModule _houseModule;
-    private readonly VehicleLocatingModule _vehicleLocatingModule;
-    private readonly PrisonModule _prisonModule;
+    private readonly HouseService _houseService;
+    private readonly ILogger<CharacterSelectionModule> _logger;
     private readonly PedSyncModule _pedSyncModule;
+    private readonly PrisonModule _prisonModule;
+    private readonly VehicleLocatingModule _vehicleLocatingModule;
+    private readonly WorldLocationOptions _worldLocationOptions;
 
-    public CharacterSelectionModule(
-        ILogger<CharacterSelectionModule> logger,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        CharacterService characterService,
-        DeliveryService deliveryService,
-        HouseService houseService,
-        AccountService accountService,
-        CharacterSpawnModule characterSpawnModule,
-        HouseModule houseModule,
-        CommandModule commandModule,
-        BankModule bankModule,
-        GroupModule groupModule,
-        VehicleLocatingModule vehicleLocatingModule,
+    public CharacterSelectionModule(ILogger<CharacterSelectionModule> logger,
+        IOptions<WorldLocationOptions> worldLocationOptions, CharacterService characterService,
+        DeliveryService deliveryService, HouseService houseService, AccountService accountService,
+        CharacterSpawnModule characterSpawnModule, HouseModule houseModule, CommandModule commandModule,
+        BankModule bankModule, GroupModule groupModule, VehicleLocatingModule vehicleLocatingModule,
         PrisonModule prisonModule, PedSyncModule pedSyncModule)
     {
         _logger = logger;
@@ -90,8 +80,7 @@ public class CharacterSelectionModule
         player.IsDuty = false;
         player.SetUniqueDimension();
         player.SetPositionLocked(new Position(_worldLocationOptions.CharacterSelectionPositionX,
-                                              _worldLocationOptions.CharacterSelectionPositionY,
-                                              _worldLocationOptions.CharacterSelectionPositionZ));
+            _worldLocationOptions.CharacterSelectionPositionY, _worldLocationOptions.CharacterSelectionPositionZ));
         player.DeleteStreamSyncedMetaData("DUTY");
 
         _vehicleLocatingModule.StopTracking(player);
@@ -153,11 +142,10 @@ public class CharacterSelectionModule
         {
             if (delivery.OldStatus == DeliveryState.ACCEPTED)
             {
-                player.SetWaypoint(new Position(_worldLocationOptions.HarbourSelectionPositionX,
-                                                _worldLocationOptions.HarbourSelectionPositionY,
-                                                _worldLocationOptions.HarbourSelectionPositionZ),
-                                   5,
-                                   1);
+                player.SetWaypoint(
+                    new Position(_worldLocationOptions.HarbourSelectionPositionX,
+                        _worldLocationOptions.HarbourSelectionPositionY,
+                        _worldLocationOptions.HarbourSelectionPositionZ), 5, 1);
             }
 
             if (delivery.OldStatus == DeliveryState.LOADED)
@@ -181,13 +169,10 @@ public class CharacterSelectionModule
         }
 
         await _characterSpawnModule.Spawn(player,
-                                          new Position(player.CharacterModel.PositionX,
-                                                       player.CharacterModel.PositionY,
-                                                       player.CharacterModel.PositionZ),
-                                          new Rotation(player.CharacterModel.Roll,
-                                                       player.CharacterModel.Pitch,
-                                                       player.CharacterModel.Yaw),
-                                          player.CharacterModel.Dimension);
+            new Position(player.CharacterModel.PositionX, player.CharacterModel.PositionY,
+                player.CharacterModel.PositionZ),
+            new Rotation(player.CharacterModel.Roll, player.CharacterModel.Pitch, player.CharacterModel.Yaw),
+            player.CharacterModel.Dimension);
 
         // Check if player is in jail
         if (player.CharacterModel.JailedUntil.HasValue)

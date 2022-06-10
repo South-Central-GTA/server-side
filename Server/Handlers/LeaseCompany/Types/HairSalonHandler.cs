@@ -18,25 +18,19 @@ namespace Server.Handlers.LeaseCompany.Types;
 
 public class HairSalonHandler : ISingletonScript
 {
-    private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
     private readonly CharacterService _characterService;
+    private readonly CompanyOptions _companyOptions;
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
 
     private readonly MoneyModule _moneyModule;
     private readonly Serializer _serializer;
 
-    public HairSalonHandler(
-        IOptions<CompanyOptions> companyOptions,
-        Serializer serializer,
-        BankAccountService bankAccountService,
-        GroupService groupService,
-        HouseService houseService,
-        CharacterService characterService,
-        MoneyModule moneyModule,
-        BankModule bankModule)
+    public HairSalonHandler(IOptions<CompanyOptions> companyOptions, Serializer serializer,
+        BankAccountService bankAccountService, GroupService groupService, HouseService houseService,
+        CharacterService characterService, MoneyModule moneyModule, BankModule bankModule)
     {
         _companyOptions = companyOptions.Value;
         _serializer = serializer;
@@ -195,14 +189,12 @@ public class HairSalonHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount,
-                                                 price,
-                                                 false,
-                                                 $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
+        var success = await _bankModule.Withdraw(bankAccount, price, false,
+            $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
         if (success)
         {
             player.CharacterModel.AppearancesModel.Update(

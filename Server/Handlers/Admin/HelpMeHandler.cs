@@ -33,7 +33,7 @@ public class HelpMeHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("helpme:setup", _helpMeModule.GetAllTickets());
+        player.EmitGui("helpme:open", _helpMeModule.GetAllTickets());
     }
 
     private void OnTakeTicket(ServerPlayer player, string playerDiscordId)
@@ -53,9 +53,9 @@ public class HelpMeHandler : ISingletonScript
         _helpMeModule.TakeTicket(discordId);
 
         ticketCreator.SendNotification("Dein Ticket wurde von Team Mitglied " + player.AccountName + " angenommen.",
-                                       NotificationType.INFO);
-        player.SendNotification("Du hast das Ticket von " + ticketCreator.AccountName + " (ID: " + ticketCreator.Id +
-                                ") angenommen, teleportiere dich bitte zum Spieler.",
-                                NotificationType.INFO);
+            NotificationType.INFO);
+        player.SendNotification(
+            "Du hast das Ticket von " + ticketCreator.AccountName + " (ID: " + ticketCreator.Id +
+            ") angenommen, teleportiere dich bitte zum Spieler.", NotificationType.INFO);
     }
 }

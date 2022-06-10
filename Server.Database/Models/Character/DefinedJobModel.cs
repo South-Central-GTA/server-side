@@ -4,8 +4,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Character;
 
-public class DefinedJobModel
-    : ModelBase
+public class DefinedJobModel : ModelBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]

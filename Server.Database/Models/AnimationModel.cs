@@ -6,8 +6,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models;
 
-public class AnimationModel
-    : ModelBase, IWritable
+public class AnimationModel : ModelBase, IWritable
 {
     public AnimationModel(string name, string dictionary, string clip)
     {
@@ -27,22 +26,27 @@ public class AnimationModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(AnimationModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("dictionary");
-        writer.Value(Dictionary);
+        writer.Value(model.Dictionary);
 
         writer.Name("clip");
-        writer.Value(Clip);
+        writer.Value(model.Clip);
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
         writer.Name("flags");
-        writer.Value((int)Flags);
+        writer.Value((int)model.Flags);
 
         writer.EndObject();
     }

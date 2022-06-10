@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using AltV.Net;
@@ -8,8 +7,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Mdc;
 
-public class EmergencyCallModel
-    : ModelBase, IWritable
+public class EmergencyCallModel : ModelBase, IWritable
 {
     public EmergencyCallModel()
     {
@@ -35,22 +33,27 @@ public class EmergencyCallModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(EmergencyCallModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("phoneNumber");
-        writer.Value(PhoneNumber);
+        writer.Value(model.PhoneNumber);
 
         writer.Name("situation");
-        writer.Value(Situation);
+        writer.Value(model.Situation);
 
         writer.Name("location");
-        writer.Value(Location);
+        writer.Value(model.Location);
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

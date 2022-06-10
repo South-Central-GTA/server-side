@@ -22,13 +22,9 @@ public class PhoneHandler : ISingletonScript
     private readonly PhoneNotificationService _phoneNotificationService;
     private readonly Serializer _serializer;
 
-    public PhoneHandler(
-        PhoneModule phoneModule,
-        PhoneChatService phoneChatService,
-        PhoneContactService phoneContactService,
-        PhoneNotificationService phoneNotificationService,
-        PhoneMessageService phoneMessageService,
-        Serializer serializer)
+    public PhoneHandler(PhoneModule phoneModule, PhoneChatService phoneChatService,
+        PhoneContactService phoneContactService, PhoneNotificationService phoneNotificationService,
+        PhoneMessageService phoneMessageService, Serializer serializer)
     {
         _phoneModule = phoneModule;
         _phoneChatService = phoneChatService;
@@ -62,14 +58,14 @@ public class PhoneHandler : ISingletonScript
         if (phoneItem == null)
         {
             player.SendNotification("Dein Charakter hat kein Handy im Inventar oder es ist noch nicht aktiv gesetzt.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (!phoneItem.IsBought)
         {
             player.SendNotification("Dein Charakter kann das Handy erst nach dem Kaufen (oder Diebstahl) nutzen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -211,12 +207,13 @@ public class PhoneHandler : ISingletonScript
         if (phone.PhoneNumber == phoneContact.PhoneNumber)
         {
             player.SendNotification("Dein Charakter kann sich nicht selbst im Telefonbuch abspeichern.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var contact = phone.Contacts.FirstOrDefault(c => c.PhoneNumber == phoneContact.PhoneNumber
-                                                         || c.Name == phoneContact.Name);
+        var contact =
+            phone.Contacts.FirstOrDefault(c =>
+                c.PhoneNumber == phoneContact.PhoneNumber || c.Name == phoneContact.Name);
         if (contact != null)
         {
             player.SendNotification(
@@ -227,9 +224,7 @@ public class PhoneHandler : ISingletonScript
 
         await _phoneContactService.Add(new PhoneContactModel
         {
-            ItemPhoneModelId = phone.Id,
-            PhoneNumber = phoneContact.PhoneNumber,
-            Name = phoneContact.Name
+            ItemPhoneModelId = phone.Id, PhoneNumber = phoneContact.PhoneNumber, Name = phoneContact.Name
         });
 
         var chatDbo = phone.Chats.FirstOrDefault(c => c.PhoneNumber == phoneContact.PhoneNumber);

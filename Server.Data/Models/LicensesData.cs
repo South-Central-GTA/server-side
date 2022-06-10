@@ -3,8 +3,7 @@ using Server.Database.Enums;
 
 namespace Server.Data.Models;
 
-public class LicensesData
-    : IWritable
+public class LicensesData : IWritable
 {
     public LicensesFlags License { get; set; }
     public string Name { get; set; }

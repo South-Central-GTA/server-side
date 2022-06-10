@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AltV.Net;
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
@@ -27,7 +26,7 @@ public class PlayerActionHandler : ISingletonScript
                 return;
             }
 
-            var actions = new List<ActionData>() { new("Inventar öffnen", "inventory:request") };
+            var actions = new List<ActionData> { new("Inventar öffnen", "inventory:request") };
 
             _contextModule.OpenMenu(player, player.CharacterModel.Name, actions);
         });

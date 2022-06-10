@@ -12,13 +12,11 @@ using Server.Database.Models.Housing;
 
 namespace Server.DataAccessLayer.Services;
 
-public class HouseService
-    : BaseService<HouseModel>, ITransientScript
+public class HouseService : BaseService<HouseModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public HouseService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public HouseService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
@@ -26,35 +24,23 @@ public class HouseService
     public override async Task<List<HouseModel>> GetAll()
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Houses
-                              .Include(h => h.Doors)
-                              .Include(h => h.Inventory)
-                              .ThenInclude(i => i.Items)
-                              .ThenInclude(i => i.CatalogItemModel)
-                              .ToListAsync();
+        return await dbContext.Houses.Include(h => h.Doors).Include(h => h.Inventory).ThenInclude(i => i.Items)
+            .ThenInclude(i => i.CatalogItemModel).ToListAsync();
     }
 
     public async Task<HouseModel?> GetByKey(int key)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Houses
-                              .Include(h => h.Doors)
-                              .Include(h => h.Inventory)
-                              .ThenInclude(i => i.Items)
-                              .ThenInclude(i => i.CatalogItemModel)
-                              .FirstOrDefaultAsync(h => h.Id == key);
+        return await dbContext.Houses.Include(h => h.Doors).Include(h => h.Inventory).ThenInclude(i => i.Items)
+            .ThenInclude(i => i.CatalogItemModel).FirstOrDefaultAsync(h => h.Id == key);
     }
 
 
     public override async Task<List<HouseModel>> Where(Expression<Func<HouseModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Houses
-                              .Include(h => h.Doors)
-                              .Include(h => h.Inventory)
-                              .ThenInclude(i => i.Items)
-                              .ThenInclude(i => i.CatalogItemModel)
-                              .Where(expression).ToListAsync();
+        return await dbContext.Houses.Include(h => h.Doors).Include(h => h.Inventory).ThenInclude(i => i.Items)
+            .ThenInclude(i => i.CatalogItemModel).Where(expression).ToListAsync();
     }
 
     public async Task<HouseModel?> GetByDistance(Position position, float maxDistance = 1.5f)
@@ -64,7 +50,7 @@ public class HouseService
         foreach (var h in await GetAll())
         {
             var distance = new Position(h.PositionX, h.PositionY, h.PositionZ).Distance(position);
-            if (distance <= maxDistance && (distance < closestDistance))
+            if (distance <= maxDistance && distance < closestDistance)
             {
                 closestDistance = distance;
                 houseModel = h;

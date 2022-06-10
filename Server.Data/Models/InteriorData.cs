@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models;
 
-public class InteriorData
-    : IWritable
+public class InteriorData : IWritable
 {
     public string Name { get; set; }
     public int Price { get; set; }

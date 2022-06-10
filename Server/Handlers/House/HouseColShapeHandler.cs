@@ -17,9 +17,7 @@ public class HouseColShapeHandler : ISingletonScript
     private readonly HouseModule _houseModule;
     private readonly HouseService _houseService;
 
-    public HouseColShapeHandler(
-        HouseService houseService,
-        HouseModule houseModule)
+    public HouseColShapeHandler(HouseService houseService, HouseModule houseModule)
     {
         _houseService = houseService;
         _houseModule = houseModule;

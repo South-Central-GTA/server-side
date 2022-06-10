@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models;
 
-public class PublicGarageEntryData
-    : VehicleData, IWritable
+public class PublicGarageEntryData : VehicleData, IWritable
 {
     public int Costs { get; set; }
 

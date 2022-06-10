@@ -5,33 +5,31 @@ using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models.Delivery;
 
-namespace Server.Handlers.Delivery
+namespace Server.Handlers.Delivery;
+
+public class MyCurrentDeliveryHandler : ISingletonScript
 {
-    public class MyCurrentDeliveryHandler
-        : ISingletonScript
+    private readonly DeliveryService _deliveryService;
+
+    public MyCurrentDeliveryHandler(DeliveryService deliveryService)
     {
-        private readonly DeliveryService _deliveryService;
+        _deliveryService = deliveryService;
 
-        public MyCurrentDeliveryHandler(DeliveryService deliveryService)
+        AltAsync.OnClient<ServerPlayer>("delivery:getmycurrentdelivery", OnGetMyCurrentDelivery);
+    }
+
+    private async void OnGetMyCurrentDelivery(ServerPlayer player)
+    {
+        if (!player.Exists)
         {
-            _deliveryService = deliveryService;
-
-            AltAsync.OnClient<ServerPlayer>("delivery:getmycurrentdelivery", OnGetMyCurrentDelivery);
+            return;
         }
 
-        private async void OnGetMyCurrentDelivery(ServerPlayer player)
+        var delivery = await _deliveryService.Find(d => d.SupplierCharacterId == player.CharacterModel.Id);
+
+        if (delivery is ProductDeliveryModel productDelivery)
         {
-            if (!player.Exists)
-            {
-                return;
-            }
-
-            var delivery = await _deliveryService.Find(d => d.SupplierCharacterId == player.CharacterModel.Id);
-
-            if (delivery is ProductDeliveryModel productDelivery)
-            {
-                player.EmitGui("delivery:sendmycurrentdelivery", productDelivery);
-            }
+            player.EmitGui("delivery:sendmycurrentdelivery", productDelivery);
         }
     }
 }

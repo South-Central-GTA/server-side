@@ -30,6 +30,6 @@ public class BankAccountCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("bankaccountcatalog:setup", await _bankAccountService.GetAll());
+        player.EmitGui("bankaccountcatalog:open", await _bankAccountService.GetAll());
     }
 }

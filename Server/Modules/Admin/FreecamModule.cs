@@ -6,13 +6,11 @@ using Server.Core.Entities;
 
 namespace Server.Modules.Admin;
 
-public class FreecamModule
-    : ITransientScript
+public class FreecamModule : ITransientScript
 {
     private readonly ILogger<FreecamModule> _logger;
 
-    public FreecamModule(
-        ILogger<FreecamModule> logger)
+    public FreecamModule(ILogger<FreecamModule> logger)
     {
         _logger = logger;
     }

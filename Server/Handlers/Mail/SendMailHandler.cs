@@ -17,7 +17,7 @@ public class SendMailHandler : ISingletonScript
     }
 
     private async void OnSendMail(ServerPlayer player, string senderMailAddress, string targetMailAddress, string title,
-                                  string content)
+        string content)
     {
         await _mailModule.SendMail(player, senderMailAddress, targetMailAddress, title, content);
     }

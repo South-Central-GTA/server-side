@@ -7,8 +7,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Inventory.Phone;
 
-public class PhoneChatModel
-    : ModelBase, IWritable
+public class PhoneChatModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -24,58 +23,32 @@ public class PhoneChatModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(PhoneChatModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("phoneNumber");
-        writer.Value(PhoneNumber);
+        writer.Value(model.PhoneNumber);
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
-        writer.Name("lastUsage");
-        writer.Value(JsonSerializer.Serialize(LastUsage));
+        writer.Name("lastUsageJson");
+        writer.Value(JsonSerializer.Serialize(model.LastUsage));
 
         writer.Name("messages");
 
         writer.BeginArray();
 
-        if (Messages != null)
+        foreach (var message in model.Messages)
         {
-            for (var m = 0; m < Messages.Count; m++)
-            {
-                writer.BeginObject();
-
-                var message = Messages[m];
-
-                writer.Name("id");
-                writer.Value(message.Id);
-
-                writer.Name("chatId");
-                writer.Value(message.ChatModelId);
-
-                writer.Name("sendetAt");
-                writer.Value(JsonSerializer.Serialize(message.CreatedAt));
-
-                writer.Name("ownerId");
-                writer.Value(message.OwnerId);
-
-                writer.Name("context");
-                writer.Value(message.Context);
-
-                writer.Name("local");
-                writer.Value(message.Local);
-
-                writer.Name("senderPhoneNumber");
-                writer.Value(message.SenderPhoneNumber);
-
-                writer.Name("targetPhoneNumber");
-                writer.Value(message.TargetPhoneNumber);
-
-                writer.EndObject();
-            }
+            PhoneMessageModel.Serialize(message, writer);
         }
 
         writer.EndArray();

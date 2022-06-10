@@ -10,8 +10,7 @@ using Server.Database.Models.Vehicles;
 
 namespace Server.Database.Models.Inventory;
 
-public class InventoryModel
-    : ModelBase, IWritable
+public class InventoryModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -41,107 +40,35 @@ public class InventoryModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(InventoryModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
         writer.Name("inventoryType");
-        writer.Value((int)InventoryType);
+        writer.Value((int)model.InventoryType);
 
         writer.Name("items");
 
         writer.BeginArray();
 
-        foreach (var item in Items)
+        foreach (var item in model.Items)
         {
-            writer.BeginObject();
-
-            writer.Name("id");
-            writer.Value(item.Id);
-
-            writer.Name("catalogItemName");
-            writer.Value(item.CatalogItemModelId.ToString());
-
-            writer.Name("catalogItem");
-
-            writer.BeginObject();
-
-            writer.Name("id");
-            writer.Value((int)item.CatalogItemModel.Id);
-
-            writer.Name("name");
-            writer.Value(item.CatalogItemModel.Name);
-
-            writer.Name("image");
-            writer.Value(item.CatalogItemModel.Image);
-
-            writer.Name("description");
-            writer.Value(item.CatalogItemModel.Description);
-
-            writer.Name("rarity");
-            writer.Value((int)item.CatalogItemModel.Rarity);
-
-            writer.Name("weight");
-            writer.Value(item.CatalogItemModel.Weight);
-
-            writer.Name("equippable");
-            writer.Value(item.CatalogItemModel.Equippable);
-
-            writer.Name("stackable");
-            writer.Value(item.CatalogItemModel.Stackable);
-
-            writer.Name("buyable");
-            writer.Value(item.CatalogItemModel.Buyable);
-
-            writer.Name("sellable");
-            writer.Value(item.CatalogItemModel.Sellable);
-
-            writer.Name("price");
-            writer.Value(item.CatalogItemModel.Price);
-
-            writer.EndObject();
-
-            writer.Name("slot");
-            writer.Value(item.Slot ?? -1);
-
-            writer.Name("customData");
-            writer.Value(item.CustomData);
-
-            writer.Name("note");
-            writer.Value(item.Note);
-
-            writer.Name("amount");
-            writer.Value(item.Amount);
-
-            writer.Name("condition");
-            writer.Value(item.Condition ?? -1);
-
-            writer.Name("isBought");
-            writer.Value(item.IsBought);
-
-            writer.Name("itemState");
-            writer.Value((int)item.ItemState);
-
-            var value = -1;
-            if (item is ItemWeaponAttachmentModel weaponAttachment)
-            {
-                value = weaponAttachment.ItemWeaponId ?? -1;
-            }
-
-            writer.Name("attachedToWeaponItem");
-            writer.Value(value);
-
-            writer.EndObject();
+            ItemModel.Serialize(item, writer);
         }
 
         writer.EndArray();
 
         writer.Name("maxWeight");
-        writer.Value(MaxWeight);
+        writer.Value(model.MaxWeight);
 
         writer.EndObject();
     }

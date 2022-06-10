@@ -15,20 +15,16 @@ namespace Server.Handlers.Bank;
 
 public class AddCharacterBankAccessHandler : ISingletonScript
 {
-    private readonly PhoneModule _phoneModule;
-    private readonly BankModule _bankModule;
     private readonly BankAccountCharacterAccessService _bankAccountCharacterAccessService;
     private readonly BankAccountService _bankAccountService;
+    private readonly BankModule _bankModule;
     private readonly CharacterService _characterService;
     private readonly GroupService _groupService;
+    private readonly PhoneModule _phoneModule;
 
-    public AddCharacterBankAccessHandler(
-        PhoneModule phoneModule,
-        BankModule bankModule,
-        BankAccountCharacterAccessService bankAccountCharacterAccessService,
-        BankAccountService bankAccountService,
-        CharacterService characterService,
-        GroupService groupService)
+    public AddCharacterBankAccessHandler(PhoneModule phoneModule, BankModule bankModule,
+        BankAccountCharacterAccessService bankAccountCharacterAccessService, BankAccountService bankAccountService,
+        CharacterService characterService, GroupService groupService)
     {
         _phoneModule = phoneModule;
         _bankModule = bankModule;
@@ -56,26 +52,23 @@ public class AddCharacterBankAccessHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.MANAGEMENT))
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Sie können keine Management Aufträge für dieses Konto einreichen.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Sie können keine Management Aufträge für dieses Konto einreichen.");
             return;
         }
 
         var character = await _characterService.Find(c => c.FirstName + " " + c.LastName == characterName);
         if (character == null)
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Es konnte keine Person unter diesen Namen gefunden werden, wir konnten Niemanden zu Ihrem Bankkonto hinzufügen, wir entschuldigen die Unannehmlichkeiten.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Es konnte keine Person unter diesen Namen gefunden werden, wir konnten Niemanden zu Ihrem Bankkonto hinzufügen, wir entschuldigen die Unannehmlichkeiten.");
             return;
         }
 
         if (player.CharacterModel.Id == character.Id)
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Sie können sich nicht selbst auf ein Bankkonto hinzufügen, Sie haben schon Zugriffsrechte.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Sie können sich nicht selbst auf ein Bankkonto hinzufügen, Sie haben schon Zugriffsrechte.");
             return;
         }
 
@@ -88,42 +81,36 @@ public class AddCharacterBankAccessHandler : ISingletonScript
             {
                 if (member.Owner)
                 {
-                    await _phoneModule.SendNotification(phoneId,
-                                                        PhoneNotificationType.MAZE_BANK,
-                                                        "Sie können diese Person nicht zum Bankkonto hinzufügen, da sie schon Eigentümer einer Gruppe mit Zugriffsrechten ist.");
+                    await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                        "Sie können diese Person nicht zum Bankkonto hinzufügen, da sie schon Eigentümer einer Gruppe mit Zugriffsrechten ist.");
                     return;
                 }
 
-                await _phoneModule.SendNotification(phoneId,
-                                                    PhoneNotificationType.MAZE_BANK,
-                                                    "Sie können diese Person nicht zum Bankkonto hinzufügen, da sie schon Mitglied einer Gruppe mit Zugriffsrechten ist.");
+                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                    "Sie können diese Person nicht zum Bankkonto hinzufügen, da sie schon Mitglied einer Gruppe mit Zugriffsrechten ist.");
                 return;
             }
         }
 
-        var characterAccess =
-            bankAccount.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == character.Id);
+        var characterAccess = bankAccount.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == character.Id);
         if (characterAccess != null)
         {
             if (characterAccess.Owner)
             {
-                await _phoneModule.SendNotification(phoneId,
-                                                    PhoneNotificationType.MAZE_BANK,
-                                                    "Der angegebene Name ist schon als Eigentümer hinterlegt und kann daher keine Berechtigungen haben, da der Eigentümer den Vollzugriff hat.");
+                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                    "Der angegebene Name ist schon als Eigentümer hinterlegt und kann daher keine Berechtigungen haben, da der Eigentümer den Vollzugriff hat.");
                 return;
             }
 
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Der angegebene Name hat schon Zugriff auf dieses Bankkonto, stellen Sie die Berechtigungen in der App ein.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Der angegebene Name hat schon Zugriff auf dieses Bankkonto, stellen Sie die Berechtigungen in der App ein.");
             return;
         }
 
-        await _bankAccountCharacterAccessService.Add(
-            new BankAccountCharacterAccessModel
-            {
-                CharacterModelId = character.Id, BankAccountModelId = bankAccount.Id
-            });
+        await _bankAccountCharacterAccessService.Add(new BankAccountCharacterAccessModel
+        {
+            CharacterModelId = character.Id, BankAccountModelId = bankAccount.Id
+        });
 
         await _bankModule.UpdateUi(player);
 
@@ -133,8 +120,7 @@ public class AddCharacterBankAccessHandler : ISingletonScript
             await _bankModule.UpdateUi(targetPlayer);
         }
 
-        await _phoneModule.SendNotification(phoneId,
-                                            PhoneNotificationType.MAZE_BANK,
-                                            $"Wir haben erfolgreich {character.Name} auf Ihr Bankkonto freigeschaltet, richten Sie nun bitte die Berechtigungen in der App ein.");
+        await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+            $"Wir haben erfolgreich {character.Name} auf Ihr Bankkonto freigeschaltet, richten Sie nun bitte die Berechtigungen in der App ein.");
     }
 }

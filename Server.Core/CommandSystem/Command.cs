@@ -5,12 +5,10 @@ using Server.Database.Enums;
 namespace Server.Core.CommandSystem;
 
 [AttributeUsage(AttributeTargets.Method)]
-public class Command
-    : Attribute, IWritable
+public class Command : Attribute, IWritable
 {
     public Command(string name = null, string description = null, Permission requiredPermission = Permission.NONE,
-                   string[] parameterDescription = null, CommandArgs commandArgs = CommandArgs.NOT_GREEDY,
-                   string[] aliases = null)
+        string[] parameterDescription = null, CommandArgs commandArgs = CommandArgs.NOT_GREEDY, string[] aliases = null)
     {
         Name = name;
         Description = description;

@@ -3,8 +3,7 @@ using System.Numerics;
 
 namespace Server.Database.Models._Base;
 
-public abstract class PositionRotationModelBase
-    : PositionModelBase
+public abstract class PositionRotationModelBase : PositionModelBase
 {
     public float Roll { get; set; }
     public float Pitch { get; set; }

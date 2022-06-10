@@ -15,9 +15,7 @@ public class PdMdcCreateNoteHandler : ISingletonScript
 
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcCreateNoteHandler(
-        GroupFactionService groupFactionService,
-        MdcNoteService mdcNoteService,
+    public PdMdcCreateNoteHandler(GroupFactionService groupFactionService, MdcNoteService mdcNoteService,
         PoliceMdcModule policeMdcModule)
     {
         _policeMdcModule = policeMdcModule;
@@ -40,7 +38,7 @@ public class PdMdcCreateNoteHandler : ISingletonScript
             return;
         }
 
-        await _mdcNoteService.Add(new MdcNoteModel()
+        await _mdcNoteService.Add(new MdcNoteModel
         {
             TargetModelId = targetDbId,
             Type = mdcSearchType,

@@ -12,9 +12,7 @@ public class ItemToEvidenceRoomHandler : ISingletonScript
     private readonly InventoryModule _inventoryModule;
     private readonly ItemDestructionModule _itemDestructionModule;
 
-    public ItemToEvidenceRoomHandler(
-        InventoryModule inventoryModule,
-        ItemDestructionModule itemDestructionModule)
+    public ItemToEvidenceRoomHandler(InventoryModule inventoryModule, ItemDestructionModule itemDestructionModule)
     {
         _inventoryModule = inventoryModule;
         _itemDestructionModule = itemDestructionModule;

@@ -11,18 +11,14 @@ using Server.Modules.Inventory;
 
 namespace Server.Modules.Money;
 
-public class MoneyModule
-    : ITransientScript
+public class MoneyModule : ITransientScript
 {
     private readonly InventoryModule _inventoryModule;
     private readonly ItemCreationModule _itemCreationModule;
     private readonly ItemService _itemService;
     private readonly ILogger<MoneyModule> _logger;
 
-    public MoneyModule(
-        ILogger<MoneyModule> logger,
-        ItemService itemService,
-        InventoryModule inventoryModule,
+    public MoneyModule(ILogger<MoneyModule> logger, ItemService itemService, InventoryModule inventoryModule,
         ItemCreationModule itemCreationModule)
     {
         _logger = logger;

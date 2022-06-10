@@ -13,9 +13,7 @@ public class LeaveGroupMenuHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
 
-    public LeaveGroupMenuHandler(
-        GroupService groupService,
-        GroupModule groupModule)
+    public LeaveGroupMenuHandler(GroupService groupService, GroupModule groupModule)
     {
         _groupService = groupService;
         _groupModule = groupModule;

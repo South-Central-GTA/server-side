@@ -16,17 +16,14 @@ namespace Server.ChatCommands.Factions.Police;
 
 internal class UnJailPlayerCommand : ISingletonScript
 {
-    private readonly WorldLocationOptions _worldLocationOptions;
-    private readonly GroupFactionService _groupFactionService;
     private readonly CharacterService _characterService;
+    private readonly GroupFactionService _groupFactionService;
 
     private readonly PrisonModule _prisonModule;
+    private readonly WorldLocationOptions _worldLocationOptions;
 
-    public UnJailPlayerCommand(
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        GroupFactionService groupFactionService,
-        CharacterService characterService,
-        PrisonModule prisonModule)
+    public UnJailPlayerCommand(IOptions<WorldLocationOptions> worldLocationOptions,
+        GroupFactionService groupFactionService, CharacterService characterService, PrisonModule prisonModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
         _groupFactionService = groupFactionService;
@@ -35,11 +32,8 @@ internal class UnJailPlayerCommand : ISingletonScript
         _prisonModule = prisonModule;
     }
 
-    [Command("unjail",
-             "Entlasse einen Charakter aus dem Gefängnis.",
-             Permission.NONE,
-             new[] { "Charakter Name" },
-             CommandArgs.GREEDY)]
+    [Command("unjail", "Entlasse einen Charakter aus dem Gefängnis.", Permission.NONE, new[] { "Charakter Name" },
+        CommandArgs.GREEDY)]
     public async void OnExecute(ServerPlayer player, string expectedCharacterName)
     {
         if (!player.Exists)
@@ -55,11 +49,10 @@ internal class UnJailPlayerCommand : ISingletonScript
         }
 
         if (player.Position.Distance(new Position(_worldLocationOptions.JailPositionX,
-                                                  _worldLocationOptions.JailPositionY,
-                                                  _worldLocationOptions.JailPositionZ)) > 5.0f)
+                _worldLocationOptions.JailPositionY, _worldLocationOptions.JailPositionZ)) > 5.0f)
         {
             player.SendNotification("Dein Charakter muss hinter dem Police Department in Davis sein.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -92,6 +85,6 @@ internal class UnJailPlayerCommand : ISingletonScript
         await _characterService.Update(targetCharacter);
 
         player.SendNotification($"Dein Charakter hat {targetCharacter.Name} aus dem Gefängnis entlassen.",
-                                NotificationType.SUCCESS);
+            NotificationType.SUCCESS);
     }
 }

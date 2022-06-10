@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
@@ -8,8 +7,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Mail;
 
-public class MailModel
-    : ModelBase, IWritable
+public class MailModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,22 +24,27 @@ public class MailModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(MailModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("senderMailAddress");
-        writer.Value(SenderMailAddress);
+        writer.Value(model.SenderMailAddress);
 
         writer.Name("title");
-        writer.Value(Title);
+        writer.Value(model.Title);
 
         writer.Name("context");
-        writer.Value(Context);
+        writer.Value(model.Context);
 
         writer.Name("sendetAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

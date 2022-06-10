@@ -9,66 +9,62 @@ using Server.Database.Enums;
 using Server.Database.Models.Delivery;
 using Server.Modules.Delivery;
 
-namespace Server.Handlers.Delivery
+namespace Server.Handlers.Delivery;
+
+public class StopDeliveryHandler : ISingletonScript
 {
-    public class StopDeliveryHandler
-        : ISingletonScript
+    private readonly DeliveryModule _deliveryModule;
+
+    private readonly DeliveryService _deliveryService;
+
+    public StopDeliveryHandler(DeliveryService deliveryService, DeliveryModule deliveryModule)
     {
-        private readonly DeliveryModule _deliveryModule;
+        _deliveryService = deliveryService;
+        _deliveryModule = deliveryModule;
 
-        private readonly DeliveryService _deliveryService;
+        AltAsync.OnClient<ServerPlayer>("delivery:stopdelivery", OnStopDelivery);
+    }
 
-        public StopDeliveryHandler(
-            DeliveryService deliveryService,
-            DeliveryModule deliveryModule)
+    private async void OnStopDelivery(ServerPlayer player)
+    {
+        if (!player.Exists)
         {
-            _deliveryService = deliveryService;
-            _deliveryModule = deliveryModule;
-
-            AltAsync.OnClient<ServerPlayer>("delivery:stopdelivery", OnStopDelivery);
+            return;
         }
 
-        private async void OnStopDelivery(ServerPlayer player)
+        var delivery = await _deliveryService.Find(d => d.SupplierCharacterId == player.CharacterModel.Id);
+        if (delivery == null)
         {
-            if (!player.Exists)
-            {
-                return;
-            }
+            return;
+        }
 
-            var delivery = await _deliveryService.Find(d => d.SupplierCharacterId == player.CharacterModel.Id);
-            if (delivery == null)
+        if (delivery.PlayerVehicleModelId.HasValue)
+        {
+            var vehicle = Alt.GetAllVehicles().FindByDbId(delivery.PlayerVehicleModelId.Value);
+            if (vehicle is { Exists: true })
             {
-                return;
-            }
-
-            if (delivery.PlayerVehicleModelId.HasValue)
-            {
-                var vehicle = Alt.GetAllVehicles().FindByDbId(delivery.PlayerVehicleModelId.Value);
-                if (vehicle is { Exists: true })
+                if (delivery is ProductDeliveryModel productDelivery)
                 {
-                    if (delivery is ProductDeliveryModel productDelivery)
-                    {
-                        var trailerOrMainVeh = player.Vehicle.Attached ?? player.Vehicle;
+                    var trailerOrMainVeh = player.Vehicle.Attached ?? player.Vehicle;
 
-                        trailerOrMainVeh.GetData("AMOUNT_OF_PRODUCTS", out int amountOfProducts);
-                        productDelivery.ProductsRemaining = amountOfProducts;
-                    }
+                    trailerOrMainVeh.GetData("AMOUNT_OF_PRODUCTS", out int amountOfProducts);
+                    productDelivery.ProductsRemaining = amountOfProducts;
                 }
             }
-
-            delivery.Status = DeliveryState.OPEN;
-            delivery.SupplierCharacterId = null;
-            delivery.PlayerVehicleModelId = null;
-
-            await _deliveryService.Update(delivery);
-
-            await _deliveryModule.UpdatePlayerOpenDeliveriesUi(player);
-            await _deliveryModule.UpdateOpenDeliveriesUi();
-
-            player.EmitGui("delivery:stopmydelivery");
-            player.ClearWaypoint();
-
-            player.SendNotification("Der Auftrag wurde abgebrochen.", NotificationType.INFO);
         }
+
+        delivery.Status = DeliveryState.OPEN;
+        delivery.SupplierCharacterId = null;
+        delivery.PlayerVehicleModelId = null;
+
+        await _deliveryService.Update(delivery);
+
+        await _deliveryModule.UpdatePlayerOpenDeliveriesUi(player);
+        await _deliveryModule.UpdateOpenDeliveriesUi();
+
+        player.EmitGui("delivery:stopmydelivery");
+        player.ClearWaypoint();
+
+        player.SendNotification("Der Auftrag wurde abgebrochen.", NotificationType.INFO);
     }
 }

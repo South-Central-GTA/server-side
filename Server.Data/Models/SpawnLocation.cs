@@ -4,8 +4,7 @@ using AltV.Net.Data;
 
 namespace Server.Data.Models;
 
-public class SpawnLocation
-    : IWritable
+public class SpawnLocation : IWritable
 {
     public SpawnLocation(int id, string name, Position position, Rotation rotation, List<LocationData> vehicleLocations)
     {

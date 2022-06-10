@@ -12,16 +12,13 @@ namespace Server.Handlers.Company;
 
 public class RequestCompanyHandler : ISingletonScript
 {
-    private readonly CompanyOptions _companyOptions;
     private readonly BankModule _bankModule;
+    private readonly CompanyOptions _companyOptions;
     private readonly GroupModule _groupModule;
     private readonly HouseModule _houseModule;
 
-    public RequestCompanyHandler(
-        IOptions<CompanyOptions> companyOptions,
-        GroupModule groupModule,
-        BankModule bankModule,
-        HouseModule houseModule)
+    public RequestCompanyHandler(IOptions<CompanyOptions> companyOptions, GroupModule groupModule,
+        BankModule bankModule, HouseModule houseModule)
     {
         _companyOptions = companyOptions.Value;
 

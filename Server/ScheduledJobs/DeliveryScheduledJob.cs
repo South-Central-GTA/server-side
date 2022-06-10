@@ -22,12 +22,8 @@ public class DeliveryScheduledJob : ScheduledJob
     private readonly DeliveryService _deliveryService;
     private readonly ILogger<DeliveryScheduledJob> _logger;
 
-    public DeliveryScheduledJob(
-        ILogger<DeliveryScheduledJob> logger,
-        IOptions<DeliveryOptions> deliveryOptions,
-        DeliveryService deliveryService,
-        DeliveryModule deliveryModule)
-        : base(TimeSpan.FromMinutes(1))
+    public DeliveryScheduledJob(ILogger<DeliveryScheduledJob> logger, IOptions<DeliveryOptions> deliveryOptions,
+        DeliveryService deliveryService, DeliveryModule deliveryModule) : base(TimeSpan.FromMinutes(1))
     {
         _logger = logger;
         _deliveryOptions = deliveryOptions.Value;
@@ -41,47 +37,47 @@ public class DeliveryScheduledJob : ScheduledJob
     {
         var acceptedDeliveries = await _deliveryService.Where(d => d.Status == DeliveryState.ACCEPTED);
         acceptedDeliveries.FindAll(d => (DateTime.Now - d.LastUsage).TotalMinutes >= _deliveryOptions.PickupTime - 5)
-                          .ForEach(d =>
-                          {
-                              if (!d.SupplierCharacterId.HasValue)
-                              {
-                                  return;
-                              }
+            .ForEach(d =>
+            {
+                if (!d.SupplierCharacterId.HasValue)
+                {
+                    return;
+                }
 
-                              var player = Alt.GetAllPlayers().FindPlayerByCharacterId(d.SupplierCharacterId.Value);
-                              d = ClearProductDelivery(d);
+                var player = Alt.GetAllPlayers().FindPlayerByCharacterId(d.SupplierCharacterId.Value);
+                d = ClearProductDelivery(d);
 
-                              player?.SendNotification(
-                                  "Deine Lieferung ist in 5 Minuten fehlgeschlagen da du sie nicht rechtzeitig am Hafen aufgeladen hast.",
-                                  NotificationType.WARNING);
-                          });
+                player?.SendNotification(
+                    "Deine Lieferung ist in 5 Minuten fehlgeschlagen da du sie nicht rechtzeitig am Hafen aufgeladen hast.",
+                    NotificationType.WARNING);
+            });
 
         acceptedDeliveries.FindAll(d => (DateTime.Now - d.LastUsage).TotalMinutes >= _deliveryOptions.PickupTime)
-                          .ForEach(d =>
-                          {
-                              if (!d.SupplierCharacterId.HasValue)
-                              {
-                                  return;
-                              }
+            .ForEach(d =>
+            {
+                if (!d.SupplierCharacterId.HasValue)
+                {
+                    return;
+                }
 
-                              var player = Alt.GetAllPlayers().FindPlayerByCharacterId(d.SupplierCharacterId.Value);
-                              d = ClearProductDelivery(d);
+                var player = Alt.GetAllPlayers().FindPlayerByCharacterId(d.SupplierCharacterId.Value);
+                d = ClearProductDelivery(d);
 
-                              if (player != null)
-                              {
-                                  player.SendNotification(
-                                      "Dein Charakter hat es nicht geschafft rechtzeitig die Lieferung am Hafen entgegenzunehmen.",
-                                      NotificationType.ERROR);
-                                  player.EmitGui("delivery:stopmydelivery");
-                                  player.ClearWaypoint();
-                              }
+                if (player != null)
+                {
+                    player.SendNotification(
+                        "Dein Charakter hat es nicht geschafft rechtzeitig die Lieferung am Hafen entgegenzunehmen.",
+                        NotificationType.ERROR);
+                    player.EmitGui("delivery:stopmydelivery");
+                    player.ClearWaypoint();
+                }
 
-                              _deliveryModule.UpdateGroupOpenDeliveriesUi(d.OrderGroupModel);
-                          });
+                _deliveryModule.UpdateGroupOpenDeliveriesUi(d.OrderGroupModel);
+            });
 
         var pausedDeliveries = await _deliveryService.Where(d => d.Status == DeliveryState.PAUSED);
         pausedDeliveries.FindAll(d => (DateTime.Now - d.LastUsage).TotalMinutes >= _deliveryOptions.ResetTime)
-                        .ForEach(d => { d = ClearProductDelivery(d); });
+            .ForEach(d => { d = ClearProductDelivery(d); });
 
         await _deliveryService.UpdateRange(acceptedDeliveries);
         await _deliveryService.UpdateRange(pausedDeliveries);

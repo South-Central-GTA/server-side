@@ -7,8 +7,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Vehicles;
 
-public class OrderedVehicleModel
-    : ModelBase, IWritable
+public class OrderedVehicleModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,31 +25,36 @@ public class OrderedVehicleModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(OrderedVehicleModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("orderedBy");
-        writer.Value(OrderedBy);
+        writer.Value(model.OrderedBy);
 
         writer.Name("model");
-        writer.Value(CatalogVehicleModel.Model);
+        writer.Value(model.CatalogVehicleModel.Model);
 
         writer.Name("displayName");
-        writer.Value(CatalogVehicleModel.DisplayName);
+        writer.Value(model.CatalogVehicleModel.DisplayName);
 
         writer.Name("displayClass");
-        writer.Value(CatalogVehicleModel.DisplayClass);
+        writer.Value(model.CatalogVehicleModel.DisplayClass);
 
-        writer.Name("deliverdAt");
-        writer.Value(JsonSerializer.Serialize(DeliverdAt));
+        writer.Name("deliverdAtJson");
+        writer.Value(JsonSerializer.Serialize(model.DeliverdAt));
 
-        writer.Name("deliveryRequestedAt");
-        writer.Value(JsonSerializer.Serialize(DeliveryRequestedAt));
+        writer.Name("deliveryRequestedAtJson");
+        writer.Value(JsonSerializer.Serialize(model.DeliveryRequestedAt));
 
         writer.Name("deliveryRequestedBy");
-        writer.Value(DeliveryRequestedBy);
+        writer.Value(model.DeliveryRequestedBy);
 
         writer.EndObject();
     }

@@ -3,8 +3,7 @@ using Server.Data.Enums;
 
 namespace Server.Data.Models;
 
-public class Notification
-    : IWritable
+public class Notification : IWritable
 {
     public Notification(NotificationType type, string text)
     {

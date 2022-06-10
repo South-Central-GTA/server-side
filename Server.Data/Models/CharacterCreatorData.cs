@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using AltV.Net;
 using Server.Database.Models.Character;
 
 namespace Server.Data.Models;

@@ -3,7 +3,6 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Database.Models.Mdc;
 using Server.Modules.FileSystem;
 using Server.Modules.Group;
 
@@ -11,16 +10,13 @@ namespace Server.Handlers.MDC.Base;
 
 public class ApbDeleteBulletInHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
-    private readonly BulletInService _bulletInService;
     private readonly ApbModule _apbModule;
+    private readonly BulletInService _bulletInService;
+    private readonly GroupFactionService _groupFactionService;
     private readonly GroupModule _groupModule;
 
-    public ApbDeleteBulletInHandler(
-        GroupFactionService groupFactionService,
-        BulletInService bulletInService,
-        ApbModule apbModule,
-        GroupModule groupModule)
+    public ApbDeleteBulletInHandler(GroupFactionService groupFactionService, BulletInService bulletInService,
+        ApbModule apbModule, GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;
         _bulletInService = bulletInService;

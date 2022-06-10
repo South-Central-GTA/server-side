@@ -18,23 +18,18 @@ namespace Server.Handlers.Company;
 
 public class BuyLicenseCompanyHandler : ISingletonScript
 {
-    private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
-    private readonly GroupService _groupService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly BankModule _bankModule;
+    private readonly CompanyOptions _companyOptions;
     private readonly GroupModule _groupModule;
+    private readonly GroupService _groupService;
     private readonly PhoneModule _phoneModule;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public BuyLicenseCompanyHandler(
-        IOptions<CompanyOptions> companyOptions,
-        GroupService groupService,
-        BankAccountService bankAccountService,
-        RegistrationOfficeService registrationOfficeService,
-        GroupModule groupModule,
-        PhoneModule phoneModule,
-        BankModule bankModule)
+    public BuyLicenseCompanyHandler(IOptions<CompanyOptions> companyOptions, GroupService groupService,
+        BankAccountService bankAccountService, RegistrationOfficeService registrationOfficeService,
+        GroupModule groupModule, PhoneModule phoneModule, BankModule bankModule)
     {
         _companyOptions = companyOptions.Value;
 
@@ -69,16 +64,15 @@ public class BuyLicenseCompanyHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (companyGroup.PurchasedLicenses + 1 > _companyOptions.MaxLicenses)
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.GOV,
-                                                "Leider konnten wir keine weiteren Lizenzen zu Ihrem Unternehmen hinzufügen. " +
-                                                $"Das aktuell maximale Limit beträgt {_companyOptions.MaxLicenses} Lizenzen.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.GOV,
+                "Leider konnten wir keine weiteren Lizenzen zu Ihrem Unternehmen hinzufügen. " +
+                $"Das aktuell maximale Limit beträgt {_companyOptions.MaxLicenses} Lizenzen.");
             return;
         }
 
@@ -89,16 +83,13 @@ public class BuyLicenseCompanyHandler : ISingletonScript
         }
 
         var bankAccount = await _bankAccountService.Find(ba =>
-                                                             ba.Type == OwnableAccountType.GROUP
-                                                             && ba.GroupRankAccess.Any(
-                                                                 gra => gra.GroupModelId == companyGroup.Id));
+            ba.Type == OwnableAccountType.GROUP && ba.GroupRankAccess.Any(gra => gra.GroupModelId == companyGroup.Id));
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.GOV,
-                                                "Leider konnten wir Ihre Buchung für die Lizenzen nicht abschließen. " +
-                                                $"Da Sie keine Transferrechte für das Konto {bankAccount.BankDetails} haben.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.GOV,
+                "Leider konnten wir Ihre Buchung für die Lizenzen nicht abschließen. " +
+                $"Da Sie keine Transferrechte für das Konto {bankAccount.BankDetails} haben.");
             return;
         }
 
@@ -108,8 +99,8 @@ public class BuyLicenseCompanyHandler : ISingletonScript
             companyGroup.LicensesFlags |= license.License;
             companyGroup.PurchasedLicenses++;
 
-            foreach (var target in
-                     group.Members.Select(m => Alt.GetAllPlayers().FindPlayerByCharacterId(m.CharacterModelId)))
+            foreach (var target in group.Members.Select(m =>
+                         Alt.GetAllPlayers().FindPlayerByCharacterId(m.CharacterModelId)))
             {
                 await _bankModule.UpdateUi(target);
             }
@@ -121,10 +112,9 @@ public class BuyLicenseCompanyHandler : ISingletonScript
         }
         else
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.GOV,
-                                                "Leider konnten wir Ihre Buchung für die Lizenzen nicht abschließen. " +
-                                                "Da ihr Unternehmenskonto nicht genügend Guthaben aufweist.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.GOV,
+                "Leider konnten wir Ihre Buchung für die Lizenzen nicht abschließen. " +
+                "Da ihr Unternehmenskonto nicht genügend Guthaben aufweist.");
         }
     }
 }

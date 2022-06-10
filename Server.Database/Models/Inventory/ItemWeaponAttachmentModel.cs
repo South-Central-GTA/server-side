@@ -3,96 +3,68 @@ using AltV.Net;
 
 namespace Server.Database.Models.Inventory;
 
-public class ItemWeaponAttachmentModel
-    : ItemModel
+public class ItemWeaponAttachmentModel : ItemModel
 {
     public int? ItemWeaponId { get; set; }
     public ItemWeaponModel? ItemModelWeapon { get; set; }
 
     public override void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(ItemWeaponAttachmentModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("catalogItemName");
-        writer.Value(CatalogItemModelId.ToString());
+        writer.Value(model.CatalogItemModelId.ToString());
 
         writer.Name("catalogItem");
 
-        writer.BeginObject();
-
-        writer.Name("id");
-        writer.Value((int)CatalogItemModel.Id);
-
-        writer.Name("name");
-        writer.Value(CatalogItemModel.Name);
-
-        writer.Name("image");
-        writer.Value(CatalogItemModel.Image);
-
-        writer.Name("description");
-        writer.Value(CatalogItemModel.Description);
-
-        writer.Name("rarity");
-        writer.Value((int)CatalogItemModel.Rarity);
-
-        writer.Name("weight");
-        writer.Value(CatalogItemModel.Weight);
-
-        writer.Name("stackable");
-        writer.Value(CatalogItemModel.Stackable);
-
-        writer.Name("buyable");
-        writer.Value(CatalogItemModel.Buyable);
-
-        writer.Name("sellable");
-        writer.Value(CatalogItemModel.Sellable);
-
-        writer.Name("price");
-        writer.Value(CatalogItemModel.Price);
-
-        writer.EndObject();
+        CatalogItemModel.Serialize(model.CatalogItemModel, writer);
 
         writer.Name("slot");
-        writer.Value(Slot ?? -1);
+        writer.Value(model.Slot ?? -1);
 
         writer.Name("droppedByCharacter");
-        writer.Value(DroppedByCharacter ?? "Unbekannt");
+        writer.Value(model.DroppedByCharacter ?? "Unbekannt");
 
         writer.Name("customData");
-        writer.Value(CustomData);
+        writer.Value(model.CustomData ?? string.Empty);
 
         writer.Name("note");
-        writer.Value(Note);
+        writer.Value(model.Note ?? string.Empty);
 
         writer.Name("amount");
-        writer.Value(Amount);
+        writer.Value(model.Amount);
 
         writer.Name("condition");
-        writer.Value(Condition ?? -1);
+        writer.Value(model.Condition ?? -1);
 
         writer.Name("isBought");
-        writer.Value(IsBought);
+        writer.Value(model.IsBought);
 
         writer.Name("itemState");
-        writer.Value((int)ItemState);
+        writer.Value((int)model.ItemState);
 
         writer.Name("positionX");
-        writer.Value(PositionX);
+        writer.Value(model.PositionX);
 
         writer.Name("positionY");
-        writer.Value(PositionY);
+        writer.Value(model.PositionY);
 
         writer.Name("positionZ");
-        writer.Value(PositionZ);
+        writer.Value(model.PositionZ);
 
-        writer.Name("lastUsage");
-        writer.Value(JsonSerializer.Serialize(LastUsage));
+        writer.Name("lastUsageJson");
+        writer.Value(JsonSerializer.Serialize(model.LastUsage));
 
         writer.Name("attachedToWeaponItem");
-        writer.Value(ItemWeaponId ?? -1);
+        writer.Value(model.ItemWeaponId ?? -1);
 
         writer.EndObject();
     }

@@ -25,12 +25,8 @@ public class RoleplayInfos : IJob
     private readonly RoleplayInfoService _roleplayInfoService;
     private readonly Serializer _serializer;
 
-    public RoleplayInfos(
-        ILogger<DroppedItems> logger,
-        IOptions<GameOptions> gameOptions,
-        IOptions<DevelopmentOptions> developmentOptions,
-        Serializer serializer,
-        RoleplayInfoService roleplayInfoService,
+    public RoleplayInfos(ILogger<DroppedItems> logger, IOptions<GameOptions> gameOptions,
+        IOptions<DevelopmentOptions> developmentOptions, Serializer serializer, RoleplayInfoService roleplayInfoService,
         MarkerSyncModule markerSyncModule)
     {
         _logger = logger;
@@ -65,25 +61,15 @@ public class RoleplayInfos : IJob
         var infosToDelete = infos.Where(i => (i.CreatedAt - DateTime.Now).TotalDays >=
                                              _gameOptions.DeleteRoleplayInfosAfterDays);
 
-        infos.RemoveAll(i => (i.CreatedAt - DateTime.Now).TotalDays >=
-                             _gameOptions.DeleteRoleplayInfosAfterDays);
+        infos.RemoveAll(i => (i.CreatedAt - DateTime.Now).TotalDays >= _gameOptions.DeleteRoleplayInfosAfterDays);
 
         await _roleplayInfoService.RemoveRange(infosToDelete);
 
         foreach (var info in infos)
         {
-            var marker = _markerSyncModule.Create(MarkerType.QUESTION_MARK,
-                                                  info.Position,
-                                                  Vector3.Zero,
-                                                  Vector3.Zero,
-                                                  new Vector3(0.5f),
-                                                  new Rgba(245, 230, 83, 70),
-                                                  info.Dimension,
-                                                  false,
-                                                  200,
-                                                  "",
-                                                  info.CharacterModel.Name,
-                                                  _serializer.Serialize(info.CreatedAt));
+            var marker = _markerSyncModule.Create(MarkerType.QUESTION_MARK, info.Position, Vector3.Zero, Vector3.Zero,
+                new Vector3(0.5f), new Rgba(245, 230, 83, 70), info.Dimension, false, 200, "", info.CharacterModel.Name,
+                _serializer.Serialize(info.CreatedAt));
 
             info.MarkerId = marker.Id;
         }

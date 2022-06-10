@@ -3,8 +3,7 @@ using AltV.Net;
 
 namespace Server.Database.Models.Inventory;
 
-public class ItemPoliceTicketModel
-    : ItemModel, IWritable
+public class ItemPoliceTicketModel : ItemModel, IWritable
 {
     public string ReferenceId { get; set; }
     public string Reason { get; set; }
@@ -15,25 +14,30 @@ public class ItemPoliceTicketModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(ItemPoliceTicketModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("referenceId");
-        writer.Value(ReferenceId);
+        writer.Value(model.ReferenceId);
 
         writer.Name("reason");
-        writer.Value(Reason);
+        writer.Value(model.Reason);
 
         writer.Name("costs");
-        writer.Value(Costs);
+        writer.Value(model.Costs);
 
         writer.Name("payed");
-        writer.Value(Payed);
+        writer.Value(model.Payed);
 
         writer.Name("creatorCharacterName");
-        writer.Value(CreatorCharacterName);
+        writer.Value(model.CreatorCharacterName);
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

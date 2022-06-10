@@ -13,9 +13,7 @@ public class CreateGroupRankHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
 
-    public CreateGroupRankHandler(
-        GroupService groupService,
-        GroupModule groupModule)
+    public CreateGroupRankHandler(GroupService groupService, GroupModule groupModule)
     {
         _groupService = groupService;
         _groupModule = groupModule;
@@ -39,7 +37,7 @@ public class CreateGroupRankHandler : ISingletonScript
         if (group.Ranks.Count >= group.MaxRanks)
         {
             player.SendNotification($"Deine Gruppe kann nicht mehr als {group.MaxRanks} Ränge haben.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

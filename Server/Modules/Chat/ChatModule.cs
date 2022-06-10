@@ -16,17 +16,13 @@ using Server.Helper;
 
 namespace Server.Modules.Chat;
 
-public class ChatModule
-    : ITransientScript
+public class ChatModule : ITransientScript
 {
     private readonly ChatLogService _chatLogService;
     private readonly ILogger<ChatModule> _logger;
     private readonly Serializer _serializer;
 
-    public ChatModule(
-        ILogger<ChatModule> logger,
-        Serializer serializer,
-        ChatLogService chatLogService)
+    public ChatModule(ILogger<ChatModule> logger, Serializer serializer, ChatLogService chatLogService)
     {
         _logger = logger;
         _serializer = serializer;
@@ -41,50 +37,45 @@ public class ChatModule
         var name = player.IsAduty ? player.AccountName : player.CharacterModel.Name;
         var afterChat = GetAfterChat(name, type);
 
-        SendMessage(player.Position,
-                    player.Dimension,
-                    radius,
-                    new ChatMessageData
-                    {
-                        Sender = type != ChatType.DO ? name : null,
-                        Context = context,
-                        AfterName = afterName,
-                        BeforeChat = beforeChat,
-                        AfterChat = afterChat,
-                        SendetAt = _serializer.Serialize(DateTime.Now),
-                        ChatType = type
-                    });
+        SendMessage(player.Position, player.Dimension, radius,
+            new ChatMessageData
+            {
+                Sender = type != ChatType.DO ? name : null,
+                Context = context,
+                AfterName = afterName,
+                BeforeChat = beforeChat,
+                AfterChat = afterChat,
+                SendetAt = _serializer.Serialize(DateTime.Now),
+                ChatType = type
+            });
 
         await _chatLogService.Add(new ChatLogModel
         {
             AccountModelId = player.AccountModel.SocialClubId,
             CharacterModelId = player.CharacterModel.Id,
             ChatType = type,
-            Text = context,
-            LoggedAt = DateTime.Now
+            Text = context
         });
     }
 
     public void SendProxMessage(string name, float radius, ChatType type, string context, Position position,
-                                int dimension)
+        int dimension)
     {
         var afterName = GetChatAfterName(type);
         var beforeChat = GetBeforeChat(type);
         var afterChat = GetAfterChat(name, type);
 
-        SendMessage(position,
-                    dimension,
-                    radius,
-                    new ChatMessageData
-                    {
-                        Sender = type != ChatType.DO ? name : null,
-                        Context = context,
-                        AfterName = afterName,
-                        BeforeChat = beforeChat,
-                        AfterChat = afterChat,
-                        SendetAt = _serializer.Serialize(DateTime.Now),
-                        ChatType = type
-                    });
+        SendMessage(position, dimension, radius,
+            new ChatMessageData
+            {
+                Sender = type != ChatType.DO ? name : null,
+                Context = context,
+                AfterName = afterName,
+                BeforeChat = beforeChat,
+                AfterChat = afterChat,
+                SendetAt = _serializer.Serialize(DateTime.Now),
+                ChatType = type
+            });
     }
 
     public void SendMessage(ServerPlayer player, string? name, ChatType type, string message, string color)
@@ -270,9 +261,7 @@ public class ChatModule
 
     private IEnumerable<ServerPlayer> GetAllPlayer(Position position, float radius, int dimension)
     {
-        var players = Alt.GetAllPlayers()
-                         .GetByRange(position, radius)
-                         .FindAll(p => p.Dimension == dimension);
+        var players = Alt.GetAllPlayers().GetByRange(position, radius).FindAll(p => p.Dimension == dimension);
 
         var bigEarsPlayers = Alt.GetAllPlayers().Where(p => p.IsInBigEars);
         players.AddRange(bigEarsPlayers);

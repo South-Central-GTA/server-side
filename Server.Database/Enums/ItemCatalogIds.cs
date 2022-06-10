@@ -186,5 +186,5 @@ public enum ItemCatalogIds
     DRUG_XANAX,
     DRUG_CODEINE,
     DRUG_METH,
-    POLICE_TICKET,
+    POLICE_TICKET
 }

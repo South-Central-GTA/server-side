@@ -4,9 +4,7 @@ using AltV.Net.Elements.Pools;
 
 namespace Server.Core.Callbacks;
 
-public class FunctionCallback<T>
-    : IBaseObjectCallback<T>
-    where T : IBaseObject
+public class FunctionCallback<T> : IBaseObjectCallback<T> where T : IBaseObject
 {
     private readonly Action<T> _callback;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AltV.Net;
@@ -13,14 +12,14 @@ namespace Server.Modules.MDC;
 
 public class CallSign
 {
-    public Dictionary<string, List<CharacterModel>> CallSigns { get; } = new();
-
     private readonly GroupFactionService _groupFactionService;
 
     public CallSign(GroupFactionService groupFactionService)
     {
         _groupFactionService = groupFactionService;
     }
+
+    public Dictionary<string, List<CharacterModel>> CallSigns { get; } = new();
 
     public async Task AddCallSign(ServerPlayer player, string callSign)
     {
@@ -30,7 +29,7 @@ public class CallSign
         }
         else
         {
-            CallSigns.Add(callSign, new List<CharacterModel>() { player.CharacterModel });
+            CallSigns.Add(callSign, new List<CharacterModel> { player.CharacterModel });
         }
 
         await UpdateUi(player);
@@ -79,10 +78,9 @@ public class CallSign
 
     public List<CallSignData> GetCallSigns()
     {
-        return CallSigns.Select(callSign => new CallSignData()
+        return CallSigns.Select(callSign => new CallSignData
         {
-            CallSign = callSign.Key,
-            Names = string.Join(", ", callSign.Value.Select(c => c.Name))
+            CallSign = callSign.Key, Names = string.Join(", ", callSign.Value.Select(c => c.Name))
         }).ToList();
     }
 
@@ -105,10 +103,8 @@ public class CallSign
         }
 
         foreach (var target in factionGroup.Members
-                                           .Select(groupMember =>
-                                                       Alt.GetAllPlayers()
-                                                          .FindPlayerByCharacterId(groupMember.CharacterModelId))
-                                           .Where(serverPlayer => serverPlayer != null))
+                     .Select(groupMember => Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                     .Where(serverPlayer => serverPlayer != null))
         {
             target.EmitGui("mdc:updatecallsigns", GetCallSigns(), HasCallSign(target.CharacterModel));
         }

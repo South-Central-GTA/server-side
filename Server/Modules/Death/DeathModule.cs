@@ -18,22 +18,19 @@ namespace Server.Modules.Death;
 
 public class DeathModule : ISingletonScript
 {
+    private readonly AnimationModule _animationModule;
+    private readonly CharacterService _characterService;
     private readonly string[] _deathClips = { "death_a", "death_b", "death_c" };
-    private readonly Random _random = new();
 
     private readonly DeathOptions _deathOptions;
-    private readonly WorldLocationOptions _worldLocationOptions;
     private readonly PhoneCallModule _phoneCallModule;
+    private readonly Random _random = new();
     private readonly ReviveModule _reviveModule;
-    private readonly CharacterService _characterService;
-    private readonly AnimationModule _animationModule;
+    private readonly WorldLocationOptions _worldLocationOptions;
 
-    public DeathModule(IOptions<DeathOptions> deathOptions,
-                       IOptions<WorldLocationOptions> worldLocationOptions,
-                       PhoneCallModule phoneCallModule,
-                       ReviveModule reviveModule,
-                       CharacterService characterService,
-                       AnimationModule animationModule)
+    public DeathModule(IOptions<DeathOptions> deathOptions, IOptions<WorldLocationOptions> worldLocationOptions,
+        PhoneCallModule phoneCallModule, ReviveModule reviveModule, CharacterService characterService,
+        AnimationModule animationModule)
     {
         _phoneCallModule = phoneCallModule;
         _reviveModule = reviveModule;
@@ -66,18 +63,12 @@ public class DeathModule : ISingletonScript
         // Cancel all actions like calling
         _phoneCallModule.Hangup(player, true);
 
-        _animationModule.PlayAnimation(player,
-                                       "combat@death@from_writhe",
-                                       _deathClips[_random.Next(_deathClips.Length)],
-                                       new AnimationOptions
-                                       {
-                                           Flag = AnimationFlag.STOP_ON_LAST_FRAME, LockX = true, LockY = true
-                                       });
+        _animationModule.PlayAnimation(player, "combat@death@from_writhe",
+            _deathClips[_random.Next(_deathClips.Length)],
+            new AnimationOptions { Flag = AnimationFlag.STOP_ON_LAST_FRAME, LockX = true, LockY = true });
 
-        player.CreateTimer("player_respawn",
-                           (sender, args) =>
-                               OnPlayerRespawnTimerCallback(player),
-                           1000 * 60 * _deathOptions.MinutesBeforeRespawn);
+        player.CreateTimer("player_respawn", (sender, args) => OnPlayerRespawnTimerCallback(player),
+            1000 * 60 * _deathOptions.MinutesBeforeRespawn);
 
         player.EmitLocked("death:start");
         player.Invincible = true;
@@ -85,9 +76,8 @@ public class DeathModule : ISingletonScript
 
     private async void OnPlayerRespawnTimerCallback(ServerPlayer player)
     {
-        var position = new Position(_worldLocationOptions.RespawnPositionX,
-                                    _worldLocationOptions.RespawnPositionY,
-                                    _worldLocationOptions.RespawnPositionZ);
+        var position = new Position(_worldLocationOptions.RespawnPositionX, _worldLocationOptions.RespawnPositionY,
+            _worldLocationOptions.RespawnPositionZ);
         await _reviveModule.AutoRevivePlayer(player, position);
     }
 }

@@ -44,6 +44,6 @@ public class PlayerCatalogHandler : ISingletonScript
             DiscordId = target.DiscordId
         }).ToList();
 
-        player.EmitGui("playercatalog:setup", playerInformationData);
+        player.EmitGui("playercatalog:open", playerInformationData);
     }
 }

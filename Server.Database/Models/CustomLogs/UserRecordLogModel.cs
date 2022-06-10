@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using AltV.Net;
@@ -9,8 +8,7 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models.CustomLogs;
 
-public class UserRecordLogModel
-    : ModelBase, IWritable
+public class UserRecordLogModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -29,41 +27,44 @@ public class UserRecordLogModel
 
     [MaxLength(2048)] public string Text { get; set; }
 
-    public DateTime LoggedAt { get; set; }
-
     public void OnWrite(IMValueWriter writer)
+    {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(UserRecordLogModel model, IMValueWriter writer)
     {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("accountId");
-        writer.Value(AccountModelId);
+        writer.Value(model.AccountModelId);
 
         writer.Name("accountName");
-        writer.Value(AccountModel.CurrentName);
+        writer.Value(model.AccountModel != null ? model.AccountModel.CurrentName : string.Empty);
 
         writer.Name("staffAccountId");
-        writer.Value(StaffAccountModelId);
+        writer.Value(model.StaffAccountModelId);
 
         writer.Name("staffAccountName");
-        writer.Value(StaffAccountModel.CurrentName);
+        writer.Value(model.StaffAccountModel != null ? model.StaffAccountModel.CurrentName : string.Empty);
 
         writer.Name("characterId");
-        writer.Value(CharacterModelId ?? -1);
+        writer.Value(model.CharacterModelId ?? -1);
 
         writer.Name("characterName");
-        writer.Value(CharacterModelId != null ? CharacterModel.Name : "Ohne Charakter");
+        writer.Value(model.CharacterModel != null ? model.CharacterModel.Name : "Ohne Charakter");
 
         writer.Name("userRecordType");
-        writer.Value((int)UserRecordType);
+        writer.Value((int)model.UserRecordType);
 
         writer.Name("text");
-        writer.Value(Text);
+        writer.Value(model.Text);
 
-        writer.Name("loggedAt");
-        writer.Value(JsonSerializer.Serialize(LoggedAt));
+        writer.Name("createdAtJson");
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

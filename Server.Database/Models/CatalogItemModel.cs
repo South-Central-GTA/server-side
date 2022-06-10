@@ -7,16 +7,15 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models;
 
-public class CatalogItemModel
-    : PositionRotationModelBase, IWritable
+public class CatalogItemModel : PositionRotationModelBase, IWritable
 {
     public CatalogItemModel()
     {
     }
 
     public CatalogItemModel(ItemCatalogIds id, string name, string model, Rotation rotation, float zOffset,
-                            string image, string description, Rarity rarity, float weight, bool equippable,
-                            bool stackable, bool buyable, bool sellable, int price, int sellPrice, int? maxLimit = null)
+        string image, string description, Rarity rarity, float weight, bool equippable, bool stackable, bool buyable,
+        bool sellable, int price, int sellPrice, int? maxLimit = null)
     {
         Id = id;
         Name = name;
@@ -57,40 +56,45 @@ public class CatalogItemModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(CatalogItemModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value((int)Id);
+        writer.Value((int)model.Id);
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
         writer.Name("image");
-        writer.Value(Image);
+        writer.Value(model.Image);
 
         writer.Name("description");
-        writer.Value(Description);
+        writer.Value(model.Description);
 
         writer.Name("rarity");
-        writer.Value((int)Rarity);
+        writer.Value((int)model.Rarity);
 
         writer.Name("weight");
-        writer.Value(Weight);
+        writer.Value(model.Weight);
 
         writer.Name("equippable");
-        writer.Value(Equippable);
+        writer.Value(model.Equippable);
 
         writer.Name("stackable");
-        writer.Value(Stackable);
+        writer.Value(model.Stackable);
 
         writer.Name("buyable");
-        writer.Value(Buyable);
+        writer.Value(model.Buyable);
 
         writer.Name("sellable");
-        writer.Value(Sellable);
+        writer.Value(model.Sellable);
 
         writer.Name("price");
-        writer.Value(Price);
+        writer.Value(model.Price);
 
         writer.EndObject();
     }

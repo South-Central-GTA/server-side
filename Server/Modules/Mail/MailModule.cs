@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -15,19 +14,15 @@ using Server.Database.Models.Mail;
 
 namespace Server.Modules.Mail;
 
-public class MailModule
-    : ITransientScript
+public class MailModule : ITransientScript
 {
     private readonly GroupService _groupService;
     private readonly MailAccountCharacterAccessService _mailAccountCharacterAccessService;
     private readonly MailAccountService _mailAccountService;
     private readonly MailService _mailService;
 
-    public MailModule(
-        MailAccountService mailAccountService,
-        MailService mailService,
-        MailAccountCharacterAccessService mailAccountCharacterAccessService,
-        GroupService groupService)
+    public MailModule(MailAccountService mailAccountService, MailService mailService,
+        MailAccountCharacterAccessService mailAccountCharacterAccessService, GroupService groupService)
     {
         _mailAccountService = mailAccountService;
         _mailService = mailService;
@@ -51,10 +46,9 @@ public class MailModule
             if (!member.Owner)
             {
                 var rank = group.Ranks.Find(r => r.Level == member.RankLevel);
-                if (rank == null
-                    || !rank.GroupPermission.HasFlag(GroupPermission.MAILING_SENDING)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.MAILING_READING)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.MAILING_DELETING))
+                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.MAILING_SENDING) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.MAILING_READING) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.MAILING_DELETING))
                 {
                     continue;
                 }
@@ -112,19 +106,14 @@ public class MailModule
             MailAddress = mailAddress,
             GroupAccess = new List<MailAccountGroupAccessModel>
             {
-                new()
-                {
-                    MailAccountModelMailAddress = mailAddress,
-                    GroupModelId = groupModel.Id,
-                    Owner = true
-                }
+                new() { MailAccountModelMailAddress = mailAddress, GroupModelId = groupModel.Id, Owner = true }
             },
             CharacterAccesses = new List<MailAccountCharacterAccessModel>()
         });
     }
 
     public async Task<bool> HasPermission(ServerPlayer player, MailAccountModel mailAccountModel,
-                                          MailingPermission mailingPermission)
+        MailingPermission mailingPermission)
     {
         var hasAccess = false;
 
@@ -223,8 +212,8 @@ public class MailModule
         return isOwner;
     }
 
-    public async Task SendMail(ServerPlayer player, string senderMailAddress, string targetMailAddress,
-                               string title, string context)
+    public async Task SendMail(ServerPlayer player, string senderMailAddress, string targetMailAddress, string title,
+        string context)
     {
         if (!player.Exists)
         {
@@ -248,7 +237,7 @@ public class MailModule
         if (targetMailAccount == null)
         {
             player.EmitGui("mail:senderror",
-                           "Die angegebene Mail wurde bei uns nicht gefunden, die Mail konnte nicht verschickt werden.");
+                "Die angegebene Mail wurde bei uns nicht gefunden, die Mail konnte nicht verschickt werden.");
             player.EmitGui("mail:sendbackup", title, context);
             return;
         }
@@ -276,7 +265,7 @@ public class MailModule
         await UpdatePlayersUi(targetMailAccount);
         await UpdatePlayersUi(mailAccount);
 
-        player.EmitGui("mail:sendinfo", $"Mail wurde erfolgreich verschickt.");
+        player.EmitGui("mail:sendinfo", "Mail wurde erfolgreich verschickt.");
     }
 
     public async Task DeleteMail(string mailAddress, int mailId)
@@ -321,9 +310,9 @@ public class MailModule
                 }
 
                 var rank = group.Ranks.Find(r => r.Level == member.RankLevel);
-                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.MAILING_SENDING)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.MAILING_READING)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.MAILING_DELETING))
+                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.MAILING_SENDING) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.MAILING_READING) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.MAILING_DELETING))
                 {
                     continue;
                 }
@@ -338,12 +327,11 @@ public class MailModule
     }
 
     public async Task AddCharacterToAccount(ServerPlayer player, CharacterModel characterModel,
-                                            MailAccountModel mailAccountModel)
+        MailAccountModel mailAccountModel)
     {
         await _mailAccountCharacterAccessService.Add(new MailAccountCharacterAccessModel
         {
-            CharacterModelId = characterModel.Id,
-            MailAccountModelMailAddress = mailAccountModel.MailAddress
+            CharacterModelId = characterModel.Id, MailAccountModelMailAddress = mailAccountModel.MailAddress
         });
 
         await UpdateUi(player);
@@ -355,12 +343,12 @@ public class MailModule
         }
 
         player.EmitGui("mail:sendinfo",
-                       $"Wir haben erfolgreich {characterModel.Name} auf Ihr Mailkonto freigeschaltet, richten Sie nun bitte die Berechtigungen in der App ein.");
+            $"Wir haben erfolgreich {characterModel.Name} auf Ihr Mailkonto freigeschaltet, richten Sie nun bitte die Berechtigungen in der App ein.");
     }
 
 
     public async Task RemoveCharacterFromAccount(ServerPlayer player, CharacterModel characterModel,
-                                                 MailAccountCharacterAccessModel mailAccountCharacterAccessModel)
+        MailAccountCharacterAccessModel mailAccountCharacterAccessModel)
     {
         await _mailAccountCharacterAccessService.Remove(mailAccountCharacterAccessModel);
 
@@ -376,12 +364,10 @@ public class MailModule
     }
 
     public async Task<bool> AddPermission(MailAccountModel mailAccountModel, int characterId,
-                                          MailingPermission mailingPermission)
+        MailingPermission mailingPermission)
     {
         var characterAccess = await _mailAccountCharacterAccessService.Find(ca =>
-                                                                                ca.MailAccountModelMailAddress ==
-                                                                                mailAccountModel.MailAddress &&
-                                                                                ca.CharacterModelId == characterId);
+            ca.MailAccountModelMailAddress == mailAccountModel.MailAddress && ca.CharacterModelId == characterId);
         if (characterAccess == null)
         {
             return false;
@@ -394,12 +380,10 @@ public class MailModule
     }
 
     public async Task<bool> RemovePermission(MailAccountModel mailAccountModel, int characterId,
-                                             MailingPermission mailingPermission)
+        MailingPermission mailingPermission)
     {
         var characterAccess = await _mailAccountCharacterAccessService.Find(ca =>
-                                                                                ca.MailAccountModelMailAddress ==
-                                                                                mailAccountModel.MailAddress &&
-                                                                                ca.CharacterModelId == characterId);
+            ca.MailAccountModelMailAddress == mailAccountModel.MailAddress && ca.CharacterModelId == characterId);
         if (characterAccess == null)
         {
             return false;

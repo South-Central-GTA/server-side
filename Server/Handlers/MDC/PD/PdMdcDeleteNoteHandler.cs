@@ -1,8 +1,6 @@
-﻿using System;
-using AltV.Net.Async;
+﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Group;
@@ -13,14 +11,12 @@ namespace Server.Handlers.MDC.PD;
 public class PdMdcDeleteNoteHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
+    private readonly GroupModule _groupModule;
     private readonly MdcNoteService _mdcNoteService;
 
     private readonly PoliceMdcModule _policeMdcModule;
-    private readonly GroupModule _groupModule;
 
-    public PdMdcDeleteNoteHandler(
-        GroupFactionService groupFactionService,
-        MdcNoteService mdcNoteService,
+    public PdMdcDeleteNoteHandler(GroupFactionService groupFactionService, MdcNoteService mdcNoteService,
         PoliceMdcModule policeMdcModule, GroupModule groupModule)
     {
         _policeMdcModule = policeMdcModule;

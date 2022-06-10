@@ -1,15 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using AltV.Net;
 using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Inventory.Phone;
 
-public class PhoneMessageModel
-    : ModelBase, IWritable
+public class PhoneMessageModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -27,28 +24,36 @@ public class PhoneMessageModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(PhoneMessageModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("chatId");
-        writer.Value(ChatModelId);
+        writer.Value(model.ChatModelId);
 
         writer.Name("sendetAt");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.Name("ownerId");
-        writer.Value(OwnerId);
+        writer.Value(model.OwnerId);
 
         writer.Name("context");
-        writer.Value(Context);
+        writer.Value(model.Context);
+
+        writer.Name("local");
+        writer.Value(model.Local);
 
         writer.Name("senderPhoneNumber");
-        writer.Value(SenderPhoneNumber);
+        writer.Value(model.SenderPhoneNumber);
 
         writer.Name("targetPhoneNumber");
-        writer.Value(TargetPhoneNumber);
+        writer.Value(model.TargetPhoneNumber);
 
         writer.EndObject();
     }

@@ -22,8 +22,7 @@ using Server.Modules.Vehicles;
 
 namespace Server.Modules.Character;
 
-public class CharacterCreationModule
-    : ITransientScript
+public class CharacterCreationModule : ITransientScript
 {
     private readonly CharacterCreatorOptions _characterCreatorOptions;
     private readonly CharacterService _characterService;
@@ -37,15 +36,10 @@ public class CharacterCreationModule
     private readonly SouthCentralPointsModule _southCentralPointsModule;
     private readonly VehicleModule _vehicleModule;
 
-    public CharacterCreationModule(
-        IOptions<GameOptions> gameOptions,
-        IOptions<CharacterCreatorOptions> characterCreatorOptions,
-        ILogger<CharacterCreationModule> logger,
-        Serializer serializer,
-        HouseModule houseModule,
-        VehicleModule vehicleModule,
-        SouthCentralPointsModule southCentralPointsModule,
-        ItemCatalogService itemCatalogService,
+    public CharacterCreationModule(IOptions<GameOptions> gameOptions,
+        IOptions<CharacterCreatorOptions> characterCreatorOptions, ILogger<CharacterCreationModule> logger,
+        Serializer serializer, HouseModule houseModule, VehicleModule vehicleModule,
+        SouthCentralPointsModule southCentralPointsModule, ItemCatalogService itemCatalogService,
         CharacterService characterService)
     {
         _gameOptions = gameOptions.Value;
@@ -74,12 +68,9 @@ public class CharacterCreationModule
 
         await AltAsync.Do(() =>
         {
-            player.EmitLocked("charcreator:open",
-                              characterModel,
-                              isTutorial,
-                              _gameOptions.MoneyToPointsExchangeRate,
-                              _characterCreatorOptions.CharacterBaseCosts,
-                              (int)Math.Round(phoneCatalogItem.Price * _gameOptions.MoneyToPointsExchangeRate));
+            player.EmitLocked("charcreator:open", characterModel, isTutorial, _gameOptions.MoneyToPointsExchangeRate,
+                _characterCreatorOptions.CharacterBaseCosts,
+                (int)Math.Round(phoneCatalogItem.Price * _gameOptions.MoneyToPointsExchangeRate));
             player.EmitLocked("charselector:close");
             player.SetPositionLocked(new Position(413.31427f, -997.31866f, -99.41907f));
             player.SetUniqueDimension();
@@ -126,8 +117,7 @@ public class CharacterCreationModule
                     characterCosts += _southCentralPointsModule.GetPointsPrice(characterCreatorData.StartMoney);
                     break;
                 case CharacterCreatorPurchaseType.VEHICLE when Enum.TryParse(order.OrderedVehicle.Model,
-                                                                             true,
-                                                                             out VehicleModel vehicleModel):
+                    true, out VehicleModel vehicleModel):
                     characterCosts += await _vehicleModule.GetPointsPrice(vehicleModel.ToString());
                     break;
             }

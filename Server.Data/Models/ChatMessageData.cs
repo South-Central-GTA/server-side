@@ -3,8 +3,7 @@ using Server.Database.Enums;
 
 namespace Server.Data.Models;
 
-public class ChatMessageData
-    : IWritable
+public class ChatMessageData : IWritable
 {
     public string? Sender { get; set; }
     public string Context { get; set; }

@@ -20,7 +20,6 @@ public class InVehicleActionHandler : ISingletonScript
 
         if (!player.IsInVehicle)
         {
-            return;
         }
 
         // Implement actions based on in vehicle interactions.

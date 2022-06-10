@@ -12,9 +12,7 @@ public class DeleteItemHandler : ISingletonScript
     private readonly InventoryModule _inventoryModule;
     private readonly ItemDestructionModule _itemDestructionModule;
 
-    public DeleteItemHandler(
-        InventoryModule inventoryModule,
-        ItemDestructionModule itemDestructionModule)
+    public DeleteItemHandler(InventoryModule inventoryModule, ItemDestructionModule itemDestructionModule)
     {
         _inventoryModule = inventoryModule;
         _itemDestructionModule = itemDestructionModule;

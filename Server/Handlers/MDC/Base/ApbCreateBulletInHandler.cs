@@ -11,16 +11,13 @@ namespace Server.Handlers.MDC.Base;
 
 public class ApbCreateBulletInHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
-    private readonly BulletInService _bulletInService;
     private readonly ApbModule _apbModule;
+    private readonly BulletInService _bulletInService;
+    private readonly GroupFactionService _groupFactionService;
     private readonly GroupModule _groupModule;
 
-    public ApbCreateBulletInHandler(
-        GroupFactionService groupFactionService,
-        BulletInService bulletInService,
-        ApbModule apbModule,
-        GroupModule groupModule)
+    public ApbCreateBulletInHandler(GroupFactionService groupFactionService, BulletInService bulletInService,
+        ApbModule apbModule, GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;
         _bulletInService = bulletInService;
@@ -48,11 +45,9 @@ public class ApbCreateBulletInHandler : ISingletonScript
             return;
         }
 
-        await _bulletInService.Add(new BulletInEntryModel()
+        await _bulletInService.Add(new BulletInEntryModel
         {
-            CreatorCharacterName = player.CharacterModel.Name,
-            Content = input,
-            FactionType = factionType
+            CreatorCharacterName = player.CharacterModel.Name, Content = input, FactionType = factionType
         });
 
         await _apbModule.UpdateUi(factionGroup.Id);

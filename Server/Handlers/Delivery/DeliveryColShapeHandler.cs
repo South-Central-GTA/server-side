@@ -13,21 +13,17 @@ using Server.Modules.Delivery;
 
 namespace Server.Handlers.Delivery
 {
-    public class DeliveryColShapeHandler
-        : ISingletonScript
+    public class DeliveryColShapeHandler : ISingletonScript
     {
         private readonly IColShape _deliveryPointColShape;
 
-        public DeliveryColShapeHandler(
-            IOptions<WorldLocationOptions> worldLocationOptions,
-            DeliveryService deliveryService,
-            DeliveryModule deliveryModule)
+        public DeliveryColShapeHandler(IOptions<WorldLocationOptions> worldLocationOptions,
+            DeliveryService deliveryService, DeliveryModule deliveryModule)
         {
-            _deliveryPointColShape = Alt.CreateColShapeSphere(new Position(
-                                                                  worldLocationOptions.Value.HarbourSelectionPositionX,
-                                                                  worldLocationOptions.Value.HarbourSelectionPositionY,
-                                                                  worldLocationOptions.Value.HarbourSelectionPositionZ),
-                                                              4f);
+            _deliveryPointColShape = Alt.CreateColShapeSphere(
+                new Position(worldLocationOptions.Value.HarbourSelectionPositionX,
+                    worldLocationOptions.Value.HarbourSelectionPositionY,
+                    worldLocationOptions.Value.HarbourSelectionPositionZ), 4f);
 
             AltAsync.OnColShape += ((IColShape colShape, IEntity targetEntity, bool state) =>
                 OnColShape(colShape, targetEntity, state));

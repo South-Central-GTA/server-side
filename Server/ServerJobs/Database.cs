@@ -22,9 +22,7 @@ public class Database : IJob
     private readonly DevelopmentOptions _devOptions;
     private readonly ILogger<Database> _logger;
 
-    public Database(
-        ILogger<Database> logger,
-        IDbContextFactory<DatabaseContext> dbContextFactory,
+    public Database(ILogger<Database> logger, IDbContextFactory<DatabaseContext> dbContextFactory,
         IOptions<DevelopmentOptions> devOptions)
     {
         _logger = logger;

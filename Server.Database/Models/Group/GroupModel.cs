@@ -8,8 +8,7 @@ using Server.Database.Models.Housing;
 
 namespace Server.Database.Models.Group;
 
-public class GroupModel
-    : ModelBase, IWritable
+public class GroupModel : ModelBase, IWritable
 {
     public GroupModel()
     {
@@ -38,54 +37,31 @@ public class GroupModel
 
     public virtual void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(GroupModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
         writer.Name("status");
-        writer.Value((int)Status);
+        writer.Value((int)model.Status);
 
         writer.Name("groupType");
-        writer.Value((int)GroupType);
+        writer.Value((int)model.GroupType);
 
         writer.Name("members");
         writer.BeginArray();
 
-        if (Members != null)
+        foreach (var member in model.Members)
         {
-            for (var i = 0; i < Members.Count; i++)
-            {
-                writer.BeginObject();
-
-                var member = Members[i];
-
-                writer.Name("groupId");
-                writer.Value(member.GroupModelId);
-
-                writer.Name("characterId");
-                writer.Value(member.CharacterModelId);
-
-                writer.Name("characterName");
-                writer.Value(member.CharacterModel.Name);
-
-                writer.Name("level");
-                writer.Value(member.RankLevel);
-
-                writer.Name("salary");
-                writer.Value(member.Salary);
-
-                writer.Name("bankAccountId");
-                writer.Value(member.BankAccountId);
-
-                writer.Name("owner");
-                writer.Value(member.Owner);
-
-                writer.EndObject();
-            }
+            GroupMemberModel.Serialize(member, writer);
         }
 
         writer.EndArray();
@@ -93,28 +69,9 @@ public class GroupModel
         writer.Name("ranks");
         writer.BeginArray();
 
-        if (Ranks != null)
+        foreach (var rank in model.Ranks)
         {
-            for (var i = 0; i < Ranks.Count; i++)
-            {
-                writer.BeginObject();
-
-                var rank = Ranks[i];
-
-                writer.Name("groupId");
-                writer.Value(rank.GroupModelId);
-
-                writer.Name("level");
-                writer.Value(rank.Level);
-
-                writer.Name("name");
-                writer.Value(rank.Name);
-
-                writer.Name("groupPermission");
-                writer.Value((int)rank.GroupPermission);
-
-                writer.EndObject();
-            }
+            GroupRankModel.Serialize(rank, writer);
         }
 
         writer.EndArray();
@@ -122,64 +79,9 @@ public class GroupModel
         writer.Name("houses");
         writer.BeginArray();
 
-        if (Houses != null)
+        foreach (var house in model.Houses)
         {
-            for (var i = 0; i < Houses.Count; i++)
-            {
-                writer.BeginObject();
-
-                var house = Houses[i];
-
-                writer.Name("id");
-                writer.Value(house.Id);
-
-                writer.Name("southCentralPoints");
-                writer.Value(house.SouthCentralPoints);
-
-                writer.Name("ownerId");
-                writer.Value(house.CharacterModelId ?? -1);
-
-                writer.Name("groupOwnerId");
-                writer.Value(house.GroupModelId ?? -1);
-
-                writer.Name("houseNumber");
-                writer.Value(house.HouseNumber);
-
-                writer.Name("subName");
-                writer.Value(house.SubName);
-
-                writer.Name("streetDirection");
-                writer.Value(house.StreetDirection);
-
-                writer.Name("price");
-                writer.Value(house.Price);
-
-                writer.Name("interiorId");
-                writer.Value(house.InteriorId ?? -1);
-
-                writer.Name("lockState");
-                writer.Value((int)house.LockState);
-
-                writer.Name("roll");
-                writer.Value(house.Roll);
-
-                writer.Name("pitch");
-                writer.Value(house.Pitch);
-
-                writer.Name("yaw");
-                writer.Value(house.Yaw);
-
-                writer.Name("positionX");
-                writer.Value(house.PositionX);
-
-                writer.Name("positionY");
-                writer.Value(house.PositionY);
-
-                writer.Name("positionZ");
-                writer.Value(house.PositionZ);
-
-                writer.EndObject();
-            }
+            HouseModel.Serialize(house, writer);
         }
 
         writer.EndArray();

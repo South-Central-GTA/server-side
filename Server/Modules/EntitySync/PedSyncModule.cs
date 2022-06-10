@@ -14,11 +14,11 @@ namespace Server.Modules.EntitySync;
 
 public class PedSyncModule : ISingletonScript
 {
-    private readonly Dictionary<ulong, ServerPed> _peds = new();
-    private readonly Dictionary<int, ServerPed> _playerPeds = new();
     private readonly Dictionary<int, ServerPed> _cashierPeds = new();
 
     private readonly CompanyOptions _companyOptions;
+    private readonly Dictionary<ulong, ServerPed> _peds = new();
+    private readonly Dictionary<int, ServerPed> _playerPeds = new();
 
     public PedSyncModule(IOptions<CompanyOptions> companyOptions)
     {
@@ -26,14 +26,14 @@ public class PedSyncModule : ISingletonScript
     }
 
     public void CreateTemp(ServerPlayer player, string model, Position position, float heading, int dimension,
-                           ServerVehicle vehicle, int seat = 0, uint streamRange = 200)
+        ServerVehicle vehicle, int seat = 0, uint streamRange = 200)
     {
         var serverPed = Create(model, position, heading, dimension, streamRange, vehicle, seat);
         _playerPeds.Add(player.Id, serverPed);
     }
 
     public ServerPed Create(string model, Position position, float heading, int dimension, uint streamRange = 200,
-                            ServerVehicle? vehicle = null, int seat = 0, CharacterModel? characterModel = null)
+        ServerVehicle? vehicle = null, int seat = 0, CharacterModel? characterModel = null)
     {
         var serverPed = new ServerPed(position, dimension, streamRange)
         {
@@ -111,22 +111,16 @@ public class PedSyncModule : ISingletonScript
 
     public void CreateCashier(LeaseCompanyHouseModel leaseCompanyHouseModel)
     {
-        if (leaseCompanyHouseModel.PlayerDuty ||
-            !leaseCompanyHouseModel.HasCashier ||
-            !leaseCompanyHouseModel.CashierX.HasValue ||
-            !leaseCompanyHouseModel.CashierY.HasValue ||
-            !leaseCompanyHouseModel.CashierZ.HasValue ||
-            !leaseCompanyHouseModel.CashierHeading.HasValue)
+        if (leaseCompanyHouseModel.PlayerDuty || !leaseCompanyHouseModel.HasCashier ||
+            !leaseCompanyHouseModel.CashierX.HasValue || !leaseCompanyHouseModel.CashierY.HasValue ||
+            !leaseCompanyHouseModel.CashierZ.HasValue || !leaseCompanyHouseModel.CashierHeading.HasValue)
         {
             return;
         }
 
         var serverPed = Create(_companyOptions.Types[leaseCompanyHouseModel.LeaseCompanyType].Cashier,
-                               new Position(leaseCompanyHouseModel.CashierX.Value,
-                                            leaseCompanyHouseModel.CashierY.Value,
-                                            leaseCompanyHouseModel.CashierZ.Value),
-                               leaseCompanyHouseModel.CashierHeading.Value,
-                               0);
+            new Position(leaseCompanyHouseModel.CashierX.Value, leaseCompanyHouseModel.CashierY.Value,
+                leaseCompanyHouseModel.CashierZ.Value), leaseCompanyHouseModel.CashierHeading.Value, 0);
 
         _cashierPeds.Add(leaseCompanyHouseModel.Id, serverPed);
     }

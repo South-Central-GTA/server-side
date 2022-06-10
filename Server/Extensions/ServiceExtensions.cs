@@ -12,16 +12,12 @@ public static class ServiceCollectionExtensions
     private static readonly List<Type> ServicesToInstantiate = new();
 
     public static void AddAllTypes<T>(this IServiceCollection services,
-                                      ServiceLifetime lifetime = ServiceLifetime.Transient)
-        where T : class
+        ServiceLifetime lifetime = ServiceLifetime.Transient) where T : class
     {
         #region T is interface
 
-        var typesOfInterface = AppDomain
-                               .CurrentDomain
-                               .GetAssemblies()
-                               .SelectMany(t => t.DefinedTypes)
-                               .Where(x => x.IsClass && !x.IsAbstract && x.GetInterfaces().Contains(typeof(T)));
+        var typesOfInterface = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.DefinedTypes)
+            .Where(x => x.IsClass && !x.IsAbstract && x.GetInterfaces().Contains(typeof(T)));
 
         foreach (var type in typesOfInterface)
         {
@@ -50,11 +46,8 @@ public static class ServiceCollectionExtensions
 
         #region T is class
 
-        var typesOfClasses = AppDomain
-                             .CurrentDomain
-                             .GetAssemblies()
-                             .SelectMany(t => t.GetTypes())
-                             .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(T)));
+        var typesOfClasses = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes())
+            .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(T)));
 
         foreach (var type in typesOfClasses)
         {

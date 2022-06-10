@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AltV.Net.Async;
 using AltV.Net.Elements.Entities;
 using Microsoft.Extensions.Logging;
@@ -13,8 +12,7 @@ using Server.Modules.Character;
 
 namespace Server.Modules.Admin;
 
-public class AdminPrisonModule
-    : ITransientScript
+public class AdminPrisonModule : ITransientScript
 {
     private readonly AccountService _accountService;
 
@@ -23,11 +21,8 @@ public class AdminPrisonModule
 
     private readonly UserRecordLogService _userRecordLogService;
 
-    public AdminPrisonModule(
-        ILogger<AdminPrisonModule> logger,
-        UserRecordLogService userRecordLogService,
-        AccountService accountService,
-        CharacterSelectionModule characterSelectionModule)
+    public AdminPrisonModule(ILogger<AdminPrisonModule> logger, UserRecordLogService userRecordLogService,
+        AccountService accountService, CharacterSelectionModule characterSelectionModule)
     {
         _logger = logger;
 
@@ -66,8 +61,7 @@ public class AdminPrisonModule
                 CharacterModelId = player.CharacterModel.Id,
                 UserRecordType = UserRecordType.AUTOMATIC,
                 Text = "Spieler wurde für " + player.AccountModel.AdminCheckpoints +
-                       " Checkpoints mit dem Grund '" + reason + "' in das Admin Prison gesteckt.",
-                LoggedAt = DateTime.Now
+                       " Checkpoints mit dem Grund '" + reason + "' in das Admin Prison gesteckt."
             });
         }
     }
@@ -93,8 +87,7 @@ public class AdminPrisonModule
                 StaffAccountModelId = staffPlayer.AccountModel.SocialClubId,
                 CharacterModelId = player.CharacterModel.Id,
                 UserRecordType = UserRecordType.AUTOMATIC,
-                Text = "Spieler wurde aus dem Admin Prison befreit.",
-                LoggedAt = DateTime.Now
+                Text = "Spieler wurde aus dem Admin Prison befreit."
             });
         }
 

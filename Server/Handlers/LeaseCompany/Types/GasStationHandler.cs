@@ -21,9 +21,9 @@ namespace Server.Handlers.LeaseCompany.Types;
 
 public class GasStationHandler : ISingletonScript
 {
-    private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
+    private readonly CompanyOptions _companyOptions;
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
     private readonly InventoryModule _invenoryModule;
@@ -35,18 +35,10 @@ public class GasStationHandler : ISingletonScript
 
     private readonly WorldMarketModule _worldMarketModule;
 
-    public GasStationHandler(
-        IOptions<CompanyOptions> companyOptions,
-        Serializer serializer,
-        HouseService houseService,
-        BankAccountService bankAccountService,
-        VehicleCatalogService vehicleCatalogService,
-        GroupService groupService,
-        UserShopDataService userShopDataService,
-        WorldMarketModule worldMarketModule,
-        VehicleModule vehicleModule,
-        MoneyModule moneyModule,
-        BankModule bankModule)
+    public GasStationHandler(IOptions<CompanyOptions> companyOptions, Serializer serializer, HouseService houseService,
+        BankAccountService bankAccountService, VehicleCatalogService vehicleCatalogService, GroupService groupService,
+        UserShopDataService userShopDataService, WorldMarketModule worldMarketModule, VehicleModule vehicleModule,
+        MoneyModule moneyModule, BankModule bankModule)
     {
         _companyOptions = companyOptions.Value;
         _serializer = serializer;
@@ -171,9 +163,7 @@ public class GasStationHandler : ISingletonScript
         {
             await _userShopDataService.Add(new UserShopDataModel
             {
-                CharacterModelId = player.CharacterModel.Id,
-                GotWarned = false,
-                BillToPay = price
+                CharacterModelId = player.CharacterModel.Id, GotWarned = false, BillToPay = price
             });
         }
 
@@ -199,7 +189,7 @@ public class GasStationHandler : ISingletonScript
 
         //TODO: Add actual call to police here over mdc.
         player.SendNotification($"Debug: Information ans PD, Tankdiebstahl in Wert von {bill}$.",
-                                NotificationType.WARNING);
+            NotificationType.WARNING);
 
         await _userShopDataService.Remove(shopData);
     }
@@ -273,14 +263,12 @@ public class GasStationHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount,
-                                                 shopData.BillToPay,
-                                                 false,
-                                                 $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
+        var success = await _bankModule.Withdraw(bankAccount, shopData.BillToPay, false,
+            $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
         if (success)
         {
             player.SendNotification("Dein Charakter hat den Treibstoff bezahlt.", NotificationType.SUCCESS);
@@ -290,7 +278,7 @@ public class GasStationHandler : ISingletonScript
         else
         {
             player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
         }
     }
 }

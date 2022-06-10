@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using AltV.Net;
 using Server.Database.Enums;
 using Server.Database.Models._Base;
@@ -12,15 +9,14 @@ using Server.Database.Models.Inventory;
 
 namespace Server.Database.Models.Housing;
 
-public class HouseModel
-    : PositionRotationModelBase, ILockableEntity, IWritable
+public class HouseModel : PositionRotationModelBase, ILockableEntity, IWritable
 {
-    protected HouseModel()
+    public HouseModel()
     {
     }
 
     public HouseModel(float x, float y, float z, float roll, float pitch, float yaw, int interiorId, int houseNumber,
-                      int price, string subName, int streetDirection)
+        int price, string subName, int streetDirection)
     {
         PositionX = x;
         PositionY = y;
@@ -83,8 +79,6 @@ public class HouseModel
     public bool Rentable { get; set; }
     public bool BlockedOwnership { get; set; }
     public int? RentBankAccountId { get; set; }
-
-    public LockState LockState { get; set; }
     public List<int> Keys { get; set; } = new();
     public List<DoorModel> Doors { get; set; } = new();
 
@@ -92,97 +86,84 @@ public class HouseModel
 
     [NotMapped] public bool HasNoOwner => !CharacterModelId.HasValue && !GroupModelId.HasValue;
 
+    public LockState LockState { get; set; }
+
     public virtual void OnWrite(IMValueWriter writer)
+    {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(HouseModel model, IMValueWriter writer)
     {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("southCentralPoints");
-        writer.Value(SouthCentralPoints);
+        writer.Value(model.SouthCentralPoints);
 
         writer.Name("ownerId");
-        writer.Value(CharacterModelId ?? -1);
+        writer.Value(model.CharacterModelId ?? -1);
 
         writer.Name("groupOwnerId");
-        writer.Value(GroupModelId ?? -1);
+        writer.Value(model.GroupModelId ?? -1);
 
         writer.Name("houseNumber");
-        writer.Value(HouseNumber);
+        writer.Value(model.HouseNumber);
 
         writer.Name("subName");
-        writer.Value(SubName);
+        writer.Value(model.SubName);
 
         writer.Name("houseType");
-        writer.Value((int)HouseType);
+        writer.Value((int)model.HouseType);
 
         writer.Name("streetDirection");
-        writer.Value(StreetDirection);
+        writer.Value(model.StreetDirection);
 
         writer.Name("price");
-        writer.Value(Price);
+        writer.Value(model.Price);
 
         writer.Name("interiorId");
-        writer.Value(InteriorId ?? -1);
+        writer.Value(model.InteriorId ?? -1);
 
         writer.Name("lockState");
-        writer.Value((int)LockState);
+        writer.Value((int)model.LockState);
 
         writer.Name("roll");
-        writer.Value(Roll);
+        writer.Value(model.Roll);
 
         writer.Name("pitch");
-        writer.Value(Pitch);
+        writer.Value(model.Pitch);
 
         writer.Name("yaw");
-        writer.Value(Yaw);
+        writer.Value(model.Yaw);
 
         writer.Name("positionX");
-        writer.Value(PositionX);
+        writer.Value(model.PositionX);
 
         writer.Name("positionY");
-        writer.Value(PositionY);
+        writer.Value(model.PositionY);
 
         writer.Name("positionZ");
-        writer.Value(PositionZ);
+        writer.Value(model.PositionZ);
 
         writer.Name("rentable");
-        writer.Value(Rentable);
+        writer.Value(model.Rentable);
 
         writer.Name("blockedOwnership");
-        writer.Value(BlockedOwnership);
+        writer.Value(model.BlockedOwnership);
 
         writer.Name("keyItemIds");
-        writer.Value(Keys.Count != 0 ? string.Join(", ", Keys.ToArray()) : "Keine Schlüssel");
+        writer.Value(model.Keys.Count != 0 ? string.Join(", ", model.Keys.ToArray()) : "Keine Schlüssel");
 
         writer.Name("doors");
 
         writer.BeginArray();
 
-        foreach (var door in Doors)
+        foreach (var door in model.Doors)
         {
-            writer.BeginObject();
-
-            writer.Name("id");
-            writer.Value(door.Id);
-
-            writer.Name("hash");
-            writer.Value(door.Hash);
-
-            writer.Name("locked");
-            writer.Value(door.LockState == LockState.CLOSED);
-
-            writer.Name("positionX");
-            writer.Value(door.PositionX);
-
-            writer.Name("positionY");
-            writer.Value(door.PositionY);
-
-            writer.Name("positionZ");
-            writer.Value(door.PositionZ);
-
-            writer.EndObject();
+            DoorModel.Serialize(door, writer);
         }
 
         writer.EndArray();

@@ -7,7 +7,6 @@ using Server.Core.Extensions;
 using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Database.Models.Group;
 
 namespace Server.ChatCommands.Factions;
 

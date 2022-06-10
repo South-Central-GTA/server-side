@@ -6,13 +6,11 @@ using Server.Database.Models.Vehicles;
 
 namespace Server.DataAccessLayer.Services;
 
-public class VehicleCatalogService
-    : BaseService<CatalogVehicleModel>, ITransientScript
+public class VehicleCatalogService : BaseService<CatalogVehicleModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public VehicleCatalogService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public VehicleCatalogService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }

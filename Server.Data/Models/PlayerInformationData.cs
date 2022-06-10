@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models;
 
-public class PlayerInformationData
-    : IWritable
+public class PlayerInformationData : IWritable
 {
     public int Id { get; set; }
     public ulong AccountId { get; set; }

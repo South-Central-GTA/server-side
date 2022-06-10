@@ -19,10 +19,7 @@ public class InviteGroupHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
 
-    public InviteGroupHandler(
-        BankAccountService bankAccountService,
-        GroupService groupService,
-        BankModule bankModule,
+    public InviteGroupHandler(BankAccountService bankAccountService, GroupService groupService, BankModule bankModule,
         GroupModule groupModule)
     {
         _bankAccountService = bankAccountService;
@@ -51,7 +48,7 @@ public class InviteGroupHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.DEPOSIT))
         {
             player.SendNotification("Dein Charakter hat keine Einzahlrechte auf dem Bankkonto.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -79,14 +76,14 @@ public class InviteGroupHandler : ISingletonScript
         if (await _groupModule.IsPlayerInGroupType(player, GroupType.FACTION))
         {
             player.SendNotification("Dein Charakter ist schon in einer Fraktion und kann deswegen nicht beitreten.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (player.CharacterModel.JobModel != null)
         {
             player.SendNotification("Dein Charakter hat einen definierten Job und kann deswegen nicht beitreten.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

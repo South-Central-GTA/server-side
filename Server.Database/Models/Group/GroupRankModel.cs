@@ -6,8 +6,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Group;
 
-public class GroupRankModel
-    : ModelBase, IWritable
+public class GroupRankModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -25,19 +24,24 @@ public class GroupRankModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(GroupRankModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("groupId");
-        writer.Value(GroupModelId);
+        writer.Value(model.GroupModelId);
 
         writer.Name("level");
-        writer.Value(Level);
+        writer.Value(model.Level);
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
         writer.Name("groupPermission");
-        writer.Value((int)GroupPermission);
+        writer.Value((int)model.GroupPermission);
 
         writer.EndObject();
     }

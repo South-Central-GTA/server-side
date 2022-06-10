@@ -3,8 +3,7 @@ using Server.Database.Enums;
 
 namespace Server.Modules.Consumeable;
 
-public class ConsumeableItemModule
-    : ITransientScript
+public class ConsumeableItemModule : ITransientScript
 {
     public static bool IsConsumeable(ItemCatalogIds catalogId)
     {

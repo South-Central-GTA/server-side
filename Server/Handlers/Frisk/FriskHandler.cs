@@ -8,7 +8,6 @@ using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Database.Models.Inventory;
 using Server.Modules.Inventory;
 
 namespace Server.Handlers.Frisk;
@@ -20,9 +19,7 @@ public class FriskHandler : ISingletonScript
     private readonly InventoryModule _inventoryModule;
     private readonly InventoryService _inventoryService;
 
-    public FriskHandler(
-        CharacterService characterService,
-        InventoryService inventoryService,
+    public FriskHandler(CharacterService characterService, InventoryService inventoryService,
         InventoryModule inventoryModule)
     {
         _characterService = characterService;
@@ -68,7 +65,7 @@ public class FriskHandler : ISingletonScript
                 Title = "Durchsuchen",
                 Description =
                     $"Der Charakter {player.CharacterModel.Name} möchte deinen Charakter durchsuchen, erlaubst du es?<br>" +
-                    $"<p class='text-muted'>Der Spieler kann frei auf dein Inventar zugreifen.</p>",
+                    "<p class='text-muted'>Der Spieler kann frei auf dein Inventar zugreifen.</p>",
                 FreezeGameControls = true,
                 Data = data,
                 PrimaryButton = "Ja",

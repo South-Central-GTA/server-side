@@ -13,9 +13,7 @@ public class GroupMemberInventoryHandler : ISingletonScript
     private readonly InventoryModule _inventoryModule;
     private readonly InventoryService _inventoryService;
 
-    public GroupMemberInventoryHandler(
-        InventoryService inventoryService,
-        InventoryModule inventoryModule)
+    public GroupMemberInventoryHandler(InventoryService inventoryService, InventoryModule inventoryModule)
     {
         _inventoryService = inventoryService;
         _inventoryModule = inventoryModule;
@@ -25,8 +23,7 @@ public class GroupMemberInventoryHandler : ISingletonScript
 
     private async void OnOpenOtherGroupInventory(ServerPlayer player, int groupId, int characterId)
     {
-        var inventory = await _inventoryService.Find(i =>
-                                                         i.GroupCharacterId == characterId && i.GroupId == groupId);
+        var inventory = await _inventoryService.Find(i => i.GroupCharacterId == characterId && i.GroupId == groupId);
         if (inventory == null)
         {
             return;

@@ -7,13 +7,8 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models.Mdc;
 
-public class MdcMedicalEntryModel
-    : ModelBase, IWritable
+public class MdcMedicalEntryModel : ModelBase, IWritable
 {
-    public MdcMedicalEntryModel()
-    {
-    }
-
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
@@ -26,19 +21,24 @@ public class MdcMedicalEntryModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(MdcMedicalEntryModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("content");
-        writer.Value(Content);
+        writer.Value(model.Content);
 
         writer.Name("creatorCharacterName");
-        writer.Value(CreatorCharacterName);
+        writer.Value(model.CreatorCharacterName);
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

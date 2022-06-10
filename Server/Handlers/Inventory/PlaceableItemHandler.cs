@@ -32,15 +32,9 @@ public class PlaceableItemHandler : ISingletonScript
     private readonly ObjectSyncModule _objectSyncModule;
     private readonly Serializer _serializer;
 
-    public PlaceableItemHandler(
-        Serializer serializer,
-        ItemService itemService,
-        InventoryModule inventoryModule,
-        ItemDropModule itemDropModule,
-        AntiCheatModule antiCheatModule,
-        ItemCreationModule itemCreationModule,
-        ObjectSyncModule objectSyncModule,
-        ItemDestructionModule itemDestructionModule)
+    public PlaceableItemHandler(Serializer serializer, ItemService itemService, InventoryModule inventoryModule,
+        ItemDropModule itemDropModule, AntiCheatModule antiCheatModule, ItemCreationModule itemCreationModule,
+        ObjectSyncModule objectSyncModule, ItemDestructionModule itemDestructionModule)
     {
         _serializer = serializer;
 
@@ -75,8 +69,8 @@ public class PlaceableItemHandler : ISingletonScript
         var dropItemData = _serializer.Deserialize<DropItemData>(itemDropJson);
 
         var items = await _itemService.GetAll();
-        var itemOnGround = items.Find(i => dropItemData.Position.Distance(i.Position) <= 0.3f
-                                           && i.ItemState == ItemState.DROPPED);
+        var itemOnGround = items.Find(i =>
+            dropItemData.Position.Distance(i.Position) <= 0.3f && i.ItemState == ItemState.DROPPED);
 
         if (itemOnGround != null)
         {
@@ -104,8 +98,9 @@ public class PlaceableItemHandler : ISingletonScript
 
         if (item is ItemWeaponModel itemWeapon)
         {
-            var weaponAttachments = items.Where(i => i is ItemWeaponAttachmentModel weaponAttachment
-                                                     && weaponAttachment.ItemWeaponId == itemWeapon.Id).ToList();
+            var weaponAttachments = items.Where(i =>
+                    i is ItemWeaponAttachmentModel weaponAttachment && weaponAttachment.ItemWeaponId == itemWeapon.Id)
+                .ToList();
 
             foreach (var weaponAttachment in weaponAttachments)
             {
@@ -121,12 +116,12 @@ public class PlaceableItemHandler : ISingletonScript
         {
             var data = _serializer.Deserialize<ClothingData>(item.CustomData);
             player.SendNotification($"Dein Charakter hat {item.Amount}x {data.Title} abgelegt.",
-                                    NotificationType.SUCCESS);
+                NotificationType.SUCCESS);
         }
         else
         {
             player.SendNotification($"Dein Charakter hat {item.Amount}x {item.CatalogItemModel.Name} abgelegt.",
-                                    NotificationType.SUCCESS);
+                NotificationType.SUCCESS);
         }
 
         item.ItemState = ItemState.DROPPED;
@@ -140,19 +135,10 @@ public class PlaceableItemHandler : ISingletonScript
         await _itemService.Update(item);
         await _inventoryModule.UpdateInventoryUiAsync(player);
 
-        _objectSyncModule.Create(item.CatalogItemModel.Model,
-                                 item.CatalogItemModel.Name,
-                                 new Position(player.Position.X,
-                                              player.Position.Y,
-                                              player.Position.Z - 1 + item.CatalogItemModel.ZOffset),
-                                 item.CatalogItemModel.Rotation,
-                                 player.Dimension,
-                                 200,
-                                 true,
-                                 false,
-                                 item.Id,
-                                 item.DroppedByCharacter,
-                                 _serializer.Serialize(DateTime.Now));
+        _objectSyncModule.Create(item.CatalogItemModel.Model, item.CatalogItemModel.Name,
+            new Position(player.Position.X, player.Position.Y, player.Position.Z - 1 + item.CatalogItemModel.ZOffset),
+            item.CatalogItemModel.Rotation, player.Dimension, 200, true, false, item.Id, item.DroppedByCharacter,
+            _serializer.Serialize(DateTime.Now));
 
         if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId))
         {

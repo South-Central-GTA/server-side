@@ -18,16 +18,13 @@ namespace Server.Handlers.Inventory;
 
 public class ItemActionHandler : ISingletonScript
 {
-    private readonly Serializer _serializer;
+    private readonly GroupFactionService _groupFactionService;
     private readonly ItemService _itemService;
     private readonly ItemWeaponAttachmentService _itemWeaponAttachmentService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly Serializer _serializer;
 
-    public ItemActionHandler(
-        Serializer serializer,
-        ItemService itemService,
-        ItemWeaponAttachmentService itemWeaponAttachmentService,
-        GroupFactionService groupFactionService)
+    public ItemActionHandler(Serializer serializer, ItemService itemService,
+        ItemWeaponAttachmentService itemWeaponAttachmentService, GroupFactionService groupFactionService)
     {
         _serializer = serializer;
         _itemService = itemService;
@@ -90,9 +87,8 @@ public class ItemActionHandler : ISingletonScript
         {
             var attachments = await _itemWeaponAttachmentService.Where(i => i.ItemWeaponId == itemId);
             actions.AddRange(attachments.Select(itemWeaponAttachment =>
-                                                    new ActionData($"{GetItemName(itemWeaponAttachment)} abmontieren",
-                                                                   "item:removeattachment",
-                                                                   itemWeaponAttachment.Id.ToString())));
+                new ActionData($"{GetItemName(itemWeaponAttachment)} abmontieren", "item:removeattachment",
+                    itemWeaponAttachment.Id.ToString())));
         }
 
         if (player.IsAduty)

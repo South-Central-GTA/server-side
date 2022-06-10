@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AltV.Net.Async;
-using AltV.Net.Elements.Entities;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Server.Core;
 using Server.Core.Abstractions.ScriptStrategy;
-using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models.Housing;
-using Server.Database.Models.Inventory;
 using Server.Modules.EntitySync;
 using Server.Modules.Houses;
-using Server.Modules.Inventory;
 
 namespace Server.Handlers.Session;
 
@@ -22,19 +15,14 @@ public class PlayerDisconnectHandler : ISingletonScript
 {
     private readonly CharacterService _characterService;
     private readonly DeliveryService _deliveryService;
+    private readonly FileService _fileService;
     private readonly HouseModule _houseModule;
     private readonly HouseService _houseService;
-    private readonly FileService _fileService;
 
     private readonly PedSyncModule _pedSyncModule;
 
-    public PlayerDisconnectHandler(
-        CharacterService characterService,
-        DeliveryService deliveryService,
-        HouseService houseService,
-        HouseModule houseModule,
-        FileService fileService,
-        PedSyncModule pedSyncModule)
+    public PlayerDisconnectHandler(CharacterService characterService, DeliveryService deliveryService,
+        HouseService houseService, HouseModule houseModule, FileService fileService, PedSyncModule pedSyncModule)
     {
         _characterService = characterService;
         _deliveryService = deliveryService;

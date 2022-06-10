@@ -10,8 +10,7 @@ using Server.Modules.SouthCentralPoints;
 
 namespace Server.Modules.Vehicles;
 
-public class VehicleSelectionModule
-    : ITransientScript
+public class VehicleSelectionModule : ITransientScript
 {
     private readonly CharacterCreatorOptions _characterCreatorOptions;
     private readonly DeliveryOptions _deliveryOptions;
@@ -21,12 +20,9 @@ public class VehicleSelectionModule
 
     private readonly VehicleCatalogService _vehicleCatalogService;
 
-    public VehicleSelectionModule(
-        ILogger<VehicleSelectionModule> logger,
-        IOptions<CharacterCreatorOptions> characterCreatorOptions,
-        IOptions<GameOptions> gameOptions,
-        IOptions<DeliveryOptions> deliveryOptions,
-        VehicleCatalogService vehicleCatalogService,
+    public VehicleSelectionModule(ILogger<VehicleSelectionModule> logger,
+        IOptions<CharacterCreatorOptions> characterCreatorOptions, IOptions<GameOptions> gameOptions,
+        IOptions<DeliveryOptions> deliveryOptions, VehicleCatalogService vehicleCatalogService,
         SouthCentralPointsModule southCentralPointsModule)
     {
         _logger = logger;
@@ -39,8 +35,10 @@ public class VehicleSelectionModule
     }
 
     /// <summary>
-    ///     Create a new list of catalog vehicles, added vehicles have parameters such as the price can't be zero those vehicles are disabled,
-    ///     the vehicle must be on the whitelisted classes and it is not allowed to be on the blacklisted models or blacklisted dlcs.
+    ///     Create a new list of catalog vehicles, added vehicles have parameters such as the price can't be zero those
+    ///     vehicles are disabled,
+    ///     the vehicle must be on the whitelisted classes and it is not allowed to be on the blacklisted models or blacklisted
+    ///     dlcs.
     /// </summary>
     /// <returns>Starter vehicles list</returns>
     public async Task<List<CatalogVehicleModel>> GetStarterVehicles()
@@ -52,12 +50,11 @@ public class VehicleSelectionModule
             catalogVehicle.SouthCentralPoints = _southCentralPointsModule.GetPointsPrice(catalogVehicle.Price);
         }
 
-        return catalogVehicles.FindAll(
-            veh => veh.SouthCentralPoints <= _characterCreatorOptions.MaxSouthCentralPointsVehicles
-                   && veh.Price != 0
-                   && _characterCreatorOptions.WhitelistedClasses.Contains(veh.ClassId)
-                   && !_characterCreatorOptions.BlacklistedModels.Contains(veh.Model.ToLower())
-                   && !_characterCreatorOptions.BlacklistedDlcs.Contains(veh.DlcName.ToLower()));
+        return catalogVehicles.FindAll(veh =>
+            veh.SouthCentralPoints <= _characterCreatorOptions.MaxSouthCentralPointsVehicles && veh.Price != 0 &&
+            _characterCreatorOptions.WhitelistedClasses.Contains(veh.ClassId) &&
+            !_characterCreatorOptions.BlacklistedModels.Contains(veh.Model.ToLower()) &&
+            !_characterCreatorOptions.BlacklistedDlcs.Contains(veh.DlcName.ToLower()));
     }
 
     public async Task<List<CatalogVehicleModel>> GetTransportVehicles()

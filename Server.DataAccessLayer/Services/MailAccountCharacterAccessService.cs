@@ -6,11 +6,10 @@ using Server.Database.Models.Mail;
 
 namespace Server.DataAccessLayer.Services;
 
-public class MailAccountCharacterAccessService
-    : BaseService<MailAccountCharacterAccessModel>, ITransientScript
+public class MailAccountCharacterAccessService : BaseService<MailAccountCharacterAccessModel>, ITransientScript
 {
-    public MailAccountCharacterAccessService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public MailAccountCharacterAccessService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(
+        dbContextFactory)
     {
     }
 }

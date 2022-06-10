@@ -21,12 +21,8 @@ public class Marker : IJob
     private readonly MarkerSyncModule _markerSyncModule;
     private readonly WorldLocationOptions _worldLocationOptions;
 
-    public Marker(
-        ILogger<DroppedItems> logger,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        IOptions<DevelopmentOptions> developmentOptions,
-        HouseService houseService,
-        MarkerSyncModule markerSyncModule)
+    public Marker(ILogger<DroppedItems> logger, IOptions<WorldLocationOptions> worldLocationOptions,
+        IOptions<DevelopmentOptions> developmentOptions, HouseService houseService, MarkerSyncModule markerSyncModule)
     {
         _logger = logger;
         _worldLocationOptions = worldLocationOptions.Value;
@@ -56,32 +52,17 @@ public class Marker : IJob
         }
 
         _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER,
-                                 new Position(_worldLocationOptions.HarbourSelectionPositionX,
-                                              _worldLocationOptions.HarbourSelectionPositionY,
-                                              _worldLocationOptions.HarbourSelectionPositionZ),
-                                 Vector3.Zero,
-                                 Vector3.Zero,
-                                 new Vector3(4f, 4f, 1f),
-                                 new Rgba(255, 255, 255, 50),
-                                 0,
-                                 false,
-                                 20,
-                                 "~y~Hafen Los Santos\n~w~Aufladestation");
+            new Position(_worldLocationOptions.HarbourSelectionPositionX,
+                _worldLocationOptions.HarbourSelectionPositionY, _worldLocationOptions.HarbourSelectionPositionZ),
+            Vector3.Zero, Vector3.Zero, new Vector3(4f, 4f, 1f), new Rgba(255, 255, 255, 50), 0, false, 20,
+            "~y~Hafen Los Santos\n~w~Aufladestation");
 
         foreach (var publicGarage in _worldLocationOptions.PublicGarages)
         {
             _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER,
-                                     new Position(publicGarage.ParkingPointX,
-                                                  publicGarage.ParkingPointY,
-                                                  publicGarage.ParkingPointZ),
-                                     Vector3.Zero,
-                                     Vector3.Zero,
-                                     new Vector3(4f, 4f, 1f),
-                                     new Rgba(255, 255, 255, 50),
-                                     0,
-                                     false,
-                                     20,
-                                     publicGarage.Name);
+                new Position(publicGarage.ParkingPointX, publicGarage.ParkingPointY, publicGarage.ParkingPointZ),
+                Vector3.Zero, Vector3.Zero, new Vector3(4f, 4f, 1f), new Rgba(255, 255, 255, 50), 0, false, 20,
+                publicGarage.Name);
         }
 
         foreach (var house in await _houseService.GetAll())
@@ -91,28 +72,15 @@ public class Marker : IJob
                 continue;
             }
 
-            _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER,
-                                     house.Position,
-                                     Vector3.Zero,
-                                     Vector3.Zero,
-                                     new Vector3(0.8f, 0.8f, 1f),
-                                     new Rgba(255, 255, 255, 10),
-                                     0,
-                                     false,
-                                     5);
+            _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER, house.Position, Vector3.Zero, Vector3.Zero,
+                new Vector3(0.8f, 0.8f, 1f), new Rgba(255, 255, 255, 10), 0, false, 5);
         }
 
         foreach (var interiorData in _worldLocationOptions.IntPositions)
         {
             _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER,
-                                     new Position(interiorData.X, interiorData.Y, interiorData.Z),
-                                     Vector3.Zero,
-                                     Vector3.Zero,
-                                     new Vector3(0.8f, 0.8f, 1f),
-                                     new Rgba(255, 255, 255, 10),
-                                     0,
-                                     false,
-                                     5);
+                new Position(interiorData.X, interiorData.Y, interiorData.Z), Vector3.Zero, Vector3.Zero,
+                new Vector3(0.8f, 0.8f, 1f), new Rgba(255, 255, 255, 10), 0, false, 5);
         }
 
         await Task.CompletedTask;

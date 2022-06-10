@@ -4,8 +4,7 @@ using AltV.Net.Elements.Entities;
 
 namespace Server.Core.Entities.Factories;
 
-public class ServerVehicleFactory
-    : IEntityFactory<IVehicle>
+public class ServerVehicleFactory : IEntityFactory<IVehicle>
 {
     public IVehicle Create(ICore core, IntPtr entityPointer, ushort id)
     {

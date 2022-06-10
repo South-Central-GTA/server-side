@@ -13,16 +13,14 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcWarnLicenseHandler : ISingletonScript
 {
-    private readonly PersonalLicenseService _personalLicenseService;
+    private readonly CriminalRecordModule _criminalRecordModule;
     private readonly GroupFactionService _groupFactionService;
+    private readonly PersonalLicenseService _personalLicenseService;
 
     private readonly PoliceMdcModule _policeMdcModule;
-    private readonly CriminalRecordModule _criminalRecordModule;
 
-    public PdMdcWarnLicenseHandler(
-        PersonalLicenseService personalLicenseService,
-        GroupFactionService groupFactionService,
-        PoliceMdcModule policeMdcModule,
+    public PdMdcWarnLicenseHandler(PersonalLicenseService personalLicenseService,
+        GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule,
         CriminalRecordModule criminalRecordModule)
     {
         _personalLicenseService = personalLicenseService;
@@ -82,15 +80,13 @@ public class PdMdcWarnLicenseHandler : ISingletonScript
 
         if (personalLicense.Warnings < 3)
         {
-            await _criminalRecordModule.Add(personalLicense.CharacterModelId,
-                                            player.CharacterModel.Name,
-                                            $"Hat eine Verwarnung {personalLicense.Warnings}/3 für den {GetLicenseName(personalLicense.Type)} erhalten.");
+            await _criminalRecordModule.Add(personalLicense.CharacterModelId, player.CharacterModel.Name,
+                $"Hat eine Verwarnung {personalLicense.Warnings}/3 für den {GetLicenseName(personalLicense.Type)} erhalten.");
         }
         else
         {
-            await _criminalRecordModule.Add(personalLicense.CharacterModelId,
-                                            player.CharacterModel.Name,
-                                            $"Der {GetLicenseName(personalLicense.Type)} wurde nach 3/3 Verwarnungen automatisch entzogen.");
+            await _criminalRecordModule.Add(personalLicense.CharacterModelId, player.CharacterModel.Name,
+                $"Der {GetLicenseName(personalLicense.Type)} wurde nach 3/3 Verwarnungen automatisch entzogen.");
         }
 
         await _policeMdcModule.OpenCharacterRecord(player, personalLicense.CharacterModelId.ToString());

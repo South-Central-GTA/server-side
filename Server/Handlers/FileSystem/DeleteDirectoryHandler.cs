@@ -1,7 +1,6 @@
 ﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.FileSystem;
@@ -17,10 +16,7 @@ public class DeleteDirectoryHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly SyncFileModule _syncFileModule;
 
-    public DeleteDirectoryHandler(
-        DirectoryService directoryService,
-        FileService fileService,
-        GroupModule groupModule,
+    public DeleteDirectoryHandler(DirectoryService directoryService, FileService fileService, GroupModule groupModule,
         SyncFileModule syncFileModule)
     {
         _directoryService = directoryService;
@@ -45,9 +41,8 @@ public class DeleteDirectoryHandler : ISingletonScript
             return;
         }
 
-        if (!await _groupModule.HasPermission(player.CharacterModel.Id,
-                                              directory.GroupModelId,
-                                              GroupPermission.MDC_OPERATOR))
+        if (!await _groupModule.HasPermission(player.CharacterModel.Id, directory.GroupModelId,
+                GroupPermission.MDC_OPERATOR))
         {
             return;
         }

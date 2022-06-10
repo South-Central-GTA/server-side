@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using AltV.Net;
 using AltV.Net.Async;
-using AltV.Net.Enums;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Core.Extensions;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Modules.Context;
@@ -14,17 +11,13 @@ namespace Server.Handlers.Action;
 
 public class VehicleActionHandler : ISingletonScript
 {
+    private readonly ContextModule _contextModule;
+    private readonly GroupModule _groupModule;
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
 
-    private readonly ContextModule _contextModule;
-    private readonly GroupModule _groupModule;
-
-    public VehicleActionHandler(
-        VehicleCatalogService vehicleCatalogService,
-        VehicleService vehicleService,
-        ContextModule contextModule,
-        GroupModule groupModule)
+    public VehicleActionHandler(VehicleCatalogService vehicleCatalogService, VehicleService vehicleService,
+        ContextModule contextModule, GroupModule groupModule)
     {
         _vehicleCatalogService = vehicleCatalogService;
         _vehicleService = vehicleService;
@@ -61,7 +54,7 @@ public class VehicleActionHandler : ISingletonScript
             isInGroup = await _groupModule.IsPlayerInGroup(player, dbVehicle.GroupModelOwnerId.Value);
         }
 
-        var actions = new List<ActionData>()
+        var actions = new List<ActionData>
         {
             new("Kofferraum öffnen", "vehiclemenu:trunk", vehicleDbId),
             new("Auf- & Abschließen", "vehiclemenu:lock", vehicleDbId),
@@ -71,7 +64,7 @@ public class VehicleActionHandler : ISingletonScript
 
         if (player.CharacterModel.Id == dbVehicle.CharacterModelId || isInGroup)
         {
-            actions.Add(new("Fahrzeug verkaufen", "vehiclemenu:sell", vehicleDbId));
+            actions.Add(new ActionData("Fahrzeug verkaufen", "vehiclemenu:sell", vehicleDbId));
         }
 
         _contextModule.OpenMenu(player, catalogVehicle.DisplayName, actions);

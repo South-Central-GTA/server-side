@@ -13,9 +13,7 @@ public class OpenFileHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
 
-    public OpenFileHandler(
-        FileService fileService,
-        GroupModule groupModule)
+    public OpenFileHandler(FileService fileService, GroupModule groupModule)
     {
         _fileService = fileService;
 

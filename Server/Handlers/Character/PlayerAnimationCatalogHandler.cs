@@ -13,9 +13,7 @@ public class PlayerAnimationCatalogHandler : ISingletonScript
     private readonly AnimationService _animationService;
     private readonly CharacterService _characterService;
 
-    public PlayerAnimationCatalogHandler(
-        AnimationService animationService,
-        CharacterService characterService)
+    public PlayerAnimationCatalogHandler(AnimationService animationService, CharacterService characterService)
     {
         _animationService = animationService;
         _characterService = characterService;
@@ -47,9 +45,8 @@ public class PlayerAnimationCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("animationcatalog:usersetup",
-                       await _animationService.GetAll(),
-                       player.CharacterModel.AnimationIds);
+        player.EmitGui("animationcatalog:usersetup", await _animationService.GetAll(),
+            player.CharacterModel.AnimationIds);
     }
 
     private async void OnAddPlayerAnimation(ServerPlayer player, int animationId)

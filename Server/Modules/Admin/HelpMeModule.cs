@@ -15,9 +15,7 @@ public class HelpMeModule : ISingletonScript
     private readonly ILogger<HelpMeModule> _logger;
     private readonly List<HelpMeTicketData> _tickets = new();
 
-    public HelpMeModule(
-        ILogger<HelpMeModule> logger,
-        AdminModule adminModule)
+    public HelpMeModule(ILogger<HelpMeModule> logger, AdminModule adminModule)
     {
         _logger = logger;
 
@@ -39,10 +37,10 @@ public class HelpMeModule : ISingletonScript
 
         var staff = _adminModule.GetAllStaffPlayers();
 
-        player.SendNotification(staff.Count == 0
-                                    ? "Dein Ticket wurde erstellt, jedoch ist leider kein Team Mitglied online."
-                                    : "Dein Ticket wurde erfolgreich erstellt.",
-                                NotificationType.SUCCESS);
+        player.SendNotification(
+            staff.Count == 0
+                ? "Dein Ticket wurde erstellt, jedoch ist leider kein Team Mitglied online."
+                : "Dein Ticket wurde erfolgreich erstellt.", NotificationType.SUCCESS);
 
         foreach (var serverPlayer in staff)
         {

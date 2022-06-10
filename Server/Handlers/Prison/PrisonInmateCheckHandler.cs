@@ -7,19 +7,16 @@ using Server.Core.Extensions;
 using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
-using Server.Modules.Narrator;
 using Server.Database.Enums;
 
 namespace Server.Handlers.Prison;
 
 public class PrisonInmateCheckHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
     private readonly CharacterService _characterService;
+    private readonly GroupFactionService _groupFactionService;
 
-    public PrisonInmateCheckHandler(
-        GroupFactionService groupFactionService,
-        CharacterService characterService)
+    public PrisonInmateCheckHandler(GroupFactionService groupFactionService, CharacterService characterService)
     {
         _groupFactionService = groupFactionService;
         _characterService = characterService;
@@ -62,7 +59,7 @@ public class PrisonInmateCheckHandler : ISingletonScript
             Title = "Gefangenen Übersicht",
             Description = $"<ul>{string.Join("", characterList)}<ul>",
             FreezeGameControls = true,
-            PrimaryButton = "Okay",
+            PrimaryButton = "Okay"
         });
     }
 }

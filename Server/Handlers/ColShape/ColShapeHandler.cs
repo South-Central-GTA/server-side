@@ -20,11 +20,8 @@ public class ColShapeHandler : ISingletonScript
 
     private readonly RoleplayInfoService _roleplayInfoService;
 
-    public ColShapeHandler(
-        ILogger<ColShapeHandler> logger,
-        RoleplayInfoService roleplayInfoService,
-        MarkerSyncModule markerSyncModule,
-        ChatModule chatModule)
+    public ColShapeHandler(ILogger<ColShapeHandler> logger, RoleplayInfoService roleplayInfoService,
+        MarkerSyncModule markerSyncModule, ChatModule chatModule)
     {
         _logger = logger;
 

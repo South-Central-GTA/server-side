@@ -22,12 +22,8 @@ public class Peds : IJob
     private readonly PedSyncModule _pedSyncModule;
     private readonly WorldLocationOptions _worldLocationOptions;
 
-    public Peds(
-        ILogger<Peds> logger,
-        IOptions<DevelopmentOptions> devOptions,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        PedSyncModule pedSyncModule,
-        HouseService houseService)
+    public Peds(ILogger<Peds> logger, IOptions<DevelopmentOptions> devOptions,
+        IOptions<WorldLocationOptions> worldLocationOptions, PedSyncModule pedSyncModule, HouseService houseService)
     {
         _logger = logger;
         _devOptions = devOptions.Value;
@@ -59,39 +55,29 @@ public class Peds : IJob
         foreach (var publicGarage in _worldLocationOptions.PublicGarages)
         {
             _pedSyncModule.Create(publicGarage.PedModel,
-                                  new Position(publicGarage.PedPointX, publicGarage.PedPointY, publicGarage.PedPointZ),
-                                  publicGarage.PedHeading,
-                                  0);
+                new Position(publicGarage.PedPointX, publicGarage.PedPointY, publicGarage.PedPointZ),
+                publicGarage.PedHeading, 0);
         }
 
         foreach (var drivingSchool in _worldLocationOptions.DrivingSchools)
         {
             _pedSyncModule.Create(drivingSchool.PedModel,
-                                  new Position(drivingSchool.PedPointX,
-                                               drivingSchool.PedPointY,
-                                               drivingSchool.PedPointZ),
-                                  drivingSchool.PedHeading,
-                                  0);
+                new Position(drivingSchool.PedPointX, drivingSchool.PedPointY, drivingSchool.PedPointZ),
+                drivingSchool.PedHeading, 0);
         }
 
         var houses = await _houseService.GetAll();
         foreach (var leaseCompanyHouse in houses.Where(h => h.HouseType == HouseType.COMPANY)
-                                                .Cast<LeaseCompanyHouseModel>())
+                     .Cast<LeaseCompanyHouseModel>())
         {
             _pedSyncModule.CreateCashier(leaseCompanyHouse);
         }
 
         _pedSyncModule.Create("u_m_y_gunvend_01",
-                              new Position(_worldLocationOptions.CityHallPositionX,
-                                           _worldLocationOptions.CityHallPositionY,
-                                           _worldLocationOptions.CityHallPositionZ),
-                              0,
-                              0);
+            new Position(_worldLocationOptions.CityHallPositionX, _worldLocationOptions.CityHallPositionY,
+                _worldLocationOptions.CityHallPositionZ), 0, 0);
 
-        _pedSyncModule.Create("s_m_m_prisguard_01",
-                              new Position(349.85934f, -1600.5099f, 28.279907f),
-                              -36.85f,
-                              0);
+        _pedSyncModule.Create("s_m_m_prisguard_01", new Position(349.85934f, -1600.5099f, 28.279907f), -36.85f, 0);
 
         await Task.CompletedTask;
     }

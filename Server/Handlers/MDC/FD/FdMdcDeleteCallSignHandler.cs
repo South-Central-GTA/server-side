@@ -3,7 +3,6 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Database.Models.Group;
 using Server.Modules.Group;
 using Server.Modules.MDC;
 
@@ -11,14 +10,11 @@ namespace Server.Handlers.MDC.FD;
 
 public class FdMdcDeleteCallSignHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
-
     private readonly FireMdcModule _fireMdcModule;
+    private readonly GroupFactionService _groupFactionService;
     private readonly GroupModule _groupModule;
 
-    public FdMdcDeleteCallSignHandler(
-        GroupFactionService groupFactionService,
-        FireMdcModule fireMdcModule,
+    public FdMdcDeleteCallSignHandler(GroupFactionService groupFactionService, FireMdcModule fireMdcModule,
         GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;

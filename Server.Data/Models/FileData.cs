@@ -4,8 +4,7 @@ using AltV.Net;
 
 namespace Server.Data.Models;
 
-public class FileData
-    : IWritable
+public class FileData : IWritable
 {
     public int Id { get; set; }
     public string Title { get; set; }

@@ -12,14 +12,11 @@ using Server.Database.Models.Character;
 
 namespace Server.DataAccessLayer.Services;
 
-public class CharacterService
-    : BaseService<CharacterModel>, ITransientScript
+public class CharacterService : BaseService<CharacterModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public CharacterService(
-        IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public CharacterService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
@@ -27,49 +24,33 @@ public class CharacterService
     public async Task<CharacterModel?> GetByKey(int characterId)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Characters
-                              .Include(character => character.Licenses)
-                              .Include(character => character.AccountModel)
-                              .Include(character => character.FaceFeaturesModel)
-                              .Include(character => character.AppearancesModel)
-                              .Include(character => character.TattoosModel)
-                              .Include(character => character.InventoryModel)
-                              .ThenInclude(inventory => inventory.Items)
-                              .ThenInclude(item => item.CatalogItemModel)
-                              .Include(character => character.JobModel)
-                              .FirstOrDefaultAsync(character => character.Id == characterId);
+        return await dbContext.Characters.Include(character => character.Licenses)
+            .Include(character => character.AccountModel).Include(character => character.FaceFeaturesModel)
+            .Include(character => character.AppearancesModel).Include(character => character.TattoosModel)
+            .Include(character => character.InventoryModel).ThenInclude(inventory => inventory.Items)
+            .ThenInclude(item => item.CatalogItemModel).Include(character => character.JobModel)
+            .FirstOrDefaultAsync(character => character.Id == characterId);
     }
 
     public async Task<List<CharacterModel>> GetAllFromAccount(AccountModel accountModel)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Characters
-                              .Include(character => character.Licenses)
-                              .Include(character => character.AccountModel)
-                              .Include(character => character.FaceFeaturesModel)
-                              .Include(character => character.AppearancesModel)
-                              .Include(character => character.TattoosModel)
-                              .Include(character => character.InventoryModel)
-                              .ThenInclude(inventory => inventory.Items)
-                              .ThenInclude(item => item.CatalogItemModel)
-                              .Include(character => character.JobModel)
-                              .Where(e => e.AccountModel == accountModel).ToListAsync();
+        return await dbContext.Characters.Include(character => character.Licenses)
+            .Include(character => character.AccountModel).Include(character => character.FaceFeaturesModel)
+            .Include(character => character.AppearancesModel).Include(character => character.TattoosModel)
+            .Include(character => character.InventoryModel).ThenInclude(inventory => inventory.Items)
+            .ThenInclude(item => item.CatalogItemModel).Include(character => character.JobModel)
+            .Where(e => e.AccountModel == accountModel).ToListAsync();
     }
 
     public override async Task<List<CharacterModel>> GetAll()
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Characters
-                              .Include(character => character.Licenses)
-                              .Include(character => character.AccountModel)
-                              .Include(character => character.FaceFeaturesModel)
-                              .Include(character => character.AppearancesModel)
-                              .Include(character => character.TattoosModel)
-                              .Include(character => character.InventoryModel)
-                              .ThenInclude(inventory => inventory.Items)
-                              .ThenInclude(item => item.CatalogItemModel)
-                              .Include(character => character.JobModel)
-                              .ToListAsync();
+        return await dbContext.Characters.Include(character => character.Licenses)
+            .Include(character => character.AccountModel).Include(character => character.FaceFeaturesModel)
+            .Include(character => character.AppearancesModel).Include(character => character.TattoosModel)
+            .Include(character => character.InventoryModel).ThenInclude(inventory => inventory.Items)
+            .ThenInclude(item => item.CatalogItemModel).Include(character => character.JobModel).ToListAsync();
     }
 
     public async Task Update(ServerPlayer player)

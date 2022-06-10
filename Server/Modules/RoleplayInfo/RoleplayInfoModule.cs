@@ -9,6 +9,7 @@ using Server.Core.Extensions;
 using Server.Data.Enums;
 using Server.Data.Enums.EntitySync;
 using Server.DataAccessLayer.Services;
+using Server.Database.Models;
 using Server.Helper;
 using Server.Modules.EntitySync;
 
@@ -23,11 +24,8 @@ public class RoleplayInfoModule : ISingletonScript
     private readonly RoleplayInfoService _roleplayInfoService;
     private readonly Serializer _serializer;
 
-    public RoleplayInfoModule(
-        ILogger<RoleplayInfoModule> logger,
-        Serializer serializer,
-        RoleplayInfoService roleplayInfoService,
-        MarkerSyncModule markerSyncModule)
+    public RoleplayInfoModule(ILogger<RoleplayInfoModule> logger, Serializer serializer,
+        RoleplayInfoService roleplayInfoService, MarkerSyncModule markerSyncModule)
     {
         _logger = logger;
         _serializer = serializer;
@@ -45,20 +43,11 @@ public class RoleplayInfoModule : ISingletonScript
 
     public async Task AddInfo(ServerPlayer player, int distance, string expectedInfo)
     {
-        var marker = _markerSyncModule.Create(MarkerType.QUESTION_MARK,
-                                              player.Position,
-                                              Vector3.Zero,
-                                              Vector3.Zero,
-                                              new Vector3(0.5f),
-                                              new Rgba(245, 230, 83, 70),
-                                              player.Dimension,
-                                              false,
-                                              200,
-                                              "",
-                                              player.CharacterModel.Name,
-                                              _serializer.Serialize(DateTime.Now));
+        var marker = _markerSyncModule.Create(MarkerType.QUESTION_MARK, player.Position, Vector3.Zero, Vector3.Zero,
+            new Vector3(0.5f), new Rgba(245, 230, 83, 70), player.Dimension, false, 200, "", player.CharacterModel.Name,
+            _serializer.Serialize(DateTime.Now));
 
-        await _roleplayInfoService.Add(new Database.Models.RoleplayInfoModel
+        await _roleplayInfoService.Add(new RoleplayInfoModel
         {
             MarkerId = marker.Id,
             CharacterModelId = player.CharacterModel.Id,

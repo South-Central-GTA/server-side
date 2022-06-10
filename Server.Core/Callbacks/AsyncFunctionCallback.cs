@@ -5,9 +5,7 @@ using AltV.Net.Elements.Pools;
 
 namespace Server.Core.Callbacks;
 
-public class AsyncFunctionCallback<T>
-    : IAsyncBaseObjectCallback<T>
-    where T : IBaseObject
+public class AsyncFunctionCallback<T> : IAsyncBaseObjectCallback<T> where T : IBaseObject
 {
     private readonly Func<T, Task> _callback;
 

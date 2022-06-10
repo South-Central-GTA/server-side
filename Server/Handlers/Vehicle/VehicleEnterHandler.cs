@@ -22,11 +22,8 @@ public class VehicleEnterHandler : ISingletonScript
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
 
-    public VehicleEnterHandler(
-        Serializer serializer,
-        DrivingSchoolModule drivingSchoolModule,
-        VehicleCatalogService vehicleCatalogService,
-        VehicleService vehicleService)
+    public VehicleEnterHandler(Serializer serializer, DrivingSchoolModule drivingSchoolModule,
+        VehicleCatalogService vehicleCatalogService, VehicleService vehicleService)
     {
         _serializer = serializer;
 
@@ -37,12 +34,10 @@ public class VehicleEnterHandler : ISingletonScript
 
         AltAsync.OnPlayerEnteringVehicle += (vehicle, player, seat) =>
             OnPlayerEnteringVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(),
-                                    (ServerPlayer)player,
-                                    seat);
+                (ServerPlayer)player, seat);
         AltAsync.OnPlayerEnterVehicle += (vehicle, player, seat) =>
             OnPlayerEnterVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(),
-                                 (ServerPlayer)player,
-                                 seat);
+                (ServerPlayer)player, seat);
     }
 
     private async Task OnPlayerEnteringVehicle(ServerVehicle vehicle, ServerPlayer player, byte seat)

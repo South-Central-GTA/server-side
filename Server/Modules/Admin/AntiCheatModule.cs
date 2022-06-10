@@ -9,16 +9,13 @@ using Server.Database.Models.Inventory;
 
 namespace Server.Modules.Admin;
 
-public class AntiCheatModule
-    : ITransientScript
+public class AntiCheatModule : ITransientScript
 {
     private readonly GroupService _groupService;
     private readonly ItemClothService _itemClothService;
     private readonly ILogger<AntiCheatModule> _logger;
 
-    public AntiCheatModule(
-        ILogger<AntiCheatModule> logger,
-        GroupService groupService,
+    public AntiCheatModule(ILogger<AntiCheatModule> logger, GroupService groupService,
         ItemClothService itemClothService)
     {
         _logger = logger;

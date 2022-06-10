@@ -16,17 +16,14 @@ namespace Server.ChatCommands.Factions.Police;
 
 internal class JailPlayerCommand : ISingletonScript
 {
-    private readonly WorldLocationOptions _worldLocationOptions;
-    private readonly GroupFactionService _groupFactionService;
     private readonly CharacterService _characterService;
+    private readonly GroupFactionService _groupFactionService;
 
     private readonly PrisonModule _prisonModule;
+    private readonly WorldLocationOptions _worldLocationOptions;
 
-    public JailPlayerCommand(
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        GroupFactionService groupFactionService,
-        CharacterService characterService,
-        PrisonModule prisonModule)
+    public JailPlayerCommand(IOptions<WorldLocationOptions> worldLocationOptions,
+        GroupFactionService groupFactionService, CharacterService characterService, PrisonModule prisonModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
         _groupFactionService = groupFactionService;
@@ -35,10 +32,8 @@ internal class JailPlayerCommand : ISingletonScript
         _prisonModule = prisonModule;
     }
 
-    [Command("jail",
-             "Packe einen Charakter ins Gefängnis.",
-             Permission.NONE,
-             new[] { "Spieler ID", "Dauer in Minuten" })]
+    [Command("jail", "Packe einen Charakter ins Gefängnis.", Permission.NONE,
+        new[] { "Spieler ID", "Dauer in Minuten" })]
     public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedDuration)
     {
         if (!player.Exists)
@@ -62,7 +57,7 @@ internal class JailPlayerCommand : ISingletonScript
         if (!int.TryParse(expectedDuration, out var duration))
         {
             player.SendNotification("Bitte gebe ein richtige Zahl für die Dauer in Minuten an.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -73,11 +68,10 @@ internal class JailPlayerCommand : ISingletonScript
         }
 
         if (player.Position.Distance(new Position(_worldLocationOptions.JailPositionX,
-                                                  _worldLocationOptions.JailPositionY,
-                                                  _worldLocationOptions.JailPositionZ)) > 5.0f)
+                _worldLocationOptions.JailPositionY, _worldLocationOptions.JailPositionZ)) > 5.0f)
         {
             player.SendNotification("Dein Charakter muss hinter dem Police Department in Davis sein.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -89,6 +83,6 @@ internal class JailPlayerCommand : ISingletonScript
         _prisonModule.SetPlayerInPrison(target);
 
         player.SendNotification($"Dein Charakter hat {target.CharacterModel.Name} ins Gefängnis gesperrt.",
-                                NotificationType.SUCCESS);
+            NotificationType.SUCCESS);
     }
 }

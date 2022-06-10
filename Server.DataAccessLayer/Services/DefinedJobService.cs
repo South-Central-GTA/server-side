@@ -6,11 +6,9 @@ using Server.Database.Models.Character;
 
 namespace Server.DataAccessLayer.Services;
 
-public class DefinedJobService
-    : BaseService<DefinedJobModel>, ITransientScript
+public class DefinedJobService : BaseService<DefinedJobModel>, ITransientScript
 {
-    public DefinedJobService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public DefinedJobService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
     }
 }

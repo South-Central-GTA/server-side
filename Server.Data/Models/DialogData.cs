@@ -4,8 +4,7 @@ using Server.Data.Enums;
 
 namespace Server.Data.Models;
 
-public class DialogData
-    : IWritable
+public class DialogData : IWritable
 {
     public DialogType Type { get; set; }
     public string Title { get; set; }

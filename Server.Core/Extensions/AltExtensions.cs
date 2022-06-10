@@ -18,12 +18,12 @@ public static class AltExtensions
     public static List<ServerPlayer> FindPlayerByName(this IReadOnlyCollection<IPlayer> players, string searchName)
     {
         return GetAllServerPlayers(players).Where(player => player.AccountName.ToLower().Contains(searchName.ToLower()))
-                                           .ToList();
+            .ToList();
     }
 
     public static ServerPlayer? FindPlayerByCharacterId(this IReadOnlyCollection<IPlayer> players, int characterId)
     {
-        return GetAllServerPlayers(players).Find(player => player.CharacterModel.Id == characterId);
+        return GetAllServerPlayers(players).Find(player => player.CharacterModel != null && player.CharacterModel.Id == characterId);
     }
 
     public static ServerPlayer? FindPlayerById(this IReadOnlyCollection<IPlayer> players, int playerId)
@@ -32,7 +32,7 @@ public static class AltExtensions
     }
 
     public static ServerPlayer? GetPlayerById(this IReadOnlyCollection<IPlayer> players, ServerPlayer player,
-                                              string expectedPlayerId)
+        string expectedPlayerId)
     {
         if (!int.TryParse(expectedPlayerId, out var playerId))
         {
@@ -51,7 +51,7 @@ public static class AltExtensions
     }
 
     public static ServerPlayer? GetPlayerById(this IReadOnlyCollection<IPlayer> players, ServerPlayer player,
-                                              int playerId, bool sendNotification = true)
+        int playerId, bool sendNotification = true)
     {
         var target = GetAllServerPlayers(players).Find(p => p.Id == playerId);
         if (target is not { Exists: true } && sendNotification)
@@ -74,7 +74,7 @@ public static class AltExtensions
     }
 
     public static List<ServerPlayer> GetByRange(this IReadOnlyCollection<IPlayer> players, Position position,
-                                                float radius)
+        float radius)
     {
         return GetAllServerPlayers(players).FindAll(p => p.Position.Distance(position) <= radius);
     }
@@ -95,14 +95,14 @@ public static class AltExtensions
     }
 
     public static ServerVehicle? GetClosest(this IReadOnlyCollection<IVehicle> vehicles, Position position,
-                                            float radius = 5f)
+        float radius = 5f)
     {
         var closestDistance = float.MaxValue;
         ServerVehicle closestVehicle = null;
         foreach (var v in GetAllVehicles(vehicles))
         {
             var distance = v.Position.Distance(position);
-            if (distance <= radius && (distance < closestDistance) && v.Exists)
+            if (distance <= radius && distance < closestDistance && v.Exists)
             {
                 closestDistance = distance;
                 closestVehicle = v;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AltV.Net;
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
@@ -6,6 +7,10 @@ using Server.Core.Extensions;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
+using Server.Database.Models.Banking;
+using Server.Database.Models.Character;
+using Server.Database.Models.Group;
+using Server.Database.Models.Housing;
 
 namespace Server.Handlers.Admin;
 
@@ -18,12 +23,8 @@ public class CharacterCatalogHandler : ISingletonScript
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
 
-    public CharacterCatalogHandler(
-        BankAccountService bankAccountService,
-        CharacterService characterService,
-        GroupService groupService,
-        HouseService houseService,
-        VehicleCatalogService vehicleCatalogService,
+    public CharacterCatalogHandler(BankAccountService bankAccountService, CharacterService characterService,
+        GroupService groupService, HouseService houseService, VehicleCatalogService vehicleCatalogService,
         VehicleService vehicleService)
     {
         _bankAccountService = bankAccountService;
@@ -49,7 +50,7 @@ public class CharacterCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("charactercatalog:setup", await _characterService.GetAll());
+        player.EmitGui("charactercatalog:open", await _characterService.GetAll());
     }
 
     private async void OnRequestDetails(ServerPlayer player, int characterId)
@@ -65,6 +66,11 @@ public class CharacterCatalogHandler : ISingletonScript
         }
 
         var character = await _characterService.GetByKey(characterId);
+        if (character == null)
+        {
+            return;
+        }
+
         var vehicles = await _vehicleService.Where(v => v.CharacterModelId == characterId);
         var vehicleDatas = new List<VehicleData>();
 
@@ -88,6 +94,70 @@ public class CharacterCatalogHandler : ISingletonScript
         var groups = await _groupService.GetGroupsByCharacter(characterId);
         var bankAccounts = await _bankAccountService.GetByCharacter(characterId);
 
-        player.EmitGui("charactercatalog:opendetails", character, vehicleDatas, houses, groups, bankAccounts);
+        player.EmitGui("charactercatalog:requestdetails",
+            new Data
+            {
+                Character = character,
+                VehicleDatas = vehicleDatas,
+                Houses = houses,
+                Groups = groups,
+                BankAccounts = bankAccounts
+            });
+    }
+
+    private struct Data : IWritable
+    {
+        public CharacterModel Character { get; set; }
+        public List<VehicleData> VehicleDatas { get; set; }
+        public List<HouseModel> Houses { get; set; }
+        public List<GroupModel> Groups { get; set; }
+        public List<BankAccountModel> BankAccounts { get; set; }
+
+        public void OnWrite(IMValueWriter writer)
+        {
+            writer.Name("character");
+
+            CharacterModel.Serialize(Character, writer);
+
+            writer.Name("vehicles");
+            writer.BeginArray();
+
+            foreach (var vehicleData in VehicleDatas)
+            {
+                VehicleData.Serialize(vehicleData, writer);
+            }
+
+            writer.EndArray();
+
+            writer.Name("houses");
+            writer.BeginArray();
+
+            foreach (var house in Houses)
+            {
+                HouseModel.Serialize(house, writer);
+            }
+
+            writer.EndArray();
+
+            writer.Name("groups");
+            writer.BeginArray();
+
+            foreach (var group in Groups)
+            {
+                GroupModel.Serialize(group, writer);
+            }
+
+            writer.EndArray();
+
+            writer.Name("bankAccounts");
+            writer.BeginArray();
+
+            foreach (var bankAccount in BankAccounts)
+            {
+                BankAccountModel.Serialize(bankAccount, writer);
+            }
+
+            writer.EndArray();
+        }
     }
 }

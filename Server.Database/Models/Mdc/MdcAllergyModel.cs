@@ -7,13 +7,8 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models.Mdc;
 
-public class MdcAllergyModel
-    : ModelBase, IWritable
+public class MdcAllergyModel : ModelBase, IWritable
 {
-    public MdcAllergyModel()
-    {
-    }
-
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
@@ -24,21 +19,27 @@ public class MdcAllergyModel
     public string Content { get; set; }
     public string CreatorCharacterName { get; set; }
 
+
     public void OnWrite(IMValueWriter writer)
+    {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(MdcAllergyModel model, IMValueWriter writer)
     {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("content");
-        writer.Value(Content);
+        writer.Value(model.Content);
 
         writer.Name("creatorCharacterName");
-        writer.Value(CreatorCharacterName);
+        writer.Value(model.CreatorCharacterName);
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

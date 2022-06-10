@@ -13,9 +13,7 @@ public class PdMdcAddCallSignHandler : ISingletonScript
 
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcAddCallSignHandler(
-        GroupFactionService groupFactionService,
-        PoliceMdcModule policeMdcModule)
+    public PdMdcAddCallSignHandler(GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule)
     {
         _groupFactionService = groupFactionService;
 

@@ -18,9 +18,7 @@ public class VehicleDestroyHandler : ISingletonScript
 
     private readonly VehicleService _vehicleService;
 
-    public VehicleDestroyHandler(
-        DrivingSchoolModule drivingSchoolModule,
-        VehicleService vehicleService)
+    public VehicleDestroyHandler(DrivingSchoolModule drivingSchoolModule, VehicleService vehicleService)
     {
         _drivingSchoolModule = drivingSchoolModule;
 
@@ -57,9 +55,9 @@ public class VehicleDestroyHandler : ISingletonScript
         if (vehicle.DbEntity.CharacterModelId.HasValue)
         {
             var player = Alt.GetAllPlayers().FindPlayerByCharacterId(vehicle.DbEntity.CharacterModelId.Value);
-            player?.SendNotification("Eines deiner Fahrzeug wurde zerstört, spiele die Reperatur aus! " +
-                                     "Du kannst es bei einer öffentlichen Garage neuspawnen.",
-                                     NotificationType.WARNING);
+            player?.SendNotification(
+                "Eines deiner Fahrzeug wurde zerstört, spiele die Reperatur aus! " +
+                "Du kannst es bei einer öffentlichen Garage neuspawnen.", NotificationType.WARNING);
         }
     }
 }

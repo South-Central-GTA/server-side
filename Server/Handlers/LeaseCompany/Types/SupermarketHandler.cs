@@ -18,36 +18,18 @@ using Server.Modules.Weapon;
 
 namespace Server.Handlers.LeaseCompany.Types;
 
-public class SupermarketHandler
-    : BaseItemShopHandler
+public class SupermarketHandler : BaseItemShopHandler
 {
     private readonly HouseService _houseService;
     private readonly ItemCatalogService _itemCatalogService;
 
-    public SupermarketHandler(
-        IOptions<CompanyOptions> companyOptions,
-        ItemCatalogService itemCatalogService,
-        HouseService houseService,
-        BankAccountService bankAccountService,
-        ItemService itemService,
-        GroupService groupService,
-        UserShopDataService userShopDataService,
-        InventoryService inventoryService,
-        InventoryModule inventoryModule,
-        ItemCreationModule itemCreationModule,
-        MoneyModule moneyModule,
-        BankModule bankModule) : base(companyOptions,
-                                      itemCatalogService,
-                                      houseService,
-                                      bankAccountService,
-                                      itemService,
-                                      groupService,
-                                      userShopDataService,
-                                      inventoryService,
-                                      inventoryModule,
-                                      itemCreationModule,
-                                      moneyModule,
-                                      bankModule)
+    public SupermarketHandler(IOptions<CompanyOptions> companyOptions, ItemCatalogService itemCatalogService,
+        HouseService houseService, BankAccountService bankAccountService, ItemService itemService,
+        GroupService groupService, UserShopDataService userShopDataService, InventoryService inventoryService,
+        InventoryModule inventoryModule, ItemCreationModule itemCreationModule, MoneyModule moneyModule,
+        BankModule bankModule) : base(companyOptions, itemCatalogService, houseService, bankAccountService, itemService,
+        groupService, userShopDataService, inventoryService, inventoryModule, itemCreationModule, moneyModule,
+        bankModule)
     {
         _itemCatalogService = itemCatalogService;
         _houseService = houseService;
@@ -80,10 +62,9 @@ public class SupermarketHandler
         }
 
         var buyableItems = await _itemCatalogService.Where(i => i.Buyable);
-        buyableItems = buyableItems.Where(i => !ClothingModule.IsClothesOrProp(i.Id)
-                                               && !WeaponModule.IsItemWeapon(i.Id)
-                                               && !AmmoModule.IsItemAmmo(i.Id)
-                                               && !AttachmentModule.IsItemWeaponComponent(i.Id)).ToList();
+        buyableItems = buyableItems.Where(i =>
+            !ClothingModule.IsClothesOrProp(i.Id) && !WeaponModule.IsItemWeapon(i.Id) && !AmmoModule.IsItemAmmo(i.Id) &&
+            !AttachmentModule.IsItemWeaponComponent(i.Id)).ToList();
 
         player.EmitLocked("supermarket:openmenu", buyableItems);
     }
@@ -111,7 +92,7 @@ public class SupermarketHandler
         if (costs == 0)
         {
             player.SendNotification("Dein Charakter hat keine Waren von dem Supermarkt im Inventar.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

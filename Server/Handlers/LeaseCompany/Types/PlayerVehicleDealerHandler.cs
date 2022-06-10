@@ -26,12 +26,8 @@ public class PlayerVehicleDealerHandler : ISingletonScript
     private readonly VehicleModule _vehicleModule;
     private readonly VehicleService _vehicleService;
 
-    public PlayerVehicleDealerHandler(
-        VehicleService vehicleService,
-        VehicleCatalogService vehicleCatalogService,
-        GroupService groupService,
-        VehicleModule vehicleModule,
-        GroupModule groupModule)
+    public PlayerVehicleDealerHandler(VehicleService vehicleService, VehicleCatalogService vehicleCatalogService,
+        GroupService groupService, VehicleModule vehicleModule, GroupModule groupModule)
     {
         _vehicleService = vehicleService;
         _vehicleCatalogService = vehicleCatalogService;
@@ -74,8 +70,7 @@ public class PlayerVehicleDealerHandler : ISingletonScript
         }
 
         var vehicles = await _vehicleService.Where(v =>
-                                                       v.GroupModelOwnerId == groupId &&
-                                                       v.VehicleState == VehicleState.IN_STORAGE);
+            v.GroupModelOwnerId == groupId && v.VehicleState == VehicleState.IN_STORAGE);
 
         var vehicleDatas = new List<VehicleData>();
 
@@ -179,8 +174,7 @@ public class PlayerVehicleDealerHandler : ISingletonScript
             return;
         }
 
-        if (vehicle.GroupModelOwnerId.HasValue
-            && vehicle.GroupModelOwnerId.Value != groupId)
+        if (vehicle.GroupModelOwnerId.HasValue && vehicle.GroupModelOwnerId.Value != groupId)
         {
             return;
         }
@@ -245,20 +239,16 @@ public class PlayerVehicleDealerHandler : ISingletonScript
 
     private void UpdateGroupOrdersUi(GroupModel groupModel)
     {
-        var groupPlayers = Alt.GetAllPlayers()
-                              .Where(p => p.Exists && p.IsSpawned && groupModel.Members
-                                                                               .Any(m => m.CharacterModelId ==
-                                                                                         p.CharacterModel.Id));
+        var groupPlayers = Alt.GetAllPlayers().Where(p =>
+            p.Exists && p.IsSpawned && groupModel.Members.Any(m => m.CharacterModelId == p.CharacterModel.Id));
 
         var callback = new Action<ServerPlayer>(async player =>
         {
-            if (await _groupModule.HasPermission(player.CharacterModel.Id,
-                                                 groupModel.Id,
-                                                 GroupPermission.STORE_VEHICLES))
+            if (await _groupModule.HasPermission(player.CharacterModel.Id, groupModel.Id,
+                    GroupPermission.STORE_VEHICLES))
             {
                 var vehicles = await _vehicleService.Where(v =>
-                                                               v.GroupModelOwnerId == groupModel.Id &&
-                                                               v.VehicleState == VehicleState.IN_STORAGE);
+                    v.GroupModelOwnerId == groupModel.Id && v.VehicleState == VehicleState.IN_STORAGE);
 
                 var vehicleDatas = new List<VehicleData>();
 

@@ -14,19 +14,15 @@ namespace Server.Handlers.Bank;
 
 public class DepositBankHandler : ISingletonScript
 {
+    private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
+    private readonly GroupService _groupService;
     private readonly MoneyModule _moneyModule;
     private readonly PhoneModule _phoneModule;
-    private readonly BankAccountService _bankAccountService;
-    private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public DepositBankHandler(
-        BankModule bankModule,
-        MoneyModule moneyModule,
-        PhoneModule phoneModule,
-        BankAccountService bankAccountService,
-        GroupService groupService,
+    public DepositBankHandler(BankModule bankModule, MoneyModule moneyModule, PhoneModule phoneModule,
+        BankAccountService bankAccountService, GroupService groupService,
         RegistrationOfficeService registrationOfficeService)
     {
         _bankModule = bankModule;
@@ -50,7 +46,7 @@ public class DepositBankHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -103,9 +99,9 @@ public class DepositBankHandler : ISingletonScript
                 }
 
                 var rank = group.Ranks.Find(r => r.Level == member.RankLevel);
-                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
+                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
                 {
                     continue;
                 }

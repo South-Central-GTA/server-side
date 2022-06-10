@@ -15,17 +15,13 @@ namespace Server.ServerJobs;
 public class HouseDatabase : IJob
 {
     private readonly DevelopmentOptions _devOptions;
+    private readonly DoorSyncModule _doorSyncModule;
     private readonly HouseModule _houseModule;
     private readonly HouseService _houseService;
     private readonly ILogger<HouseDatabase> _logger;
-    private readonly DoorSyncModule _doorSyncModule;
 
-    public HouseDatabase(
-        ILogger<HouseDatabase> logger,
-        HouseService houseService,
-        IOptions<DevelopmentOptions> devOptions,
-        HouseModule houseModule,
-        DoorSyncModule doorSyncModule)
+    public HouseDatabase(ILogger<HouseDatabase> logger, HouseService houseService,
+        IOptions<DevelopmentOptions> devOptions, HouseModule houseModule, DoorSyncModule doorSyncModule)
     {
         _logger = logger;
         _houseService = houseService;
@@ -69,11 +65,8 @@ public class HouseDatabase : IJob
             {
                 foreach (var houseDoor in house.Doors)
                 {
-                    _doorSyncModule.Create(houseDoor.Hash,
-                                           houseDoor.Position,
-                                           0,
-                                           house.LockState == LockState.CLOSED,
-                                           house.Id);
+                    _doorSyncModule.Create(houseDoor.Hash, houseDoor.Position, 0, house.LockState == LockState.CLOSED,
+                        house.Id);
                 }
             }
         }

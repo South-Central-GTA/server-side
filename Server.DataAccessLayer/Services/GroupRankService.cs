@@ -6,11 +6,9 @@ using Server.Database.Models.Group;
 
 namespace Server.DataAccessLayer.Services;
 
-public class GroupRankService
-    : BaseService<GroupRankModel>, ITransientScript
+public class GroupRankService : BaseService<GroupRankModel>, ITransientScript
 {
-    public GroupRankService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public GroupRankService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
     }
 }

@@ -16,9 +16,7 @@ public class AddPermissionMailAccount : ISingletonScript
     private readonly MailAccountService _mailAccountService;
     private readonly MailModule _mailModule;
 
-    public AddPermissionMailAccount(
-        MailAccountService mailAccountService,
-        MailModule mailModule)
+    public AddPermissionMailAccount(MailAccountService mailAccountService, MailModule mailModule)
     {
         _mailAccountService = mailAccountService;
 
@@ -28,7 +26,7 @@ public class AddPermissionMailAccount : ISingletonScript
     }
 
     private async void OnAddPermission(ServerPlayer player, string mailAddress, int characterId,
-                                       string expectedPermission)
+        string expectedPermission)
     {
         if (!player.Exists)
         {

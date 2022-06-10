@@ -9,8 +9,7 @@ public class SouthCentralPointsModule : ISingletonScript
 {
     private readonly GameOptions _gameOptions;
 
-    public SouthCentralPointsModule(
-        IOptions<GameOptions> gameOptions)
+    public SouthCentralPointsModule(IOptions<GameOptions> gameOptions)
     {
         _gameOptions = gameOptions.Value;
     }

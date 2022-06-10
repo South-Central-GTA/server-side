@@ -13,9 +13,8 @@ public class ObjectSyncModule : ISingletonScript
     private readonly Dictionary<ulong, ServerObject> _objects = new();
 
     public ServerObject Create(string model, string name, Position position, Rotation rotation, int dimension,
-                               uint streamRange = 200,
-                               bool freeze = false, bool onFire = false, int itemId = -1, string ownerName = "",
-                               string createdAtJson = "")
+        uint streamRange = 200, bool freeze = false, bool onFire = false, int itemId = -1, string ownerName = "",
+        string createdAtJson = "")
     {
         var obj = new ServerObject(position, dimension, streamRange)
         {

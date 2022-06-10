@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using AltV.Net;
@@ -15,6 +14,7 @@ using Server.Core.Extensions;
 using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
+using Server.Database.Models.Character;
 using Server.Database.Models.Group;
 using Server.Database.Models.Inventory;
 using Server.Database.Models.Vehicles;
@@ -25,29 +25,22 @@ using Server.Modules.SouthCentralPoints;
 
 namespace Server.Modules.Vehicles;
 
-public class VehicleModule
-    : ITransientScript
+public class VehicleModule : ITransientScript
 {
     private readonly InventoryModule _inventoryModule;
     private readonly ItemCreationModule _itemCreationModule;
     private readonly ItemService _itemService;
+    private readonly KeyModule _keyModule;
     private readonly ILogger<VehicleModule> _logger;
     private readonly SouthCentralPointsModule _southCentralPointsModule;
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleDumpModule _vehicleDumpModule;
     private readonly VehicleService _vehicleService;
-    private readonly KeyModule _keyModule;
 
-    public VehicleModule(
-        ILogger<VehicleModule> logger,
-        VehicleService vehicleService,
-        VehicleCatalogService vehicleCatalogService,
-        ItemService itemService,
-        VehicleDumpModule vehicleDumpModule,
-        SouthCentralPointsModule southCentralPointsModule,
-        InventoryModule inventoryModule,
-        ItemCreationModule itemCreationModule,
-        KeyModule keyModule)
+    public VehicleModule(ILogger<VehicleModule> logger, VehicleService vehicleService,
+        VehicleCatalogService vehicleCatalogService, ItemService itemService, VehicleDumpModule vehicleDumpModule,
+        SouthCentralPointsModule southCentralPointsModule, InventoryModule inventoryModule,
+        ItemCreationModule itemCreationModule, KeyModule keyModule)
     {
         _logger = logger;
 
@@ -65,33 +58,20 @@ public class VehicleModule
     /// <summary>
     ///     Create a new persistent vehicle for the given player.
     /// </summary>
-    public async Task<ServerVehicle?> CreatePersistent(string vehicleModel, ServerPlayer player, Position position,
-                                                       Rotation rotation, int dimension, int primColor, int secColor)
+    public async Task<ServerVehicle?> CreatePersistent(string vehicleModel, CharacterModel character, Position position,
+        Rotation rotation, int dimension, int primColor, int secColor)
     {
         var catalogVehicle = await _vehicleCatalogService.GetByKey(vehicleModel.ToLower());
         if (catalogVehicle == null)
         {
-            if (player.AccountModel.Permission.HasFlag(Permission.STAFF))
-            {
-                player.SendNotification("Das Fahrzeug konnte nicht im Katalog gefunden werden.",
-                                        NotificationType.ERROR);
-            }
-
             _logger.LogCritical("Can't find catalog vehicle, can't create persistent vehicle.");
             return null;
         }
 
-        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player,
-                                                                           ItemCatalogIds.KEY,
-                                                                           1,
-                                                                           null,
-                                                                           null,
-                                                                           "Schlüssel für " +
-                                                                           catalogVehicle.DisplayName);
+        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.KEY, 1, null, null,
+            "Schlüssel für " + catalogVehicle.DisplayName);
         if (itemKey == null)
         {
-            player.SendNotification("Das Inventar ist voll, der Schlüssel konnte nicht hinzugefügt werden.",
-                                    NotificationType.ERROR);
             return null;
         }
 
@@ -100,7 +80,7 @@ public class VehicleModule
             BodyHealth = 1000,
             EngineHealth = 1000,
             Model = vehicleModel.ToLower(),
-            CharacterModelId = player.CharacterModel.Id,
+            CharacterModelId = character.Id,
             Position = position,
             Rotation = rotation,
             Dimension = dimension,
@@ -124,9 +104,9 @@ public class VehicleModule
         return await Create(vehicleDbo);
     }
 
-    public async Task CreatePersistent(string vehicleModel, GroupModel groupModel, Position position,
-                                       Rotation rotation, int dimension, int primColor, int secColor,
-                                       VehicleState vehicleState = VehicleState.SPAWNED, float drivenKilometre = 0)
+    public async Task CreatePersistent(string vehicleModel, GroupModel groupModel, Position position, Rotation rotation,
+        int dimension, int primColor, int secColor, VehicleState vehicleState = VehicleState.SPAWNED,
+        float drivenKilometre = 0)
     {
         var catalogVehicle = await _vehicleCatalogService.GetByKey(vehicleModel.ToLower());
         if (catalogVehicle == null)
@@ -192,15 +172,10 @@ public class VehicleModule
     public async Task<ServerVehicle?> Create(PlayerVehicleModel vehicleModel)
     {
         var vehicle = await Create(vehicleModel.Model,
-                                   new Position(vehicleModel.PositionX, vehicleModel.PositionY, vehicleModel.PositionZ),
-                                   new Rotation(vehicleModel.Roll, vehicleModel.Pitch, vehicleModel.Yaw),
-                                   vehicleModel.PrimaryColor,
-                                   vehicleModel.SecondaryColor,
-                                   vehicleModel.Livery,
-                                   vehicleModel.BodyHealth,
-                                   vehicleModel.EngineHealth,
-                                   vehicleModel.Fuel,
-                                   vehicleModel.DrivenKilometre);
+            new Position(vehicleModel.PositionX, vehicleModel.PositionY, vehicleModel.PositionZ),
+            new Rotation(vehicleModel.Roll, vehicleModel.Pitch, vehicleModel.Yaw), vehicleModel.PrimaryColor,
+            vehicleModel.SecondaryColor, vehicleModel.Livery, vehicleModel.BodyHealth, vehicleModel.EngineHealth,
+            vehicleModel.Fuel, vehicleModel.DrivenKilometre);
 
         if (vehicle == null)
         {
@@ -223,10 +198,8 @@ public class VehicleModule
     }
 
     public async Task<ServerVehicle?> Create(string vehicleModel, Position position, Rotation rotation,
-                                             int primaryColor,
-                                             int secondaryColor, byte livery = 0, uint bodyHealth = 1000,
-                                             int engineHealth = 1000, float fuel = 0,
-                                             float drivenKilometre = 0)
+        int primaryColor, int secondaryColor, byte livery = 0, uint bodyHealth = 1000, int engineHealth = 1000,
+        float fuel = 0, float drivenKilometre = 0)
     {
         var catalogVehicle = await _vehicleCatalogService.Find(vc => vc.Model.ToLower() == vehicleModel.ToLower());
         if (catalogVehicle == null)
@@ -311,13 +284,8 @@ public class VehicleModule
             return;
         }
 
-        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player,
-                                                                           ItemCatalogIds.KEY,
-                                                                           1,
-                                                                           null,
-                                                                           null,
-                                                                           "Schlüssel für " +
-                                                                           catalogVehicle.DisplayName);
+        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null, null,
+            "Schlüssel für " + catalogVehicle.DisplayName);
         if (itemKey == null)
         {
             return;

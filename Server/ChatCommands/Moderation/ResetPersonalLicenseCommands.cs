@@ -41,8 +41,8 @@ public class ResetPersonalLicenseCommands : ISingletonScript
             await _personalLicenseService.Where(l => l.CharacterModelId == player.CharacterModel.Id);
 
         player.SendNotification("Du hast dem Charakter " + target.CharacterModel.Name + " alle Lizenzen entfernt.",
-                                NotificationType.SUCCESS);
+            NotificationType.SUCCESS);
         target.SendNotification("Du hast von " + player.AccountName + " alle Lizenzen administrativ entfernt bekommen.",
-                                NotificationType.SUCCESS);
+            NotificationType.SUCCESS);
     }
 }

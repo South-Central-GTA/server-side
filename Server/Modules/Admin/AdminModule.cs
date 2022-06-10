@@ -8,13 +8,11 @@ using Server.Database.Enums;
 
 namespace Server.Modules.Admin;
 
-public class AdminModule
-    : ITransientScript
+public class AdminModule : ITransientScript
 {
     private readonly ILogger<AdminModule> _logger;
 
-    public AdminModule(
-        ILogger<AdminModule> logger)
+    public AdminModule(ILogger<AdminModule> logger)
     {
         _logger = logger;
     }
@@ -22,6 +20,6 @@ public class AdminModule
     public List<ServerPlayer> GetAllStaffPlayers()
     {
         return Alt.GetAllPlayers()
-                  .Where(p => p.Exists && p.IsSpawned && p.AccountModel.Permission.HasFlag(Permission.STAFF));
+            .Where(p => p.Exists && p.IsSpawned && p.AccountModel.Permission.HasFlag(Permission.STAFF));
     }
 }

@@ -16,9 +16,7 @@ public class RemovePermissionMailAccountHandler : ISingletonScript
     private readonly MailAccountService _mailAccountService;
     private readonly MailModule _mailModule;
 
-    public RemovePermissionMailAccountHandler(
-        MailAccountService mailAccountService,
-        MailModule mailModule)
+    public RemovePermissionMailAccountHandler(MailAccountService mailAccountService, MailModule mailModule)
     {
         _mailAccountService = mailAccountService;
 
@@ -28,7 +26,7 @@ public class RemovePermissionMailAccountHandler : ISingletonScript
     }
 
     private async void OnRemovePermission(ServerPlayer player, string mailAddress, int characterId,
-                                          string expectedPermission)
+        string expectedPermission)
     {
         if (!player.Exists)
         {

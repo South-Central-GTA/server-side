@@ -11,13 +11,11 @@ namespace Server.Handlers.MDC.PD;
 public class PdMdcDeleteCallSignHandler : ISingletonScript
 {
     private readonly GroupFactionService _groupFactionService;
-
-    private readonly PoliceMdcModule _policeMdcModule;
     private readonly GroupModule _groupModule;
 
-    public PdMdcDeleteCallSignHandler(
-        GroupFactionService groupFactionService,
-        PoliceMdcModule policeMdcModule,
+    private readonly PoliceMdcModule _policeMdcModule;
+
+    public PdMdcDeleteCallSignHandler(GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule,
         GroupModule groupModule)
     {
         _groupFactionService = groupFactionService;

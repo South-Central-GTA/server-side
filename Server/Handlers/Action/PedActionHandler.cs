@@ -17,22 +17,20 @@ namespace Server.Handlers.Action;
 
 public class PedActionHandler : ISingletonScript
 {
-    private readonly HouseService _houseService;
+    private readonly uint _cityHallPed = Alt.Hash("u_m_y_gunvend_01");
 
     private readonly ContextModule _contextModule;
+
+    private readonly uint[] _drivingSchoolPeds = { Alt.Hash("u_m_y_baygor"), Alt.Hash("u_m_y_burgerdrug_01") };
+    private readonly HouseService _houseService;
+    private readonly uint _prisonGuardPed = Alt.Hash("s_m_m_prisguard_01");
 
     private readonly uint[] _publicGaragePeds =
     {
         Alt.Hash("mp_m_waremech_01"), Alt.Hash("mp_f_bennymech_01"), Alt.Hash("cs_jimmyboston")
     };
 
-    private readonly uint[] _drivingSchoolPeds = { Alt.Hash("u_m_y_baygor"), Alt.Hash("u_m_y_burgerdrug_01") };
-    private readonly uint _cityHallPed = Alt.Hash("u_m_y_gunvend_01");
-    private readonly uint _prisonGuardPed = Alt.Hash("s_m_m_prisguard_01");
-
-    public PedActionHandler(
-        HouseService houseService,
-        ContextModule contextModule)
+    public PedActionHandler(HouseService houseService, ContextModule contextModule)
     {
         _houseService = houseService;
 
@@ -59,86 +57,68 @@ public class PedActionHandler : ISingletonScript
 
         if (entityModel == Alt.Hash("mp_m_shopkeep_01")) // Player interacts with the supermarket npc.
         {
-            _contextModule.OpenMenu(player,
-                                    "Kassierer",
-                                    new List<ActionData>()
-                                    {
-                                        new($"Waren bezahlen", "supermarket:requestopencashiermenu"),
-                                        new($"Waren zurückgeben", "supermarket:requestreturnitems")
-                                    });
+            _contextModule.OpenMenu(player, "Kassierer",
+                new List<ActionData>
+                {
+                    new("Waren bezahlen", "supermarket:requestopencashiermenu"),
+                    new("Waren zurückgeben", "supermarket:requestreturnitems")
+                });
         }
         else if (entityModel == Alt.Hash("ig_zimbor")) // Player interacts with the clothing store npc.
         {
-            _contextModule.OpenMenu(player,
-                                    "Kassierer",
-                                    new List<ActionData>()
-                                    {
-                                        new($"Umkleide benutzen", "clothingstore:requeststartchangeclothes"),
-                                        new($"Waren bezahlen", "clothingstore:requestopencashiermenu"),
-                                        new($"Waren zurückgeben", "clothingstore:requestreturnitems")
-                                    });
+            _contextModule.OpenMenu(player, "Kassierer",
+                new List<ActionData>
+                {
+                    new("Umkleide benutzen", "clothingstore:requeststartchangeclothes"),
+                    new("Waren bezahlen", "clothingstore:requestopencashiermenu"),
+                    new("Waren zurückgeben", "clothingstore:requestreturnitems")
+                });
         }
         else if (entityModel == Alt.Hash("s_f_y_shop_low")) // Player interacts with the hair studio npc.
         {
-            _contextModule.OpenMenu(player,
-                                    "Friseurin",
-                                    new List<ActionData>()
-                                    {
-                                        new($"Haare schneiden", "hairsalon:requeststarthaircut"),
-                                    });
+            _contextModule.OpenMenu(player, "Friseurin",
+                new List<ActionData> { new("Haare schneiden", "hairsalon:requeststarthaircut") });
         }
         else if (entityModel == Alt.Hash("u_m_y_tattoo_01")) // Player interacts with the tatto studio npc.
         {
-            _contextModule.OpenMenu(player,
-                                    "Friseurin",
-                                    new List<ActionData>()
-                                    {
-                                        new($"Tattoos stechen", "tattoostudio:requeststarttattoos"),
-                                    });
+            _contextModule.OpenMenu(player, "Friseurin",
+                new List<ActionData> { new("Tattoos stechen", "tattoostudio:requeststarttattoos") });
         }
         else if (entityModel == Alt.Hash("s_m_y_ammucity_01")) // Player interacts with the ammunation npc.
         {
-            _contextModule.OpenMenu(player,
-                                    "Friseurin",
-                                    new List<ActionData>() { new($"Waren einkaufen", "ammunation:requestopenmenu"), });
+            _contextModule.OpenMenu(player, "Friseurin",
+                new List<ActionData> { new("Waren einkaufen", "ammunation:requestopenmenu") });
         }
         else if (_publicGaragePeds.Contains(entityModel))
         {
-            _contextModule.OpenMenu(player,
-                                    "Public Garage Mitarbeiter",
-                                    new List<ActionData>()
-                                    {
-                                        new("Fahrzeug einparken", "publicgarage:requestparkvehicle"),
-                                        new("Fahrzeug ausparken", "publicgarage:requestparkedvehicles"),
-                                        new("Fahrzeug respawnen", "publicgarage:requestdestroyedvehicles"),
-                                    });
+            _contextModule.OpenMenu(player, "Public Garage Mitarbeiter",
+                new List<ActionData>
+                {
+                    new("Fahrzeug einparken", "publicgarage:requestparkvehicle"),
+                    new("Fahrzeug ausparken", "publicgarage:requestparkedvehicles"),
+                    new("Fahrzeug respawnen", "publicgarage:requestdestroyedvehicles")
+                });
         }
         else if (_drivingSchoolPeds.Contains(entityModel))
         {
-            _contextModule.OpenMenu(player,
-                                    "Public Garage Mitarbeiter",
-                                    new List<ActionData>()
-                                    {
-                                        new("Führerschein Prüfung beginnen", "drivingschool:showstartdialog"),
-                                    });
+            _contextModule.OpenMenu(player, "Public Garage Mitarbeiter",
+                new List<ActionData> { new("Führerschein Prüfung beginnen", "drivingschool:showstartdialog") });
         }
         else if (_cityHallPed == entityModel)
         {
-            _contextModule.OpenMenu(player,
-                                    "LS Stadthalle",
-                                    new List<ActionData>() { new("Meldeamt", "cityhall:requestmenu"), });
+            _contextModule.OpenMenu(player, "LS Stadthalle",
+                new List<ActionData> { new("Meldeamt", "cityhall:requestmenu") });
         }
         else if (_prisonGuardPed == entityModel)
         {
-            _contextModule.OpenMenu(player,
-                                    "Gefängnis",
-                                    new List<ActionData>() { new("Insassen auflisten", "prison:requestinmates"), });
+            _contextModule.OpenMenu(player, "Gefängnis",
+                new List<ActionData> { new("Insassen auflisten", "prison:requestinmates") });
         }
     }
 
     private async Task HandlePlayerPed(ServerPlayer player, ServerPlayer targetPlayer)
     {
-        var actions = new List<ActionData>()
+        var actions = new List<ActionData>
         {
             new($"{targetPlayer.CharacterModel.Name} durchsuchen", "frisk:requestsearch", targetPlayer.Id)
         };
@@ -151,14 +131,14 @@ public class PedActionHandler : ISingletonScript
                 switch (companyHouseModel.LeaseCompanyType)
                 {
                     case LeaseCompanyType.SUPERMARKET:
-                        actions.AddRange(new List<ActionData>()
+                        actions.AddRange(new List<ActionData>
                         {
                             new("Waren bezahlen", "supermarket:requestopencashiermenu"),
                             new("Waren zurückgeben", "supermarket:requestreturnitems")
                         });
                         break;
                     case LeaseCompanyType.CLOTHING_STORE:
-                        actions.AddRange(new List<ActionData>()
+                        actions.AddRange(new List<ActionData>
                         {
                             new("Umkleide benutzen", "clothingstore:requeststartchangeclothes"),
                             new("Waren bezahlen", "clothingstore:requestopencashiermenu"),
@@ -166,10 +146,10 @@ public class PedActionHandler : ISingletonScript
                         });
                         break;
                     case LeaseCompanyType.HAIR_STUDIO:
-                        actions.Add(new("Haare schneiden", "hairsalon:starthaircut"));
+                        actions.Add(new ActionData("Haare schneiden", "hairsalon:starthaircut"));
                         break;
                     case LeaseCompanyType.TATTOO_STUDIO:
-                        actions.Add(new("Tattos stechen", "tattoostudio:starttattoos"));
+                        actions.Add(new ActionData("Tattos stechen", "tattoostudio:starttattoos"));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

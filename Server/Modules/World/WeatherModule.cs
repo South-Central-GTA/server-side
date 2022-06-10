@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AltV.Net.Async;
 using AltV.Net.Enums;
 using Microsoft.Extensions.Logging;
-using Server.Core;
 using Server.Core.Abstractions.ScriptStrategy;
 
 namespace Server.Modules.World;
@@ -13,7 +12,6 @@ public class WeatherModule : ISingletonScript
     private readonly ILogger<WeatherModule> _logger;
 
     private readonly Random _random = new();
-    private readonly WorldData _worldData;
 
     private readonly Dictionary<WeatherType, Dictionary<WeatherType, float>> _weatherDefinitions = new()
     {
@@ -79,11 +77,11 @@ public class WeatherModule : ISingletonScript
         }
     };
 
+    private readonly WorldData _worldData;
+
     public int SecondsToChangeWeather;
 
-    public WeatherModule(
-        ILogger<WeatherModule> logger,
-        WorldData worldData)
+    public WeatherModule(ILogger<WeatherModule> logger, WorldData worldData)
     {
         _logger = logger;
         _worldData = worldData;

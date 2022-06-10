@@ -3,8 +3,7 @@ using Server.Database.Enums;
 
 namespace Server.Data.Models;
 
-public class AnimationOptions
-    : IWritable
+public class AnimationOptions : IWritable
 {
     public int Speed { get; set; } = 3;
     public int SpeedMultiplier { get; set; } = -8;

@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models;
 
-public class DefinedJobData
-    : IWritable
+public class DefinedJobData : IWritable
 {
     public int Id { get; set; }
     public string Name { get; set; }

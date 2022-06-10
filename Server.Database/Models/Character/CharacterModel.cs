@@ -11,8 +11,7 @@ using Server.Database.Models.Inventory;
 
 namespace Server.Database.Models.Character;
 
-public class CharacterModel
-    : PositionRotationDimensionModelBase, IWritable
+public class CharacterModel : PositionRotationDimensionModelBase, IWritable
 {
     public CharacterModel()
     {
@@ -58,15 +57,8 @@ public class CharacterModel
 
         if (startMoney > 0)
         {
-            itemsToAdd.Add(new ItemModel(ItemCatalogIds.DOLLAR,
-                                         0,
-                                         null,
-                                         null,
-                                         startMoney,
-                                         null,
-                                         true,
-                                         false,
-                                         ItemState.NOT_EQUIPPED));
+            itemsToAdd.Add(new ItemModel(ItemCatalogIds.DOLLAR, 0, null, null, startMoney, null, true, false,
+                ItemState.NOT_EQUIPPED));
         }
 
         InventoryModel = new InventoryModel
@@ -141,124 +133,27 @@ public class CharacterModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(CharacterModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("accountId");
-        writer.Value(AccountModelId);
+        writer.Value(model.AccountModelId);
 
         writer.Name("accountName");
-        writer.Value(AccountModel != null ? AccountModel.CurrentName : "NotSavedCharacter");
+        writer.Value(model.AccountModel != null ? model.AccountModel.CurrentName : "NotSavedCharacter");
 
         #region Inventory
 
         writer.Name("inventory");
 
-        writer.BeginObject();
-
-        writer.Name("id");
-        writer.Value(InventoryModel.Id);
-
-        writer.Name("name");
-        writer.Value(InventoryModel.Name);
-
-        writer.Name("inventoryType");
-        writer.Value((int)InventoryModel.InventoryType);
-
-        writer.Name("items");
-
-        writer.BeginArray();
-
-        foreach (var item in InventoryModel.Items)
-        {
-            writer.BeginObject();
-
-            writer.Name("id");
-            writer.Value(item.Id);
-
-            writer.Name("catalogItemName");
-            writer.Value(item.CatalogItemModelId.ToString());
-
-            writer.Name("catalogItem");
-
-            writer.BeginObject();
-
-            writer.Name("id");
-            writer.Value((int)item.CatalogItemModel.Id);
-
-            writer.Name("name");
-            writer.Value(item.CatalogItemModel.Name);
-
-            writer.Name("image");
-            writer.Value(item.CatalogItemModel.Image);
-
-            writer.Name("description");
-            writer.Value(item.CatalogItemModel.Description);
-
-            writer.Name("rarity");
-            writer.Value((int)item.CatalogItemModel.Rarity);
-
-            writer.Name("weight");
-            writer.Value(item.CatalogItemModel.Weight);
-
-            writer.Name("equippable");
-            writer.Value(item.CatalogItemModel.Equippable);
-
-            writer.Name("stackable");
-            writer.Value(item.CatalogItemModel.Stackable);
-
-            writer.Name("buyable");
-            writer.Value(item.CatalogItemModel.Buyable);
-
-            writer.Name("sellable");
-            writer.Value(item.CatalogItemModel.Sellable);
-
-            writer.Name("price");
-            writer.Value(item.CatalogItemModel.Price);
-
-            writer.EndObject();
-
-            writer.Name("slot");
-            writer.Value(item.Slot ?? -1);
-
-            writer.Name("customData");
-            writer.Value(item.CustomData);
-
-            writer.Name("note");
-            writer.Value(item.Note);
-
-            writer.Name("amount");
-            writer.Value(item.Amount);
-
-            writer.Name("condition");
-            writer.Value(item.Condition ?? -1);
-
-            writer.Name("isBought");
-            writer.Value(item.IsBought);
-
-            writer.Name("itemState");
-            writer.Value((int)item.ItemState);
-
-            var value = -1;
-            if (item is ItemWeaponAttachmentModel weaponAttachment)
-            {
-                value = weaponAttachment.ItemWeaponId ?? -1;
-            }
-
-            writer.Name("attachedToWeaponItem");
-            writer.Value(value);
-
-            writer.EndObject();
-        }
-
-        writer.EndArray();
-
-        writer.Name("maxWeight");
-        writer.Value(InventoryModel.MaxWeight);
-
-        writer.EndObject();
+        InventoryModel.Serialize(model.InventoryModel, writer);
 
         #endregion
 
@@ -266,69 +161,7 @@ public class CharacterModel
 
         writer.Name("faceFeatures");
 
-        writer.BeginObject();
-
-        writer.Name("eyesSize");
-        writer.Value(FaceFeaturesModel.EyesSize);
-
-        writer.Name("lipsThickness");
-        writer.Value(FaceFeaturesModel.LipsThickness);
-
-        writer.Name("noseWidth");
-        writer.Value(FaceFeaturesModel.NoseWidth);
-
-        writer.Name("noseHeight");
-        writer.Value(FaceFeaturesModel.NoseHeight);
-
-        writer.Name("noseLength");
-        writer.Value(FaceFeaturesModel.NoseLength);
-
-        writer.Name("noseBridge");
-        writer.Value(FaceFeaturesModel.NoseBridge);
-
-        writer.Name("noseTip");
-        writer.Value(FaceFeaturesModel.NoseTip);
-
-        writer.Name("noseBridgeShift");
-        writer.Value(FaceFeaturesModel.NoseBridgeShift);
-
-        writer.Name("browHeight");
-        writer.Value(FaceFeaturesModel.BrowHeight);
-
-        writer.Name("browWidth");
-        writer.Value(FaceFeaturesModel.BrowWidth);
-
-        writer.Name("cheekboneHeight");
-        writer.Value(FaceFeaturesModel.CheekboneHeight);
-
-        writer.Name("cheekboneWidth");
-        writer.Value(FaceFeaturesModel.CheekboneWidth);
-
-        writer.Name("cheekWidth");
-        writer.Value(FaceFeaturesModel.CheekWidth);
-
-        writer.Name("jawWidth");
-        writer.Value(FaceFeaturesModel.JawWidth);
-
-        writer.Name("jawHeight");
-        writer.Value(FaceFeaturesModel.JawHeight);
-
-        writer.Name("chinLength");
-        writer.Value(FaceFeaturesModel.ChinLength);
-
-        writer.Name("chinPosition");
-        writer.Value(FaceFeaturesModel.ChinPosition);
-
-        writer.Name("chinWidth");
-        writer.Value(FaceFeaturesModel.ChinWidth);
-
-        writer.Name("chinShape");
-        writer.Value(FaceFeaturesModel.ChinShape);
-
-        writer.Name("neckWidth");
-        writer.Value(FaceFeaturesModel.NeckWidth);
-
-        writer.EndObject();
+        FaceFeaturesModel.Serialize(model.FaceFeaturesModel, writer);
 
         #endregion
 
@@ -336,138 +169,7 @@ public class CharacterModel
 
         writer.Name("appearances");
 
-        writer.BeginObject();
-
-        writer.Name("hair");
-        writer.Value(AppearancesModel.Hair);
-
-        writer.Name("primHairColor");
-        writer.Value(AppearancesModel.PrimHairColor);
-
-        writer.Name("secHairColor");
-        writer.Value(AppearancesModel.SecHairColor);
-
-        writer.Name("eyeColor");
-        writer.Value(AppearancesModel.EyeColor);
-
-        writer.Name("blemishesValue");
-        writer.Value(AppearancesModel.BlemishesValue);
-
-        writer.Name("blemishesOpacity");
-        writer.Value(AppearancesModel.BlemishesOpacity);
-
-        writer.Name("blemishesColor");
-        writer.Value(AppearancesModel.BlemishesColor);
-
-        writer.Name("facialhairValue");
-        writer.Value(AppearancesModel.FacialhairValue);
-
-        writer.Name("facialhairOpacity");
-        writer.Value(AppearancesModel.FacialhairOpacity);
-
-        writer.Name("facialhairColor");
-        writer.Value(AppearancesModel.FacialhairColor);
-
-        writer.Name("eyebrowsValue");
-        writer.Value(AppearancesModel.EyebrowsValue);
-
-        writer.Name("eyebrowsOpacity");
-        writer.Value(AppearancesModel.EyebrowsOpacity);
-
-        writer.Name("eyebrowsColor");
-        writer.Value(AppearancesModel.EyebrowsColor);
-
-        writer.Name("ageingValue");
-        writer.Value(AppearancesModel.AgeingValue);
-
-        writer.Name("ageingOpacity");
-        writer.Value(AppearancesModel.AgeingOpacity);
-
-        writer.Name("ageingColor");
-        writer.Value(AppearancesModel.AgeingColor);
-
-        writer.Name("makeupValue");
-        writer.Value(AppearancesModel.MakeupValue);
-
-        writer.Name("makeupOpacity");
-        writer.Value(AppearancesModel.MakeupOpacity);
-
-        writer.Name("makeupColor");
-        writer.Value(AppearancesModel.MakeupColor);
-
-        writer.Name("blushValue");
-        writer.Value(AppearancesModel.BlushValue);
-
-        writer.Name("blushOpacity");
-        writer.Value(AppearancesModel.BlushOpacity);
-
-        writer.Name("blushColor");
-        writer.Value(AppearancesModel.BlushColor);
-
-        writer.Name("complexionValue");
-        writer.Value(AppearancesModel.ComplexionValue);
-
-        writer.Name("complexionOpacity");
-        writer.Value(AppearancesModel.ComplexionOpacity);
-
-        writer.Name("complexionColor");
-        writer.Value(AppearancesModel.ComplexionColor);
-
-        writer.Name("sundamageValue");
-        writer.Value(AppearancesModel.SundamageValue);
-
-        writer.Name("sundamageOpacity");
-        writer.Value(AppearancesModel.SundamageOpacity);
-
-        writer.Name("sundamageColor");
-        writer.Value(AppearancesModel.SundamageColor);
-
-        writer.Name("lipstickValue");
-        writer.Value(AppearancesModel.LipstickValue);
-
-        writer.Name("lipstickOpacity");
-        writer.Value(AppearancesModel.LipstickOpacity);
-
-        writer.Name("lipstickColor");
-        writer.Value(AppearancesModel.LipstickColor);
-
-        writer.Name("frecklesValue");
-        writer.Value(AppearancesModel.FrecklesValue);
-
-        writer.Name("frecklesOpacity");
-        writer.Value(AppearancesModel.FrecklesOpacity);
-
-        writer.Name("frecklesColor");
-        writer.Value(AppearancesModel.FrecklesColor);
-
-        writer.Name("chesthairValue");
-        writer.Value(AppearancesModel.ChesthairValue);
-
-        writer.Name("chesthairOpacity");
-        writer.Value(AppearancesModel.ChesthairOpacity);
-
-        writer.Name("chesthairColor");
-        writer.Value(AppearancesModel.ChesthairColor);
-
-        writer.Name("bodyblemishesValue");
-        writer.Value(AppearancesModel.BodyblemishesValue);
-
-        writer.Name("bodyblemishesOpacity");
-        writer.Value(AppearancesModel.BodyblemishesOpacity);
-
-        writer.Name("bodyblemishesColor");
-        writer.Value(AppearancesModel.BodyblemishesColor);
-
-        writer.Name("addbodyblemihesValue");
-        writer.Value(AppearancesModel.AddbodyblemihesValue);
-
-        writer.Name("addbodyblemihesOpacity");
-        writer.Value(AppearancesModel.AddbodyblemihesOpacity);
-
-        writer.Name("addbodyblemihesColor");
-        writer.Value(AppearancesModel.AddbodyblemihesColor);
-
-        writer.EndObject();
+        AppearancesModel.Serialize(model.AppearancesModel, writer);
 
         #endregion
 
@@ -475,123 +177,74 @@ public class CharacterModel
 
         writer.Name("tattoos");
 
-        writer.BeginObject();
-
-        writer.Name("headCollection");
-        writer.Value(TattoosModel.HeadCollection);
-
-        writer.Name("headHash");
-        writer.Value(TattoosModel.HeadHash);
-
-        writer.Name("torsoCollection");
-        writer.Value(TattoosModel.TorsoCollection);
-
-        writer.Name("torsoHash");
-        writer.Value(TattoosModel.TorsoHash);
-
-        writer.Name("leftArmCollection");
-        writer.Value(TattoosModel.LeftArmCollection);
-
-        writer.Name("leftArmHash");
-        writer.Value(TattoosModel.LeftArmHash);
-
-        writer.Name("rightArmCollection");
-        writer.Value(TattoosModel.RightArmCollection);
-
-        writer.Name("rightArmHash");
-        writer.Value(TattoosModel.RightArmHash);
-
-        writer.Name("leftLegCollection");
-        writer.Value(TattoosModel.LeftLegCollection);
-
-        writer.Name("leftLegHash");
-        writer.Value(TattoosModel.LeftLegHash);
-
-        writer.Name("rightLegCollection");
-        writer.Value(TattoosModel.RightLegCollection);
-
-        writer.Name("rightLegHash");
-        writer.Value(TattoosModel.RightLegHash);
-
-        writer.EndObject();
+        TattoosModel.Serialize(model.TattoosModel, writer);
 
         #endregion
 
         writer.Name("onlineSinceJson");
-        writer.Value(JsonSerializer.Serialize(OnlineSince));
+        writer.Value(JsonSerializer.Serialize(model.OnlineSince));
 
         writer.Name("lastUsageJson");
-        writer.Value(JsonSerializer.Serialize(LastUsage));
+        writer.Value(JsonSerializer.Serialize(model.LastUsage));
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.Name("firstName");
-        writer.Value(FirstName);
+        writer.Value(model.FirstName);
 
         writer.Name("lastName");
-        writer.Value(LastName);
+        writer.Value(model.LastName);
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
         writer.Name("age");
-        writer.Value(Age);
+        writer.Value(model.Age);
 
         writer.Name("origin");
-        writer.Value(Origin);
+        writer.Value(model.Origin);
 
         writer.Name("physique");
-        writer.Value(Physique);
+        writer.Value(model.Physique);
 
         writer.Name("story");
-        writer.Value(Story);
+        writer.Value(model.Story);
 
         writer.Name("bodySize");
-        writer.Value(BodySize);
+        writer.Value(model.BodySize);
 
         writer.Name("gender");
-        writer.Value((int)Gender);
+        writer.Value((int)model.Gender);
 
         writer.Name("mother");
-        writer.Value(Mother);
+        writer.Value(model.Mother);
 
         writer.Name("father");
-        writer.Value(Father);
+        writer.Value(model.Father);
 
         writer.Name("similarity");
-        writer.Value(Similarity);
+        writer.Value(model.Similarity);
 
         writer.Name("skinSimilarity");
-        writer.Value(SkinSimilarity);
+        writer.Value(model.SkinSimilarity);
 
         writer.Name("characterState");
-        writer.Value((int)CharacterState);
+        writer.Value((int)model.CharacterState);
 
         writer.Name("torso");
-        writer.Value(Torso);
+        writer.Value(model.Torso);
 
         writer.Name("torsoTexture");
-        writer.Value(TorsoTexture);
+        writer.Value(model.TorsoTexture);
 
         writer.Name("licenses");
 
         writer.BeginArray();
 
-        foreach (var license in Licenses)
+        foreach (var license in model.Licenses)
         {
-            writer.BeginObject();
-
-            writer.Name("id");
-            writer.Value(license.Id);
-
-            writer.Name("type");
-            writer.Value((int)license.Type);
-
-            writer.Name("warnings");
-            writer.Value(license.Warnings);
-
-            writer.EndObject();
+            PersonalLicenseModel.Serialize(license, writer);
         }
 
         writer.EndArray();

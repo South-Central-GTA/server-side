@@ -3,8 +3,7 @@ using AltV.Net;
 
 namespace Server.Database.Models.Delivery;
 
-public class ProductDeliveryModel
-    : DeliveryModel
+public class ProductDeliveryModel : DeliveryModel
 {
     public ProductDeliveryModel()
     {
@@ -22,43 +21,48 @@ public class ProductDeliveryModel
 
     public override void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(ProductDeliveryModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("deliveryType");
-        writer.Value((int)DeliveryType);
+        writer.Value((int)model.DeliveryType);
 
         writer.Name("orderGroupId");
-        writer.Value(OrderGroupModelId);
+        writer.Value(model.OrderGroupModelId);
 
         writer.Name("orderGroupName");
-        writer.Value(OrderGroupModel.Name);
+        writer.Value(model.OrderGroupModel.Name);
 
         writer.Name("supplierGroupId");
-        writer.Value(SupplierGroupModelId ?? -1);
+        writer.Value(model.SupplierGroupModelId ?? -1);
 
         writer.Name("supplierGroupName");
-        writer.Value(SupplierGroupModel != null ? SupplierGroupModel.Name : "");
+        writer.Value(model.SupplierGroupModel != null ? model.SupplierGroupModel.Name : "");
 
-        writer.Name("createdAt");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Name("createdAtJson");
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.Name("supplierFullName");
-        writer.Value(SupplierFullName);
+        writer.Value(model.SupplierFullName ?? string.Empty);
 
         writer.Name("supplierPhoneNumber");
-        writer.Value(SupplierPhoneNumber);
+        writer.Value(model.SupplierPhoneNumber ?? string.Empty);
 
         writer.Name("status");
-        writer.Value((int)Status);
+        writer.Value((int)model.Status);
 
         writer.Name("productsRemaining");
-        writer.Value(ProductsRemaining);
+        writer.Value(model.ProductsRemaining);
 
         writer.Name("orderedProducts");
-        writer.Value(OrderedProducts);
+        writer.Value(model.OrderedProducts);
 
         writer.EndObject();
     }

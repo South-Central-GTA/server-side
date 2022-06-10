@@ -1,10 +1,7 @@
 ﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
-using Server.Database.Models.File;
-using Server.Modules.FileSystem;
 using Server.Modules.Group;
 
 namespace Server.Handlers.FileSystem;
@@ -15,9 +12,7 @@ public class SetFileReadPermissionHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
 
-    public SetFileReadPermissionHandler(
-        DirectoryService directoryService,
-        GroupModule groupModule)
+    public SetFileReadPermissionHandler(DirectoryService directoryService, GroupModule groupModule)
     {
         _directoryService = directoryService;
 

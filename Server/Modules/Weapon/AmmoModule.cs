@@ -6,15 +6,12 @@ using Server.Database.Enums;
 
 namespace Server.Modules.Weapon;
 
-public class AmmoModule
-    : ITransientScript
+public class AmmoModule : ITransientScript
 {
     private readonly ILogger<AmmoModule> _logger;
     private readonly WeaponModule _weaponModule;
 
-    public AmmoModule(
-        ILogger<AmmoModule> logger,
-        WeaponModule weaponModule)
+    public AmmoModule(ILogger<AmmoModule> logger, WeaponModule weaponModule)
     {
         _logger = logger;
         _weaponModule = weaponModule;

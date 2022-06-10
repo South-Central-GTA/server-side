@@ -11,14 +11,11 @@ namespace Server.Handlers.FileSystem;
 public class CreateFileHandler : ISingletonScript
 {
     private readonly FileService _fileService;
-
-    private readonly SyncFileModule _syncFileModule;
     private readonly GroupModule _groupModule;
 
-    public CreateFileHandler(
-        FileService fileService,
-        SyncFileModule syncFileModule,
-        GroupModule groupModule)
+    private readonly SyncFileModule _syncFileModule;
+
+    public CreateFileHandler(FileService fileService, SyncFileModule syncFileModule, GroupModule groupModule)
     {
         _fileService = fileService;
 
@@ -40,13 +37,13 @@ public class CreateFileHandler : ISingletonScript
             return;
         }
 
-        await _fileService.Add(new FileModel()
+        await _fileService.Add(new FileModel
         {
             Title = "Neue Textdatei",
             DirectoryModelId = directoryId,
             CreatorCharacterId = player.CharacterModel.Id,
             CreatorCharacterName = player.CharacterModel.Name,
-            LastEditCharacterName = player.CharacterModel.Name,
+            LastEditCharacterName = player.CharacterModel.Name
         });
 
         await _syncFileModule.UpdateDirectory(groupId, directoryId);

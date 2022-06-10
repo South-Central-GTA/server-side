@@ -10,14 +10,12 @@ namespace Server.Handlers.CharacterCreator;
 
 public class CloseCharacterCreatorHandler : ISingletonScript
 {
-    private readonly WorldLocationOptions _worldLocationOptions;
     private readonly CharacterCreationModule _characterCreationModule;
     private readonly CharacterSelectionModule _characterSelectionModule;
+    private readonly WorldLocationOptions _worldLocationOptions;
 
-    public CloseCharacterCreatorHandler(
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        CharacterCreationModule characterCreationModule,
-        CharacterSelectionModule characterSelectionModule)
+    public CloseCharacterCreatorHandler(IOptions<WorldLocationOptions> worldLocationOptions,
+        CharacterCreationModule characterCreationModule, CharacterSelectionModule characterSelectionModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
         _characterCreationModule = characterCreationModule;
@@ -46,8 +44,7 @@ public class CloseCharacterCreatorHandler : ISingletonScript
         }
 
         player.SetPositionLocked(new Position(_worldLocationOptions.CharacterSelectionPositionX,
-                                              _worldLocationOptions.CharacterSelectionPositionY,
-                                              _worldLocationOptions.CharacterSelectionPositionZ));
+            _worldLocationOptions.CharacterSelectionPositionY, _worldLocationOptions.CharacterSelectionPositionZ));
         player.EmitLocked("charcreator:resetcamera");
     }
 }

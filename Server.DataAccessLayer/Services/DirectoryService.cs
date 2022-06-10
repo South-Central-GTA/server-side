@@ -11,13 +11,11 @@ using Server.Database.Models.File;
 
 namespace Server.DataAccessLayer.Services;
 
-public class DirectoryService
-    : BaseService<DirectoryModel>, ITransientScript
+public class DirectoryService : BaseService<DirectoryModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public DirectoryService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public DirectoryService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
@@ -25,26 +23,19 @@ public class DirectoryService
     public async Task<DirectoryModel?> GetByKey(int id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Directories
-                              .Include(directory => directory.GroupModel)
-                              .ThenInclude(group => group.Members)
-                              .FirstOrDefaultAsync(directory => directory.Id == id);
+        return await dbContext.Directories.Include(directory => directory.GroupModel)
+            .ThenInclude(group => group.Members).FirstOrDefaultAsync(directory => directory.Id == id);
     }
 
     public override async Task<DirectoryModel?> Find(Expression<Func<DirectoryModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Directories
-                              .Include(directory => directory.Files)
-                              .FirstOrDefaultAsync(expression);
+        return await dbContext.Directories.Include(directory => directory.Files).FirstOrDefaultAsync(expression);
     }
 
     public override async Task<List<DirectoryModel>> Where(Expression<Func<DirectoryModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Directories
-                              .Include(directory => directory.Files)
-                              .Where(expression)
-                              .ToListAsync();
+        return await dbContext.Directories.Include(directory => directory.Files).Where(expression).ToListAsync();
     }
 }

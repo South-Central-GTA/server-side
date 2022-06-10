@@ -9,8 +9,7 @@ using Server.Database.Models.Vehicles;
 
 namespace Server.Database.Models.Delivery;
 
-public class DeliveryModel
-    : ModelBase, IWritable
+public class DeliveryModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -35,39 +34,45 @@ public class DeliveryModel
     public DeliveryState OldStatus { get; set; }
     public DeliveryState Status { get; set; }
 
+
     public virtual void OnWrite(IMValueWriter writer)
+    {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(DeliveryModel model, IMValueWriter writer)
     {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("orderGroupId");
-        writer.Value(OrderGroupModelId);
+        writer.Value(model.OrderGroupModelId);
 
         writer.Name("deliveryType");
-        writer.Value((int)DeliveryType);
+        writer.Value((int)model.DeliveryType);
 
         writer.Name("orderGroupName");
-        writer.Value(OrderGroupModel.Name);
+        writer.Value(model.OrderGroupModel.Name);
 
         writer.Name("supplierGroupId");
-        writer.Value(SupplierGroupModelId ?? -1);
+        writer.Value(model.SupplierGroupModelId ?? -1);
 
         writer.Name("supplierGroupName");
-        writer.Value(SupplierGroupModel != null ? SupplierGroupModel.Name : "");
+        writer.Value(model.SupplierGroupModel != null ? model.SupplierGroupModel.Name : "");
 
-        writer.Name("createdAt");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Name("createdAtJson");
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.Name("supplierFullName");
-        writer.Value(SupplierFullName);
+        writer.Value(model.SupplierFullName ?? string.Empty);
 
         writer.Name("supplierPhoneNumber");
-        writer.Value(SupplierPhoneNumber);
+        writer.Value(model.SupplierPhoneNumber ?? string.Empty);
 
         writer.Name("status");
-        writer.Value((int)Status);
+        writer.Value((int)model.Status);
 
         writer.EndObject();
     }

@@ -16,11 +16,8 @@ public class GroupVehicleOwnershipHandler : ISingletonScript
     private readonly VehicleModule _vehicleModule;
     private readonly VehicleService _vehicleService;
 
-    public GroupVehicleOwnershipHandler(
-        GroupService groupService,
-        VehicleService vehicleService,
-        GroupModule groupModule,
-        VehicleModule vehicleModule)
+    public GroupVehicleOwnershipHandler(GroupService groupService, VehicleService vehicleService,
+        GroupModule groupModule, VehicleModule vehicleModule)
     {
         _groupService = groupService;
         _vehicleService = vehicleService;
@@ -61,7 +58,7 @@ public class GroupVehicleOwnershipHandler : ISingletonScript
         if (!_groupModule.IsOwner(player, group))
         {
             player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -105,14 +102,14 @@ public class GroupVehicleOwnershipHandler : ISingletonScript
         if (!_groupModule.IsOwner(player, group))
         {
             player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (player.CharacterModel.Id != vehicle.DbEntity.CharacterModelId.Value)
         {
             player.SendNotification("Dein Charakter ist nicht der Eigentümer von diesem Fahrzeug.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

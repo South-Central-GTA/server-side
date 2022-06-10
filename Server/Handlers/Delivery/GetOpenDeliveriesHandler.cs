@@ -7,47 +7,43 @@ using Server.Database.Enums;
 using Server.Database.Models.Group;
 using Server.Modules.Delivery;
 
-namespace Server.Handlers.Delivery
+namespace Server.Handlers.Delivery;
+
+public class GetOpenDeliveriesHandler : ISingletonScript
 {
-    public class GetOpenDeliveriesHandler
-        : ISingletonScript
+    private readonly DeliveryModule _deliveryModule;
+
+    private readonly GroupService _groupService;
+
+    public GetOpenDeliveriesHandler(GroupService groupService, DeliveryModule deliveryModule)
     {
-        private readonly DeliveryModule _deliveryModule;
+        _groupService = groupService;
+        _deliveryModule = deliveryModule;
 
-        private readonly GroupService _groupService;
+        AltAsync.OnClient<ServerPlayer>("delivery:getopendeliveries", OnGetOpenDeliveries);
+    }
 
-        public GetOpenDeliveriesHandler(
-            GroupService groupService,
-            DeliveryModule deliveryModule)
+    private async void OnGetOpenDeliveries(ServerPlayer player)
+    {
+        if (!player.Exists)
         {
-            _groupService = groupService;
-            _deliveryModule = deliveryModule;
-
-            AltAsync.OnClient<ServerPlayer>("delivery:getopendeliveries", OnGetOpenDeliveries);
+            return;
         }
 
-        private async void OnGetOpenDeliveries(ServerPlayer player)
+        var groups = await _groupService.GetGroupsByCharacter(player.CharacterModel.Id);
+        var group = groups?.FirstOrDefault(g => g.GroupType == GroupType.COMPANY);
+        if (group == null)
         {
-            if (!player.Exists)
-            {
-                return;
-            }
-
-            var groups = await _groupService.GetGroupsByCharacter(player.CharacterModel.Id);
-            var group = groups?.FirstOrDefault(g => g.GroupType == GroupType.COMPANY);
-            if (group == null)
-            {
-                return;
-            }
-
-            var companyGroup = (CompanyGroupModel)group;
-
-            if (!companyGroup.LicensesFlags.HasFlag(LicensesFlags.GOODS_TRANSPORT))
-            {
-                return;
-            }
-
-            await _deliveryModule.UpdatePlayerOpenDeliveriesUi(player);
+            return;
         }
+
+        var companyGroup = (CompanyGroupModel)group;
+
+        if (!companyGroup.LicensesFlags.HasFlag(LicensesFlags.GOODS_TRANSPORT))
+        {
+            return;
+        }
+
+        await _deliveryModule.UpdatePlayerOpenDeliveriesUi(player);
     }
 }

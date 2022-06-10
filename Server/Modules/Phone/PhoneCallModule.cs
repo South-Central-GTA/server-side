@@ -15,12 +15,10 @@ namespace Server.Modules.Phone;
 
 public class PhoneCallModule : ISingletonScript
 {
-    private readonly ItemPhoneService _itemPhoneService;
     private readonly EmergencyCallDialogModule _emergencyCallDialogModule;
+    private readonly ItemPhoneService _itemPhoneService;
 
-    public PhoneCallModule(
-        ItemPhoneService itemPhoneService,
-        EmergencyCallDialogModule emergencyCallDialogModule)
+    public PhoneCallModule(ItemPhoneService itemPhoneService, EmergencyCallDialogModule emergencyCallDialogModule)
     {
         _itemPhoneService = itemPhoneService;
         _emergencyCallDialogModule = emergencyCallDialogModule;
@@ -62,7 +60,7 @@ public class PhoneCallModule : ISingletonScript
             {
                 caller.EmitLocked("phone:callgothungup");
                 caller.SendNotification(!lostConnection ? "Es wurde aufgelegt." : "Die Verbindung wurde unterbrochen.",
-                                        NotificationType.INFO);
+                    NotificationType.INFO);
 
                 caller.PhoneCallData = null;
             }
@@ -128,20 +126,15 @@ public class PhoneCallModule : ISingletonScript
             }
 
             var contact = phoneToCall.Contacts.Find(c => c.PhoneNumber == callerNumber);
-            playerToCall.EmitLocked("phone:getcallfrom",
-                                    contact != null ? contact.Name : callerNumber,
-                                    phoneToCall.Id);
+            playerToCall.EmitLocked("phone:getcallfrom", contact != null ? contact.Name : callerNumber, phoneToCall.Id);
 
-            var phoneItemToCall = playerToCall.CharacterModel.InventoryModel.Items
-                                              .FirstOrDefault(i => i.Id == phoneToCall.Id
-                                                                   && i.CatalogItemModelId == ItemCatalogIds.PHONE);
+            var phoneItemToCall = playerToCall.CharacterModel.InventoryModel.Items.FirstOrDefault(i =>
+                i.Id == phoneToCall.Id && i.CatalogItemModelId == ItemCatalogIds.PHONE);
 
             var phoneNote = phoneItemToCall?.Note != null ? $"({phoneItemToCall.Note})" : "";
-            playerToCall.SendNotification($"Das Handy {phoneNote} klingelt.",
-                                          NotificationType.INFO);
+            playerToCall.SendNotification($"Das Handy {phoneNote} klingelt.", NotificationType.INFO);
 
-            var callerContact = callerPhone.Contacts
-                                           .Find(c => c.PhoneNumber == numberToCall);
+            var callerContact = callerPhone.Contacts.Find(c => c.PhoneNumber == numberToCall);
 
             player.EmitLocked("phone:callnumber", callerContact != null ? callerContact.Name : numberToCall);
 
@@ -212,7 +205,7 @@ public class PhoneCallModule : ISingletonScript
 
             caller.EmitGui("phone:connectcall");
             player.EmitGui("phone:openactivecall",
-                           contact != null ? contact.Name : player.PhoneCallData.PartnerPhoneNumber);
+                contact != null ? contact.Name : player.PhoneCallData.PartnerPhoneNumber);
         });
     }
 }

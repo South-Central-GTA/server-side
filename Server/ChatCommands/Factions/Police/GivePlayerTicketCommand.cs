@@ -12,26 +12,20 @@ namespace Server.ChatCommands.Factions.Police;
 
 internal class GivePlayerTicketCommand : ISingletonScript
 {
+    private readonly GroupFactionService _groupFactionService;
     private readonly PoliceTicketModule _policeTicketModule;
 
-    private readonly GroupFactionService _groupFactionService;
-
-    public GivePlayerTicketCommand(
-        GroupFactionService groupFactionService,
-        PoliceTicketModule policeTicketModule)
+    public GivePlayerTicketCommand(GroupFactionService groupFactionService, PoliceTicketModule policeTicketModule)
     {
         _groupFactionService = groupFactionService;
 
         _policeTicketModule = policeTicketModule;
     }
 
-    [Command("giveticket",
-             "Gebe einen anderen Charakter einen Strafzettel.",
-             Permission.NONE,
-             new[] { "Spieler ID", "Kosten", "Grund" },
-             CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
+    [Command("giveticket", "Gebe einen anderen Charakter einen Strafzettel.", Permission.NONE,
+        new[] { "Spieler ID", "Kosten", "Grund" }, CommandArgs.GREEDY_BUT_WITH_TWO_FIXED_ARGUMENT)]
     public async void OnExecute(ServerPlayer player, string expectedPlayerId, string expectedCosts,
-                                string expectedReason)
+        string expectedReason)
     {
         if (!player.Exists)
         {

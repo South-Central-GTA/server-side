@@ -6,8 +6,7 @@ using Server.Database.Models.Group;
 
 namespace Server.Database.Models.Vehicles;
 
-public class PublicGarageEntryModel
-    : ModelBase
+public class PublicGarageEntryModel : ModelBase
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

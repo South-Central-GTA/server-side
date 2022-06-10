@@ -11,9 +11,7 @@ public class KickGroupMemberHandler : ISingletonScript
     private readonly GroupMemberService _groupMemberService;
     private readonly GroupModule _groupModule;
 
-    public KickGroupMemberHandler(
-        GroupMemberService groupMemberService,
-        GroupModule groupModule)
+    public KickGroupMemberHandler(GroupMemberService groupMemberService, GroupModule groupModule)
     {
         _groupMemberService = groupMemberService;
         _groupModule = groupModule;
@@ -28,8 +26,8 @@ public class KickGroupMemberHandler : ISingletonScript
             return;
         }
 
-        var member = await _groupMemberService.Find(m => m.GroupModelId == groupId
-                                                         && m.CharacterModelId == characterId);
+        var member =
+            await _groupMemberService.Find(m => m.GroupModelId == groupId && m.CharacterModelId == characterId);
         if (member == null)
         {
             return;

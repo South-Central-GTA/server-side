@@ -14,21 +14,17 @@ namespace Server.Handlers.Bank;
 
 public class RemoveCharacterBankAccessHandler : ISingletonScript
 {
-    private readonly PhoneModule _phoneModule;
-    private readonly BankModule _bankModule;
     private readonly BankAccountCharacterAccessService _bankAccountCharacterAccessService;
     private readonly BankAccountService _bankAccountService;
+    private readonly BankModule _bankModule;
     private readonly CharacterService _characterService;
     private readonly GroupService _groupService;
+    private readonly PhoneModule _phoneModule;
     private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public RemoveCharacterBankAccessHandler(
-        PhoneModule phoneModule,
-        BankModule bankModule,
-        BankAccountCharacterAccessService bankAccountCharacterAccessService,
-        BankAccountService bankAccountService,
-        CharacterService characterService,
-        GroupService groupService,
+    public RemoveCharacterBankAccessHandler(PhoneModule phoneModule, BankModule bankModule,
+        BankAccountCharacterAccessService bankAccountCharacterAccessService, BankAccountService bankAccountService,
+        CharacterService characterService, GroupService groupService,
         RegistrationOfficeService registrationOfficeService)
     {
         _phoneModule = phoneModule;
@@ -53,7 +49,7 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -66,9 +62,8 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.MANAGEMENT))
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Leider sind unter Ihren Namen nicht genügen Zugriffsrechte gesetzt, Sie können keine Management Aufträge für dieses Konto einreichen.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Leider sind unter Ihren Namen nicht genügen Zugriffsrechte gesetzt, Sie können keine Management Aufträge für dieses Konto einreichen.");
             return;
         }
 
@@ -84,20 +79,17 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
 
             if (member.Owner)
             {
-                await _phoneModule.SendNotification(phoneId,
-                                                    PhoneNotificationType.MAZE_BANK,
-                                                    "Sie können diese Person nicht von dem Bankkonto entfernen, da sie der Eigentümer einer Gruppe mit Zugriffsrechten ist.");
+                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                    "Sie können diese Person nicht von dem Bankkonto entfernen, da sie der Eigentümer einer Gruppe mit Zugriffsrechten ist.");
                 return;
             }
         }
 
-        var characterAccess =
-            bankAccount.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == characterId);
+        var characterAccess = bankAccount.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == characterId);
         if (characterAccess is { Owner: true })
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Der angegebene Name ist als Eigentümer hinterlegt und kann daher nicht entfernt werden.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Der angegebene Name ist als Eigentümer hinterlegt und kann daher nicht entfernt werden.");
             return;
         }
 
@@ -117,8 +109,7 @@ public class RemoveCharacterBankAccessHandler : ISingletonScript
             await _bankModule.UpdateUi(targetPlayer);
         }
 
-        await _phoneModule.SendNotification(phoneId,
-                                            PhoneNotificationType.MAZE_BANK,
-                                            $"Wir haben erfolgreich {character.Name} von Ihrem Bankkonto entfernt.");
+        await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+            $"Wir haben erfolgreich {character.Name} von Ihrem Bankkonto entfernt.");
     }
 }

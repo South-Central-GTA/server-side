@@ -28,13 +28,9 @@ public class PhoneModule : ISingletonScript
     private readonly PhoneMessageService _phoneMessageService;
     private readonly PhoneNotificationService _phoneNotificationService;
 
-    public PhoneModule(
-        ILogger<PhoneModule> logger,
-        PhoneMessageService phoneMessageService,
-        PhoneChatService phoneChatService,
-        PhoneNotificationService phoneNotificationService,
-        ItemPhoneService itemPhoneService,
-        MailModule mailModule)
+    public PhoneModule(ILogger<PhoneModule> logger, PhoneMessageService phoneMessageService,
+        PhoneChatService phoneChatService, PhoneNotificationService phoneNotificationService,
+        ItemPhoneService itemPhoneService, MailModule mailModule)
     {
         _logger = logger;
         _phoneMessageService = phoneMessageService;
@@ -130,7 +126,7 @@ public class PhoneModule : ISingletonScript
     }
 
     public async Task TryToSendMessage(ItemPhoneModel senderPhoneModel, string targetNumber, int ownerId,
-                                       string context)
+        string context)
     {
         var targetPhone = await GetByNumber(targetNumber);
         if (targetPhone == null)
@@ -192,9 +188,8 @@ public class PhoneModule : ISingletonScript
         var contactPlayer = Alt.GetAllPlayers().FindPlayerByCharacterId(targetPhone.CurrentOwnerId.Value);
         if (contactPlayer != null)
         {
-            var contactPhoneItem = contactPlayer.CharacterModel.InventoryModel.Items.FirstOrDefault(
-                i => i.CustomData == targetPhone.Id.ToString()
-                     && i.CatalogItemModelId == ItemCatalogIds.PHONE);
+            var contactPhoneItem = contactPlayer.CharacterModel.InventoryModel.Items.FirstOrDefault(i =>
+                i.CustomData == targetPhone.Id.ToString() && i.CatalogItemModelId == ItemCatalogIds.PHONE);
 
             var handyName = contactPhoneItem?.Note != null
                 ? $"Du hast auf dem Handy ({contactPhoneItem.Note})"
@@ -246,7 +241,7 @@ public class PhoneModule : ISingletonScript
             {
                 var handyName = phoneItem.Note != null ? $"Das Handy ({phoneItem.Note})" : "Das Handy";
                 player.SendNotification($"{handyName} deines Charakters hat eine Benachrichtigung erhalten.",
-                                        NotificationType.INFO);
+                    NotificationType.INFO);
 
                 await UpdateUi(player, phoneId);
             }

@@ -13,8 +13,7 @@ using Server.Database.Models.Vehicles;
 
 namespace Server.Modules.Key;
 
-public class KeyModule
-    : ITransientScript
+public class KeyModule : ITransientScript
 {
     private readonly GroupService _groupService;
 
@@ -69,8 +68,7 @@ public class KeyModule
         if (isGroupEntity)
         {
             foreach (var i in player.CharacterModel.InventoryModel.Items
-                                    .Where(i => i.CatalogItemModelId == ItemCatalogIds.GROUP_KEY)
-                                    .Cast<ItemGroupKeyModel>())
+                         .Where(i => i.CatalogItemModelId == ItemCatalogIds.GROUP_KEY).Cast<ItemGroupKeyModel>())
             {
                 if (!i.GroupModelId.HasValue)
                 {
@@ -86,9 +84,9 @@ public class KeyModule
                 if (group.Members.Any(m => m.CharacterModelId == player.CharacterModel.Id))
                 {
                     // Group keys are a bit diffrent, there are not in the key list there are just checking the group owner id.
-                    canInteract = houseModel != null && houseModel?.GroupModelId == i.GroupModelId
-                                  || vehicleModel != null && vehicleModel?.GroupModelOwnerId == i.GroupModelId
-                                  || doorModel != null && doorModel.HouseModel.GroupModelId == i.GroupModelId;
+                    canInteract = houseModel != null && houseModel?.GroupModelId == i.GroupModelId ||
+                                  vehicleModel != null && vehicleModel?.GroupModelOwnerId == i.GroupModelId ||
+                                  doorModel != null && doorModel.HouseModel.GroupModelId == i.GroupModelId;
 
                     if (canInteract)
                     {
@@ -97,14 +95,12 @@ public class KeyModule
                 }
                 else
                 {
-                    isNotInGroup = houseModel != null && houseModel?.GroupModelId == i.GroupModelId
-                                   || vehicleModel != null && vehicleModel?.GroupModelOwnerId == i.GroupModelId;
+                    isNotInGroup = houseModel != null && houseModel?.GroupModelId == i.GroupModelId ||
+                                   vehicleModel != null && vehicleModel?.GroupModelOwnerId == i.GroupModelId;
                 }
             }
 
-            return isNotInGroup
-                ? HasKeyErrorType.HAS_WRONG_GROUP_KEY
-                : HasKeyErrorType.HAS_NO_KEY;
+            return isNotInGroup ? HasKeyErrorType.HAS_WRONG_GROUP_KEY : HasKeyErrorType.HAS_NO_KEY;
         }
 
         if (keys.Count == 0)
@@ -114,10 +110,8 @@ public class KeyModule
 
         // Last check if we are maybe able to use a normal key.
         var keyItem = player.CharacterModel.InventoryModel.Items.Where(i => i.CatalogItemModelId == ItemCatalogIds.KEY)
-                            .FirstOrDefault(i => keys.Any(k => k == i.Id));
+            .FirstOrDefault(i => keys.Any(k => k == i.Id));
 
-        return keyItem == null
-            ? HasKeyErrorType.HAS_NO_KEY
-            : HasKeyErrorType.HAS_KEY;
+        return keyItem == null ? HasKeyErrorType.HAS_NO_KEY : HasKeyErrorType.HAS_KEY;
     }
 }

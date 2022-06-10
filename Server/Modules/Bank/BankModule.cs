@@ -13,8 +13,7 @@ using Server.Database.Models.Group;
 
 namespace Server.Modules.Bank;
 
-public class BankModule
-    : ITransientScript
+public class BankModule : ITransientScript
 {
     private readonly BankAccountCharacterAccessService _bankAccountCharacterAccessService;
     private readonly BankAccountService _bankAccountService;
@@ -22,12 +21,8 @@ public class BankModule
     private readonly GroupService _groupService;
     private readonly ILogger<BankModule> _logger;
 
-    public BankModule(
-        ILogger<BankModule> logger,
-        BankAccountService bankAccountService,
-        GroupService groupService,
-        BankAccountCharacterAccessService bankAccountCharacterAccessService,
-        BankHistoryService bankHistoryService)
+    public BankModule(ILogger<BankModule> logger, BankAccountService bankAccountService, GroupService groupService,
+        BankAccountCharacterAccessService bankAccountCharacterAccessService, BankHistoryService bankHistoryService)
     {
         _logger = logger;
         _bankAccountService = bankAccountService;
@@ -57,10 +52,9 @@ public class BankModule
             if (!member.Owner)
             {
                 var rank = group.Ranks.Find(r => r.Level == member.RankLevel);
-                if (rank == null
-                    || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
+                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
                 {
                     continue;
                 }
@@ -108,11 +102,14 @@ public class BankModule
     /// </summary>
     /// <param name="bankAccountModel"></param>
     /// <param name="amount"></param>
-    /// <param name="force">Force should only be used when you want to grab money without check, like payday public garage costs.</param>
+    /// <param name="force">
+    ///     Force should only be used when you want to grab money without check, like payday public garage
+    ///     costs.
+    /// </param>
     /// <param name="useOfPurpose">Use of purpose for this transaction</param>
     /// <returns></returns>
     public async Task<bool> Withdraw(BankAccountModel bankAccountModel, int amount, bool force = false,
-                                     string useOfPurpose = "")
+        string useOfPurpose = "")
     {
         if (!force && bankAccountModel.Amount < amount)
         {
@@ -156,7 +153,7 @@ public class BankModule
     }
 
     public async Task<bool> HasPermission(ServerPlayer player, BankAccountModel bankAccountModel,
-                                          BankingPermission bankingPermission)
+        BankingPermission bankingPermission)
     {
         var hasAccess = false;
 
@@ -239,8 +236,7 @@ public class BankModule
     public async Task<bool> AddPermission(int bankAccountId, int characterId, BankingPermission permission)
     {
         var characterAccess = await _bankAccountCharacterAccessService.Find(ca =>
-                                                                                ca.BankAccountModelId == bankAccountId
-                                                                                && ca.CharacterModelId == characterId);
+            ca.BankAccountModelId == bankAccountId && ca.CharacterModelId == characterId);
         if (characterAccess == null)
         {
             return false;
@@ -255,8 +251,7 @@ public class BankModule
     public async Task<bool> RemovePermission(int bankAccountId, int characterId, BankingPermission permission)
     {
         var characterAccess = await _bankAccountCharacterAccessService.Find(ca =>
-                                                                                ca.BankAccountModelId == bankAccountId
-                                                                                && ca.CharacterModelId == characterId);
+            ca.BankAccountModelId == bankAccountId && ca.CharacterModelId == characterId);
         if (characterAccess == null)
         {
             return false;

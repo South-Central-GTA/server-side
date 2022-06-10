@@ -11,8 +11,7 @@ public class ContextModule : ISingletonScript
 {
     private readonly ILogger<ContextModule> _logger;
 
-    public ContextModule(
-        ILogger<ContextModule> logger)
+    public ContextModule(ILogger<ContextModule> logger)
     {
         _logger = logger;
     }

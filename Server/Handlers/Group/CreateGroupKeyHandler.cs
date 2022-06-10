@@ -23,15 +23,9 @@ public class CreateGroupKeyHandler : ISingletonScript
     private readonly ItemCreationModule _itemCreationModule;
     private readonly ItemService _itemService;
 
-    public CreateGroupKeyHandler(
-        BankAccountService bankAccountService,
-        GroupService groupService,
-        ItemCatalogService itemCatalogService,
-        ItemService itemService,
-        BankModule bankModule,
-        GroupModule groupModule,
-        ItemCreationModule itemCreationModule,
-        InventoryModule inventoryModule)
+    public CreateGroupKeyHandler(BankAccountService bankAccountService, GroupService groupService,
+        ItemCatalogService itemCatalogService, ItemService itemService, BankModule bankModule, GroupModule groupModule,
+        ItemCreationModule itemCreationModule, InventoryModule inventoryModule)
     {
         _bankAccountService = bankAccountService;
         _groupService = groupService;
@@ -62,7 +56,7 @@ public class CreateGroupKeyHandler : ISingletonScript
         if (!_groupModule.IsOwner(player, group))
         {
             player.SendNotification("Dein Charakter ist nicht der Eigentümer von dieser Gruppe.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -78,19 +72,15 @@ public class CreateGroupKeyHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         var success = await _bankModule.Withdraw(bankAccount, catalogItem.Price, false, "Gruppenschlüssel nachgemacht");
         if (success)
         {
-            var item = (ItemGroupKeyModel)await _itemCreationModule.AddItemAsync(player,
-                                                                                 ItemCatalogIds.GROUP_KEY,
-                                                                                 1,
-                                                                                 null,
-                                                                                 null,
-                                                                                 group.Name);
+            var item = (ItemGroupKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.GROUP_KEY, 1,
+                null, null, group.Name);
             if (item == null)
             {
                 return;
@@ -107,7 +97,7 @@ public class CreateGroupKeyHandler : ISingletonScript
         else
         {
             player.SendNotification("Das Gruppenkonto hat nicht genug Geld um einen Gruppenschlüssel zu erstellen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
         }
     }
 }

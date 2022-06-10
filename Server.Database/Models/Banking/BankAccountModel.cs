@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
 using AltV.Net;
 using Server.Database.Enums;
 using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Banking;
 
-public class BankAccountModel
-    : ModelBase, IWritable
+public class BankAccountModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -27,52 +25,35 @@ public class BankAccountModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(BankAccountModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("status");
-        writer.Value((int)Status);
+        writer.Value((int)model.Status);
 
         writer.Name("type");
-        writer.Value((int)Type);
+        writer.Value((int)model.Type);
 
         writer.Name("amount");
-        writer.Value(Amount.ToString());
+        writer.Value(model.Amount.ToString());
 
         writer.Name("bankDetails");
-        writer.Value(BankDetails);
+        writer.Value(model.BankDetails);
 
         writer.Name("characterAccesses");
 
         writer.BeginArray();
 
-        if (CharacterAccesses != null)
+        foreach (var characterAccess in model.CharacterAccesses)
         {
-            for (var i = 0; i < CharacterAccesses.Count; i++)
-            {
-                writer.BeginObject();
-
-                var characterAccesses = CharacterAccesses[i];
-
-                writer.Name("bankAccountId");
-                writer.Value(characterAccesses.BankAccountModelId);
-
-                writer.Name("permission");
-                writer.Value((int)characterAccesses.Permission);
-
-                writer.Name("name");
-                writer.Value(characterAccesses.CharacterModel.Name);
-
-                writer.Name("characterId");
-                writer.Value(characterAccesses.CharacterModel.Id);
-
-                writer.Name("owner");
-                writer.Value(characterAccesses.Owner);
-
-                writer.EndObject();
-            }
+            BankAccountCharacterAccessModel.Serialize(characterAccess, writer);
         }
 
         writer.EndArray();
@@ -81,25 +62,9 @@ public class BankAccountModel
 
         writer.BeginArray();
 
-        if (GroupRankAccess != null)
+        foreach (var groupAccess in model.GroupRankAccess)
         {
-            for (var i = 0; i < GroupRankAccess.Count; i++)
-            {
-                writer.BeginObject();
-
-                var groupAccesses = GroupRankAccess[i];
-
-                writer.Name("groupId");
-                writer.Value(groupAccesses.GroupModelId);
-
-                writer.Name("name");
-                writer.Value(groupAccesses.GroupModel != null ? groupAccesses.GroupModel.Name : "");
-
-                writer.Name("owner");
-                writer.Value(groupAccesses.Owner);
-
-                writer.EndObject();
-            }
+            BankAccountGroupRankAccessModel.Serialize(groupAccess, writer);
         }
 
         writer.EndArray();
@@ -108,32 +73,9 @@ public class BankAccountModel
 
         writer.BeginArray();
 
-        if (History != null)
+        foreach (var historyEntry in model.History)
         {
-            foreach (var historyEntry in History)
-            {
-                writer.BeginObject();
-
-                writer.Name("id");
-                writer.Value(historyEntry.Id);
-
-                writer.Name("type");
-                writer.Value((int)historyEntry.HistoryType);
-
-                writer.Name("income");
-                writer.Value(historyEntry.Income);
-
-                writer.Name("amount");
-                writer.Value(historyEntry.Amount);
-
-                writer.Name("purposeOfUse");
-                writer.Value(historyEntry.PurposeOfUse);
-
-                writer.Name("sendetAtJson");
-                writer.Value(JsonSerializer.Serialize(historyEntry.CreatedAt));
-
-                writer.EndObject();
-            }
+            BankHistoryEntryModel.Serialize(historyEntry, writer);
         }
 
         writer.EndArray();

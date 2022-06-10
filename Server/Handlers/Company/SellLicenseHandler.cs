@@ -18,23 +18,18 @@ namespace Server.Handlers.Company;
 
 public class SellLicenseHandler : ISingletonScript
 {
-    private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
-    private readonly GroupService _groupService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly BankModule _bankModule;
+    private readonly CompanyOptions _companyOptions;
     private readonly GroupModule _groupModule;
+    private readonly GroupService _groupService;
     private readonly PhoneModule _phoneModule;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public SellLicenseHandler(
-        IOptions<CompanyOptions> companyOptions,
-        GroupService groupService,
-        BankAccountService bankAccountService,
-        RegistrationOfficeService registrationOfficeService,
-        GroupModule groupModule,
-        BankModule bankModule,
-        PhoneModule phoneModule)
+    public SellLicenseHandler(IOptions<CompanyOptions> companyOptions, GroupService groupService,
+        BankAccountService bankAccountService, RegistrationOfficeService registrationOfficeService,
+        GroupModule groupModule, BankModule bankModule, PhoneModule phoneModule)
     {
         _companyOptions = companyOptions.Value;
 
@@ -69,7 +64,7 @@ public class SellLicenseHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -80,16 +75,14 @@ public class SellLicenseHandler : ISingletonScript
         }
 
         var bankAccount = await _bankAccountService.Find(ba =>
-                                                             ba.Type == OwnableAccountType.GROUP
-                                                             && ba.GroupRankAccess.Any(
-                                                                 gra => gra.GroupModelId == companyGroup.Id));
+            ba.Type == OwnableAccountType.GROUP && ba.GroupRankAccess.Any(gra => gra.GroupModelId == companyGroup.Id));
 
         var price = (int)(license.Price * 0.5f);
 
         await _bankModule.Deposit(bankAccount, price, $"Lizenz '{license.Name}' gekauft");
 
-        foreach (var target in
-                 group.Members.Select(m => Alt.GetAllPlayers().FindPlayerByCharacterId(m.CharacterModelId)))
+        foreach (var target in group.Members.Select(
+                     m => Alt.GetAllPlayers().FindPlayerByCharacterId(m.CharacterModelId)))
         {
             await _bankModule.UpdateUi(target);
         }

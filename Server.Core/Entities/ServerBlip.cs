@@ -6,22 +6,24 @@ using Server.Data.Enums.EntitySync;
 
 namespace Server.Core.Entities;
 
-public class ServerBlip
-    : Entity
+public class ServerBlip : Entity
 {
-    public ServerBlip(Vector3 position, int dimension, uint range)
-        : base((ulong)EntityType.BLIP, position, dimension, range)
+    public ServerBlip(Vector3 position, int dimension, uint range) : base((ulong)EntityType.BLIP, position, dimension,
+        range)
     {
     }
 
     /// <summary>
-    /// The text to display on the blip in the map menu
+    ///     The text to display on the blip in the map menu
     /// </summary>
     public string? Name
     {
         get
         {
-            if (!TryGetData("name", out string name)) return null;
+            if (!TryGetData("name", out string name))
+            {
+                return null;
+            }
 
             return name;
         }
@@ -29,13 +31,16 @@ public class ServerBlip
     }
 
     /// <summary>
-    /// The blip type
+    ///     The blip type
     /// </summary>
     public BlipType BlipType
     {
         get
         {
-            if (!TryGetData("blipType", out BlipType blipType)) return BlipType.POINT;
+            if (!TryGetData("blipType", out BlipType blipType))
+            {
+                return BlipType.POINT;
+            }
 
             return blipType;
         }
@@ -43,13 +48,16 @@ public class ServerBlip
     }
 
     /// <summary>
-    /// If this player is set the blip will only show up for this specific player.
+    ///     If this player is set the blip will only show up for this specific player.
     /// </summary>
     public ServerPlayer? Player
     {
         get
         {
-            if (!TryGetData("player", out ServerPlayer player)) return null;
+            if (!TryGetData("player", out ServerPlayer player))
+            {
+                return null;
+            }
 
             return player;
         }
@@ -57,13 +65,16 @@ public class ServerBlip
     }
 
     /// <summary>
-    /// ID of the sprite to use, can be found on the ALTV wiki
+    ///     ID of the sprite to use, can be found on the ALTV wiki
     /// </summary>
     public int Sprite
     {
         get
         {
-            if (!TryGetData("sprite", out int spriteId)) return 0;
+            if (!TryGetData("sprite", out int spriteId))
+            {
+                return 0;
+            }
 
             return spriteId;
         }
@@ -74,7 +85,10 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("radius", out int radius)) return 0;
+            if (!TryGetData("radius", out int radius))
+            {
+                return 0;
+            }
 
             return radius;
         }
@@ -85,7 +99,10 @@ public class ServerBlip
     {
         get
         {
-            if (!TryGetData("alpha", out int alpha)) return 255;
+            if (!TryGetData("alpha", out int alpha))
+            {
+                return 255;
+            }
 
             return alpha;
         }
@@ -93,45 +110,55 @@ public class ServerBlip
     }
 
     /// <summary>
-    /// Blip Color code, can also be found on the ALTV wiki
+    ///     Blip Color code, can also be found on the ALTV wiki
     /// </summary>
     public int Color
     {
         get
         {
-            if (!TryGetData("color", out int color)) return 0;
+            if (!TryGetData("color", out int color))
+            {
+                return 0;
+            }
 
             return color;
         }
-        set { SetData("color", value); }
+        set => SetData("color", value);
     }
 
     /// <summary>
-    /// Scale of the blip, 1 is regular size.
+    ///     Scale of the blip, 1 is regular size.
     /// </summary>
     public float Scale
     {
         get
         {
-            if (!TryGetData("scale", out float scale)) return 1;
+            if (!TryGetData("scale", out float scale))
+            {
+                return 1;
+            }
 
             return scale;
         }
-        set { SetData("scale", value); }
+        set => SetData("scale", value);
     }
 
     /// <summary>
-    /// Whether this blip can be seen on the minimap from anywhere on the map, or only when close to it(it will always show on the main map).
+    ///     Whether this blip can be seen on the minimap from anywhere on the map, or only when close to it(it will always show
+    ///     on the main map).
     /// </summary>
     public bool ShortRange
     {
         get
         {
-            if (!TryGetData("shortRange", out bool shortRange)) return true;
+            if (!TryGetData("shortRange", out bool shortRange))
+            {
+                return true;
+            }
 
             return shortRange;
         }
-        set { SetData("shortRange", value); }
+        set => SetData("shortRange", value);
     }
 
     public void SetPosition(Position position)

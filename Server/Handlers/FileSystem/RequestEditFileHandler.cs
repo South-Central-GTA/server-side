@@ -13,9 +13,7 @@ public class RequestEditFileHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
 
-    public RequestEditFileHandler(
-        FileService fileService,
-        GroupModule groupModule)
+    public RequestEditFileHandler(FileService fileService, GroupModule groupModule)
     {
         _fileService = fileService;
 

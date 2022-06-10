@@ -16,39 +16,30 @@ namespace Server.Handlers.CharacterSelector;
 
 public class RequestDeleteCharacterHandler : ISingletonScript
 {
-    private readonly GroupModule _groupModule;
-    private readonly HouseModule _houseModule;
-    private readonly CharacterSelectionModule _characterSelectionModule;
     private readonly AccountService _accountService;
     private readonly BankAccountService _bankAccountService;
+    private readonly CharacterSelectionModule _characterSelectionModule;
     private readonly CharacterService _characterService;
     private readonly DeliveryService _deliveryService;
     private readonly GroupMemberService _groupMemberService;
+    private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
+    private readonly HouseModule _houseModule;
     private readonly HouseService _houseService;
     private readonly InventoryService _inventoryService;
     private readonly ItemService _itemService;
     private readonly PublicGarageEntryService _publicGarageEntryService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
     private readonly RoleplayInfoService _roleplayInfoService;
     private readonly VehicleService _vehicleService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public RequestDeleteCharacterHandler(
-        GroupModule groupModule,
-        HouseModule houseModule,
-        CharacterSelectionModule characterSelectionModule,
-        AccountService accountService,
-        BankAccountService bankAccountService,
-        CharacterService characterService,
-        DeliveryService deliveryService,
-        GroupMemberService groupMemberService,
-        GroupService groupService,
-        HouseService houseService,
-        InventoryService inventoryService,
-        ItemService itemService,
-        PublicGarageEntryService publicGarageEntryService,
-        RoleplayInfoService roleplayInfoService,
-        VehicleService vehicleService, RegistrationOfficeService registrationOfficeService)
+    public RequestDeleteCharacterHandler(GroupModule groupModule, HouseModule houseModule,
+        CharacterSelectionModule characterSelectionModule, AccountService accountService,
+        BankAccountService bankAccountService, CharacterService characterService, DeliveryService deliveryService,
+        GroupMemberService groupMemberService, GroupService groupService, HouseService houseService,
+        InventoryService inventoryService, ItemService itemService, PublicGarageEntryService publicGarageEntryService,
+        RoleplayInfoService roleplayInfoService, VehicleService vehicleService,
+        RegistrationOfficeService registrationOfficeService)
     {
         _groupModule = groupModule;
         _houseModule = houseModule;
@@ -191,8 +182,7 @@ public class RequestDeleteCharacterHandler : ISingletonScript
             }
         }
 
-        var publicGarageEntries =
-            await _publicGarageEntryService.Where(pg => pg.CharacterModelId == characterId);
+        var publicGarageEntries = await _publicGarageEntryService.Where(pg => pg.CharacterModelId == characterId);
         await _publicGarageEntryService.RemoveRange(publicGarageEntries);
 
         var ownedBankAccounts = await _bankAccountService.GetByOwner(characterId);
@@ -201,7 +191,7 @@ public class RequestDeleteCharacterHandler : ISingletonScript
         if (character.InventoryModel != null)
         {
             foreach (var itemCloth in character.InventoryModel.Items.Where(i => i is ItemClothModel)
-                                               .Cast<ItemClothModel>())
+                         .Cast<ItemClothModel>())
             {
                 if (itemCloth.ClothingInventoryModel != null)
                 {

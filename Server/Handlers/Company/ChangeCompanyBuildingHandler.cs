@@ -15,20 +15,15 @@ namespace Server.Handlers.Company;
 
 public class ChangeCompanyBuildingHandler : ISingletonScript
 {
+    private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
+    private readonly HouseModule _houseModule;
     private readonly HouseService _houseService;
+    private readonly PhoneModule _phoneModule;
     private readonly RegistrationOfficeService _registrationOfficeService;
 
-    private readonly GroupModule _groupModule;
-    private readonly HouseModule _houseModule;
-    private readonly PhoneModule _phoneModule;
-
-    public ChangeCompanyBuildingHandler(
-        GroupService groupService,
-        HouseService houseService,
-        RegistrationOfficeService registrationOfficeService,
-        GroupModule groupModule,
-        HouseModule houseModule,
+    public ChangeCompanyBuildingHandler(GroupService groupService, HouseService houseService,
+        RegistrationOfficeService registrationOfficeService, GroupModule groupModule, HouseModule houseModule,
         PhoneModule phoneModule)
     {
         _groupService = groupService;
@@ -47,7 +42,7 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
         var groups = await _groupService.GetGroupsByCharacter(player.CharacterModel.Id);
         var group = groups?.FirstOrDefault(g => g.GroupType == GroupType.COMPANY && g.Id == companyId);
 
-        var member = @group?.Members.FirstOrDefault(m => m.CharacterModelId == player.CharacterModel.Id && m.Owner);
+        var member = group?.Members.FirstOrDefault(m => m.CharacterModelId == player.CharacterModel.Id && m.Owner);
         if (member == null)
         {
             return;
@@ -57,7 +52,7 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -70,7 +65,7 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
         if (newHouse.HouseType != HouseType.HOUSE)
         {
             player.SendNotification("Dieses Gebäude kann nicht als Hauptsitz des Unternehmens gesetzt werden.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -82,8 +77,8 @@ public class ChangeCompanyBuildingHandler : ISingletonScript
         newHouse.GroupModelId = group.Id;
         await _houseService.Update(newHouse);
 
-        foreach (var target in
-                 group.Members.Select(m => Alt.GetAllPlayers().FindPlayerByCharacterId(m.CharacterModelId)))
+        foreach (var target in group.Members.Select(
+                     m => Alt.GetAllPlayers().FindPlayerByCharacterId(m.CharacterModelId)))
         {
             if (target == null)
             {

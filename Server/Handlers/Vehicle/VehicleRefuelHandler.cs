@@ -18,9 +18,7 @@ public class VehicleRefuelHandler : ISingletonScript
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly WorldMarketModule _worldMarketModule;
 
-    public VehicleRefuelHandler(
-        WorldMarketModule worldMarketModule,
-        VehicleCatalogService vehicleCatalogService,
+    public VehicleRefuelHandler(WorldMarketModule worldMarketModule, VehicleCatalogService vehicleCatalogService,
         HouseService houseService)
     {
         _worldMarketModule = worldMarketModule;
@@ -73,9 +71,9 @@ public class VehicleRefuelHandler : ISingletonScript
 
         // Check if user is nearby an gas station
         if (await _houseService.GetByDistance(player.Position, 10) is LeaseCompanyHouseModel
-        {
-            LeaseCompanyType: LeaseCompanyType.GAS_STATION
-        })
+            {
+                LeaseCompanyType: LeaseCompanyType.GAS_STATION
+            })
         {
             var diff = catalogVehicle.MaxTank - vehicle.Fuel;
             float price = _worldMarketModule.FuelPrice[catalogVehicle.FuelType];

@@ -9,13 +9,11 @@ using Server.Database.Models.Inventory.Phone;
 
 namespace Server.DataAccessLayer.Services;
 
-public class PhoneChatService
-    : BaseService<PhoneChatModel>, ITransientScript
+public class PhoneChatService : BaseService<PhoneChatModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public PhoneChatService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public PhoneChatService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
@@ -23,16 +21,12 @@ public class PhoneChatService
     public async Task<PhoneChatModel?> GetByKey(int chatId)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.PhoneChats
-                              .Include(c => c.Messages)
-                              .FirstOrDefaultAsync(p => p.Id == chatId);
+        return await dbContext.PhoneChats.Include(c => c.Messages).FirstOrDefaultAsync(p => p.Id == chatId);
     }
 
     public override async Task<PhoneChatModel?> Find(Expression<Func<PhoneChatModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.PhoneChats
-                              .Include(c => c.Messages)
-                              .FirstOrDefaultAsync(expression);
+        return await dbContext.PhoneChats.Include(c => c.Messages).FirstOrDefaultAsync(expression);
     }
 }

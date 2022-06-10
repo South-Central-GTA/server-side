@@ -16,10 +16,7 @@ public class DeleteGroupMenuHandler : ISingletonScript
     private readonly HouseModule _houseModule;
     private readonly HouseService _houseService;
 
-    public DeleteGroupMenuHandler(
-        GroupService groupService,
-        HouseService houseService,
-        GroupModule groupModule,
+    public DeleteGroupMenuHandler(GroupService groupService, HouseService houseService, GroupModule groupModule,
         HouseModule houseModule)
     {
         _groupService = groupService;

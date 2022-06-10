@@ -10,12 +10,12 @@ using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
+using Server.Database.Models.Character;
 using Server.Modules.Bank;
 
 namespace Server.Modules.DefinedJob;
 
-public class DefinedJobModule
-    : ITransientScript
+public class DefinedJobModule : ITransientScript
 {
     private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
@@ -24,12 +24,8 @@ public class DefinedJobModule
     private readonly GameOptions _gameOptions;
     private readonly ILogger<DefinedJobModule> _logger;
 
-    public DefinedJobModule(
-        IOptions<GameOptions> gameOptions,
-        ILogger<DefinedJobModule> logger,
-        DefinedJobService definedJobService,
-        BankAccountService bankAccountService,
-        CharacterService characterService,
+    public DefinedJobModule(IOptions<GameOptions> gameOptions, ILogger<DefinedJobModule> logger,
+        DefinedJobService definedJobService, BankAccountService bankAccountService, CharacterService characterService,
         BankModule bankModule)
     {
         _logger = logger;
@@ -42,7 +38,7 @@ public class DefinedJobModule
         _bankModule = bankModule;
     }
 
-    public async Task<Database.Models.Character.DefinedJobModel?> GetPlayerJob(ServerPlayer player)
+    public async Task<DefinedJobModel?> GetPlayerJob(ServerPlayer player)
     {
         var definedJob = await _definedJobService.Find(j => j.CharacterModelId == player.CharacterModel.Id);
         return definedJob;
@@ -57,7 +53,7 @@ public class DefinedJobModule
             return;
         }
 
-        var definedJob = new Database.Models.Character.DefinedJobModel
+        var definedJob = new DefinedJobModel
         {
             CharacterModelId = player.CharacterModel.Id, JobId = jobId, BankAccountId = bankAccountId
         };
@@ -66,10 +62,10 @@ public class DefinedJobModule
 
         await _definedJobService.Add(definedJob);
 
-        player.SendNotification(jobId == 0
-                                    ? "Dein Charakter erhält finanzielle Unterstützung."
-                                    : "Dein Charakter hat erfolgreich ein Berufsfeld ausgewählt.",
-                                NotificationType.INFO);
+        player.SendNotification(
+            jobId == 0
+                ? "Dein Charakter erhält finanzielle Unterstützung."
+                : "Dein Charakter hat erfolgreich ein Berufsfeld ausgewählt.", NotificationType.INFO);
 
         await UpdateUi(player);
     }
@@ -91,7 +87,7 @@ public class DefinedJobModule
         player.CharacterModel.JobModel = null;
 
         player.SendNotification("Dein Charakter ist wieder arbeitslos und verdient kein Geld mehr.",
-                                NotificationType.INFO);
+            NotificationType.INFO);
         await UpdateUi(player);
     }
 

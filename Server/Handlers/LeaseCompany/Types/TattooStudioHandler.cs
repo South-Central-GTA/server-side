@@ -18,25 +18,19 @@ namespace Server.Handlers.LeaseCompany.Types;
 
 public class TattooStudioHandler : ISingletonScript
 {
-    private readonly CompanyOptions _companyOptions;
     private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
     private readonly CharacterService _characterService;
+    private readonly CompanyOptions _companyOptions;
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
 
     private readonly MoneyModule _moneyModule;
     private readonly Serializer _serializer;
 
-    public TattooStudioHandler(
-        IOptions<CompanyOptions> companyOptions,
-        Serializer serializer,
-        BankAccountService bankAccountService,
-        GroupService groupService,
-        HouseService houseService,
-        CharacterService characterService,
-        MoneyModule moneyModule,
-        BankModule bankModule)
+    public TattooStudioHandler(IOptions<CompanyOptions> companyOptions, Serializer serializer,
+        BankAccountService bankAccountService, GroupService groupService, HouseService houseService,
+        CharacterService characterService, MoneyModule moneyModule, BankModule bankModule)
     {
         _companyOptions = companyOptions.Value;
         _serializer = serializer;
@@ -110,8 +104,9 @@ public class TattooStudioHandler : ISingletonScript
         {
             Type = DialogType.TWO_BUTTON_DIALOG,
             Title = "Tattoos ändern",
-            Description = $"Möchtest du deine Tattoos für <b>${price}</b> erwerben?<br>" +
-                          "<span class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</span>",
+            Description =
+                $"Möchtest du deine Tattoos für <b>${price}</b> erwerben?<br>" +
+                "<span class='text-muted'>Du kannst mit dem Bargeld deines Charakters bezahlen oder per Banküberweisung.</span>",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             Data = data,
@@ -198,14 +193,12 @@ public class TattooStudioHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount,
-                                                 price,
-                                                 false,
-                                                 $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
+        var success = await _bankModule.Withdraw(bankAccount, price, false,
+            $"{leaseCompanyHouse.SubName} {_companyOptions.Types[leaseCompanyHouse.LeaseCompanyType].Name}");
         if (success)
         {
             player.CharacterModel.TattoosModel.Update(_serializer.Deserialize<TattoosModel>(newTattoosJson));

@@ -6,8 +6,8 @@ using Microsoft.Extensions.Options;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities;
+using Server.Data.Enums;
 using Server.Data.Enums.EntitySync;
-using BlipType = Server.Data.Enums.BlipType;
 
 namespace Server.Modules.EntitySync;
 
@@ -23,8 +23,8 @@ public class BlipSyncModule : ISingletonScript
     }
 
     public ServerBlip Create(string name, int color, float scale, bool shortRange, int spriteId, Position position,
-                             int dimension = 0, BlipType blipType = BlipType.POINT, ServerPlayer? targetPlayer = null,
-                             int radius = 0, int alpha = 255, uint streamRange = 5000)
+        int dimension = 0, BlipType blipType = BlipType.POINT, ServerPlayer? targetPlayer = null, int radius = 0,
+        int alpha = 255, uint streamRange = 5000)
     {
         var blip = new ServerBlip(position, dimension, streamRange)
         {

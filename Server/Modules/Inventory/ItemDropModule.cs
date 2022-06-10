@@ -15,8 +15,7 @@ using Server.Modules.Clothing;
 
 namespace Server.Modules.Inventory;
 
-public class ItemDropModule
-    : ITransientScript
+public class ItemDropModule : ITransientScript
 {
     private readonly InventoryModule _inventoryModule;
     private readonly ItemCreationModule _itemCreationModule;
@@ -25,12 +24,8 @@ public class ItemDropModule
     private readonly ILogger<ItemDropModule> _logger;
     private readonly Serializer _serializer;
 
-    public ItemDropModule(
-        ILogger<ItemDropModule> logger,
-        Serializer serializer,
-        ItemService itemService,
-        InventoryModule inventoryModule,
-        ItemCreationModule itemCreationModule)
+    public ItemDropModule(ILogger<ItemDropModule> logger, Serializer serializer, ItemService itemService,
+        InventoryModule inventoryModule, ItemCreationModule itemCreationModule)
     {
         _logger = logger;
         _serializer = serializer;
@@ -45,9 +40,8 @@ public class ItemDropModule
     {
         var item = await _itemService.GetByKey(itemId);
 
-        var sameItemType = player.CharacterModel.InventoryModel.Items.Find(
-            i => i.CatalogItemModelId == item.CatalogItemModelId
-                 && item.CatalogItemModel.Stackable);
+        var sameItemType = player.CharacterModel.InventoryModel.Items.Find(i =>
+            i.CatalogItemModelId == item.CatalogItemModelId && item.CatalogItemModel.Stackable);
 
         if (player.Position.Distance(item.Position) > 3.0f)
         {
@@ -60,8 +54,9 @@ public class ItemDropModule
         if (item is ItemWeaponModel itemWeapon)
         {
             var items = await _itemService.GetAll();
-            var weaponAttachments = items.Where(i => i is ItemWeaponAttachmentModel weaponAttachment
-                                                     && weaponAttachment.ItemWeaponId == itemWeapon.Id).ToList();
+            var weaponAttachments = items.Where(i =>
+                    i is ItemWeaponAttachmentModel weaponAttachment && weaponAttachment.ItemWeaponId == itemWeapon.Id)
+                .ToList();
 
             if (weaponAttachments.Count != 0)
             {
@@ -87,13 +82,13 @@ public class ItemDropModule
             else
             {
                 freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id,
-                                                                  item.CatalogItemModel.Weight);
+                    item.CatalogItemModel.Weight);
             }
         }
         else
         {
             freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id,
-                                                              item.CatalogItemModel.Weight);
+                item.CatalogItemModel.Weight);
         }
 
         if (!freeSlot.HasValue)
@@ -126,12 +121,12 @@ public class ItemDropModule
         {
             var data = _serializer.Deserialize<ClothingData>(item.CustomData);
             player.SendNotification($"Dein Charakter hat {item.Amount}x {data.Title} aufgehoben.",
-                                    NotificationType.SUCCESS);
+                NotificationType.SUCCESS);
         }
         else
         {
             player.SendNotification($"Dein Charakter hat {item.Amount}x {item.CatalogItemModel.Name} aufgehoben.",
-                                    NotificationType.SUCCESS);
+                NotificationType.SUCCESS);
         }
 
         return true;
@@ -141,9 +136,8 @@ public class ItemDropModule
     {
         var item = await _itemService.GetByKey(itemId);
 
-        var sameItem = player.CharacterModel.InventoryModel.Items.Find(
-            i => i.CatalogItemModel.Id == item.CatalogItemModel.Id
-                 && i.ItemState == ItemState.EQUIPPED);
+        var sameItem = player.CharacterModel.InventoryModel.Items.Find(i =>
+            i.CatalogItemModel.Id == item.CatalogItemModel.Id && i.ItemState == ItemState.EQUIPPED);
 
         if (sameItem != null)
         {
@@ -155,7 +149,7 @@ public class ItemDropModule
         if (clothingData.GenderType != player.CharacterModel.Gender)
         {
             player.SendNotification("Dein Charakter kann keine Kleidung des anderen Geschlechtes anziehen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

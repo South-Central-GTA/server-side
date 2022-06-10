@@ -16,10 +16,7 @@ public class SelectDefinedJobHandler : ISingletonScript
     private readonly DefinedJobModule _definedJobModule;
     private readonly GroupModule _groupModule;
 
-    public SelectDefinedJobHandler(
-        BankModule bankModule,
-        GroupModule groupModule,
-        DefinedJobModule definedJobModule)
+    public SelectDefinedJobHandler(BankModule bankModule, GroupModule groupModule, DefinedJobModule definedJobModule)
     {
         _bankModule = bankModule;
         _groupModule = groupModule;
@@ -38,7 +35,7 @@ public class SelectDefinedJobHandler : ISingletonScript
         if (!await _bankModule.HasBankAccount(player))
         {
             player.SendNotification("Dein Charakter braucht ein Bankkonto damit du ihm einen Job definieren kannst.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

@@ -13,21 +13,17 @@ namespace Server.Modules.PoliceTicket;
 
 public class PoliceTicketModule : ISingletonScript
 {
-    private readonly PoliceTicketService _policeTicketService;
-    private readonly ItemService _itemService;
-    private readonly GroupFactionService _groupFactionService;
     private readonly BankAccountService _bankAccountService;
-
-    private readonly ItemCreationModule _itemCreationModule;
+    private readonly GroupFactionService _groupFactionService;
     private readonly InventoryModule _inventoryModule;
 
-    public PoliceTicketModule(
-        PoliceTicketService policeTicketService,
-        ItemService itemService,
-        GroupFactionService groupFactionService,
-        BankAccountService bankAccountService,
-        ItemCreationModule itemCreationModule,
-        InventoryModule inventoryModule)
+    private readonly ItemCreationModule _itemCreationModule;
+    private readonly ItemService _itemService;
+    private readonly PoliceTicketService _policeTicketService;
+
+    public PoliceTicketModule(PoliceTicketService policeTicketService, ItemService itemService,
+        GroupFactionService groupFactionService, BankAccountService bankAccountService,
+        ItemCreationModule itemCreationModule, InventoryModule inventoryModule)
     {
         _policeTicketService = policeTicketService;
         _itemService = itemService;
@@ -79,7 +75,7 @@ public class PoliceTicketModule : ISingletonScript
     }
 
     public async Task CheckPoliceTickets(ServerPlayer player, string receiverBankAccountDetails, string useOfPurpose,
-                                         int value)
+        int value)
     {
         var pdFaction = await _groupFactionService.Find(gf => gf.FactionType == FactionType.POLICE_DEPARTMENT);
         if (pdFaction == null)

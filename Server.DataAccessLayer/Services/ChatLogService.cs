@@ -6,11 +6,9 @@ using Server.Database.Models.CustomLogs;
 
 namespace Server.DataAccessLayer.Services;
 
-public class ChatLogService
-    : BaseService<ChatLogModel>, ITransientScript
+public class ChatLogService : BaseService<ChatLogModel>, ITransientScript
 {
-    public ChatLogService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public ChatLogService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
     }
 }

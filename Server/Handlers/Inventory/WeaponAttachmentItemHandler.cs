@@ -16,9 +16,7 @@ public class WeaponAttachmentItemHandler : ISingletonScript
     private readonly InventoryModule _inventoryModule;
     private readonly ItemService _itemService;
 
-    public WeaponAttachmentItemHandler(
-        ItemService itemService,
-        AttachmentModule attachmentModule,
+    public WeaponAttachmentItemHandler(ItemService itemService, AttachmentModule attachmentModule,
         InventoryModule inventoryModule)
     {
         _itemService = itemService;

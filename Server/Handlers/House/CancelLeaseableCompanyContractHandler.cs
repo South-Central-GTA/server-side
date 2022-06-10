@@ -14,18 +14,14 @@ namespace Server.Handlers.House;
 
 public class CancelLeaseableCompanyContractHandler : ISingletonScript
 {
-    private readonly GroupService _groupService;
-    private readonly HouseService _houseService;
     private readonly GroupModule _groupModule;
+    private readonly GroupService _groupService;
     private readonly HouseModule _houseModule;
+    private readonly HouseService _houseService;
     private readonly PhoneModule _phoneModule;
 
-    public CancelLeaseableCompanyContractHandler(
-        GroupService groupService,
-        HouseService houseService,
-        GroupModule groupModule,
-        PhoneModule phoneModule,
-        HouseModule houseModule)
+    public CancelLeaseableCompanyContractHandler(GroupService groupService, HouseService houseService,
+        GroupModule groupModule, PhoneModule phoneModule, HouseModule houseModule)
     {
         _groupService = groupService;
         _houseService = houseService;
@@ -54,7 +50,7 @@ public class CancelLeaseableCompanyContractHandler : ISingletonScript
         if (!_groupModule.IsOwner(player, group))
         {
             player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -68,8 +64,7 @@ public class CancelLeaseableCompanyContractHandler : ISingletonScript
 
         await _houseModule.UpdateUi(player);
 
-        await _phoneModule.SendNotification(phoneId,
-                                            PhoneNotificationType.GOV,
-                                            "Ihr Vertrag für den pachtbaren Unternehmenssitz wurde gekündigt.");
+        await _phoneModule.SendNotification(phoneId, PhoneNotificationType.GOV,
+            "Ihr Vertrag für den pachtbaren Unternehmenssitz wurde gekündigt.");
     }
 }

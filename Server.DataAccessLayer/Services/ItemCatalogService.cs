@@ -6,11 +6,9 @@ using Server.Database.Models;
 
 namespace Server.DataAccessLayer.Services;
 
-public class ItemCatalogService
-    : BaseService<CatalogItemModel>, ITransientScript
+public class ItemCatalogService : BaseService<CatalogItemModel>, ITransientScript
 {
-    public ItemCatalogService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public ItemCatalogService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
     }
 }

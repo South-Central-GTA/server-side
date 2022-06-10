@@ -6,8 +6,7 @@ using Server.Database.Models.Mdc;
 
 namespace Server.Modules.MDC;
 
-public class AllergiesModule
-    : ISingletonScript
+public class AllergiesModule : ISingletonScript
 {
     private readonly AllergiesService _allergiesService;
 
@@ -18,11 +17,9 @@ public class AllergiesModule
 
     public async Task Add(int targetCharacterId, string creatorName, string content)
     {
-        await _allergiesService.Add(new MdcAllergyModel()
+        await _allergiesService.Add(new MdcAllergyModel
         {
-            CharacterModelId = targetCharacterId,
-            CreatorCharacterName = creatorName,
-            Content = content
+            CharacterModelId = targetCharacterId, CreatorCharacterName = creatorName, Content = content
         });
     }
 

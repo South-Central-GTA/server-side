@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models;
 
-public class CallSignData
-    : IWritable
+public class CallSignData : IWritable
 {
     public int Id { get; set; }
     public string CallSign { get; set; }

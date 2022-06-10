@@ -11,15 +11,12 @@ namespace Server.ScheduledJobs;
 
 public class EmergencyCallsScheduledJob : ScheduledJob
 {
-    private readonly ILogger<EmergencyCallsScheduledJob> _logger;
     private readonly EmergencyCallService _emergencyCallService;
+    private readonly ILogger<EmergencyCallsScheduledJob> _logger;
     private readonly MdcOptions _mdcOptions;
 
-    public EmergencyCallsScheduledJob(
-        ILogger<EmergencyCallsScheduledJob> logger,
-        EmergencyCallService emergencyCallService,
-        IOptions<MdcOptions> mdcOptions)
-        : base(TimeSpan.FromMinutes(1))
+    public EmergencyCallsScheduledJob(ILogger<EmergencyCallsScheduledJob> logger,
+        EmergencyCallService emergencyCallService, IOptions<MdcOptions> mdcOptions) : base(TimeSpan.FromMinutes(1))
     {
         _logger = logger;
         _emergencyCallService = emergencyCallService;
@@ -31,9 +28,8 @@ public class EmergencyCallsScheduledJob : ScheduledJob
         var emergencyCalls = await _emergencyCallService.GetAll();
 
         var now = DateTime.Now;
-        await _emergencyCallService.RemoveRange(
-            emergencyCalls.Where(
-                call => (now - call.CreatedAt).TotalMinutes >= _mdcOptions.EmergencyCallMinutesLifetime));
+        await _emergencyCallService.RemoveRange(emergencyCalls.Where(call =>
+            (now - call.CreatedAt).TotalMinutes >= _mdcOptions.EmergencyCallMinutesLifetime));
 
         await Task.CompletedTask;
     }

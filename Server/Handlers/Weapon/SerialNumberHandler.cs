@@ -15,9 +15,7 @@ public class SerialNumberHandler : ISingletonScript
 
     private readonly NarratorModule _narratorModule;
 
-    public SerialNumberHandler(
-        ItemWeaponService itemWeaponService,
-        NarratorModule narratorModule)
+    public SerialNumberHandler(ItemWeaponService itemWeaponService, NarratorModule narratorModule)
     {
         _itemWeaponService = itemWeaponService;
         _narratorModule = narratorModule;
@@ -43,7 +41,7 @@ public class SerialNumberHandler : ISingletonScript
 
         if (string.IsNullOrEmpty(item.SerialNumber))
         {
-            _narratorModule.SendMessage(player, $"Die Seriennummer ist nicht mehr erkennbar.");
+            _narratorModule.SendMessage(player, "Die Seriennummer ist nicht mehr erkennbar.");
         }
         else
         {
@@ -79,7 +77,7 @@ public class SerialNumberHandler : ISingletonScript
             Type = DialogType.TWO_BUTTON_DIALOG,
             Title = "Seriennummer entfernen",
             Description =
-                $"Bist du sicher das du die Seriennummer von deiner Waffe entfernen möchtest?<br><br><span class='text-muted'>Der Besitz dieser Waffe ist dann illegal und es kann nicht rückgängig gemacht werden!</span>",
+                "Bist du sicher das du die Seriennummer von deiner Waffe entfernen möchtest?<br><br><span class='text-muted'>Der Besitz dieser Waffe ist dann illegal und es kann nicht rückgängig gemacht werden!</span>",
             HasBankAccountSelection = false,
             FreezeGameControls = true,
             Data = data,

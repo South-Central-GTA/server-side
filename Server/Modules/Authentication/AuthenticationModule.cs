@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Timers;
 using AltV.Net.Async;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,7 +7,6 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
-using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models;
 using Server.Modules.Admin;
@@ -30,14 +28,9 @@ public class AuthenticationModule : ISingletonScript
     private readonly HouseModule _houseModule;
     private readonly ILogger<AuthenticationModule> _logger;
 
-    public AuthenticationModule(
-        ILogger<AuthenticationModule> logger,
-        IOptions<AccountOptions> accOptions,
-        AccountService accountService,
-        DiscordModule discordModule,
-        CharacterSelectionModule characterSelectionModule,
-        HouseModule houseModule,
-        AdminPrisonModule adminPrisonModule)
+    public AuthenticationModule(ILogger<AuthenticationModule> logger, IOptions<AccountOptions> accOptions,
+        AccountService accountService, DiscordModule discordModule, CharacterSelectionModule characterSelectionModule,
+        HouseModule houseModule, AdminPrisonModule adminPrisonModule)
     {
         _logger = logger;
         _accOptions = accOptions.Value;
@@ -62,7 +55,7 @@ public class AuthenticationModule : ISingletonScript
         if (account == null)
         {
             player.EmitGui("signin:showerror",
-                           "Es wurde kein Account unter diesem GTA gefunden, bitte starte dein Spiel neu.");
+                "Es wurde kein Account unter diesem GTA gefunden, bitte starte dein Spiel neu.");
             return;
         }
 

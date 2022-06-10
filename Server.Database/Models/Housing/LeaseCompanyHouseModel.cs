@@ -1,21 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
 using AltV.Net;
 using Server.Database.Enums;
 
 namespace Server.Database.Models.Housing;
 
-public class LeaseCompanyHouseModel
-    : HouseModel
+public class LeaseCompanyHouseModel : HouseModel
 {
     public LeaseCompanyHouseModel()
     {
     }
 
     public LeaseCompanyHouseModel(LeaseCompanyType leaseCompanyType, float positionX, float positionY, float positionZ,
-                                  float rotationRoll, float rotationPitch, float rotationYaw, int price, string subName,
-                                  bool rentable = true)
-        : base(positionX, positionY, positionZ, rotationRoll, rotationPitch, rotationYaw, price, subName)
+        float rotationRoll, float rotationPitch, float rotationYaw, int price, string subName, bool rentable = true) :
+        base(positionX, positionY, positionZ, rotationRoll, rotationPitch, rotationYaw, price, subName)
     {
         LeaseCompanyType = leaseCompanyType;
         HouseType = HouseType.COMPANY;
@@ -40,82 +37,98 @@ public class LeaseCompanyHouseModel
 
     public override void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(LeaseCompanyHouseModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("southCentralPoints");
-        writer.Value(SouthCentralPoints);
+        writer.Value(model.SouthCentralPoints);
 
         writer.Name("ownerId");
-        writer.Value(CharacterModelId ?? -1);
+        writer.Value(model.CharacterModelId ?? -1);
 
         writer.Name("groupOwnerId");
-        writer.Value(GroupModelId ?? -1);
+        writer.Value(model.GroupModelId ?? -1);
 
         writer.Name("houseNumber");
-        writer.Value(HouseNumber);
+        writer.Value(model.HouseNumber);
 
         writer.Name("subName");
-        writer.Value(SubName);
+        writer.Value(model.SubName);
 
         writer.Name("houseType");
-        writer.Value((int)HouseType);
+        writer.Value((int)model.HouseType);
 
         writer.Name("streetDirection");
-        writer.Value(StreetDirection);
+        writer.Value(model.StreetDirection);
 
         writer.Name("price");
-        writer.Value(Price);
+        writer.Value(model.Price);
 
         writer.Name("interiorId");
-        writer.Value(InteriorId ?? -1);
+        writer.Value(model.InteriorId ?? -1);
 
         writer.Name("lockState");
-        writer.Value((int)LockState);
+        writer.Value((int)model.LockState);
 
         writer.Name("roll");
-        writer.Value(Roll);
+        writer.Value(model.Roll);
 
         writer.Name("pitch");
-        writer.Value(Pitch);
+        writer.Value(model.Pitch);
 
         writer.Name("yaw");
-        writer.Value(Yaw);
+        writer.Value(model.Yaw);
 
         writer.Name("positionX");
-        writer.Value(PositionX);
+        writer.Value(model.PositionX);
 
         writer.Name("positionY");
-        writer.Value(PositionY);
+        writer.Value(model.PositionY);
 
         writer.Name("positionZ");
-        writer.Value(PositionZ);
+        writer.Value(model.PositionZ);
 
         writer.Name("leaseCompanyType");
-        writer.Value((int)LeaseCompanyType);
+        writer.Value((int)model.LeaseCompanyType);
 
         writer.Name("playerDuty");
-        writer.Value(PlayerDuty);
+        writer.Value(model.PlayerDuty);
 
         writer.Name("cashierX");
-        writer.Value(CashierX ?? 0);
+        writer.Value(model.CashierX ?? 0);
 
         writer.Name("cashierY");
-        writer.Value(CashierY ?? 0);
+        writer.Value(model.CashierY ?? 0);
 
         writer.Name("cashierZ");
-        writer.Value(CashierZ ?? 0);
+        writer.Value(model.CashierZ ?? 0);
 
         writer.Name("cashierHeading");
-        writer.Value(CashierHeading ?? 0);
+        writer.Value(model.CashierHeading ?? 0);
 
         writer.Name("rentable");
-        writer.Value(Rentable);
+        writer.Value(model.Rentable);
 
         writer.Name("blockedOwnership");
-        writer.Value(BlockedOwnership);
+        writer.Value(model.BlockedOwnership);
+
+        writer.Name("doors");
+
+        writer.BeginArray();
+
+        foreach (var door in model.Doors)
+        {
+            DoorModel.Serialize(door, writer);
+        }
+
+        writer.EndArray();
 
         writer.EndObject();
     }

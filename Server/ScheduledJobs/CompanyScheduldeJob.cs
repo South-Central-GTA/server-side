@@ -23,14 +23,9 @@ public class CompanyScheduledJob : ScheduledJob
 
     private readonly PhoneModule _phoneModule;
 
-    public CompanyScheduledJob(
-        ILogger<CompanyScheduledJob> logger,
-        IOptions<GameOptions> gameOptions,
-        GroupService groupService,
-        PhoneModule phoneModule,
-        GroupModule groupModule,
-        MailModule mailModule)
-        : base(TimeSpan.FromMinutes(gameOptions.Value.CompanyMinutesInterval))
+    public CompanyScheduledJob(ILogger<CompanyScheduledJob> logger, IOptions<GameOptions> gameOptions,
+        GroupService groupService, PhoneModule phoneModule, GroupModule groupModule, MailModule mailModule) : base(
+        TimeSpan.FromMinutes(gameOptions.Value.CompanyMinutesInterval))
     {
         _logger = logger;
 
@@ -61,9 +56,8 @@ public class CompanyScheduledJob : ScheduledJob
                     var phone = await _phoneModule.GetByOwner(player.CharacterModel.Id);
                     if (phone != null)
                     {
-                        await _phoneModule.SendNotification(phone.Id,
-                                                            PhoneNotificationType.GOV,
-                                                            $"Das angemeldete Unternehmen {group.Name}, wurde erfolgreich in unserem Register aufgenommen und freigeschaltet.");
+                        await _phoneModule.SendNotification(phone.Id, PhoneNotificationType.GOV,
+                            $"Das angemeldete Unternehmen {group.Name}, wurde erfolgreich in unserem Register aufgenommen und freigeschaltet.");
 
                         await _groupModule.UpdateUi(player);
                         await _mailModule.UpdateUi(player);

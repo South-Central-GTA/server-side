@@ -16,8 +16,7 @@ using Server.Modules.Houses;
 
 namespace Server.Modules.Group;
 
-public class GroupModule
-    : ITransientScript
+public class GroupModule : ITransientScript
 {
     private readonly DeliveryService _deliveryService;
     private readonly GroupMemberService _groupMemberService;
@@ -35,20 +34,11 @@ public class GroupModule
     private readonly Serializer _serializer;
     private readonly VehicleService _vehicleService;
 
-    public GroupModule(
-        ILogger<GroupModule> logger,
-        Serializer serializer,
-        GroupService groupService,
-        GroupMemberService groupMemberService,
-        GroupRankService groupRankService,
-        HouseService houseService,
-        ItemService itemService,
-        VehicleService vehicleService,
-        InventoryService inventoryService,
-        OrderedVehicleService orderedVehicleService,
-        MailAccountService mailAccountService,
-        DeliveryService deliveryService,
-        HouseModule houseModule)
+    public GroupModule(ILogger<GroupModule> logger, Serializer serializer, GroupService groupService,
+        GroupMemberService groupMemberService, GroupRankService groupRankService, HouseService houseService,
+        ItemService itemService, VehicleService vehicleService, InventoryService inventoryService,
+        OrderedVehicleService orderedVehicleService, MailAccountService mailAccountService,
+        DeliveryService deliveryService, HouseModule houseModule)
     {
         _logger = logger;
         _serializer = serializer;
@@ -88,9 +78,8 @@ public class GroupModule
 
     public async Task<bool> IsPlayerInGroup(ServerPlayer player, int groupId)
     {
-        var existingMember =
-            await _groupMemberService.Find(m => m.CharacterModelId == player.CharacterModel.Id &&
-                                                m.GroupModelId == groupId);
+        var existingMember = await _groupMemberService.Find(m =>
+            m.CharacterModelId == player.CharacterModel.Id && m.GroupModelId == groupId);
         return existingMember != null;
     }
 
@@ -139,11 +128,11 @@ public class GroupModule
             {
                 case GroupType.FACTION:
                     target.SendNotification("Dein Charakter befindet sich schon in einer Fraktion.",
-                                            NotificationType.ERROR);
+                        NotificationType.ERROR);
                     break;
                 case GroupType.COMPANY:
                     target.SendNotification("Dein Charakter befindet sich schon in einem Unternehmen.",
-                                            NotificationType.ERROR);
+                        NotificationType.ERROR);
                     break;
             }
 
@@ -226,13 +215,13 @@ public class GroupModule
         await RemoveMemberInventory(player, group);
 
         adminPlayer.SendNotification($"Du hast {player.CharacterModel.Name} aus der Gruppe freigesetzt.",
-                                     NotificationType.INFO);
+            NotificationType.INFO);
     }
 
     public async Task Leave(ServerPlayer player, GroupModel groupModel)
     {
-        var groupMember = await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id
-                                                              && m.CharacterModelId == player.CharacterModel.Id);
+        var groupMember = await _groupMemberService.Find(m =>
+            m.GroupModelId == groupModel.Id && m.CharacterModelId == player.CharacterModel.Id);
 
         await _groupMemberService.Remove(groupMember);
         await UpdateGroupUi(groupModel);
@@ -305,13 +294,12 @@ public class GroupModule
 
     public async Task SetSalary(ServerPlayer player, ServerPlayer target, GroupModel groupModel, uint salary)
     {
-        var groupMember =
-            await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id &&
-                                                m.CharacterModelId == target.CharacterModel.Id);
+        var groupMember = await _groupMemberService.Find(m =>
+            m.GroupModelId == groupModel.Id && m.CharacterModelId == target.CharacterModel.Id);
         if (groupMember == null)
         {
             player.SendNotification("Der Charakter ist nicht in deiner Gruppe. (Unternehmen, Fraktion)",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -345,10 +333,8 @@ public class GroupModule
     public async Task UpdateGroupUi(GroupModel groupModel)
     {
         foreach (var serverPlayer in groupModel.Members.Select(groupMember =>
-                                                                   Alt.GetAllPlayers()
-                                                                      .FindPlayerByCharacterId(
-                                                                          groupMember.CharacterModelId))
-                                               .Where(serverPlayer => serverPlayer != null))
+                         Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                     .Where(serverPlayer => serverPlayer != null))
         {
             await UpdateUi(serverPlayer);
         }
@@ -423,13 +409,12 @@ public class GroupModule
         if (groupMember == null)
         {
             player.SendNotification("Der Charakter ist nicht in deiner Gruppe. (Unternehmen, Fraktion)",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var playerMember =
-            await _groupMemberService.Find(m => m.GroupModelId == groupModel.Id &&
-                                                m.CharacterModelId == player.CharacterModel.Id);
+        var playerMember = await _groupMemberService.Find(m =>
+            m.GroupModelId == groupModel.Id && m.CharacterModelId == player.CharacterModel.Id);
         if (!playerMember.Owner && playerMember.RankLevel < level)
         {
             player.SendNotification(
@@ -465,8 +450,8 @@ public class GroupModule
 
     public async Task<bool> HasPermission(int characterId, int groupId, GroupPermission groupPermission)
     {
-        var groupMember = await _groupMemberService.Find(m => m.GroupModelId == groupId
-                                                              && m.CharacterModelId == characterId);
+        var groupMember =
+            await _groupMemberService.Find(m => m.GroupModelId == groupId && m.CharacterModelId == characterId);
         if (groupMember == null)
         {
             return false;
@@ -526,8 +511,8 @@ public class GroupModule
 
     private async Task RemoveMemberInventory(ServerPlayer player, GroupModel groupModel)
     {
-        var inventory = await _inventoryService
-            .Find(i => i.GroupCharacterId == player.CharacterModel.Id && i.GroupId == groupModel.Id);
+        var inventory = await _inventoryService.Find(i =>
+            i.GroupCharacterId == player.CharacterModel.Id && i.GroupId == groupModel.Id);
         if (inventory == null)
         {
             return;

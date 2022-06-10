@@ -6,26 +6,24 @@ using AltV.Net;
 using AltV.Net.Async;
 using AltV.Net.Elements.Entities;
 using Server.Data.Models;
-using Server.Database.Enums;
 using Server.Database.Models;
 using Server.Database.Models.Character;
-using Server.Database.Models.Inventory;
 
 namespace Server.Core.Entities;
 
-public class ServerPlayer
-    : Player
+public class ServerPlayer : Player
 {
     private AccountModel _accountModel;
     private bool _adminFreezed;
     private CharacterModel _characterModel;
+
+    private bool _cuffed;
     private bool _isAduty;
     private bool _isInFreeCam;
     public ulong DiscordId;
     public bool IsSpawned;
 
-    public ServerPlayer(ICore core, IntPtr entityPointer, ushort id)
-        : base(core, entityPointer, id)
+    public ServerPlayer(ICore core, IntPtr entityPointer, ushort id) : base(core, entityPointer, id)
     {
     }
 
@@ -117,8 +115,6 @@ public class ServerPlayer
             _cuffed = value;
         }
     }
-
-    private bool _cuffed;
 
     public uint MloInterior { get; set; }
 }

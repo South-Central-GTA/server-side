@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models;
 
-public class VehicleData
-    : IWritable
+public class VehicleData : IWritable
 {
     public int Id { get; set; }
     public string Model { get; set; }
@@ -16,31 +15,36 @@ public class VehicleData
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(VehicleData vehicleData, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(vehicleData.Id);
 
         writer.Name("model");
-        writer.Value(Model);
+        writer.Value(vehicleData.Model);
 
         writer.Name("displayName");
-        writer.Value(DisplayName);
+        writer.Value(vehicleData.DisplayName);
 
         writer.Name("displayClass");
-        writer.Value(DisplayClass);
+        writer.Value(vehicleData.DisplayClass);
 
         writer.Name("characterId");
-        writer.Value(CharacterId);
+        writer.Value(vehicleData.CharacterId);
 
         writer.Name("characterName");
-        writer.Value(CharacterName);
+        writer.Value(vehicleData.CharacterName);
 
         writer.Name("isGroupVehicle");
-        writer.Value(IsGroupVehicle);
+        writer.Value(vehicleData.IsGroupVehicle);
 
         writer.Name("numberPlateText");
-        writer.Value(NumberPlateText);
+        writer.Value(vehicleData.NumberPlateText);
 
         writer.EndObject();
     }

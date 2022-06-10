@@ -12,28 +12,21 @@ using Server.Database.Models.Mdc;
 
 namespace Server.Modules.MDC;
 
-public class FireMdcModule
-    : ISingletonScript
+public class FireMdcModule : ISingletonScript
 {
-    public CallSign CallSign { get; }
+    private readonly AllergiesModule _allergiesModule;
+    private readonly CharacterService _characterService;
 
     private readonly EmergencyCallService _emergencyCallService;
     private readonly GroupFactionService _groupFactionService;
-    private readonly CharacterService _characterService;
     private readonly HouseService _houseService;
     private readonly ItemPhoneService _itemPhoneService;
 
     private readonly MedicalHistoryModule _medicalHistoryModule;
-    private readonly AllergiesModule _allergiesModule;
 
-    public FireMdcModule(
-        GroupFactionService groupFactionService,
-        EmergencyCallService emergencyCallService,
-        CharacterService characterService,
-        HouseService houseService,
-        ItemPhoneService itemPhoneService,
-        MedicalHistoryModule medicalHistoryModule,
-        AllergiesModule allergiesModule)
+    public FireMdcModule(GroupFactionService groupFactionService, EmergencyCallService emergencyCallService,
+        CharacterService characterService, HouseService houseService, ItemPhoneService itemPhoneService,
+        MedicalHistoryModule medicalHistoryModule, AllergiesModule allergiesModule)
     {
         CallSign = new CallSign(groupFactionService);
         _groupFactionService = groupFactionService;
@@ -45,6 +38,8 @@ public class FireMdcModule
         _medicalHistoryModule = medicalHistoryModule;
         _allergiesModule = allergiesModule;
     }
+
+    public CallSign CallSign { get; }
 
     public async Task<List<EmergencyCallModel>> GetEmergencyCalls()
     {
@@ -61,10 +56,8 @@ public class FireMdcModule
         }
 
         foreach (var target in factionGroup.Members
-                                           .Select(groupMember =>
-                                                       Alt.GetAllPlayers()
-                                                          .FindPlayerByCharacterId(groupMember.CharacterModelId))
-                                           .Where(serverPlayer => serverPlayer != null))
+                     .Select(groupMember => Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                     .Where(serverPlayer => serverPlayer != null))
         {
             target.EmitGui("firepolicemdc:updateemergencycalls", await GetEmergencyCalls());
         }

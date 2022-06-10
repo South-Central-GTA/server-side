@@ -6,13 +6,11 @@ using Server.Database.Models.Mdc;
 
 namespace Server.DataAccessLayer.Services;
 
-public class CriminalRecordService
-    : BaseService<CriminalRecordModel>, ITransientScript
+public class CriminalRecordService : BaseService<CriminalRecordModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public CriminalRecordService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public CriminalRecordService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }

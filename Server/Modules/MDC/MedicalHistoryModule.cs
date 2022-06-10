@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.DataAccessLayer.Services;
@@ -7,8 +6,7 @@ using Server.Database.Models.Mdc;
 
 namespace Server.Modules.MDC;
 
-public class MedicalHistoryModule
-    : ISingletonScript
+public class MedicalHistoryModule : ISingletonScript
 {
     private readonly MedicalHistoryService _medicalHistoryService;
 
@@ -19,11 +17,9 @@ public class MedicalHistoryModule
 
     public async Task Add(int targetCharacterId, string creatorName, string content)
     {
-        await _medicalHistoryService.Add(new MdcMedicalEntryModel()
+        await _medicalHistoryService.Add(new MdcMedicalEntryModel
         {
-            CharacterModelId = targetCharacterId,
-            CreatorCharacterName = creatorName,
-            Content = content
+            CharacterModelId = targetCharacterId, CreatorCharacterName = creatorName, Content = content
         });
     }
 

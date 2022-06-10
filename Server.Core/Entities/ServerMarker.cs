@@ -8,11 +8,10 @@ using Entity = AltV.Net.EntitySync.Entity;
 
 namespace Server.Core.Entities;
 
-public class ServerMarker
-    : Entity
+public class ServerMarker : Entity
 {
-    public ServerMarker(Vector3 position, int dimension, uint range)
-        : base((ulong)EntityType.MARKER, position, dimension, range)
+    public ServerMarker(Vector3 position, int dimension, uint range) : base((ulong)EntityType.MARKER, position,
+        dimension, range)
     {
     }
 
@@ -114,10 +113,8 @@ public class ServerMarker
                 return default;
             }
 
-            return new Rgba(Convert.ToByte(data["red"]),
-                            Convert.ToByte(data["green"]),
-                            Convert.ToByte(data["blue"]),
-                            Convert.ToByte(data["alpha"]));
+            return new Rgba(Convert.ToByte(data["red"]), Convert.ToByte(data["green"]), Convert.ToByte(data["blue"]),
+                Convert.ToByte(data["alpha"]));
         }
         set
         {

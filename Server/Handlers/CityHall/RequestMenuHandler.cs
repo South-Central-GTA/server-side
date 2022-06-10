@@ -40,8 +40,7 @@ public class RequestMenuHandler : ISingletonScript
                               "<li>im Besitz befindene Bankkonten werden eingefroren</li>" +
                               "<li>Unternehmen gründen</li>" +
                               "<li>im Besitz befindene Unternehmen werden eingefroren</li>" +
-                              "<li>Immobilien erwerben</li>" +
-                              "<li>öffentliche Services nutzen (Garagen)</li>" +
+                              "<li>Immobilien erwerben</li>" + "<li>öffentliche Services nutzen (Garagen)</li>" +
                               "</ul></span>",
                 FreezeGameControls = true,
                 PrimaryButton = "Austragen",
@@ -61,8 +60,7 @@ public class RequestMenuHandler : ISingletonScript
                               "<li>im Besitz befindene Bankkonten werden entfroren</li>" +
                               "<li>Unternehmen gründen</li>" +
                               "<li>im Besitz befindene Unternehmen werden entfroren</li>" +
-                              "<li>Immobilien erwerben</li>" +
-                              "<li>öffentliche Services nutzen (Garagen)</li>" +
+                              "<li>Immobilien erwerben</li>" + "<li>öffentliche Services nutzen (Garagen)</li>" +
                               "</ul></span>",
                 FreezeGameControls = true,
                 PrimaryButton = "Eintragen",

@@ -9,16 +9,13 @@ using Server.Database.Models.Vehicles;
 
 namespace Server.Core.Entities;
 
-public class ServerVehicle
-    : Vehicle
+public class ServerVehicle : Vehicle
 {
-    public ServerVehicle(ICore core, IntPtr entityPointer, ushort id)
-        : base(core, entityPointer, id)
+    public ServerVehicle(ICore core, IntPtr entityPointer, ushort id) : base(core, entityPointer, id)
     {
     }
 
-    public ServerVehicle(uint model, Position position, Rotation rotation)
-        : base(Alt.Core, model, position, rotation)
+    public ServerVehicle(uint model, Position position, Rotation rotation) : base(Alt.Core, model, position, rotation)
     {
     }
 

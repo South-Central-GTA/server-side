@@ -2,7 +2,6 @@
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.MDC;
@@ -11,14 +10,11 @@ namespace Server.Handlers.MDC.Base;
 
 public class MdcOpenSearchEntityHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
-
     private readonly FireMdcModule _fireMdcModule;
+    private readonly GroupFactionService _groupFactionService;
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public MdcOpenSearchEntityHandler(
-        GroupFactionService groupFactionService,
-        FireMdcModule fireMdcModule,
+    public MdcOpenSearchEntityHandler(GroupFactionService groupFactionService, FireMdcModule fireMdcModule,
         PoliceMdcModule policeMdcModule)
     {
         _groupFactionService = groupFactionService;

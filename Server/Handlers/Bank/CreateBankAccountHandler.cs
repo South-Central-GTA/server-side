@@ -1,8 +1,6 @@
 ﻿using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
-using Server.Core.Extensions;
-using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Bank;
@@ -13,16 +11,13 @@ namespace Server.Handlers.Bank;
 public class CreateBankAccountHandler : ISingletonScript
 {
     private readonly BankAccountService _bankAccountService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly BankModule _bankModule;
     private readonly PhoneModule _phoneModule;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public CreateBankAccountHandler(
-        BankAccountService bankAccountService,
-        RegistrationOfficeService registrationOfficeService,
-        BankModule bankModule,
-        PhoneModule phoneModule)
+    public CreateBankAccountHandler(BankAccountService bankAccountService,
+        RegistrationOfficeService registrationOfficeService, BankModule bankModule, PhoneModule phoneModule)
     {
         _bankAccountService = bankAccountService;
         _registrationOfficeService = registrationOfficeService;
@@ -43,18 +38,16 @@ public class CreateBankAccountHandler : ISingletonScript
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Leider können wir Sie unter Ihrem Namen nicht im Registration Office finden. Die Accounterstellung wurde abgebrochen.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Leider können wir Sie unter Ihrem Namen nicht im Registration Office finden. Die Accounterstellung wurde abgebrochen.");
             return;
         }
 
         var bankAccounts = await _bankAccountService.GetByOwner(player.CharacterModel.Id);
         if (bankAccounts.Count >= 10)
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Leider können Sie keine weiteren Bankkonten bei uns eröffnen.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Leider können Sie keine weiteren Bankkonten bei uns eröffnen.");
             return;
         }
 
@@ -68,25 +61,22 @@ public class CreateBankAccountHandler : ISingletonScript
             var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
             if (bankAccount == null)
             {
-                await _phoneModule.SendNotification(phoneId,
-                                                    PhoneNotificationType.MAZE_BANK,
-                                                    "Wir konnten unter dieser Adresse leider kein Konto finden was auf Ihrem Namen registriert ist, Ihre Anfrage wurde vermerkt und abgelehnt.");
+                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                    "Wir konnten unter dieser Adresse leider kein Konto finden was auf Ihrem Namen registriert ist, Ihre Anfrage wurde vermerkt und abgelehnt.");
                 return;
             }
 
             if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
             {
-                await _phoneModule.SendNotification(phoneId,
-                                                    PhoneNotificationType.MAZE_BANK,
-                                                    "Wir konnten leider nicht sicherstellen, das Sie auch Transfer Rechte auf dem angegebenen Bankkonto besitzen. Bitte prüfen Sie die Einstellungen ihres angegebenen Bankkontos.");
+                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                    "Wir konnten leider nicht sicherstellen, das Sie auch Transfer Rechte auf dem angegebenen Bankkonto besitzen. Bitte prüfen Sie die Einstellungen ihres angegebenen Bankkontos.");
                 return;
             }
 
             if (bankAccount.Amount < 500)
             {
-                await _phoneModule.SendNotification(phoneId,
-                                                    PhoneNotificationType.MAZE_BANK,
-                                                    $"Leider reicht Ihr aktuelles Guthaben auf dem Konto {bankAccount.BankDetails} nicht aus, Ihre Anfrage wurde vermerkt und abgelehnt.");
+                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                    $"Leider reicht Ihr aktuelles Guthaben auf dem Konto {bankAccount.BankDetails} nicht aus, Ihre Anfrage wurde vermerkt und abgelehnt.");
                 return;
             }
 

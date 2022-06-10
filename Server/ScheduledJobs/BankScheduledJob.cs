@@ -22,14 +22,9 @@ public class BankScheduledJob : ScheduledJob
     private readonly ILogger<BankScheduledJob> _logger;
     private readonly PhoneModule _phoneModule;
 
-    public BankScheduledJob(
-        ILogger<BankScheduledJob> logger,
-        IOptions<GameOptions> gameOptions,
-        BankAccountService bankAccountService,
-        GroupService groupService,
-        BankModule bankModule,
-        PhoneModule phoneModule)
-        : base(TimeSpan.FromMinutes(gameOptions.Value.BankMinutesInterval))
+    public BankScheduledJob(ILogger<BankScheduledJob> logger, IOptions<GameOptions> gameOptions,
+        BankAccountService bankAccountService, GroupService groupService, BankModule bankModule,
+        PhoneModule phoneModule) : base(TimeSpan.FromMinutes(gameOptions.Value.BankMinutesInterval))
     {
         _logger = logger;
         _bankAccountService = bankAccountService;
@@ -60,9 +55,8 @@ public class BankScheduledJob : ScheduledJob
                     var phone = await _phoneModule.GetByOwner(player.CharacterModel.Id);
                     if (phone != null)
                     {
-                        await _phoneModule.SendNotification(phone.Id,
-                                                            PhoneNotificationType.MAZE_BANK,
-                                                            $"Ihr Bankkonto {bankAccount.BankDetails} wurde nun bei der Maze Bank freigeschaltet.");
+                        await _phoneModule.SendNotification(phone.Id, PhoneNotificationType.MAZE_BANK,
+                            $"Ihr Bankkonto {bankAccount.BankDetails} wurde nun bei der Maze Bank freigeschaltet.");
                     }
                 }
             }
@@ -84,9 +78,9 @@ public class BankScheduledJob : ScheduledJob
                     }
 
                     var rank = group.Ranks.Find(r => r.Level == member.RankLevel);
-                    if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW)
-                        && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT)
-                        && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
+                    if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW) &&
+                        !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT) &&
+                        !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
                     {
                         continue;
                     }

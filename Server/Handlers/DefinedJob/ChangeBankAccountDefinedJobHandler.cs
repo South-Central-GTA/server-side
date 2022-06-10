@@ -13,9 +13,7 @@ public class ChangeBankAccountDefinedJobHandler : ISingletonScript
     private readonly DefinedJobModule _definedJobModule;
     private readonly GroupModule _groupModule;
 
-    public ChangeBankAccountDefinedJobHandler(
-        BankModule bankModule,
-        GroupModule groupModule,
+    public ChangeBankAccountDefinedJobHandler(BankModule bankModule, GroupModule groupModule,
         DefinedJobModule definedJobModule)
     {
         _bankModule = bankModule;

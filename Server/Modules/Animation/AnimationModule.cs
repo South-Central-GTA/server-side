@@ -11,8 +11,7 @@ public class AnimationModule : ISingletonScript
 {
     private readonly ILogger<AnimationModule> _logger;
 
-    public AnimationModule(
-        ILogger<AnimationModule> logger)
+    public AnimationModule(ILogger<AnimationModule> logger)
     {
         _logger = logger;
     }

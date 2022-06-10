@@ -13,14 +13,11 @@ namespace Server.Handlers.Chat;
 
 public class SendChatMessageHandler : ISingletonScript
 {
-    private readonly ILogger<SendChatMessageHandler> _logger;
-
     private readonly ChatModule _chatModule;
     private readonly EmergencyCallDialogModule _emergencyCallDialogModule;
+    private readonly ILogger<SendChatMessageHandler> _logger;
 
-    public SendChatMessageHandler(
-        ILogger<SendChatMessageHandler> logger,
-        ChatModule chatModule,
+    public SendChatMessageHandler(ILogger<SendChatMessageHandler> logger, ChatModule chatModule,
         EmergencyCallDialogModule emergencyCallDialogModule)
     {
         _logger = logger;
@@ -68,11 +65,8 @@ public class SendChatMessageHandler : ISingletonScript
                 return;
             }
 
-            _chatModule.SendMessage(callPartnerPlayer,
-                                    player.CharacterModel.Name,
-                                    ChatType.PHONE_SPEAK,
-                                    message,
-                                    "#f3f59f");
+            _chatModule.SendMessage(callPartnerPlayer, player.CharacterModel.Name, ChatType.PHONE_SPEAK, message,
+                "#f3f59f");
             return;
         }
 

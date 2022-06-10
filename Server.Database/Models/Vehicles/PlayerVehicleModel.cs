@@ -9,8 +9,7 @@ using Server.Database.Models.Inventory;
 
 namespace Server.Database.Models.Vehicles;
 
-public class PlayerVehicleModel
-    : PositionRotationDimensionModelBase, ILockableEntity
+public class PlayerVehicleModel : PositionRotationDimensionModelBase, ILockableEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -42,8 +41,8 @@ public class PlayerVehicleModel
     public float DrivenKilometre { get; set; }
     public List<string> LastDrivers { get; set; } = new();
     public bool EngineOn { get; set; }
+    public List<int> Keys { get; set; } = new();
 
 
     public LockState LockState { get; set; }
-    public List<int> Keys { get; set; } = new();
 }

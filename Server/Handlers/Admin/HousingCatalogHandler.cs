@@ -31,7 +31,7 @@ public class HousingCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("housingcatalog:setup", await _houseService.GetAll());
+        player.EmitGui("housingcatalog:open", await _houseService.GetAll());
     }
 
     private async void OnRequestDetails(ServerPlayer player, int houseId)
@@ -48,6 +48,6 @@ public class HousingCatalogHandler : ISingletonScript
 
         var house = await _houseService.GetByKey(houseId);
 
-        player.EmitGui("housingcatalog:opendetails", house);
+        player.EmitGui("housingcatalog:requestdetails", house);
     }
 }

@@ -7,13 +7,8 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Mdc;
 
-public class MdcNoteModel
-    : ModelBase, IWritable
+public class MdcNoteModel : ModelBase, IWritable
 {
-    public MdcNoteModel()
-    {
-    }
-
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
@@ -26,19 +21,24 @@ public class MdcNoteModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(MdcNoteModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("note");
-        writer.Value(Note);
+        writer.Value(model.Note);
 
         writer.Name("creatorCharacterName");
-        writer.Value(CreatorCharacterName);
+        writer.Value(model.CreatorCharacterName);
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

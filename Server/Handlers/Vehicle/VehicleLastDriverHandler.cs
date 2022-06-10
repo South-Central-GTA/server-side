@@ -15,13 +15,11 @@ namespace Server.Handlers.Vehicle;
 public class VehicleLastDriverHandler : ISingletonScript
 {
     private readonly CharacterService _characterService;
-    private readonly Serializer _serializer;
 
     private readonly NarratorModule _narratorModule;
+    private readonly Serializer _serializer;
 
-    public VehicleLastDriverHandler(
-        Serializer serializer,
-        CharacterService characterService,
+    public VehicleLastDriverHandler(Serializer serializer, CharacterService characterService,
         NarratorModule narratorModule)
     {
         _serializer = serializer;
@@ -43,21 +41,20 @@ public class VehicleLastDriverHandler : ISingletonScript
         if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             player.SendNotification("Bei diesem Fahrzeug kannst du dir die letzten Fahrer nicht anzeigen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         var names = new List<string>();
         if (vehicle.DbEntity.LastDrivers.Count == 0)
         {
-            _narratorModule.SendMessage(player, $"Das Fahrzeug hat noch keine letzten Fahrer.");
+            _narratorModule.SendMessage(player, "Das Fahrzeug hat noch keine letzten Fahrer.");
             return;
         }
 
         for (var index = vehicle.DbEntity.LastDrivers.Count - 1; index >= 0; index--)
         {
-            var lastDriverData =
-                _serializer.Deserialize<LastDriverData>(vehicle.DbEntity.LastDrivers[index]);
+            var lastDriverData = _serializer.Deserialize<LastDriverData>(vehicle.DbEntity.LastDrivers[index]);
 
             var character = await _characterService.GetByKey(lastDriverData.CharacterId);
             if (character != null)

@@ -14,20 +14,16 @@ namespace Server.Handlers.Company;
 public class ChangeBankAccountCompanyHandler : ISingletonScript
 {
     private readonly BankAccountService _bankAccountService;
-    private readonly GroupMemberService _groupMemberService;
-    private readonly GroupService _groupService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly BankModule _bankModule;
+    private readonly GroupMemberService _groupMemberService;
+    private readonly GroupService _groupService;
     private readonly PhoneModule _phoneModule;
+    private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public ChangeBankAccountCompanyHandler(
-        GroupService groupService,
-        BankAccountService bankAccountService,
-        GroupMemberService groupMemberService,
-        RegistrationOfficeService registrationOfficeService,
-        BankModule bankModule,
-        PhoneModule phoneModule)
+    public ChangeBankAccountCompanyHandler(GroupService groupService, BankAccountService bankAccountService,
+        GroupMemberService groupMemberService, RegistrationOfficeService registrationOfficeService,
+        BankModule bankModule, PhoneModule phoneModule)
     {
         _groupService = groupService;
         _bankAccountService = bankAccountService;
@@ -53,7 +49,7 @@ public class ChangeBankAccountCompanyHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

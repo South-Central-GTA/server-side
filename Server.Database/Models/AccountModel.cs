@@ -12,8 +12,7 @@ using Server.Database.Models.CustomLogs;
 
 namespace Server.Database.Models;
 
-public class AccountModel
-    : ModelBase, IWritable
+public class AccountModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -54,31 +53,36 @@ public class AccountModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(AccountModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(SocialClubId);
+        writer.Value(model.SocialClubId);
 
         writer.Name("discordId");
-        writer.Value(DiscordId.ToString());
+        writer.Value(model.DiscordId.ToString());
 
         writer.Name("currentName");
-        writer.Value(CurrentName);
+        writer.Value(model.CurrentName);
 
         writer.Name("nameHistoryJson");
-        writer.Value(JsonSerializer.Serialize(NameHistory));
+        writer.Value(JsonSerializer.Serialize(model.NameHistory));
 
         writer.Name("southCentralPoints");
-        writer.Value(SouthCentralPoints);
+        writer.Value(model.SouthCentralPoints);
 
         writer.Name("avatarUrl");
-        writer.Value(AvatarUrl);
+        writer.Value(model.AvatarUrl ?? string.Empty);
 
-        writer.Name("lastUsage");
-        writer.Value(JsonSerializer.Serialize(LastUsage));
+        writer.Name("lastUsageJson");
+        writer.Value(JsonSerializer.Serialize(model.LastUsage));
 
-        writer.Name("createdAt");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Name("createdAtJson");
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

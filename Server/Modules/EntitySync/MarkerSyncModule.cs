@@ -16,8 +16,8 @@ public class MarkerSyncModule : ISingletonScript
     private readonly Dictionary<IColShape, ServerMarker> _markers = new();
 
     public ServerMarker Create(MarkerType type, Position position, Vector3 direction, Vector3 rotation, Vector3 scale,
-                               Rgba color, int dimension, bool bobUpDown = false, uint streamRange = 200,
-                               string text = "", string ownerName = "", string createdAtJson = "")
+        Rgba color, int dimension, bool bobUpDown = false, uint streamRange = 200, string text = "",
+        string ownerName = "", string createdAtJson = "")
     {
         var shape = Alt.CreateColShapeSphere(position, 1.0f);
         var obj = new ServerMarker(position, dimension, streamRange)

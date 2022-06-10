@@ -3,7 +3,6 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
-using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 
 namespace Server.Handlers.CityHall;

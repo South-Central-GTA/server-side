@@ -4,8 +4,7 @@ using AltV.Net;
 
 namespace Server.Data.Models;
 
-public class ActionData
-    : IWritable
+public class ActionData : IWritable
 {
     public ActionData(string title, string eventName, object? customData = null)
     {

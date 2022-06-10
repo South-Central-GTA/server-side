@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models.EntitySync;
 
-public class MoveData
-    : IWritable
+public class MoveData : IWritable
 {
     public float X { get; set; }
     public float Y { get; set; }

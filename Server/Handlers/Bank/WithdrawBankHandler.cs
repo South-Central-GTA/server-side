@@ -7,7 +7,6 @@ using Server.Core.Extensions;
 using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Database.Models.Inventory;
 using Server.Modules.Bank;
 using Server.Modules.Money;
 using Server.Modules.Phone;
@@ -16,20 +15,15 @@ namespace Server.Handlers.Bank;
 
 public class WithdrawBankHandler : ISingletonScript
 {
+    private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
+    private readonly GroupService _groupService;
     private readonly MoneyModule _moneyModule;
     private readonly PhoneModule _phoneModule;
-
-    private readonly BankAccountService _bankAccountService;
-    private readonly GroupService _groupService;
     private readonly RegistrationOfficeService _registrationOfficeService;
 
-    public WithdrawBankHandler(
-        BankModule bankModule,
-        MoneyModule moneyModule,
-        PhoneModule phoneModule,
-        BankAccountService bankAccountService,
-        GroupService groupService,
+    public WithdrawBankHandler(BankModule bankModule, MoneyModule moneyModule, PhoneModule phoneModule,
+        BankAccountService bankAccountService, GroupService groupService,
         RegistrationOfficeService registrationOfficeService)
     {
         _bankModule = bankModule;
@@ -54,7 +48,7 @@ public class WithdrawBankHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -90,10 +84,8 @@ public class WithdrawBankHandler : ISingletonScript
         player.SendNotification("Dein Charakter hat erfolgreich Geld abgehoben.", NotificationType.SUCCESS);
 
         foreach (var targetPlayer in bankAccount.CharacterAccesses.Select(characterAccess =>
-                                                                              Alt.GetAllPlayers()
-                                                                                 .FindPlayerByCharacterId(
-                                                                                     characterAccess.CharacterModelId))
-                                                .Where(serverPlayer => serverPlayer != null))
+                         Alt.GetAllPlayers().FindPlayerByCharacterId(characterAccess.CharacterModelId))
+                     .Where(serverPlayer => serverPlayer != null))
         {
             await _bankModule.UpdateUi(targetPlayer);
         }
@@ -115,9 +107,9 @@ public class WithdrawBankHandler : ISingletonScript
                 }
 
                 var rank = group.Ranks.Find(r => r.Level == member.RankLevel);
-                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT)
-                    && !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
+                if (rank == null || !rank.GroupPermission.HasFlag(GroupPermission.BANKING_WITHDRAW) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.BANKING_DEPOSIT) &&
+                    !rank.GroupPermission.HasFlag(GroupPermission.BANKING_SEE_HISTORY))
                 {
                     continue;
                 }

@@ -29,6 +29,6 @@ public class MailsLogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("mailslog:setup", await _mailService.GetAll());
+        player.EmitGui("mailslog:open", await _mailService.GetAll());
     }
 }

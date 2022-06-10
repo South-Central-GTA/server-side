@@ -9,13 +9,10 @@ namespace Server.Handlers.MDC.FD;
 
 public class FdMdcAddCallSignHandler : ISingletonScript
 {
+    private readonly FireMdcModule _fireMdcModule;
     private readonly GroupFactionService _groupFactionService;
 
-    private readonly FireMdcModule _fireMdcModule;
-
-    public FdMdcAddCallSignHandler(
-        GroupFactionService groupFactionService,
-        FireMdcModule fireMdcModule)
+    public FdMdcAddCallSignHandler(GroupFactionService groupFactionService, FireMdcModule fireMdcModule)
     {
         _groupFactionService = groupFactionService;
 

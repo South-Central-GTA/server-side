@@ -1,13 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using AltV.Net;
 using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Character;
 
-public class AppearancesModel
-    : ModelBase
+public class AppearancesModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -108,6 +107,11 @@ public class AppearancesModel
 
     [JsonPropertyName("addbodyblemihesColor")]
     public int AddbodyblemihesColor { get; set; }
+
+    public void OnWrite(IMValueWriter writer)
+    {
+        Serialize(this, writer);
+    }
 
     public void Update(AppearancesModel appearancesModel)
     {
@@ -391,5 +395,141 @@ public class AppearancesModel
 
 
         return diffs;
+    }
+
+    public static void Serialize(AppearancesModel model, IMValueWriter writer)
+    {
+        writer.BeginObject();
+
+        writer.Name("hair");
+        writer.Value(model.Hair);
+
+        writer.Name("primHairColor");
+        writer.Value(model.PrimHairColor);
+
+        writer.Name("secHairColor");
+        writer.Value(model.SecHairColor);
+
+        writer.Name("eyeColor");
+        writer.Value(model.EyeColor);
+
+        writer.Name("blemishesValue");
+        writer.Value(model.BlemishesValue);
+
+        writer.Name("blemishesOpacity");
+        writer.Value(model.BlemishesOpacity);
+
+        writer.Name("blemishesColor");
+        writer.Value(model.BlemishesColor);
+
+        writer.Name("facialhairValue");
+        writer.Value(model.FacialhairValue);
+
+        writer.Name("facialhairOpacity");
+        writer.Value(model.FacialhairOpacity);
+
+        writer.Name("facialhairColor");
+        writer.Value(model.FacialhairColor);
+
+        writer.Name("eyebrowsValue");
+        writer.Value(model.EyebrowsValue);
+
+        writer.Name("eyebrowsOpacity");
+        writer.Value(model.EyebrowsOpacity);
+
+        writer.Name("eyebrowsColor");
+        writer.Value(model.EyebrowsColor);
+
+        writer.Name("ageingValue");
+        writer.Value(model.AgeingValue);
+
+        writer.Name("ageingOpacity");
+        writer.Value(model.AgeingOpacity);
+
+        writer.Name("ageingColor");
+        writer.Value(model.AgeingColor);
+
+        writer.Name("makeupValue");
+        writer.Value(model.MakeupValue);
+
+        writer.Name("makeupOpacity");
+        writer.Value(model.MakeupOpacity);
+
+        writer.Name("makeupColor");
+        writer.Value(model.MakeupColor);
+
+        writer.Name("blushValue");
+        writer.Value(model.BlushValue);
+
+        writer.Name("blushOpacity");
+        writer.Value(model.BlushOpacity);
+
+        writer.Name("blushColor");
+        writer.Value(model.BlushColor);
+
+        writer.Name("complexionValue");
+        writer.Value(model.ComplexionValue);
+
+        writer.Name("complexionOpacity");
+        writer.Value(model.ComplexionOpacity);
+
+        writer.Name("complexionColor");
+        writer.Value(model.ComplexionColor);
+
+        writer.Name("sundamageValue");
+        writer.Value(model.SundamageValue);
+
+        writer.Name("sundamageOpacity");
+        writer.Value(model.SundamageOpacity);
+
+        writer.Name("sundamageColor");
+        writer.Value(model.SundamageColor);
+
+        writer.Name("lipstickValue");
+        writer.Value(model.LipstickValue);
+
+        writer.Name("lipstickOpacity");
+        writer.Value(model.LipstickOpacity);
+
+        writer.Name("lipstickColor");
+        writer.Value(model.LipstickColor);
+
+        writer.Name("frecklesValue");
+        writer.Value(model.FrecklesValue);
+
+        writer.Name("frecklesOpacity");
+        writer.Value(model.FrecklesOpacity);
+
+        writer.Name("frecklesColor");
+        writer.Value(model.FrecklesColor);
+
+        writer.Name("chesthairValue");
+        writer.Value(model.ChesthairValue);
+
+        writer.Name("chesthairOpacity");
+        writer.Value(model.ChesthairOpacity);
+
+        writer.Name("chesthairColor");
+        writer.Value(model.ChesthairColor);
+
+        writer.Name("bodyblemishesValue");
+        writer.Value(model.BodyblemishesValue);
+
+        writer.Name("bodyblemishesOpacity");
+        writer.Value(model.BodyblemishesOpacity);
+
+        writer.Name("bodyblemishesColor");
+        writer.Value(model.BodyblemishesColor);
+
+        writer.Name("addbodyblemihesValue");
+        writer.Value(model.AddbodyblemihesValue);
+
+        writer.Name("addbodyblemihesOpacity");
+        writer.Value(model.AddbodyblemihesOpacity);
+
+        writer.Name("addbodyblemihesColor");
+        writer.Value(model.AddbodyblemihesColor);
+
+        writer.EndObject();
     }
 }

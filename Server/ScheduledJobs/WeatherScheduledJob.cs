@@ -12,10 +12,8 @@ public class WeatherScheduledJob : ScheduledJob
     private readonly ILogger<WeatherScheduledJob> _logger;
     private readonly WeatherModule _weatherModule;
 
-    public WeatherScheduledJob(
-        ILogger<WeatherScheduledJob> logger,
-        WeatherModule weatherModule)
-        : base(TimeSpan.FromMinutes(Random.Next(20, 90)))
+    public WeatherScheduledJob(ILogger<WeatherScheduledJob> logger, WeatherModule weatherModule) : base(
+        TimeSpan.FromMinutes(Random.Next(20, 90)))
     {
         _logger = logger;
         _weatherModule = weatherModule;

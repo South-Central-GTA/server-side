@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Principal;
+﻿using System.Collections.Generic;
 using AltV.Net;
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
@@ -13,12 +11,10 @@ namespace Server.Handlers.FileSystem;
 
 public class GetGroupRanksHandler : ISingletonScript
 {
-    private readonly GroupRankService _groupRankService;
     private readonly DirectoryService _directoryService;
+    private readonly GroupRankService _groupRankService;
 
-    public GetGroupRanksHandler(
-        GroupRankService groupRankService,
-        DirectoryService directoryService)
+    public GetGroupRanksHandler(GroupRankService groupRankService, DirectoryService directoryService)
     {
         _groupRankService = groupRankService;
         _directoryService = directoryService;
@@ -42,12 +38,12 @@ public class GetGroupRanksHandler : ISingletonScript
         }
 
         player.EmitGui("filesystem:getranksetup",
-                       new FileSystemRankSetup()
-                       {
-                           CanReadLevel = directory.ReadGroupLevel,
-                           CanWriteLevel = directory.WriteGroupLevel,
-                           Ranks = groupRanks
-                       });
+            new FileSystemRankSetup
+            {
+                CanReadLevel = directory.ReadGroupLevel,
+                CanWriteLevel = directory.WriteGroupLevel,
+                Ranks = groupRanks
+            });
     }
 
     private struct FileSystemRankSetup : IWritable

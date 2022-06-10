@@ -29,28 +29,20 @@ public class PublicGarageHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
     private readonly PublicGarageEntryService _publicGarageEntryService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
 
     private readonly PublicGarageModule _publicGarageModule;
+    private readonly RegistrationOfficeService _registrationOfficeService;
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleModule _vehicleModule;
 
     private readonly VehicleService _vehicleService;
     private readonly WorldLocationOptions _worldLocationOptions;
 
-    public PublicGarageHandler(
-        IOptions<GameOptions> gameOptions,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        VehicleService vehicleService,
-        PublicGarageEntryService publicGarageEntryService,
-        BankAccountService bankAccountService,
-        VehicleCatalogService vehicleCatalogService,
-        GroupService groupService,
-        RegistrationOfficeService registrationOfficeService,
-        PublicGarageModule publicGarageModule,
-        BankModule bankModule,
-        VehicleModule vehicleModule,
-        GroupModule groupModule)
+    public PublicGarageHandler(IOptions<GameOptions> gameOptions, IOptions<WorldLocationOptions> worldLocationOptions,
+        VehicleService vehicleService, PublicGarageEntryService publicGarageEntryService,
+        BankAccountService bankAccountService, VehicleCatalogService vehicleCatalogService, GroupService groupService,
+        RegistrationOfficeService registrationOfficeService, PublicGarageModule publicGarageModule,
+        BankModule bankModule, VehicleModule vehicleModule, GroupModule groupModule)
     {
         _gameOptions = gameOptions.Value;
         _worldLocationOptions = worldLocationOptions.Value;
@@ -85,9 +77,8 @@ public class PublicGarageHandler : ISingletonScript
             return;
         }
 
-        var publicGarageData =
-            _worldLocationOptions.PublicGarages.Find(
-                g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
+        var publicGarageData = _worldLocationOptions.PublicGarages.Find(g =>
+            player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
         if (publicGarageData == null)
         {
             player.SendNotification("Es befindet keine Garage in der Nähe deines Charakters.", NotificationType.ERROR);
@@ -98,14 +89,14 @@ public class PublicGarageHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (!await _bankModule.HasBankAccount(player))
         {
             player.SendNotification("Deinem Charakter fehlt ein Bankkonto um sein Fahrzeug einzuparken.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -116,8 +107,7 @@ public class PublicGarageHandler : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().GetClosest(new Position(publicGarageData.ParkingPointX,
-                                                                   publicGarageData.ParkingPointY,
-                                                                   publicGarageData.ParkingPointZ));
+            publicGarageData.ParkingPointY, publicGarageData.ParkingPointZ));
         if (vehicle == null || !vehicle.Exists)
         {
             player.SendNotification("Es befindet sich kein Fahrzeug auf dem Marker.", NotificationType.ERROR);
@@ -169,9 +159,8 @@ public class PublicGarageHandler : ISingletonScript
             return;
         }
 
-        var publicGarageData =
-            _worldLocationOptions.PublicGarages.Find(
-                g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
+        var publicGarageData = _worldLocationOptions.PublicGarages.Find(g =>
+            player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
         if (publicGarageData == null)
         {
             player.SendNotification("Es befindet keine Garage in der Nähe deines Charakters.", NotificationType.ERROR);
@@ -182,7 +171,7 @@ public class PublicGarageHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -193,14 +182,12 @@ public class PublicGarageHandler : ISingletonScript
         }
 
         var publicGarageEntries = await _publicGarageEntryService.Where(pge =>
-                                                                            pge.CharacterModelId ==
-                                                                            player.CharacterModel.Id &&
-                                                                            pge.GarageId == publicGarageData.Id);
+            pge.CharacterModelId == player.CharacterModel.Id && pge.GarageId == publicGarageData.Id);
 
         if (publicGarageEntries.Count == 0)
         {
             player.SendNotification("Dein Charakter hat keine Fahrzeuge in dieser Garage eingeparkt.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -225,8 +212,7 @@ public class PublicGarageHandler : ISingletonScript
                 Id = publicGarageEntry.PlayerVehicleModelId,
                 DisplayName = catalogVehicle.DisplayName,
                 DisplayClass = catalogVehicle.DisplayClass,
-                Costs = (int)(catalogVehicle.Price *
-                              publicGarageData.CostsPercentageOfVehiclePrice)
+                Costs = (int)(catalogVehicle.Price * publicGarageData.CostsPercentageOfVehiclePrice)
             });
         }
 
@@ -246,13 +232,12 @@ public class PublicGarageHandler : ISingletonScript
             return;
         }
 
-        var publicGarageData =
-            _worldLocationOptions.PublicGarages.Find(
-                g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
+        var publicGarageData = _worldLocationOptions.PublicGarages.Find(g =>
+            player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
         if (publicGarageData == null)
         {
             player.SendNotification("Es befindet sich keine Garage in der Nähe deines Charakters.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -262,9 +247,8 @@ public class PublicGarageHandler : ISingletonScript
         if (groups != null)
         {
             destroyedVehicles = destroyedVehicles.FindAll(v =>
-                                                              v.CharacterModelId == player.CharacterModel.Id ||
-                                                              groups.Any(g => _groupModule.IsOwner(player, g) &&
-                                                                              g.Id == v.GroupModelOwnerId));
+                v.CharacterModelId == player.CharacterModel.Id || groups.Any(g =>
+                    _groupModule.IsOwner(player, g) && g.Id == v.GroupModelOwnerId));
         }
         else
         {
@@ -273,8 +257,7 @@ public class PublicGarageHandler : ISingletonScript
 
         if (destroyedVehicles.Count == 0)
         {
-            player.SendNotification("Dein Charakter hat keine zerstörten Fahrzeuge.",
-                                    NotificationType.ERROR);
+            player.SendNotification("Dein Charakter hat keine zerstörten Fahrzeuge.", NotificationType.ERROR);
             return;
         }
 
@@ -328,17 +311,13 @@ public class PublicGarageHandler : ISingletonScript
             return;
         }
 
-        if (Alt.GetAllVehicles()
-               .FirstOrDefault(v => v.Position.Distance(new Position(publicGarageData.ParkingPointX,
-                                                                     publicGarageData.ParkingPointY,
-                                                                     publicGarageData.ParkingPointZ)) <= 2) != null
-            || Alt.GetAllPlayers()
-                  .FirstOrDefault(v => v.Position.Distance(new Position(publicGarageData.ParkingPointX,
-                                                                        publicGarageData.ParkingPointY,
-                                                                        publicGarageData.ParkingPointZ)) <= 2) != null)
+        if (Alt.GetAllVehicles().FirstOrDefault(v => v.Position.Distance(new Position(publicGarageData.ParkingPointX,
+                publicGarageData.ParkingPointY, publicGarageData.ParkingPointZ)) <= 2) != null || Alt.GetAllPlayers()
+                .FirstOrDefault(v => v.Position.Distance(new Position(publicGarageData.ParkingPointX,
+                    publicGarageData.ParkingPointY, publicGarageData.ParkingPointZ)) <= 2) != null)
         {
             player.SendNotification("Die Garage konnte dein Fahrzeug nicht ausparken, da der Stellplatz besetzt ist.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -355,13 +334,12 @@ public class PublicGarageHandler : ISingletonScript
         if (!await _bankModule.HasBankAccount(player))
         {
             player.SendNotification("Deinem Charakter fehlt ein Bankkonto um sein Fahrzeug einzuparken.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var publicGarageData =
-            _worldLocationOptions.PublicGarages.Find(
-                g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
+        var publicGarageData = _worldLocationOptions.PublicGarages.Find(g =>
+            player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
         if (publicGarageData == null)
         {
             player.SendNotification("Es befindet keine Garage in der Nähe deines Charakters.", NotificationType.ERROR);
@@ -369,8 +347,7 @@ public class PublicGarageHandler : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().GetClosest(new Position(publicGarageData.ParkingPointX,
-                                                                   publicGarageData.ParkingPointY,
-                                                                   publicGarageData.ParkingPointZ));
+            publicGarageData.ParkingPointY, publicGarageData.ParkingPointZ));
         if (vehicle == null || !vehicle.Exists)
         {
             player.SendNotification("Es befindet sich kein Fahrzeug auf dem Marker.", NotificationType.ERROR);
@@ -407,7 +384,7 @@ public class PublicGarageHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification("Dein Charakter hat keine Überweisungsrechte auf dem Bankkonto.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -424,7 +401,7 @@ public class PublicGarageHandler : ISingletonScript
         if (!await _bankModule.HasBankAccount(player))
         {
             player.SendNotification("Deinem Charakter fehlt ein Bankkonto um sein Fahrzeug zu spawnen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -443,8 +420,8 @@ public class PublicGarageHandler : ISingletonScript
         var groups = await _groupService.GetByOwner(player.CharacterModel.Id);
         if (groups != null)
         {
-            if (vehicle.CharacterModelId != player.CharacterModel.Id
-                && groups.All(g => g.Id != vehicle.GroupModelOwnerId))
+            if (vehicle.CharacterModelId != player.CharacterModel.Id &&
+                groups.All(g => g.Id != vehicle.GroupModelOwnerId))
             {
                 return;
             }
@@ -467,7 +444,7 @@ public class PublicGarageHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification("Dein Charakter hat keine Überweisungsrechte auf dem Bankkonto.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -481,34 +458,27 @@ public class PublicGarageHandler : ISingletonScript
         await _bankModule.Withdraw(bankAccount, costs, true, "Fahrzeugreparatur");
 
         var publicGarageData = _worldLocationOptions.PublicGarages.Find(p =>
-                                                                            new Position(p.ParkingPointX,
-                                                                                         p.ParkingPointY,
-                                                                                         p.ParkingPointZ)
-                                                                                .Distance(player.Position) <= 20);
+            new Position(p.ParkingPointX, p.ParkingPointY, p.ParkingPointZ).Distance(player.Position) <= 20);
         if (publicGarageData == null)
         {
             player.SendNotification("Es befindet sich keine Garage in der Nähe deines Charakters.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (Alt.GetAllVehicles().FirstOrDefault(v => v.Position.Distance(new Position(publicGarageData.ParkingPointX,
-                                                                                      publicGarageData.ParkingPointY,
-                                                                                      publicGarageData.ParkingPointZ)) <
-                                                     2) != null)
+                publicGarageData.ParkingPointY, publicGarageData.ParkingPointZ)) < 2) != null)
         {
             player.SendNotification("Die Garage konnte dein Fahrzeug nicht ausparken, da der Stellplatz besetzt ist.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
         if (Alt.GetAllPlayers().FirstOrDefault(v => v.Position.Distance(new Position(publicGarageData.ParkingPointX,
-                                                                                     publicGarageData.ParkingPointY,
-                                                                                     publicGarageData.ParkingPointZ)) <
-                                                    2) != null)
+                publicGarageData.ParkingPointY, publicGarageData.ParkingPointZ)) < 2) != null)
         {
             player.SendNotification("Die Garage konnte dein Fahrzeug nicht ausparken, da der Stellplatz besetzt ist.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -543,8 +513,8 @@ public class PublicGarageHandler : ISingletonScript
         var groups = await _groupService.GetGroupsByCharacter(player.CharacterModel.Id);
         if (groups != null)
         {
-            if (vehicle.CharacterModelId != player.CharacterModel.Id
-                && groups.All(g => g.Id != vehicle.GroupModelOwnerId))
+            if (vehicle.CharacterModelId != player.CharacterModel.Id &&
+                groups.All(g => g.Id != vehicle.GroupModelOwnerId))
             {
                 return;
             }

@@ -15,16 +15,13 @@ namespace Server.Handlers.Bank;
 
 public class AddPermissionBankHandler : ISingletonScript
 {
-    private readonly PhoneModule _phoneModule;
-    private readonly BankModule _bankModule;
     private readonly BankAccountService _bankAccountService;
+    private readonly BankModule _bankModule;
     private readonly CharacterService _characterService;
+    private readonly PhoneModule _phoneModule;
 
-    public AddPermissionBankHandler(
-        PhoneModule phoneModule,
-        BankModule bankModule,
-        BankAccountService bankAccountService,
-        CharacterService characterService)
+    public AddPermissionBankHandler(PhoneModule phoneModule, BankModule bankModule,
+        BankAccountService bankAccountService, CharacterService characterService)
     {
         _phoneModule = phoneModule;
         _bankModule = bankModule;
@@ -35,7 +32,7 @@ public class AddPermissionBankHandler : ISingletonScript
     }
 
     private async void OnAddPermission(ServerPlayer player, int phoneId, int bankAccountId, int characterId,
-                                       string expectedPermission)
+        string expectedPermission)
     {
         if (!player.Exists)
         {
@@ -51,9 +48,8 @@ public class AddPermissionBankHandler : ISingletonScript
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.MANAGEMENT))
         {
-            await _phoneModule.SendNotification(phoneId,
-                                                PhoneNotificationType.MAZE_BANK,
-                                                "Leider sind unter Ihren Namen nicht genügen Zugriffsrechte gesetzt, Sie können keine Management Aufträge für dieses Konto einreichen.");
+            await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                "Leider sind unter Ihren Namen nicht genügen Zugriffsrechte gesetzt, Sie können keine Management Aufträge für dieses Konto einreichen.");
             return;
         }
 
@@ -74,9 +70,8 @@ public class AddPermissionBankHandler : ISingletonScript
         {
             if (permission == BankingPermission.MANAGEMENT && !characterAccess.Owner)
             {
-                await _phoneModule.SendNotification(phoneId,
-                                                    PhoneNotificationType.MAZE_BANK,
-                                                    "Leider können Sie mit Ihrem Account keine anderen Accounts Management Berechtigungen geben.");
+                await _phoneModule.SendNotification(phoneId, PhoneNotificationType.MAZE_BANK,
+                    "Leider können Sie mit Ihrem Account keine anderen Accounts Management Berechtigungen geben.");
                 return;
             }
         }

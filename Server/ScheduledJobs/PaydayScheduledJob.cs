@@ -23,41 +23,31 @@ namespace Server.ScheduledJobs;
 public class PaydayScheduledJob : ScheduledJob
 {
     private readonly BankAccountService _bankAccountService;
+    private readonly BankModule _bankModule;
+    private readonly CompanyOptions _companyOptions;
+    private readonly DefinedJobService _definedJobService;
+    private readonly GameOptions _gameOptions;
+    private readonly GroupModule _groupModule;
+    private readonly GroupService _groupService;
+    private readonly HouseModule _houseModule;
+    private readonly HouseService _houseService;
 
     private readonly ILogger<PaydayScheduledJob> _logger;
-    private readonly WorldLocationOptions _worldLocationOptions;
-    private readonly CompanyOptions _companyOptions;
-    private readonly GameOptions _gameOptions;
-    private readonly GroupService _groupService;
-    private readonly HouseService _houseService;
     private readonly PublicGarageEntryService _publicGarageEntryService;
+    private readonly RegistrationOfficeService _registrationOfficeService;
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
-    private readonly RegistrationOfficeService _registrationOfficeService;
-    private readonly DefinedJobService _definedJobService;
-    private readonly BankModule _bankModule;
-    private readonly GroupModule _groupModule;
-    private readonly HouseModule _houseModule;
+    private readonly WorldLocationOptions _worldLocationOptions;
 
     private int _lastMinute = 1;
 
-    public PaydayScheduledJob(
-        ILogger<PaydayScheduledJob> logger,
-        IOptions<GameOptions> gameOptions,
-        IOptions<CompanyOptions> companyOptions,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        BankModule bankModule,
-        GroupModule groupModule,
-        BankAccountService bankAccountService,
-        PublicGarageEntryService publicGarageEntryService,
-        VehicleService vehicleService,
-        VehicleCatalogService vehicleCatalogService,
-        GroupService groupService,
-        HouseService houseService,
-        RegistrationOfficeService registrationOfficeService,
-        DefinedJobService definedJobService,
-        HouseModule houseModule)
-        : base(TimeSpan.FromMinutes(1))
+    public PaydayScheduledJob(ILogger<PaydayScheduledJob> logger, IOptions<GameOptions> gameOptions,
+        IOptions<CompanyOptions> companyOptions, IOptions<WorldLocationOptions> worldLocationOptions,
+        BankModule bankModule, GroupModule groupModule, BankAccountService bankAccountService,
+        PublicGarageEntryService publicGarageEntryService, VehicleService vehicleService,
+        VehicleCatalogService vehicleCatalogService, GroupService groupService, HouseService houseService,
+        RegistrationOfficeService registrationOfficeService, DefinedJobService definedJobService,
+        HouseModule houseModule) : base(TimeSpan.FromMinutes(1))
     {
         _logger = logger;
         _gameOptions = gameOptions.Value;
@@ -120,9 +110,9 @@ public class PaydayScheduledJob : ScheduledJob
             await Alt.ForEachPlayers(callback);
 
             var houses = await _houseService.GetAll();
-            foreach (var leaseCompanyHouse in houses.Where(h => h.HouseType == HouseType.COMPANY
-                                                                && h.GroupModelId.HasValue)
-                                                    .Cast<LeaseCompanyHouseModel>())
+            foreach (var leaseCompanyHouse in houses
+                         .Where(h => h.HouseType == HouseType.COMPANY && h.GroupModelId.HasValue)
+                         .Cast<LeaseCompanyHouseModel>())
             {
                 var revenue = _companyOptions.RevenueEachPayday[leaseCompanyHouse.LeaseCompanyType];
 
@@ -138,9 +128,8 @@ public class PaydayScheduledJob : ScheduledJob
                 }
 
                 var bankAccount = await _bankAccountService.Find(ba =>
-                                                                     ba.Type == OwnableAccountType.GROUP
-                                                                     && ba.GroupRankAccess.Any(
-                                                                         gra => gra.GroupModelId == ownerGroup.Id));
+                    ba.Type == OwnableAccountType.GROUP &&
+                    ba.GroupRankAccess.Any(gra => gra.GroupModelId == ownerGroup.Id));
                 if (bankAccount == null)
                 {
                     continue;
@@ -151,10 +140,8 @@ public class PaydayScheduledJob : ScheduledJob
                     case 0:
                         continue;
                     case < 0:
-                        await _bankModule.Withdraw(bankAccount,
-                                                   Math.Abs(revenue),
-                                                   true,
-                                                   "Pachtbarer Unternehmenssitz Umsatz");
+                        await _bankModule.Withdraw(bankAccount, Math.Abs(revenue), true,
+                            "Pachtbarer Unternehmenssitz Umsatz");
                         break;
                     default:
                         await _bankModule.Deposit(bankAccount, revenue, "Pachtbarer Unternehmenssitz Umsatz");
@@ -188,10 +175,8 @@ public class PaydayScheduledJob : ScheduledJob
                 if (bankAccount != null)
                 {
                     var groupBankAccount = await _bankAccountService.GetByOwningGroup(group.Id);
-                    var success = await _bankModule.Withdraw(groupBankAccount,
-                                                             (int)member.Salary,
-                                                             false,
-                                                             $"Mitarbeiter '{member.CharacterModel.Name}' Gehalt");
+                    var success = await _bankModule.Withdraw(groupBankAccount, (int)member.Salary, false,
+                        $"Mitarbeiter '{member.CharacterModel.Name}' Gehalt");
                     if (success)
                     {
                         await _bankModule.Deposit(bankAccount, (int)member.Salary, "Gehalt");
@@ -282,8 +267,8 @@ public class PaydayScheduledJob : ScheduledJob
 
     private async Task HandlePublicGarage(ServerPlayer player)
     {
-        var vehicles = await _vehicleService.Where(v => v.CharacterModelId == player.CharacterModel.Id
-                                                        && v.VehicleState == VehicleState.IN_GARAGE);
+        var vehicles = await _vehicleService.Where(v =>
+            v.CharacterModelId == player.CharacterModel.Id && v.VehicleState == VehicleState.IN_GARAGE);
         if (vehicles.Count == 0)
         {
             return;
@@ -336,10 +321,8 @@ public class PaydayScheduledJob : ScheduledJob
             }
 
             var costs = (int)(catalogVehicle.Price * publicGarageData.CostsPercentageOfVehiclePrice);
-            if (!await _bankModule.Withdraw(bankAccount,
-                                            costs,
-                                            false,
-                                            $"Dauerparken für '{catalogVehicle.DisplayName}'"))
+            if (!await _bankModule.Withdraw(bankAccount, costs, false,
+                    $"Dauerparken für '{catalogVehicle.DisplayName}'"))
             {
                 player.SendNotification(
                     $"Das angegebene Konto {bankAccount.BankDetails} kann die Parkkosten für das Fahrzeug {catalogVehicle.DisplayName} nicht mehr decken daher wurde es ausgeparkt.",

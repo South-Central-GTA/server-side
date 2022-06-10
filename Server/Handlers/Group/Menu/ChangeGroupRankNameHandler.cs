@@ -13,9 +13,7 @@ public class ChangeGroupRankNameHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
 
-    public ChangeGroupRankNameHandler(
-        GroupService groupService,
-        GroupModule groupModule)
+    public ChangeGroupRankNameHandler(GroupService groupService, GroupModule groupModule)
     {
         _groupService = groupService;
         _groupModule = groupModule;

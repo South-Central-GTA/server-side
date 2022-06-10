@@ -30,6 +30,6 @@ public class ItemCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("itemcatalog:setup", await _itemCatalogService.GetAll());
+        player.EmitGui("itemcatalog:open", await _itemCatalogService.GetAll());
     }
 }

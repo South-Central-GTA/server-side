@@ -24,13 +24,8 @@ public class LeaseCompanyHandler : ISingletonScript
 
     private readonly HouseService _houseService;
 
-    public LeaseCompanyHandler(
-        HouseService houseService,
-        BankAccountService bankAccountService,
-        GroupService groupService,
-        HouseModule houseModule,
-        BankModule bankModule,
-        GroupModule groupModule)
+    public LeaseCompanyHandler(HouseService houseService, BankAccountService bankAccountService,
+        GroupService groupService, HouseModule houseModule, BankModule bankModule, GroupModule groupModule)
     {
         _houseService = houseService;
         _bankAccountService = bankAccountService;
@@ -53,7 +48,7 @@ public class LeaseCompanyHandler : ISingletonScript
         if (await _houseService.GetByDistance(player.Position) is not LeaseCompanyHouseModel leaseCompanyHouse)
         {
             player.SendNotification("Es ist kein pachtbarer Unternehmenssitz in der Nähe deines Charakters.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -68,7 +63,7 @@ public class LeaseCompanyHandler : ISingletonScript
         if (!_groupModule.IsOwner(player, group))
         {
             player.SendNotification("Dein Charakter ist nicht der Eigentümer des Unternehmens.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

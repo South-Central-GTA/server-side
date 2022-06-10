@@ -10,13 +10,11 @@ namespace Server.Handlers.VehicleLocating;
 
 public class RequestVehicleLocatingHandler : ISingletonScript
 {
+    private readonly GroupService _groupService;
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
-    private readonly GroupService _groupService;
 
-    public RequestVehicleLocatingHandler(
-        VehicleCatalogService vehicleCatalogService,
-        VehicleService vehicleService,
+    public RequestVehicleLocatingHandler(VehicleCatalogService vehicleCatalogService, VehicleService vehicleService,
         GroupService groupService)
     {
         _vehicleCatalogService = vehicleCatalogService;

@@ -30,6 +30,6 @@ public class MailAccountsLog : ISingletonScript
             return;
         }
 
-        player.EmitGui("mailaccountslog:setup", await _mailAccountService.GetAll());
+        player.EmitGui("mailaccountslog:open", await _mailAccountService.GetAll());
     }
 }

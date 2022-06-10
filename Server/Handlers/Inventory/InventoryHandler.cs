@@ -28,13 +28,8 @@ public class InventoryHandler : ISingletonScript
     private readonly Serializer _serializer;
 
 
-    public InventoryHandler(
-        Serializer serializer,
-        ItemService itemService,
-        InventoryService inventoryService,
-        InventoryModule inventoryModule,
-        AntiCheatModule antiCheatModule,
-        ItemCreationModule itemCreationModule,
+    public InventoryHandler(Serializer serializer, ItemService itemService, InventoryService inventoryService,
+        InventoryModule inventoryModule, AntiCheatModule antiCheatModule, ItemCreationModule itemCreationModule,
         AttachmentModule attachmentModule)
     {
         _serializer = serializer;
@@ -99,23 +94,22 @@ public class InventoryHandler : ISingletonScript
 
         // Check if we are trying to swap the backpack item into an backpack inventory.
         if (draggingItem.CatalogItemModelId == ItemCatalogIds.CLOTHING_BACKPACK &&
-            droppedItem.InventoryModel.ItemClothModelId.HasValue
-            || droppedItem.CatalogItemModelId == ItemCatalogIds.CLOTHING_BACKPACK &&
+            droppedItem.InventoryModel.ItemClothModelId.HasValue ||
+            droppedItem.CatalogItemModelId == ItemCatalogIds.CLOTHING_BACKPACK &&
             draggingItem.InventoryModel.ItemClothModelId.HasValue)
         {
             player.SendNotification("Du kannst kein Rucksack in einen Rucksack packen.", NotificationType.ERROR);
             return;
         }
 
-        if (draggingItem is ItemWeaponAttachmentModel weaponAttachment
-            && droppedItem is ItemWeaponModel weapon)
+        if (draggingItem is ItemWeaponAttachmentModel weaponAttachment && droppedItem is ItemWeaponModel weapon)
         {
             await _attachmentModule.AddToWeapon(player, weapon, weaponAttachment);
         }
         else
         {
-            if (droppedItem.CatalogItemModel.Stackable
-                && draggingItem.CatalogItemModelId == droppedItem.CatalogItemModelId)
+            if (droppedItem.CatalogItemModel.Stackable &&
+                draggingItem.CatalogItemModelId == droppedItem.CatalogItemModelId)
             {
                 if (_antiCheatModule.DetectStackItemHack(draggingItem, droppedItem))
                 {
@@ -215,8 +209,9 @@ public class InventoryHandler : ISingletonScript
         if (item is ItemWeaponModel itemWeapon)
         {
             var items = await _itemService.GetAll();
-            var weaponAttachments = items.Where(i => i is ItemWeaponAttachmentModel weaponAttachment
-                                                     && weaponAttachment.ItemWeaponId == itemWeapon.Id).ToList();
+            var weaponAttachments = items.Where(i =>
+                    i is ItemWeaponAttachmentModel weaponAttachment && weaponAttachment.ItemWeaponId == itemWeapon.Id)
+                .ToList();
 
             foreach (var weaponAttachment in weaponAttachments)
             {
@@ -258,17 +253,8 @@ public class InventoryHandler : ISingletonScript
 
         var freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id);
         await _itemService.Add(new ItemModel(splittedItem.CatalogItemModelId,
-                                             freeSlot,
-                                             splittedItem.CustomData,
-                                             "",
-                                             amount,
-                                             splittedItem.Condition,
-                                             splittedItem.IsBought,
-                                             splittedItem.IsStolen,
-                                             ItemState.NOT_EQUIPPED)
-        {
-            InventoryModelId = splittedItem.InventoryModelId
-        });
+            freeSlot, splittedItem.CustomData, "", amount, splittedItem.Condition, splittedItem.IsBought,
+            splittedItem.IsStolen, ItemState.NOT_EQUIPPED) { InventoryModelId = splittedItem.InventoryModelId });
 
         splittedItem.Amount -= amount;
 

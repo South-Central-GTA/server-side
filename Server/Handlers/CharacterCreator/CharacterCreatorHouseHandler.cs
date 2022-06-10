@@ -13,8 +13,7 @@ public class CharacterCreatorHouseHandler : ISingletonScript
 
     private readonly HouseModule _houseModule;
 
-    public CharacterCreatorHouseHandler(
-        IOptions<CharacterCreatorOptions> characterCreatorOptions,
+    public CharacterCreatorHouseHandler(IOptions<CharacterCreatorOptions> characterCreatorOptions,
         HouseModule houseModule)
     {
         _characterCreatorOptions = characterCreatorOptions.Value;

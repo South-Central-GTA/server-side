@@ -11,13 +11,11 @@ using Server.Database.Models.Mdc;
 
 namespace Server.DataAccessLayer.Services;
 
-public class MedicalHistoryService
-    : BaseService<MdcMedicalEntryModel>, ITransientScript
+public class MedicalHistoryService : BaseService<MdcMedicalEntryModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public MedicalHistoryService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public MedicalHistoryService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
@@ -25,17 +23,13 @@ public class MedicalHistoryService
     public async Task<MdcMedicalEntryModel?> GetByKey(int id)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.MdcMedicalEntries
-                              .Include(i => i.CharacterModel)
-                              .FirstOrDefaultAsync(i => i.Id == id);
+        return await dbContext.MdcMedicalEntries.Include(i => i.CharacterModel).FirstOrDefaultAsync(i => i.Id == id);
     }
 
     public override async Task<List<MdcMedicalEntryModel>> Where(
         Expression<Func<MdcMedicalEntryModel, bool>> expression)
     {
         await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.MdcMedicalEntries
-                              .Include(i => i.CharacterModel)
-                              .Where(expression).ToListAsync();
+        return await dbContext.MdcMedicalEntries.Include(i => i.CharacterModel).Where(expression).ToListAsync();
     }
 }

@@ -30,6 +30,6 @@ public class AccountCatalogHandler : ISingletonScript
             return;
         }
 
-        player.EmitGui("accountcatalog:setup", await _accountService.GetAll());
+        player.EmitGui("accountcatalog:open", await _accountService.GetAll());
     }
 }

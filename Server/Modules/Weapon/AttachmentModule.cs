@@ -14,8 +14,7 @@ using Server.Modules.Inventory;
 
 namespace Server.Modules.Weapon;
 
-public class AttachmentModule
-    : ITransientScript
+public class AttachmentModule : ITransientScript
 {
     public static Dictionary<ItemCatalogIds, Dictionary<ItemCatalogIds, string>> ComponentTable = new()
     {
@@ -456,10 +455,7 @@ public class AttachmentModule
 
     private readonly ILogger<AttachmentModule> _logger;
 
-    public AttachmentModule(
-        ILogger<AttachmentModule> logger,
-        ItemService itemService,
-        InventoryModule inventoryModule)
+    public AttachmentModule(ILogger<AttachmentModule> logger, ItemService itemService, InventoryModule inventoryModule)
     {
         _logger = logger;
         _itemService = itemService;
@@ -534,7 +530,7 @@ public class AttachmentModule
     }
 
     public static async Task AddWeaponComponent(ServerPlayer player, ItemWeaponModel itemWeaponModel,
-                                                string componentHash)
+        string componentHash)
     {
         var weaponModel = WeaponModule.GetModelFromId(itemWeaponModel.CatalogItemModelId);
 
@@ -542,7 +538,7 @@ public class AttachmentModule
     }
 
     public async Task AddToWeapon(ServerPlayer player, ItemWeaponModel itemWeaponModel,
-                                  ItemWeaponAttachmentModel weaponAttachmentModel)
+        ItemWeaponAttachmentModel weaponAttachmentModel)
     {
         if (weaponAttachmentModel.ItemWeaponId.HasValue)
         {
@@ -566,7 +562,7 @@ public class AttachmentModule
         if (itemWeaponModel.ComponentHashes.Contains(weaponComponentHash))
         {
             player.SendNotification("Du kannst nicht mehrere Erweiterungen dieser Sorte montieren.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -581,7 +577,7 @@ public class AttachmentModule
     }
 
     public async Task RemoveFromWeapon(ServerPlayer player, ItemWeaponModel itemWeaponModel,
-                                       ItemWeaponAttachmentModel weaponAttachmentModel)
+        ItemWeaponAttachmentModel weaponAttachmentModel)
     {
         if (!weaponAttachmentModel.ItemWeaponId.HasValue)
         {
@@ -589,11 +585,11 @@ public class AttachmentModule
         }
 
         var freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id,
-                                                              weaponAttachmentModel.CatalogItemModel.Weight);
+            weaponAttachmentModel.CatalogItemModel.Weight);
         if (!freeSlot.HasValue)
         {
             player.SendNotification("Dein Charakter hat nicht genug Platz im Inventar für die Erweiterungen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

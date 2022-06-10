@@ -13,9 +13,7 @@ public class ScheduledJobManager : ISingletonScript
     private readonly ParallelOptions _parallelOptions;
     private readonly List<Action> _scheduledJobs;
 
-    public ScheduledJobManager(
-        ILogger<ScheduledJobManager> logger,
-        IEnumerable<ScheduledJob> scheduledJobs)
+    public ScheduledJobManager(ILogger<ScheduledJobManager> logger, IEnumerable<ScheduledJob> scheduledJobs)
     {
         Cancellation = new CancellationTokenSource();
         Logger = logger;

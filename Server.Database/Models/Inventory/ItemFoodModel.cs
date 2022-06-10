@@ -1,6 +1,5 @@
 ﻿namespace Server.Database.Models.Inventory;
 
-public class ItemFoodModel
-    : ItemModel
+public class ItemFoodModel : ItemModel
 {
 }

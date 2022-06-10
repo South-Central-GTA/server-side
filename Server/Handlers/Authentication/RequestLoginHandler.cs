@@ -9,13 +9,11 @@ namespace Server.Handlers.Authentication;
 
 public class RequestLoginHandler : ISingletonScript
 {
-    private readonly AuthenticationModule _authenticationModule;
     private readonly AccountService _accountService;
+    private readonly AuthenticationModule _authenticationModule;
     private readonly DiscordModule _discordModule;
 
-    public RequestLoginHandler(
-        AuthenticationModule authenticationModule,
-        AccountService accountService,
+    public RequestLoginHandler(AuthenticationModule authenticationModule, AccountService accountService,
         DiscordModule discordModule)
     {
         _authenticationModule = authenticationModule;

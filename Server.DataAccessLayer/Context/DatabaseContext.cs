@@ -16,108 +16,67 @@ using Server.Database.Models.Vehicles;
 
 namespace Server.DataAccessLayer.Context;
 
-public class DatabaseContext
-    : DbContext
+public class DatabaseContext : DbContext
 {
-    public DatabaseContext(DbContextOptions<DatabaseContext> options)
-        : base(options)
+    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AccountModel>()
-                    .HasMany(a => a.UserRecords)
-                    .WithOne(ur => ur.AccountModel)
-                    .HasForeignKey(ur => ur.AccountModelId);
+        modelBuilder.Entity<AccountModel>().HasMany(a => a.UserRecords).WithOne(ur => ur.AccountModel)
+            .HasForeignKey(ur => ur.AccountModelId);
 
         modelBuilder.Entity<MailAccountCharacterAccessModel>()
-                    .HasKey(m => new
-                    {
-                        MailAccountModelMailAddress = m.MailAccountModelMailAddress,
-                        CharacterModelId = m.CharacterModelId
-                    });
+            .HasKey(m => new { m.MailAccountModelMailAddress, m.CharacterModelId });
 
         modelBuilder.Entity<MailAccountGroupAccessModel>()
-                    .HasKey(m => new
-                    {
-                        MailAccountModelMailAddress = m.MailAccountModelMailAddress,
-                        GroupId = m.GroupModelId
-                    });
+            .HasKey(m => new { m.MailAccountModelMailAddress, GroupId = m.GroupModelId });
 
-        modelBuilder.Entity<MailLinkModel>()
-                    .HasKey(m => new { m.MailAccountModelMailAddress, MailModelId = m.MailModelId });
+        modelBuilder.Entity<MailLinkModel>().HasKey(m => new { m.MailAccountModelMailAddress, m.MailModelId });
 
-        modelBuilder.Entity<AppearancesModel>()
-                    .HasKey(c => new { CharacterModelId = c.CharacterModelId });
+        modelBuilder.Entity<AppearancesModel>().HasKey(c => new { c.CharacterModelId });
 
-        modelBuilder.Entity<FaceFeaturesModel>()
-                    .HasKey(c => new { CharacterModelId = c.CharacterModelId });
+        modelBuilder.Entity<FaceFeaturesModel>().HasKey(c => new { c.CharacterModelId });
 
-        modelBuilder.Entity<DefinedJobModel>()
-                    .HasKey(c => new { CharacterModelId = c.CharacterModelId });
+        modelBuilder.Entity<DefinedJobModel>().HasKey(c => new { c.CharacterModelId });
 
         modelBuilder.Entity<BankAccountCharacterAccessModel>()
-                    .HasKey(c => new
-                    {
-                        BankAccountModelId = c.BankAccountModelId, CharacterModelId = c.CharacterModelId
-                    });
+            .HasKey(c => new { c.BankAccountModelId, c.CharacterModelId });
 
         modelBuilder.Entity<BankAccountGroupRankAccessModel>()
-                    .HasKey(c => new { BankAccountModelId = c.BankAccountModelId, GroupModelId = c.GroupModelId });
+            .HasKey(c => new { c.BankAccountModelId, c.GroupModelId });
 
-        modelBuilder.Entity<GroupMemberModel>()
-                    .HasKey(c => new { GroupModelId = c.GroupModelId, CharacterModelId = c.CharacterModelId });
+        modelBuilder.Entity<GroupMemberModel>().HasKey(c => new { c.GroupModelId, c.CharacterModelId });
 
-        modelBuilder.Entity<GroupRankModel>()
-                    .HasKey(c => new { GroupModelId = c.GroupModelId, c.Level });
+        modelBuilder.Entity<GroupRankModel>().HasKey(c => new { c.GroupModelId, c.Level });
 
-        modelBuilder.Entity<LeaseCompanyHouseModel>()
-                    .HasBaseType<HouseModel>();
+        modelBuilder.Entity<LeaseCompanyHouseModel>().HasBaseType<HouseModel>();
 
-        modelBuilder.Entity<HouseModel>()
-                    .HasDiscriminator(h => h.HouseType)
-                    .HasValue<HouseModel>(HouseType.HOUSE)
-                    .HasValue<LeaseCompanyHouseModel>(HouseType.COMPANY);
+        modelBuilder.Entity<HouseModel>().HasDiscriminator(h => h.HouseType).HasValue<HouseModel>(HouseType.HOUSE)
+            .HasValue<LeaseCompanyHouseModel>(HouseType.COMPANY);
 
-        modelBuilder.Entity<GroupModel>()
-                    .HasDiscriminator(g => g.GroupType)
-                    .HasValue<GroupModel>(GroupType.GROUP)
-                    .HasValue<CompanyGroupModel>(GroupType.COMPANY)
-                    .HasValue<FactionGroupModel>(GroupType.FACTION)
-                    .HasValue<GangGroupModel>(GroupType.GANG)
-                    .HasValue<MafiaGroupModel>(GroupType.MAFIA);
+        modelBuilder.Entity<GroupModel>().HasDiscriminator(g => g.GroupType).HasValue<GroupModel>(GroupType.GROUP)
+            .HasValue<CompanyGroupModel>(GroupType.COMPANY).HasValue<FactionGroupModel>(GroupType.FACTION)
+            .HasValue<GangGroupModel>(GroupType.GANG).HasValue<MafiaGroupModel>(GroupType.MAFIA);
 
-        modelBuilder.Entity<DeliveryModel>()
-                    .HasDiscriminator(g => g.DeliveryType)
-                    .HasValue<DeliveryModel>(DeliveryType.DELIVERY)
-                    .HasValue<ProductDeliveryModel>(DeliveryType.PRODUCT)
-                    .HasValue<VehicleDeliveryModel>(DeliveryType.VEHICLES);
+        modelBuilder.Entity<DeliveryModel>().HasDiscriminator(g => g.DeliveryType)
+            .HasValue<DeliveryModel>(DeliveryType.DELIVERY).HasValue<ProductDeliveryModel>(DeliveryType.PRODUCT)
+            .HasValue<VehicleDeliveryModel>(DeliveryType.VEHICLES);
 
-        modelBuilder.Entity<ItemModel>()
-                    .HasDiscriminator(i => i.ItemType)
-                    .HasValue<ItemModel>(ItemType.NORMAL)
-                    .HasValue<ItemWeaponModel>(ItemType.WEAPON)
-                    .HasValue<ItemWeaponAttachmentModel>(ItemType.WEAPON_ATTACHMENT)
-                    .HasValue<ItemWeaponAmmoModel>(ItemType.WEAPON_AMMO)
-                    .HasValue<ItemClothModel>(ItemType.CLOTH)
-                    .HasValue<ItemFoodModel>(ItemType.FOOD)
-                    .HasValue<ItemPhoneModel>(ItemType.PHONE)
-                    .HasValue<ItemKeyModel>(ItemType.KEY)
-                    .HasValue<ItemGroupKeyModel>(ItemType.GROUP_KEY)
-                    .HasValue<ItemRadioModel>(ItemType.RADIO)
-                    .HasValue<ItemHandCuffModel>(ItemType.HANDCUFF)
-                    .HasValue<ItemDrugModel>(ItemType.DRUG)
-                    .HasValue<ItemPoliceTicketModel>(ItemType.POLICE_TICKET);
+        modelBuilder.Entity<ItemModel>().HasDiscriminator(i => i.ItemType).HasValue<ItemModel>(ItemType.NORMAL)
+            .HasValue<ItemWeaponModel>(ItemType.WEAPON).HasValue<ItemWeaponAttachmentModel>(ItemType.WEAPON_ATTACHMENT)
+            .HasValue<ItemWeaponAmmoModel>(ItemType.WEAPON_AMMO).HasValue<ItemClothModel>(ItemType.CLOTH)
+            .HasValue<ItemFoodModel>(ItemType.FOOD).HasValue<ItemPhoneModel>(ItemType.PHONE)
+            .HasValue<ItemKeyModel>(ItemType.KEY).HasValue<ItemGroupKeyModel>(ItemType.GROUP_KEY)
+            .HasValue<ItemRadioModel>(ItemType.RADIO).HasValue<ItemHandCuffModel>(ItemType.HANDCUFF)
+            .HasValue<ItemDrugModel>(ItemType.DRUG).HasValue<ItemPoliceTicketModel>(ItemType.POLICE_TICKET);
 
-        modelBuilder.Entity<ItemClothModel>()
-                    .HasOne(i => i.ClothingInventoryModel)
-                    .WithOne(i => i.ItemClothModel)
-                    .HasForeignKey<InventoryModel>(i => i.ItemClothModelId);
+        modelBuilder.Entity<ItemClothModel>().HasOne(i => i.ClothingInventoryModel).WithOne(i => i.ItemClothModel)
+            .HasForeignKey<InventoryModel>(i => i.ItemClothModelId);
 
 
-        modelBuilder.Entity<RegistrationOfficeEntryModel>()
-                    .HasKey(c => new { c.CharacterModelId });
+        modelBuilder.Entity<RegistrationOfficeEntryModel>().HasKey(c => new { c.CharacterModelId });
     }
 
     #region Entities

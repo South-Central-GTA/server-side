@@ -12,15 +12,12 @@ public class PdMdcDeleteEmergencyCallHandler : ISingletonScript
 {
     private readonly EmergencyCallService _emergencyCallService;
     private readonly GroupFactionService _groupFactionService;
-
-    private readonly PoliceMdcModule _policeMdcModule;
     private readonly GroupModule _groupModule;
 
-    public PdMdcDeleteEmergencyCallHandler(
-        EmergencyCallService emergencyCallService,
-        GroupFactionService groupFactionService,
-        PoliceMdcModule policeMdcModule,
-        GroupModule groupModule)
+    private readonly PoliceMdcModule _policeMdcModule;
+
+    public PdMdcDeleteEmergencyCallHandler(EmergencyCallService emergencyCallService,
+        GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule, GroupModule groupModule)
     {
         _emergencyCallService = emergencyCallService;
         _groupFactionService = groupFactionService;

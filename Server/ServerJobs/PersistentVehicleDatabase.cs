@@ -16,11 +16,8 @@ public class PersistentVehicleDatabase : IJob
     private readonly VehicleModule _vehicleModule;
     private readonly VehicleService _vehicleService;
 
-    public PersistentVehicleDatabase(
-        ILogger<PersistentVehicleDatabase> logger,
-        VehicleModule vehicleModule,
-        VehicleService vehicleService,
-        IOptions<DevelopmentOptions> devOptions)
+    public PersistentVehicleDatabase(ILogger<PersistentVehicleDatabase> logger, VehicleModule vehicleModule,
+        VehicleService vehicleService, IOptions<DevelopmentOptions> devOptions)
     {
         _logger = logger;
         _vehicleModule = vehicleModule;

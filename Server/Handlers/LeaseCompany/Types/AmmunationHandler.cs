@@ -27,14 +27,9 @@ public class AmmunationHandler : ISingletonScript
 
     private readonly MoneyModule _moneyModule;
 
-    public AmmunationHandler(
-        ItemCatalogService itemCatalogService,
-        HouseService houseService,
-        BankAccountService bankAccountService,
-        MoneyModule moneyModule,
-        BankModule bankModule,
-        InventoryModule inventoryModule,
-        ItemCreationModule itemCreationModule)
+    public AmmunationHandler(ItemCatalogService itemCatalogService, HouseService houseService,
+        BankAccountService bankAccountService, MoneyModule moneyModule, BankModule bankModule,
+        InventoryModule inventoryModule, ItemCreationModule itemCreationModule)
     {
         _itemCatalogService = itemCatalogService;
         _houseService = houseService;
@@ -71,9 +66,9 @@ public class AmmunationHandler : ISingletonScript
         }
 
         var buyableItems = await _itemCatalogService.Where(i => i.Buyable);
-        buyableItems = buyableItems.Where(i => WeaponModule.IsItemWeapon(i.Id)
-                                               || AmmoModule.IsItemAmmo(i.Id)
-                                               || AttachmentModule.IsItemWeaponComponent(i.Id)).ToList();
+        buyableItems = buyableItems.Where(i =>
+            WeaponModule.IsItemWeapon(i.Id) || AmmoModule.IsItemAmmo(i.Id) ||
+            AttachmentModule.IsItemWeaponComponent(i.Id)).ToList();
 
         player.EmitLocked("ammunation:openmenu", buyableItems);
     }
@@ -111,7 +106,7 @@ public class AmmunationHandler : ISingletonScript
     }
 
     private async void OnBuyWithCash(ServerPlayer player, int bankAccountId, ItemCatalogIds itemCatalogIds, int price,
-                                     int amount)
+        int amount)
     {
         var success = await _moneyModule.WithdrawAsync(player, price);
         if (success)
@@ -125,7 +120,7 @@ public class AmmunationHandler : ISingletonScript
     }
 
     private async void OnBuyWithBank(ServerPlayer player, int bankAccountId, ItemCatalogIds itemCatalogIds, int price,
-                                     int amount)
+        int amount)
     {
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
         if (bankAccount == null)
@@ -137,7 +132,7 @@ public class AmmunationHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -149,7 +144,7 @@ public class AmmunationHandler : ISingletonScript
         else
         {
             player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für diesen Einkauf.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
         }
     }
 

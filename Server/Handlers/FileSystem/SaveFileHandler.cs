@@ -3,8 +3,6 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.DataAccessLayer.Services;
-using Server.Database.Models.File;
-using Server.Modules.FileSystem;
 using Server.Modules.Group;
 
 namespace Server.Handlers.FileSystem;
@@ -15,9 +13,7 @@ public class SaveFileHandler : ISingletonScript
 
     private readonly GroupModule _groupModule;
 
-    public SaveFileHandler(
-        FileService fileService,
-        GroupModule groupModule)
+    public SaveFileHandler(FileService fileService, GroupModule groupModule)
     {
         _fileService = fileService;
 

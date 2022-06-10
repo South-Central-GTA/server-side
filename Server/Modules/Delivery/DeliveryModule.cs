@@ -22,8 +22,7 @@ using Server.Modules.Vehicles;
 
 namespace Server.Modules.Delivery;
 
-public class DeliveryModule
-    : ITransientScript
+public class DeliveryModule : ITransientScript
 {
     private readonly BankAccountService _bankAccountService;
     private readonly BankModule _bankModule;
@@ -40,18 +39,10 @@ public class DeliveryModule
     private readonly VehicleSelectionModule _vehicleSelectionModule;
     private readonly WorldLocationOptions _worldLocationOptions;
 
-    public DeliveryModule(
-        ILogger<DeliveryModule> logger,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        IOptions<DeliveryOptions> deliveryOptions,
-        VehicleSelectionModule vehicleSelectionModule,
-        BankModule bankModule,
-        VehicleModule vehicleModule,
-        DeliveryService deliveryService,
-        HouseService houseService,
-        GroupService groupService,
-        BankAccountService bankAccountService,
-        VehicleCatalogService vehicleCatalogService)
+    public DeliveryModule(ILogger<DeliveryModule> logger, IOptions<WorldLocationOptions> worldLocationOptions,
+        IOptions<DeliveryOptions> deliveryOptions, VehicleSelectionModule vehicleSelectionModule, BankModule bankModule,
+        VehicleModule vehicleModule, DeliveryService deliveryService, HouseService houseService,
+        GroupService groupService, BankAccountService bankAccountService, VehicleCatalogService vehicleCatalogService)
     {
         _logger = logger;
         _worldLocationOptions = worldLocationOptions.Value;
@@ -101,10 +92,8 @@ public class DeliveryModule
 
     public void UpdateGroupOpenDeliveriesUi(GroupModel groupModel)
     {
-        var groupPlayers = Alt.GetAllPlayers()
-                              .Where(p => p.Exists && p.IsSpawned && groupModel.Members
-                                                                               .Any(m => m.CharacterModelId ==
-                                                                                         p.CharacterModel.Id));
+        var groupPlayers = Alt.GetAllPlayers().Where(p =>
+            p.Exists && p.IsSpawned && groupModel.Members.Any(m => m.CharacterModelId == p.CharacterModel.Id));
 
         var callback = new Action<ServerPlayer>(async player => { await UpdatePlayerOpenDeliveriesUi(player); });
 
@@ -120,9 +109,9 @@ public class DeliveryModule
         }
 
         var deliveries = await _deliveryService.Where(d => d.Status == DeliveryState.OPEN);
-        deliveries = deliveries.FindAll(
-            d => ((CompanyGroupModel)d.OrderGroupModel).DeliveryVisibilityStatus == VisiblityState.PUBLIC
-                 || groups.Any(g => g.Id == d.OrderGroupModelId));
+        deliveries = deliveries.FindAll(d =>
+            ((CompanyGroupModel)d.OrderGroupModel).DeliveryVisibilityStatus == VisiblityState.PUBLIC ||
+            groups.Any(g => g.Id == d.OrderGroupModelId));
 
         player.EmitGui("delivery:sendopendeliveries", deliveries);
     }
@@ -136,11 +125,10 @@ public class DeliveryModule
         }
 
         if (player.Position.Distance(new Position(_worldLocationOptions.HarbourSelectionPositionX,
-                                                  _worldLocationOptions.HarbourSelectionPositionY,
-                                                  _worldLocationOptions.HarbourSelectionPositionZ)) > 5)
+                _worldLocationOptions.HarbourSelectionPositionY, _worldLocationOptions.HarbourSelectionPositionZ)) > 5)
         {
             player.SendNotification("Dein Charakter ist nicht in der Nähe einer Aufladestation.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -183,7 +171,7 @@ public class DeliveryModule
         if (vehicle.DbEntity == null)
         {
             player.SendNotification("Mit gespawnten Fahrzeugen kannst du keine Aufträge fahren.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -229,8 +217,7 @@ public class DeliveryModule
             NotificationType.SUCCESS);
     }
 
-    private async Task<Database.Models.Delivery.DeliveryModel?> HandleCollectProductDelivery(
-        ServerPlayer player, ServerVehicle vehicle,
+    private async Task<DeliveryModel?> HandleCollectProductDelivery(ServerPlayer player, ServerVehicle vehicle,
         ProductDeliveryModel productDeliveryModel)
     {
         var maxLoad =
@@ -238,7 +225,7 @@ public class DeliveryModule
         if (!maxLoad.HasValue)
         {
             player.SendNotification("Mit diesem Fahrzeug können keine Lieferungen getätigt werden.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return null;
         }
 
@@ -267,26 +254,25 @@ public class DeliveryModule
         return productDeliveryModel;
     }
 
-    private async Task<Database.Models.Delivery.DeliveryModel?> HandleCollectVehicleDelivery(
-        ServerPlayer player, ServerVehicle vehicle,
+    private async Task<DeliveryModel?> HandleCollectVehicleDelivery(ServerPlayer player, ServerVehicle vehicle,
         VehicleDeliveryModel vehicleDeliveryModel)
     {
         if ((VehicleModel)vehicle.Model != VehicleModel.Tr2)
         {
             player.SendNotification("Mit diesem Fahrzeug können keine Fahrezuglieferungen getätigt werden.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return null;
         }
 
         lock (vehicle)
         {
-            if (vehicle.HasData("AMOUNT_OF_VEHICLES")
-                && vehicle.GetData("AMOUNT_OF_VEHICLES", out int currentLoadedAmount))
+            if (vehicle.HasData("AMOUNT_OF_VEHICLES") &&
+                vehicle.GetData("AMOUNT_OF_VEHICLES", out int currentLoadedAmount))
             {
                 if (currentLoadedAmount >= 6)
                 {
                     player.SendNotification("Auf den Anhänger bekommst du nicht mehr als 6 Fahrzeuge.",
-                                            NotificationType.ERROR);
+                        NotificationType.ERROR);
 
                     return vehicleDeliveryModel;
                 }
@@ -357,12 +343,9 @@ public class DeliveryModule
             var delivery = t;
             var house = await _houseService.Find(h => h.GroupModelId == delivery.OrderGroupModelId);
 
-            if (player.Position.Distance(new Position(house.PositionX,
-                                                      house.PositionY,
-                                                      house.PositionZ)) > 30)
+            if (player.Position.Distance(new Position(house.PositionX, house.PositionY, house.PositionZ)) > 30)
             {
-                player.SendNotification("Dein Charakter ist nicht in der Nähe eines Zieles.",
-                                        NotificationType.ERROR);
+                player.SendNotification("Dein Charakter ist nicht in der Nähe eines Zieles.", NotificationType.ERROR);
                 return;
             }
 
@@ -396,9 +379,8 @@ public class DeliveryModule
         }
     }
 
-    private async Task<Database.Models.Delivery.DeliveryModel?> HandleDeployProductDelivery(
-        ServerPlayer player, ProductDeliveryModel deliveryModel,
-        IVehicle vehicle)
+    private async Task<DeliveryModel?> HandleDeployProductDelivery(ServerPlayer player,
+        ProductDeliveryModel deliveryModel, IVehicle vehicle)
     {
         if (!vehicle.HasData("AMOUNT_OF_PRODUCTS"))
         {
@@ -470,9 +452,8 @@ public class DeliveryModule
         return deliveryModel;
     }
 
-    private async Task<Database.Models.Delivery.DeliveryModel?> HandleDeployVehicleDelivery(
-        ServerPlayer player, VehicleDeliveryModel deliveryModel,
-        IVehicle vehicle)
+    private async Task<DeliveryModel?> HandleDeployVehicleDelivery(ServerPlayer player,
+        VehicleDeliveryModel deliveryModel, IVehicle vehicle)
     {
         if (!vehicle.HasData("AMOUNT_OF_VEHICLES"))
         {
@@ -492,9 +473,10 @@ public class DeliveryModule
         var catalogVehicle = await _vehicleCatalogService.GetByKey(deliveryModel.VehicleModel);
         if (catalogVehicle == null)
         {
-            player.SendNotification("Du Lieferung konnte nicht bearbeitet werden da dieses Fahrzeug nicht " +
-                                    "in unserem Katalog definiert ist, der Auftrag kann nicht beendet werden. Melde dich bitte bei einem Administrator.",
-                                    NotificationType.ERROR);
+            player.SendNotification(
+                "Du Lieferung konnte nicht bearbeitet werden da dieses Fahrzeug nicht " +
+                "in unserem Katalog definiert ist, der Auftrag kann nicht beendet werden. Melde dich bitte bei einem Administrator.",
+                NotificationType.ERROR);
             return null;
         }
 
@@ -511,9 +493,8 @@ public class DeliveryModule
         }
 
         var salaryForSupplierGroup = (int)(price * _deliveryOptions.SharesForSuppliers);
-        await _bankModule.Deposit(supplierGroupBankAccount,
-                                  salaryForSupplierGroup,
-                                  $"Fahrzeuglieferung: '{catalogVehicle.DisplayName}'");
+        await _bankModule.Deposit(supplierGroupBankAccount, salaryForSupplierGroup,
+            $"Fahrzeuglieferung: '{catalogVehicle.DisplayName}'");
 
         if (vehicle.HasData("AMOUNT_OF_VEHICLES"))
         {
@@ -531,15 +512,8 @@ public class DeliveryModule
 
         var randomColor = _random.Next(0, 111);
 
-        await _vehicleModule.CreatePersistent(deliveryModel.VehicleModel,
-                                              deliveryModel.OrderGroupModel,
-                                              Position.Zero,
-                                              Rotation.Zero,
-                                              0,
-                                              randomColor,
-                                              randomColor,
-                                              VehicleState.IN_STORAGE,
-                                              _random.Next(60000, 80000));
+        await _vehicleModule.CreatePersistent(deliveryModel.VehicleModel, deliveryModel.OrderGroupModel, Position.Zero,
+            Rotation.Zero, 0, randomColor, randomColor, VehicleState.IN_STORAGE, _random.Next(60000, 80000));
 
         deliveryModel.Status = DeliveryState.DELIVERD;
         deliveryModel.SupplierCharacterId = null;

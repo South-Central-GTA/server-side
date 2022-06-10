@@ -12,17 +12,14 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcOpenPageHandler : ISingletonScript
 {
+    private readonly BaseMdcModule _baseMdcModule;
+    private readonly FileModule _fileModule;
     private readonly GroupFactionService _groupFactionService;
 
     private readonly PoliceMdcModule _policeMdcModule;
-    private readonly BaseMdcModule _baseMdcModule;
-    private readonly FileModule _fileModule;
 
-    public PdMdcOpenPageHandler(
-        GroupFactionService groupFactionService,
-        PoliceMdcModule policeMdcModule,
-        BaseMdcModule baseMdcModule,
-        FileModule fileModule)
+    public PdMdcOpenPageHandler(GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule,
+        BaseMdcModule baseMdcModule, FileModule fileModule)
     {
         _groupFactionService = groupFactionService;
 
@@ -66,17 +63,15 @@ public class PdMdcOpenPageHandler : ISingletonScript
 
     private async Task OpenHomeScreen(ServerPlayer player)
     {
-        player.EmitGui("policemdc:openhomescreen",
-                       await _policeMdcModule.GetEmergencyCalls(),
-                       _policeMdcModule.CallSign.GetCallSigns(),
-                       _policeMdcModule.CallSign.HasCallSign(player.CharacterModel));
+        player.EmitGui("policemdc:openhomescreen", await _policeMdcModule.GetEmergencyCalls(),
+            _policeMdcModule.CallSign.GetCallSigns(), _policeMdcModule.CallSign.HasCallSign(player.CharacterModel));
     }
 
     private async Task OpenApbScreen(ServerPlayer player)
     {
         player.SetData("APB_SCREEN_OPEN", true);
         player.EmitGui("policemdc:openapbscreen",
-                       await _baseMdcModule.GetBulletInEntries(FactionType.POLICE_DEPARTMENT));
+            await _baseMdcModule.GetBulletInEntries(FactionType.POLICE_DEPARTMENT));
     }
 
     private async Task OpenFileScreen(ServerPlayer player)

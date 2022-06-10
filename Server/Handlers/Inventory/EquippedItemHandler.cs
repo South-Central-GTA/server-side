@@ -20,10 +20,7 @@ public class EquippedItemHandler : ISingletonScript
     private readonly ItemService _itemService;
     private readonly Serializer _serializer;
 
-    public EquippedItemHandler(
-        Serializer serializer,
-        ItemService itemService,
-        InventoryService inventoryService,
+    public EquippedItemHandler(Serializer serializer, ItemService itemService, InventoryService inventoryService,
         InventoryModule inventoryModule)
     {
         _serializer = serializer;
@@ -87,12 +84,12 @@ public class EquippedItemHandler : ISingletonScript
         }
 
         var inv = await _inventoryService.GetByKey(player.CharacterModel.InventoryModel.Id);
-        var requestedItems =
-            inv.Items.Where(i => i.CatalogItemModelId == item.CatalogItemModelId && i.ItemState == ItemState.EQUIPPED);
+        var requestedItems = inv.Items.Where(i =>
+            i.CatalogItemModelId == item.CatalogItemModelId && i.ItemState == ItemState.EQUIPPED);
         if (requestedItems.Any())
         {
             player.SendNotification("Dein Charakter trägt schon ein Kleidungsstück dieser Sorte.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -106,7 +103,7 @@ public class EquippedItemHandler : ISingletonScript
         if (clothingData.GenderType != player.CharacterModel.Gender)
         {
             player.SendNotification("Dein Charakiter kann keine Kleidung des anderen Geschlechtes anziehen.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

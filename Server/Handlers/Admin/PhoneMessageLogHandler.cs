@@ -32,10 +32,8 @@ public class PhoneMessageLogHandler : ISingletonScript
         }
 
         var allMessages = await _phoneMessagesService.GetAll();
-        var allUnique = allMessages.GroupBy(p => p.Context)
-                                   .Select(g => g.First())
-                                   .ToList();
+        var allUnique = allMessages.GroupBy(p => p.Context).Select(g => g.First()).ToList();
 
-        player.EmitGui("phonemessageslog:setup", allUnique);
+        player.EmitGui("phonemessageslog:open", allUnique);
     }
 }

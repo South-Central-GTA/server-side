@@ -11,9 +11,7 @@ public class CharacterCreatorVehicleHandler : ISingletonScript
     private readonly VehicleModule _vehicleModule;
     private readonly VehicleSelectionModule _vehicleSelectorModule;
 
-    public CharacterCreatorVehicleHandler(
-        VehicleModule vehicleModule,
-        VehicleSelectionModule vehicleSelectorModule)
+    public CharacterCreatorVehicleHandler(VehicleModule vehicleModule, VehicleSelectionModule vehicleSelectorModule)
     {
         _vehicleModule = vehicleModule;
         _vehicleSelectorModule = vehicleSelectorModule;

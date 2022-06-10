@@ -8,13 +8,8 @@ using Server.Database.Models.Group;
 
 namespace Server.Database.Models.File;
 
-public class DirectoryModel
-    : ModelBase
+public class DirectoryModel : ModelBase, IWritable
 {
-    public DirectoryModel()
-    {
-    }
-
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; init; }
@@ -34,4 +29,34 @@ public class DirectoryModel
 
     public int CreatorCharacterId { get; set; }
     public string CreatorCharacterName { get; set; }
+
+    public void OnWrite(IMValueWriter writer)
+    {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(DirectoryModel model, IMValueWriter writer)
+    {
+        writer.BeginObject();
+
+        writer.Name("id");
+        writer.Value(model.Id);
+
+        writer.Name("title");
+        writer.Value(model.Title);
+
+        writer.Name("isDirectory");
+        writer.Value(true);
+
+        writer.Name("creatorCharacterName");
+        writer.Value(model.CreatorCharacterName);
+
+        writer.Name("lastEditCharacterName");
+        writer.Value(model.LastEditCharacterName);
+
+        writer.Name("createdAtJson");
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
+
+        writer.EndObject();
+    }
 }

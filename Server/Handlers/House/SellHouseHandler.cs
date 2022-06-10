@@ -13,9 +13,7 @@ public class SellHouseHandler : ISingletonScript
     private readonly HouseModule _houseModule;
     private readonly HouseService _houseService;
 
-    public SellHouseHandler(
-        HouseService houseService,
-        HouseModule houseModule)
+    public SellHouseHandler(HouseService houseService, HouseModule houseModule)
     {
         _houseService = houseService;
         _houseModule = houseModule;

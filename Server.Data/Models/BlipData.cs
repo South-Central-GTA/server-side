@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models;
 
-public class BlipData
-    : IWritable
+public class BlipData : IWritable
 {
     public BlipData(int sprite, float positionX, float positionY, float positionZ, int color)
     {

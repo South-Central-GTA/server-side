@@ -9,19 +9,15 @@ namespace Server.Handlers.Items;
 
 public class ItemPoliceTicketHandler : ISingletonScript
 {
-    private readonly PoliceTicketService _policeTicketService;
+    private readonly BankAccountService _bankAccountService;
     private readonly CharacterService _characterService;
     private readonly GroupFactionService _groupFactionService;
-    private readonly BankAccountService _bankAccountService;
 
     private readonly NarratorModule _narratorModule;
+    private readonly PoliceTicketService _policeTicketService;
 
-    public ItemPoliceTicketHandler(
-        PoliceTicketService policeTicketService,
-        CharacterService characterService,
-        GroupFactionService groupFactionService,
-        BankAccountService bankAccountService,
-        NarratorModule narratorModule)
+    public ItemPoliceTicketHandler(PoliceTicketService policeTicketService, CharacterService characterService,
+        GroupFactionService groupFactionService, BankAccountService bankAccountService, NarratorModule narratorModule)
     {
         _policeTicketService = policeTicketService;
         _characterService = characterService;
@@ -60,6 +56,6 @@ public class ItemPoliceTicketHandler : ISingletonScript
         }
 
         _narratorModule.SendMessage(player,
-                                    $"Dein Charakter schaut sich einen Strafzettel für {targetCharacter.Name} an wo folgende Informationen draufstehen, Grund: {policeTicketItem.Reason}, Kosten {policeTicketItem.Costs}$, Referenznummer {policeTicketItem.ReferenceId}, Police Department Bankverbindung: {pdBankAccount.BankDetails} unterschrieben von {policeTicketItem.CreatorCharacterName}.");
+            $"Dein Charakter schaut sich einen Strafzettel für {targetCharacter.Name} an wo folgende Informationen draufstehen, Grund: {policeTicketItem.Reason}, Kosten {policeTicketItem.Costs}$, Referenznummer {policeTicketItem.ReferenceId}, Police Department Bankverbindung: {pdBankAccount.BankDetails} unterschrieben von {policeTicketItem.CreatorCharacterName}.");
     }
 }

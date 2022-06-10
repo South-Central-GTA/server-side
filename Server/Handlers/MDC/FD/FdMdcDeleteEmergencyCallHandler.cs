@@ -11,16 +11,13 @@ namespace Server.Handlers.MDC.FD;
 public class FdMdcDeleteEmergencyCallHandler : ISingletonScript
 {
     private readonly EmergencyCallService _emergencyCallService;
-    private readonly GroupFactionService _groupFactionService;
 
     private readonly FireMdcModule _fireMdcModule;
+    private readonly GroupFactionService _groupFactionService;
     private readonly GroupModule _groupModule;
 
-    public FdMdcDeleteEmergencyCallHandler(
-        EmergencyCallService emergencyCallService,
-        GroupFactionService groupFactionService,
-        FireMdcModule fireMdcModule,
-        GroupModule groupModule)
+    public FdMdcDeleteEmergencyCallHandler(EmergencyCallService emergencyCallService,
+        GroupFactionService groupFactionService, FireMdcModule fireMdcModule, GroupModule groupModule)
     {
         _emergencyCallService = emergencyCallService;
         _groupFactionService = groupFactionService;

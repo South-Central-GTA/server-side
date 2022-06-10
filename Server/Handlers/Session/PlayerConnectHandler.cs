@@ -17,11 +17,8 @@ public class PlayerConnectHandler : ISingletonScript
     private readonly WorldData _worldData;
     private readonly WorldLocationOptions _worldLocationOptions;
 
-    public PlayerConnectHandler(
-        ILogger<PlayerDisconnectHandler> logger,
-        WorldData worldData,
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        IOptions<DevelopmentOptions> devOptions)
+    public PlayerConnectHandler(ILogger<PlayerDisconnectHandler> logger, WorldData worldData,
+        IOptions<WorldLocationOptions> worldLocationOptions, IOptions<DevelopmentOptions> devOptions)
     {
         _devOptions = devOptions.Value;
         _logger = logger;
@@ -49,16 +46,11 @@ public class PlayerConnectHandler : ISingletonScript
         _logger.LogInformation("Connection: SID {socialClub} with IP {ip}", player.SocialClubId, player.Ip);
 
         player.SetUniqueDimension();
-        player.SetPosition(_worldLocationOptions.LoginPositionX,
-                           _worldLocationOptions.LoginPositionY,
-                           _worldLocationOptions.LoginPositionZ);
+        player.SetPosition(_worldLocationOptions.LoginPositionX, _worldLocationOptions.LoginPositionY,
+            _worldLocationOptions.LoginPositionZ);
 
-        player.SetDateTime(_worldData.Clock.Day,
-                           _worldData.Clock.Month,
-                           _worldData.Clock.Year,
-                           _worldData.Clock.Hour,
-                           _worldData.Clock.Minute,
-                           _worldData.Clock.Second);
+        player.SetDateTime(_worldData.Clock.Day, _worldData.Clock.Month, _worldData.Clock.Year, _worldData.Clock.Hour,
+            _worldData.Clock.Minute, _worldData.Clock.Second);
         player.ClearData();
     }
 }

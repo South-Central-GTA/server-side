@@ -13,8 +13,7 @@ public class FileModule : ISingletonScript
 {
     private readonly DirectoryService _directoryService;
 
-    public FileModule(
-        DirectoryService directoryService)
+    public FileModule(DirectoryService directoryService)
     {
         _directoryService = directoryService;
     }
@@ -31,32 +30,29 @@ public class FileModule : ISingletonScript
 
     public async Task<List<FileData>> GetAllDirectories(int groupId)
     {
-        var directories = await _directoryService
-            .Where(d => d.GroupModelId == groupId);
+        var directories = await _directoryService.Where(d => d.GroupModelId == groupId);
 
-        return directories.Select(directory => new FileData()
-                          {
-                              Id = directory.Id,
-                              IsDirectory = true,
-                              Title = directory.Title,
-                              LastEdit = directory.LastUsage,
-                              CreatorCharacterId = directory.CreatorCharacterId,
-                              CreatorCharacterName = directory.CreatorCharacterName,
-                              LastEditCharacterName = directory.LastEditCharacterName,
-                          })
-                          .ToList();
+        return directories.Select(directory => new FileData
+        {
+            Id = directory.Id,
+            IsDirectory = true,
+            Title = directory.Title,
+            LastEdit = directory.LastUsage,
+            CreatorCharacterId = directory.CreatorCharacterId,
+            CreatorCharacterName = directory.CreatorCharacterName,
+            LastEditCharacterName = directory.LastEditCharacterName
+        }).ToList();
     }
 
     public async Task<List<FileData>> GetAllFilesFromDirectory(int directoryId)
     {
         var mdcFiles = new List<FileData>();
 
-        var directory = await _directoryService
-            .Find(d => d.Id == directoryId);
+        var directory = await _directoryService.Find(d => d.Id == directoryId);
 
         if (directory != null)
         {
-            mdcFiles.AddRange(directory.Files.Select(file => new FileData()
+            mdcFiles.AddRange(directory.Files.Select(file => new FileData
             {
                 Id = file.Id,
                 IsDirectory = false,
@@ -64,7 +60,7 @@ public class FileModule : ISingletonScript
                 LastEdit = file.LastUsage,
                 CreatorCharacterId = file.CreatorCharacterId,
                 CreatorCharacterName = file.CreatorCharacterName,
-                LastEditCharacterName = file.LastEditCharacterName,
+                LastEditCharacterName = file.LastEditCharacterName
             }));
         }
 

@@ -2,8 +2,7 @@
 
 namespace Server.Data.Models;
 
-public class HelpMeTicketData
-    : IWritable
+public class HelpMeTicketData : IWritable
 {
     public string CreatorName { get; set; }
     public ulong CreatorDiscordId { get; set; }

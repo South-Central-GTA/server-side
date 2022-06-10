@@ -11,13 +11,11 @@ namespace Server.Handlers.FileSystem;
 public class CreateDirectoryHandler : ISingletonScript
 {
     private readonly DirectoryService _directoryService;
-
-    private readonly SyncFileModule _syncFileModule;
     private readonly GroupModule _groupModule;
 
-    public CreateDirectoryHandler(
-        DirectoryService directoryService,
-        SyncFileModule syncFileModule,
+    private readonly SyncFileModule _syncFileModule;
+
+    public CreateDirectoryHandler(DirectoryService directoryService, SyncFileModule syncFileModule,
         GroupModule groupModule)
     {
         _directoryService = directoryService;
@@ -40,12 +38,12 @@ public class CreateDirectoryHandler : ISingletonScript
             return;
         }
 
-        await _directoryService.Add(new DirectoryModel()
+        await _directoryService.Add(new DirectoryModel
         {
             Title = "Neuer Ordner",
             GroupModelId = groupId,
             CreatorCharacterName = player.CharacterModel.Name,
-            LastEditCharacterName = player.CharacterModel.Name,
+            LastEditCharacterName = player.CharacterModel.Name
         });
 
         await _syncFileModule.UpdateDirectory(groupId);

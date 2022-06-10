@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AltV.Net.Async;
 using Microsoft.Extensions.Logging;
 using Server.Core.Abstractions.ScriptStrategy;
@@ -13,17 +12,14 @@ using Server.Modules.Chat;
 
 namespace Server.Modules.EmergencyCall;
 
-public class EmergencyCallDialogModule
-    : ITransientScript
+public class EmergencyCallDialogModule : ITransientScript
 {
-    private readonly ILogger<EmergencyCallDialogModule> _logger;
     private readonly EmergencyCallService _emergencyCallService;
+    private readonly ILogger<EmergencyCallDialogModule> _logger;
     private readonly RadioModule _radioModule;
 
-    public EmergencyCallDialogModule(
-        ILogger<EmergencyCallDialogModule> logger,
-        EmergencyCallService emergencyCallService,
-        RadioModule radioModule)
+    public EmergencyCallDialogModule(ILogger<EmergencyCallDialogModule> logger,
+        EmergencyCallService emergencyCallService, RadioModule radioModule)
     {
         _logger = logger;
         _emergencyCallService = emergencyCallService;
@@ -62,7 +58,7 @@ public class EmergencyCallDialogModule
                     if (factionType == FactionType.CITIZEN)
                     {
                         player.EmitLocked("emergencycall:sendmessage",
-                                          "Entschuldigen Sie, benötigen Sie das LSPD oder LSFD?");
+                            "Entschuldigen Sie, benötigen Sie das LSPD oder LSFD?");
                         player.SetData("EMERGENCY_CALL_STATE", 1);
                         return;
                     }
@@ -99,13 +95,11 @@ public class EmergencyCallDialogModule
                     await _emergencyCallService.Add(
                         new EmergencyCallModel(phoneNumber, factionType, situation, message));
 
-                    await _radioModule.SendMessageOnFaction("Dispatch",
-                                                            ChatType.RADIO_SPEAK,
-                                                            factionType,
-                                                            $"Neuer 911 Notruf, Situation {situation}, Location: {message}");
+                    await _radioModule.SendMessageOnFaction("Dispatch", ChatType.RADIO_SPEAK, factionType,
+                        $"Neuer 911 Notruf, Situation {situation}, Location: {message}");
 
                     player.EmitLocked("emergencycall:sendmessage",
-                                      "Ihr Notruf wurde aufgenommen und wird schnellstmöglich bearbeitet.");
+                        "Ihr Notruf wurde aufgenommen und wird schnellstmöglich bearbeitet.");
                     player.EmitLocked("phone:callgothungup");
                     Stop(player);
                 }

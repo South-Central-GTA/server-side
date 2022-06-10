@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Server.Modules.Discord;
+﻿namespace Server.Modules.Discord;
 
 public struct DiscordUserDto
 {

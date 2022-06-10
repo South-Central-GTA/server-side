@@ -15,9 +15,7 @@ public class AddPermissionGroupHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
 
-    public AddPermissionGroupHandler(
-        GroupService groupService,
-        GroupModule groupModule)
+    public AddPermissionGroupHandler(GroupService groupService, GroupModule groupModule)
     {
         _groupService = groupService;
         _groupModule = groupModule;

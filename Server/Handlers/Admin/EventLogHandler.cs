@@ -35,17 +35,15 @@ public class EventLogHandler : ISingletonScript
             return;
         }
 
-        var teamAccountIds = Alt.GetAllPlayers()
-                                .Where(p => p.AccountModel.Permission.HasFlag(Permission.STAFF))
-                                .Select(p => p.AccountModel.SocialClubId);
+        var teamAccountIds = Alt.GetAllPlayers().Where(p => p.AccountModel.Permission.HasFlag(Permission.STAFF))
+            .Select(p => p.AccountModel.SocialClubId);
 
         var less30days = DateTime.Now.AddDays(-30);
 
-        var commands = await _commandLogService
-            .Where(c => teamAccountIds.Contains(c.AccountModelId));
+        var commands = await _commandLogService.Where(c => teamAccountIds.Contains(c.AccountModelId));
 
         commands = commands.Where(c => c.RequiredPermission.HasFlag(Permission.STAFF)).ToList();
 
-        player.EmitGui("eventlog:setup", commands.Where(c => c.LoggedAt > less30days).ToList());
+        player.EmitGui("eventlog:open", commands.Where(c => c.CreatedAt > less30days).ToList());
     }
 }

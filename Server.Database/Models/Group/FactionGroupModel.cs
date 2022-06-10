@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
 using Server.Database.Enums;
-using Server.Database.Models.Banking;
 
 namespace Server.Database.Models.Group;
 
-public class FactionGroupModel
-    : GroupModel
+public class FactionGroupModel : GroupModel
 {
     public FactionGroupModel()
     {
     }
 
-    public FactionGroupModel(string name, FactionType factionType)
-        : base(name)
+    public FactionGroupModel(string name, FactionType factionType) : base(name)
     {
         GroupType = GroupType.FACTION;
         FactionType = factionType;

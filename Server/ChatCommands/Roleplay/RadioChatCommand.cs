@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.CommandSystem;
 using Server.Core.Entities;
 using Server.Core.Extensions;
@@ -7,7 +8,6 @@ using Server.Database.Enums;
 using Server.Database.Models.Inventory;
 using Server.Modules.Chat;
 using Server.Modules.Group;
-using Server.Core.Abstractions.ScriptStrategy;
 
 namespace Server.ChatCommands.Roleplay;
 
@@ -18,10 +18,7 @@ internal class RadioChatCommand : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly RadioModule _radioModule;
 
-    public RadioChatCommand(
-        GroupModule groupModule,
-        ChatModule chatModule,
-        RadioModule radioModule)
+    public RadioChatCommand(GroupModule groupModule, ChatModule chatModule, RadioModule radioModule)
     {
         _groupModule = groupModule;
         _chatModule = chatModule;
@@ -51,7 +48,7 @@ internal class RadioChatCommand : ISingletonScript
         }
 
         var radioItem = (ItemRadioModel)player.CharacterModel.InventoryModel.Items.OrderBy(i => i.Slot)
-                                              .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
+            .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
         if (radioItem == null)
         {
             player.SendNotification("Dein Charakter hat kein Funkgerät im Inventar.", NotificationType.ERROR);
@@ -93,7 +90,7 @@ internal class RadioChatCommand : ISingletonScript
         }
 
         var radioItem = (ItemRadioModel)player.CharacterModel.InventoryModel.Items.OrderBy(i => i.Slot)
-                                              .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
+            .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
         if (radioItem == null)
         {
             player.SendNotification("Dein Charakter hat kein Funkgerät im Inventar.", NotificationType.ERROR);
@@ -135,7 +132,7 @@ internal class RadioChatCommand : ISingletonScript
         }
 
         var radioItem = (ItemRadioModel)player.CharacterModel.InventoryModel.Items.OrderBy(i => i.Slot)
-                                              .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
+            .FirstOrDefault(i => i.CatalogItemModelId == ItemCatalogIds.RADIO);
         if (radioItem == null)
         {
             player.SendNotification("Dein Charakter hat kein Funkgerät im Inventar.", NotificationType.ERROR);

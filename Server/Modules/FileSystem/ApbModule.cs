@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AltV.Net;
 using Server.Core.Abstractions.ScriptStrategy;
@@ -11,11 +10,10 @@ namespace Server.Modules.FileSystem;
 
 public class ApbModule : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
     private readonly BaseMdcModule _baseMdcModule;
+    private readonly GroupFactionService _groupFactionService;
 
-    public ApbModule(GroupFactionService groupFactionService,
-                     BaseMdcModule baseMdcModule)
+    public ApbModule(GroupFactionService groupFactionService, BaseMdcModule baseMdcModule)
     {
         _groupFactionService = groupFactionService;
         _baseMdcModule = baseMdcModule;
@@ -30,10 +28,8 @@ public class ApbModule : ISingletonScript
         }
 
         foreach (var serverPlayer in factionGroupModel.Members
-                                                      .Select(groupMember => Alt.GetAllPlayers()
-                                                                                .FindPlayerByCharacterId(
-                                                                                    groupMember.CharacterModelId))
-                                                      .Where(serverPlayer => serverPlayer != null))
+                     .Select(groupMember => Alt.GetAllPlayers().FindPlayerByCharacterId(groupMember.CharacterModelId))
+                     .Where(serverPlayer => serverPlayer != null))
         {
             if (!serverPlayer.HasData("APB_SCREEN_OPEN"))
             {
@@ -41,7 +37,7 @@ public class ApbModule : ISingletonScript
             }
 
             serverPlayer.EmitGui("policemdc:openapbscreen",
-                                 await _baseMdcModule.GetBulletInEntries(factionGroupModel.FactionType));
+                await _baseMdcModule.GetBulletInEntries(factionGroupModel.FactionType));
         }
     }
 }

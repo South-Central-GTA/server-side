@@ -22,10 +22,7 @@ public class ItemRadioHandler : ISingletonScript
     private readonly ItemService _itemService;
     private readonly Serializer _serializer;
 
-    public ItemRadioHandler(
-        Serializer serializer,
-        ItemService itemService,
-        InventoryService inventoryService,
+    public ItemRadioHandler(Serializer serializer, ItemService itemService, InventoryService inventoryService,
         InventoryModule inventoryModule)
     {
         _serializer = serializer;
@@ -128,8 +125,8 @@ public class ItemRadioHandler : ISingletonScript
             return;
         }
 
-        if (frequency > 5 && item.FactionType == FactionType.POLICE_DEPARTMENT
-            || frequency > 5 && item.FactionType == FactionType.FIRE_DEPARTMENT)
+        if (frequency > 5 && item.FactionType == FactionType.POLICE_DEPARTMENT ||
+            frequency > 5 && item.FactionType == FactionType.FIRE_DEPARTMENT)
         {
             player.SendNotification("Bitte gebe eine kleinere Zahl als 5 an.", NotificationType.ERROR);
             return;

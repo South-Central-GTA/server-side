@@ -3,21 +3,17 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Modules.Group;
 using Server.Modules.MDC;
 
 namespace Server.Handlers.MDC.PD;
 
 public class PdMdcCreateRecordHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
-
     private readonly CriminalRecordModule _criminalRecordModule;
+    private readonly GroupFactionService _groupFactionService;
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcCreateRecordHandler(
-        GroupFactionService groupFactionService,
-        CriminalRecordModule criminalRecordModule,
+    public PdMdcCreateRecordHandler(GroupFactionService groupFactionService, CriminalRecordModule criminalRecordModule,
         PoliceMdcModule policeMdcModule)
     {
         _groupFactionService = groupFactionService;

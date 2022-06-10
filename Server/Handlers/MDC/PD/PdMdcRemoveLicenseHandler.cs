@@ -13,16 +13,14 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcRemoveLicenseHandler : ISingletonScript
 {
-    private readonly PersonalLicenseService _personalLicenseService;
+    private readonly CriminalRecordModule _criminalRecordModule;
     private readonly GroupFactionService _groupFactionService;
+    private readonly PersonalLicenseService _personalLicenseService;
 
     private readonly PoliceMdcModule _policeMdcModule;
-    private readonly CriminalRecordModule _criminalRecordModule;
 
-    public PdMdcRemoveLicenseHandler(
-        PersonalLicenseService personalLicenseService,
-        GroupFactionService groupFactionService,
-        PoliceMdcModule policeMdcModule,
+    public PdMdcRemoveLicenseHandler(PersonalLicenseService personalLicenseService,
+        GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule,
         CriminalRecordModule criminalRecordModule)
     {
         _personalLicenseService = personalLicenseService;
@@ -65,9 +63,8 @@ public class PdMdcRemoveLicenseHandler : ISingletonScript
                 NotificationType.ERROR);
         }
 
-        await _criminalRecordModule.Add(personalLicense.CharacterModelId,
-                                        player.CharacterModel.Name,
-                                        $"Der {GetLicenseName(personalLicense.Type)} wurde entzogen.");
+        await _criminalRecordModule.Add(personalLicense.CharacterModelId, player.CharacterModel.Name,
+            $"Der {GetLicenseName(personalLicense.Type)} wurde entzogen.");
 
         await _policeMdcModule.OpenCharacterRecord(player, personalLicense.CharacterModelId.ToString());
     }

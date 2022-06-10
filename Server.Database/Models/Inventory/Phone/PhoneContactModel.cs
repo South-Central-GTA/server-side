@@ -5,8 +5,7 @@ using Server.Database.Models._Base;
 
 namespace Server.Database.Models.Inventory.Phone;
 
-public class PhoneContactModel
-    : ModelBase, IWritable
+public class PhoneContactModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -20,16 +19,21 @@ public class PhoneContactModel
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(PhoneContactModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("phoneNumber");
-        writer.Value(PhoneNumber);
+        writer.Value(model.PhoneNumber);
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
         writer.EndObject();
     }

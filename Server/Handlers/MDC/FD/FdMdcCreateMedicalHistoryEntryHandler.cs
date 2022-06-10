@@ -3,22 +3,19 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
-using Server.Database.Models.Mdc;
 using Server.Modules.MDC;
 
 namespace Server.Handlers.MDC.FD;
 
 public class FdMdcCreateMedicalHistoryEntryHandler : ISingletonScript
 {
+    private readonly FireMdcModule _fireMdcModule;
     private readonly GroupFactionService _groupFactionService;
 
     private readonly MedicalHistoryModule _medicalHistoryModule;
-    private readonly FireMdcModule _fireMdcModule;
 
-    public FdMdcCreateMedicalHistoryEntryHandler(
-        GroupFactionService groupFactionService,
-        MedicalHistoryModule medicalHistoryModule,
-        FireMdcModule fireMdcModule)
+    public FdMdcCreateMedicalHistoryEntryHandler(GroupFactionService groupFactionService,
+        MedicalHistoryModule medicalHistoryModule, FireMdcModule fireMdcModule)
     {
         _groupFactionService = groupFactionService;
 

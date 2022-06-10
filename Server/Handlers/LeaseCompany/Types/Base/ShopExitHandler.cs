@@ -18,11 +18,10 @@ namespace Server.Handlers.LeaseCompany.Types.Base;
 
 public class ShopExitHandler : ISingletonScript
 {
+    private readonly ChatModule _chatModule;
     private readonly GroupService _groupService;
     private readonly HouseService _houseService;
     private readonly ItemService _itemService;
-
-    private readonly ChatModule _chatModule;
     private readonly NarratorModule _narratorModule;
 
     private readonly Random _rand = new();
@@ -39,13 +38,8 @@ public class ShopExitHandler : ISingletonScript
 
     private readonly UserShopDataService _userShopDataService;
 
-    public ShopExitHandler(
-        HouseService houseService,
-        ItemService itemService,
-        GroupService groupService,
-        UserShopDataService userShopDataService,
-        ChatModule chatModule,
-        NarratorModule narratorModule)
+    public ShopExitHandler(HouseService houseService, ItemService itemService, GroupService groupService,
+        UserShopDataService userShopDataService, ChatModule chatModule, NarratorModule narratorModule)
     {
         _houseService = houseService;
         _itemService = itemService;
@@ -76,32 +70,22 @@ public class ShopExitHandler : ISingletonScript
             return;
         }
 
-        if (!leaseCompanyHouse.CashierX.HasValue
-            || !leaseCompanyHouse.CashierY.HasValue
-            || !leaseCompanyHouse.CashierZ.HasValue
-            || !leaseCompanyHouse.CashierHeading.HasValue)
+        if (!leaseCompanyHouse.CashierX.HasValue || !leaseCompanyHouse.CashierY.HasValue ||
+            !leaseCompanyHouse.CashierZ.HasValue || !leaseCompanyHouse.CashierHeading.HasValue)
         {
             return;
         }
 
         var genderString = player.CharacterModel.Gender == GenderType.MALE ? "er" : "sie";
-        var cashierPos = new Position(leaseCompanyHouse.CashierX.Value,
-                                      leaseCompanyHouse.CashierY.Value,
-                                      leaseCompanyHouse.CashierZ.Value);
+        var cashierPos = new Position(leaseCompanyHouse.CashierX.Value, leaseCompanyHouse.CashierY.Value,
+            leaseCompanyHouse.CashierZ.Value);
 
-        _chatModule.SendProxMessage("Kassierer",
-                                    20,
-                                    ChatType.EMOTE,
-                                    $"schaut zu {player.CharacterModel.Name} als {genderString} zurück in den Laden kommt.",
-                                    cashierPos,
-                                    0);
+        _chatModule.SendProxMessage("Kassierer", 20, ChatType.EMOTE,
+            $"schaut zu {player.CharacterModel.Name} als {genderString} zurück in den Laden kommt.", cashierPos, 0);
 
-        _chatModule.SendProxMessage("Kassierer",
-                                    20,
-                                    ChatType.SPEAK,
-                                    "Hast' ja nochmal Glück gehabt, gute Entscheidung. Bezahl jetzt die Scheiße und verschwinde.",
-                                    cashierPos,
-                                    0);
+        _chatModule.SendProxMessage("Kassierer", 20, ChatType.SPEAK,
+            "Hast' ja nochmal Glück gehabt, gute Entscheidung. Bezahl jetzt die Scheiße und verschwinde.", cashierPos,
+            0);
 
         player.ClearTimer("shop_rob");
     }
@@ -146,68 +130,46 @@ public class ShopExitHandler : ISingletonScript
                 if (target is { IsDuty: true })
                 {
                     _narratorModule.SendMessage(target,
-                                                $"Deinem Charakter fällt auf, dass {player.CharacterModel.Name} gerade mit unbezahlten Waren rausgegangen ist.");
+                        $"Deinem Charakter fällt auf, dass {player.CharacterModel.Name} gerade mit unbezahlten Waren rausgegangen ist.");
                 }
             }
         }
         else
         {
-            if (!leaseCompanyHouse.HasCashier
-                || !leaseCompanyHouse.CashierX.HasValue
-                || !leaseCompanyHouse.CashierY.HasValue
-                || !leaseCompanyHouse.CashierZ.HasValue
-                || !leaseCompanyHouse.CashierHeading.HasValue)
+            if (!leaseCompanyHouse.HasCashier || !leaseCompanyHouse.CashierX.HasValue ||
+                !leaseCompanyHouse.CashierY.HasValue || !leaseCompanyHouse.CashierZ.HasValue ||
+                !leaseCompanyHouse.CashierHeading.HasValue)
             {
                 await RemovePlayerFromData(player, true);
                 return;
             }
 
             var genderString = player.CharacterModel.Gender == GenderType.MALE ? "ihm" : "ihr";
-            var cashierPos = new Position(leaseCompanyHouse.CashierX.Value,
-                                          leaseCompanyHouse.CashierY.Value,
-                                          leaseCompanyHouse.CashierZ.Value);
+            var cashierPos = new Position(leaseCompanyHouse.CashierX.Value, leaseCompanyHouse.CashierY.Value,
+                leaseCompanyHouse.CashierZ.Value);
 
             if (await GotWarned(player))
             {
-                _chatModule.SendProxMessage("Kassierer",
-                                            20,
-                                            ChatType.EMOTE,
-                                            $"schaut kurz zu {player.CharacterModel.Name} schüttelt den Kopf und drückt eine Taste auf der Kasse.",
-                                            cashierPos,
-                                            0);
+                _chatModule.SendProxMessage("Kassierer", 20, ChatType.EMOTE,
+                    $"schaut kurz zu {player.CharacterModel.Name} schüttelt den Kopf und drückt eine Taste auf der Kasse.",
+                    cashierPos, 0);
 
-                _chatModule.SendProxMessage("Kassierer",
-                                            3,
-                                            ChatType.DO,
-                                            "Die Taste ist Gelb und ein kleines schwarzes Telefon ist darauf platziert.",
-                                            cashierPos,
-                                            0);
+                _chatModule.SendProxMessage("Kassierer", 3, ChatType.DO,
+                    "Die Taste ist Gelb und ein kleines schwarzes Telefon ist darauf platziert.", cashierPos, 0);
 
-                _chatModule.SendProxMessage("Kassierer",
-                                            3,
-                                            ChatType.SPEAK,
-                                            "Ich lass mich doch nicht verarschen...",
-                                            cashierPos,
-                                            0);
+                _chatModule.SendProxMessage("Kassierer", 3, ChatType.SPEAK, "Ich lass mich doch nicht verarschen...",
+                    cashierPos, 0);
 
 
                 await CallPolice(player);
             }
             else
             {
-                _chatModule.SendProxMessage("Kassierer",
-                                            20,
-                                            ChatType.EMOTE,
-                                            $"schaut zu {player.CharacterModel.Name} und ruft {genderString} nach.",
-                                            cashierPos,
-                                            0);
+                _chatModule.SendProxMessage("Kassierer", 20, ChatType.EMOTE,
+                    $"schaut zu {player.CharacterModel.Name} und ruft {genderString} nach.", cashierPos, 0);
 
-                _chatModule.SendProxMessage("Kassierer",
-                                            20,
-                                            ChatType.SPEAK,
-                                            _sentencesVariations[_rand.Next(_sentencesVariations.Count)],
-                                            cashierPos,
-                                            0);
+                _chatModule.SendProxMessage("Kassierer", 20, ChatType.SPEAK,
+                    _sentencesVariations[_rand.Next(_sentencesVariations.Count)], cashierPos, 0);
 
                 await SetWarned(player);
             }
@@ -273,7 +235,7 @@ public class ShopExitHandler : ISingletonScript
             var costs = await GetBill(player);
 
             player.SendNotification($"Debug: Information ans PD, Diebstahl in Wert von {costs}$.",
-                                    NotificationType.WARNING);
+                NotificationType.WARNING);
         }
 
         await RemovePlayerFromData(player, true);

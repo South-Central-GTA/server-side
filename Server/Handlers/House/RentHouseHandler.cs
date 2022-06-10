@@ -18,10 +18,7 @@ public class RentHouseHandler : ISingletonScript
 
     private readonly HouseService _houseService;
 
-    public RentHouseHandler(
-        HouseService houseService,
-        BankAccountService bankAccountService,
-        HouseModule houseModule,
+    public RentHouseHandler(HouseService houseService, BankAccountService bankAccountService, HouseModule houseModule,
         BankModule bankModule)
     {
         _houseService = houseService;
@@ -67,7 +64,7 @@ public class RentHouseHandler : ISingletonScript
         }
 
         await _houseModule.ResetOwner(house);
-        await _houseModule.SetOwner(player, house);
+        await _houseModule.SetOwner(player.CharacterModel, house);
 
         house.RentBankAccountId = bankAccountId;
         await _houseService.Update(house);

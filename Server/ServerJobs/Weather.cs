@@ -10,9 +10,7 @@ public class Weather : IJob
     private readonly ILogger<Weather> _logger;
     private readonly WeatherModule _weatherModule;
 
-    public Weather(
-        ILogger<Weather> logger,
-        WeatherModule weatherModule)
+    public Weather(ILogger<Weather> logger, WeatherModule weatherModule)
     {
         _logger = logger;
         _weatherModule = weatherModule;

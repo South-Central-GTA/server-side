@@ -7,8 +7,7 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models;
 
-public class RoleplayInfoModel
-    : PositionRotationModelBase, IWritable
+public class RoleplayInfoModel : PositionRotationModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,43 +25,48 @@ public class RoleplayInfoModel
 
     public virtual void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(RoleplayInfoModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(Id);
+        writer.Value(model.Id);
 
         writer.Name("characterName");
-        writer.Value(CharacterModel.Name);
+        writer.Value(model.CharacterModel.Name);
 
         writer.Name("context");
-        writer.Value(Context);
+        writer.Value(model.Context);
 
         writer.Name("dimension");
-        writer.Value(Dimension);
+        writer.Value(model.Dimension);
 
         writer.Name("distance");
-        writer.Value(Distance);
+        writer.Value(model.Distance);
 
         writer.Name("positionX");
-        writer.Value(PositionX);
+        writer.Value(model.PositionX);
 
         writer.Name("positionY");
-        writer.Value(PositionY);
+        writer.Value(model.PositionY);
 
         writer.Name("positionZ");
-        writer.Value(PositionZ);
+        writer.Value(model.PositionZ);
 
         writer.Name("pitch");
-        writer.Value(Pitch);
+        writer.Value(model.Pitch);
 
         writer.Name("roll");
-        writer.Value(Roll);
+        writer.Value(model.Roll);
 
         writer.Name("yaw");
-        writer.Value(Yaw);
+        writer.Value(model.Yaw);
 
         writer.Name("createdAtJson");
-        writer.Value(JsonSerializer.Serialize(CreatedAt));
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

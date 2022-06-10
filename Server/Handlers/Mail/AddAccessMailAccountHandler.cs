@@ -16,11 +16,8 @@ public class AddAccessMailAccountHandler : ISingletonScript
     private readonly MailAccountService _mailAccountService;
     private readonly MailModule _mailModule;
 
-    public AddAccessMailAccountHandler(
-        MailAccountService mailAccountService,
-        CharacterService characterService,
-        GroupService groupService,
-        MailModule mailModule)
+    public AddAccessMailAccountHandler(MailAccountService mailAccountService, CharacterService characterService,
+        GroupService groupService, MailModule mailModule)
     {
         _mailAccountService = mailAccountService;
         _characterService = characterService;
@@ -54,7 +51,7 @@ public class AddAccessMailAccountHandler : ISingletonScript
         if (character == null)
         {
             player.EmitGui("mail:senderror",
-                           "Es konnte keine Person unter diesen Namen gefunden werden, wir konnten Niemanden zu Ihrem Mailkonto hinzufügen, wir entschuldigen die Unannehmlichkeiten.");
+                "Es konnte keine Person unter diesen Namen gefunden werden, wir konnten Niemanden zu Ihrem Mailkonto hinzufügen, wir entschuldigen die Unannehmlichkeiten.");
 
             return;
         }
@@ -62,7 +59,7 @@ public class AddAccessMailAccountHandler : ISingletonScript
         if (player.CharacterModel.Id == character.Id)
         {
             player.EmitGui("mail:senderror",
-                           "Sie können sich nicht selbst auf ein Mailkonto hinzufügen, Sie haben schon Zugriffsrechte.");
+                "Sie können sich nicht selbst auf ein Mailkonto hinzufügen, Sie haben schon Zugriffsrechte.");
             return;
         }
 
@@ -79,28 +76,27 @@ public class AddAccessMailAccountHandler : ISingletonScript
             if (member.Owner)
             {
                 player.EmitGui("mail:senderror",
-                               "Sie können diese Person nicht zum Mailkonto hinzufügen, da sie schon Eigentümer einer Gruppe mit Zugriffsrechten ist.");
+                    "Sie können diese Person nicht zum Mailkonto hinzufügen, da sie schon Eigentümer einer Gruppe mit Zugriffsrechten ist.");
                 return;
             }
 
             player.EmitGui("mail:senderror",
-                           "Sie können diese Person nicht zum Mailkonto hinzufügen, da sie schon Mitglied einer Gruppe mit Zugriffsrechten ist.");
+                "Sie können diese Person nicht zum Mailkonto hinzufügen, da sie schon Mitglied einer Gruppe mit Zugriffsrechten ist.");
             return;
         }
 
-        var characterAccess =
-            mailAccount.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == character.Id);
+        var characterAccess = mailAccount.CharacterAccesses.FirstOrDefault(ca => ca.CharacterModelId == character.Id);
         if (characterAccess != null)
         {
             if (characterAccess.Owner)
             {
                 player.EmitGui("mail:senderror",
-                               "Der angegebene Name ist schon als Eigentümer hinterlegt und kann daher keine Berechtigungen haben, da der Eigentümer den Vollzugriff hat.");
+                    "Der angegebene Name ist schon als Eigentümer hinterlegt und kann daher keine Berechtigungen haben, da der Eigentümer den Vollzugriff hat.");
                 return;
             }
 
             player.EmitGui("mail:senderror",
-                           "Der angegebene Name hat schon Zugriff auf dieses Mailkonto, stellen Sie die Berechtigungen in der App ein.");
+                "Der angegebene Name hat schon Zugriff auf dieses Mailkonto, stellen Sie die Berechtigungen in der App ein.");
             return;
         }
 

@@ -11,8 +11,7 @@ using Server.Modules.Weapon;
 
 namespace Server.Modules.Inventory;
 
-public class ItemDestructionModule
-    : ITransientScript
+public class ItemDestructionModule : ITransientScript
 {
     private readonly ItemService _itemService;
     private readonly ILogger<ItemDropModule> _logger;
@@ -20,10 +19,7 @@ public class ItemDestructionModule
 
     private readonly WeaponModule _weaponModule;
 
-    public ItemDestructionModule(
-        ILogger<ItemDropModule> logger,
-        Serializer serializer,
-        ItemService itemService,
+    public ItemDestructionModule(ILogger<ItemDropModule> logger, Serializer serializer, ItemService itemService,
         WeaponModule weaponModule)
     {
         _logger = logger;
@@ -46,8 +42,7 @@ public class ItemDestructionModule
         {
             var items = await _itemService.GetAll();
             var weaponAttachmentItems = items.Where(i =>
-                                                        i is ItemWeaponAttachmentModel weaponAttachment &&
-                                                        weaponAttachment.ItemWeaponId == item.Id);
+                i is ItemWeaponAttachmentModel weaponAttachment && weaponAttachment.ItemWeaponId == item.Id);
             await _itemService.RemoveRange(weaponAttachmentItems);
 
             if (item.InventoryModelId.HasValue && item.InventoryModel.CharacterModelId.HasValue)

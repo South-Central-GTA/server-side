@@ -6,13 +6,11 @@ using Server.Database.Models.Banking;
 
 namespace Server.DataAccessLayer.Services;
 
-public class BankHistoryService
-    : BaseService<BankHistoryEntryModel>, ITransientScript
+public class BankHistoryService : BaseService<BankHistoryEntryModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public BankHistoryService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public BankHistoryService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }

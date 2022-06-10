@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AltV.Net;
 using AltV.Net.Async;
 using AltV.Net.Elements.Entities;
+using AltV.Net.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Core.Callbacks;
@@ -13,24 +14,20 @@ using Server.Core.ScheduledJobs;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models.Vehicles;
 using Server.Modules.Vehicles;
-using VehicleModel = AltV.Net.Enums.VehicleModel;
 
 namespace Server.ScheduledJobs;
 
 public class VehicleScheduledJob : ScheduledJob
 {
-    private readonly VehicleOptions _vehicleOptions;
     private readonly ILogger<VehicleScheduledJob> _logger;
     private readonly VehicleCatalogService _vehicleCatalogService;
 
     private readonly VehicleModule _vehicleModule;
+    private readonly VehicleOptions _vehicleOptions;
 
-    public VehicleScheduledJob(
-        ILogger<VehicleScheduledJob> logger,
-        IOptions<VehicleOptions> vehicleOptions,
-        VehicleCatalogService vehicleCatalogService,
-        VehicleModule vehicleModule)
-        : base(TimeSpan.FromSeconds(vehicleOptions.Value.VehicleFuelInterval))
+    public VehicleScheduledJob(ILogger<VehicleScheduledJob> logger, IOptions<VehicleOptions> vehicleOptions,
+        VehicleCatalogService vehicleCatalogService, VehicleModule vehicleModule) : base(
+        TimeSpan.FromSeconds(vehicleOptions.Value.VehicleFuelInterval))
     {
         _logger = logger;
         _vehicleOptions = vehicleOptions.Value;

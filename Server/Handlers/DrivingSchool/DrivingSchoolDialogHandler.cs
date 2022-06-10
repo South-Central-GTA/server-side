@@ -15,14 +15,12 @@ namespace Server.Handlers.DrivingSchool;
 
 public class DrivingSchoolDialogHandler : ISingletonScript
 {
-    private readonly WorldLocationOptions _worldLocationOptions;
-    private readonly RegistrationOfficeService _registrationOfficeService;
     private readonly BankModule _bankModule;
+    private readonly RegistrationOfficeService _registrationOfficeService;
+    private readonly WorldLocationOptions _worldLocationOptions;
 
-    public DrivingSchoolDialogHandler(
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        RegistrationOfficeService registrationOfficeService,
-        BankModule bankModule)
+    public DrivingSchoolDialogHandler(IOptions<WorldLocationOptions> worldLocationOptions,
+        RegistrationOfficeService registrationOfficeService, BankModule bankModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
 
@@ -43,17 +41,16 @@ public class DrivingSchoolDialogHandler : ISingletonScript
         if (!await _bankModule.HasBankAccount(player))
         {
             player.SendNotification("Dein Charakter benötigt ein Bankkonto um eine Prüfung zu starten.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var drivingSchoolData =
-            _worldLocationOptions.DrivingSchools.Find(
-                g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
+        var drivingSchoolData = _worldLocationOptions.DrivingSchools.Find(g =>
+            player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
         if (drivingSchoolData == null)
         {
             player.SendNotification("Es befindet sich keine Fahrschule in der Nähe deines Charakters.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -69,9 +66,10 @@ public class DrivingSchoolDialogHandler : ISingletonScript
         {
             Type = DialogType.ONE_BUTTON_DIALOG,
             Title = "Führerschein Prüfung",
-            Description = $"Möchtest du die Prüfung für <b>${drivingSchoolData.DrivingLicensePrice}</b> beginnen?<br>" +
-                          "Du solltest dir davor die Straßenverkehrsordnung mit deinem Charakter auf der Internetseite des Governments durchlesen.<br><br>" +
-                          "<span class='text-muted'>Die Kosten werden von deinem angegebenen Bankkonto abgezogen.</span>",
+            Description =
+                $"Möchtest du die Prüfung für <b>${drivingSchoolData.DrivingLicensePrice}</b> beginnen?<br>" +
+                "Du solltest dir davor die Straßenverkehrsordnung mit deinem Charakter auf der Internetseite des Governments durchlesen.<br><br>" +
+                "<span class='text-muted'>Die Kosten werden von deinem angegebenen Bankkonto abgezogen.</span>",
             HasBankAccountSelection = true,
             FreezeGameControls = true,
             PrimaryButton = "Prüfung beginnen",

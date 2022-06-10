@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using AltV.Net;
@@ -9,8 +8,7 @@ using Server.Database.Models.Character;
 
 namespace Server.Database.Models.CustomLogs;
 
-public class CommandLogModel
-    : ModelBase, IWritable
+public class CommandLogModel : ModelBase, IWritable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,25 +24,28 @@ public class CommandLogModel
 
     [MaxLength(2048)] public string Arguments { get; set; }
 
-    public DateTime LoggedAt { get; set; }
-
     public Permission RequiredPermission { get; set; }
 
     public void OnWrite(IMValueWriter writer)
     {
+        Serialize(this, writer);
+    }
+
+    public static void Serialize(CommandLogModel model, IMValueWriter writer)
+    {
         writer.BeginObject();
 
         writer.Name("name");
-        writer.Value(Name);
+        writer.Value(model.Name);
 
         writer.Name("arguments");
-        writer.Value(Arguments);
+        writer.Value(model.Arguments);
 
         writer.Name("accountName");
-        writer.Value(AccountModel.CurrentName);
+        writer.Value(model.AccountModel.CurrentName);
 
-        writer.Name("loggedAtJson");
-        writer.Value(JsonSerializer.Serialize(LoggedAt));
+        writer.Name("createdAtJson");
+        writer.Value(JsonSerializer.Serialize(model.CreatedAt));
 
         writer.EndObject();
     }

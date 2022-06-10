@@ -8,12 +8,10 @@ namespace Server.Handlers.Admin;
 
 public class AdminPrisonHandler : ISingletonScript
 {
-    private readonly AdminPrisonModule _adminPrisonModule;
     private readonly AccountService _accountService;
+    private readonly AdminPrisonModule _adminPrisonModule;
 
-    public AdminPrisonHandler(
-        AccountService accountService,
-        AdminPrisonModule adminPrisonModule)
+    public AdminPrisonHandler(AccountService accountService, AdminPrisonModule adminPrisonModule)
     {
         _accountService = accountService;
         _adminPrisonModule = adminPrisonModule;

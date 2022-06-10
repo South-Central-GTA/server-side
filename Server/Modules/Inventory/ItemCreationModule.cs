@@ -14,35 +14,25 @@ using Server.Modules.Weapon;
 
 namespace Server.Modules.Inventory;
 
-public class ItemCreationModule
-    : ITransientScript
+public class ItemCreationModule : ITransientScript
 {
     private readonly AmmoModule _ammoModule;
 
     private readonly InventoryModule _inventoryModule;
-    private readonly InventoryService _inventoryService;
     private readonly ItemCatalogService _itemCatalogService;
     private readonly ItemService _itemService;
     private readonly ILogger<ItemCreationModule> _logger;
-    private readonly PhoneModule _phoneModule;
     private readonly PhoneCallModule _phoneCallModule;
+    private readonly PhoneModule _phoneModule;
     private readonly WeaponModule _weaponModule;
 
-    public ItemCreationModule(
-        ILogger<ItemCreationModule> logger,
-        ItemCatalogService itemCatalogService,
-        ItemService itemService,
-        InventoryService inventoryService,
-        InventoryModule inventoryModule,
-        PhoneModule phoneModule,
-        WeaponModule weaponModule,
-        AmmoModule ammoModule,
-        PhoneCallModule phoneCallModule)
+    public ItemCreationModule(ILogger<ItemCreationModule> logger, ItemCatalogService itemCatalogService,
+        ItemService itemService, InventoryModule inventoryModule, PhoneModule phoneModule, WeaponModule weaponModule,
+        AmmoModule ammoModule, PhoneCallModule phoneCallModule)
     {
         _logger = logger;
         _itemCatalogService = itemCatalogService;
         _itemService = itemService;
-        _inventoryService = inventoryService;
 
         _inventoryModule = inventoryModule;
         _phoneModule = phoneModule;
@@ -52,22 +42,11 @@ public class ItemCreationModule
     }
 
     public async Task<ItemModel?> AddItemAsync(ServerPlayer player, ItemCatalogIds catalogId, int amount,
-                                               int? condition = null, string? customData = null, string? note = null,
-                                               bool asNew = true,
-                                               bool isBought = true, bool isStolen = false, int? slot = null,
-                                               ItemState itemState = ItemState.NOT_EQUIPPED)
+        int? condition = null, string? customData = null, string? note = null, bool asNew = true, bool isBought = true,
+        bool isStolen = false, int? slot = null, ItemState itemState = ItemState.NOT_EQUIPPED)
     {
-        var createdItem = await AddItemAsync(player.CharacterModel.InventoryModel,
-                                             catalogId,
-                                             amount,
-                                             condition,
-                                             customData,
-                                             note,
-                                             asNew,
-                                             isBought,
-                                             isStolen,
-                                             slot,
-                                             itemState);
+        var createdItem = await AddItemAsync(player.CharacterModel.InventoryModel, catalogId, amount, condition,
+            customData, note, asNew, isBought, isStolen, slot, itemState);
 
         if (createdItem == null)
         {
@@ -102,23 +81,13 @@ public class ItemCreationModule
     /// <param name="slot"></param>
     /// <returns>New added item that are already saved to the database.</returns>
     public async Task<ItemModel?> AddItemAsync(InventoryModel inventoryModel, ItemCatalogIds catalogId, int amount,
-                                               int? condition = null, string? customData = "", string? note = "",
-                                               bool asNew = true, bool isBought = true,
-                                               bool isStolen = false, int? slot = null,
-                                               ItemState itemState = ItemState.NOT_EQUIPPED)
+        int? condition = null, string? customData = "", string? note = "", bool asNew = true, bool isBought = true,
+        bool isStolen = false, int? slot = null, ItemState itemState = ItemState.NOT_EQUIPPED)
     {
         if (slot != null)
         {
-            return await AddItemAsync(inventoryModel,
-                                      slot.Value,
-                                      catalogId,
-                                      amount,
-                                      condition,
-                                      customData,
-                                      note,
-                                      isBought,
-                                      isStolen,
-                                      itemState);
+            return await AddItemAsync(inventoryModel, slot.Value, catalogId, amount, condition, customData, note,
+                isBought, isStolen, itemState);
         }
 
         var catalogItem = await _itemCatalogService.GetByKey(catalogId);
@@ -140,16 +109,8 @@ public class ItemCreationModule
 
         slot = freeSlot;
 
-        return await AddItemAsync(inventoryModel,
-                                  slot.Value,
-                                  catalogId,
-                                  amount,
-                                  condition,
-                                  customData,
-                                  note,
-                                  isBought,
-                                  isStolen,
-                                  itemState);
+        return await AddItemAsync(inventoryModel, slot.Value, catalogId, amount, condition, customData, note, isBought,
+            isStolen, itemState);
     }
 
     public async Task HandleGiveSpecialItems(ServerPlayer player, ItemModel itemModel)
@@ -162,10 +123,8 @@ public class ItemCreationModule
         {
             var itemWeapon = itemModel as ItemWeaponModel;
 
-            _weaponModule.Give(player,
-                               WeaponModule.GetModelFromId(itemModel.CatalogItemModelId),
-                               false,
-                               itemWeapon.Amount);
+            _weaponModule.Give(player, WeaponModule.GetModelFromId(itemModel.CatalogItemModelId), false,
+                itemWeapon.Amount);
             if (itemWeapon.ComponentHashes != null)
             {
                 foreach (var componentHash in itemWeapon.ComponentHashes)
@@ -205,15 +164,13 @@ public class ItemCreationModule
     }
 
     private async Task<ItemModel> AddItemAsync(InventoryModel inventoryModel, int slot, ItemCatalogIds catalogId,
-                                               int amount, int? condition, string? customData = "", string? note = "",
-                                               bool isBought = true, bool isStolen = false,
-                                               ItemState itemState = ItemState.NOT_EQUIPPED)
+        int amount, int? condition, string? customData = "", string? note = "", bool isBought = true,
+        bool isStolen = false, ItemState itemState = ItemState.NOT_EQUIPPED)
     {
         var existingItem = inventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == catalogId);
 
-        if (existingItem != null
-            && existingItem.CatalogItemModel.Stackable
-            && (existingItem.IsBought || !isBought && !existingItem.IsBought))
+        if (existingItem != null && existingItem.CatalogItemModel.Stackable &&
+            (existingItem.IsBought || !isBought && !existingItem.IsBought))
         {
             existingItem.Amount += amount;
             await _itemService.Update(existingItem);
@@ -359,9 +316,7 @@ public class ItemCreationModule
                     IsStolen = isStolen,
                     ClothingInventoryModel = new InventoryModel
                     {
-                        Name = "Rucksack",
-                        InventoryType = InventoryType.CLOTHINGS,
-                        MaxWeight = 15
+                        Name = "Rucksack", InventoryType = InventoryType.CLOTHINGS, MaxWeight = 15
                     }
                 });
                 break;
@@ -380,9 +335,7 @@ public class ItemCreationModule
                     IsStolen = isStolen,
                     ClothingInventoryModel = new InventoryModel
                     {
-                        Name = "Schutzweste",
-                        InventoryType = InventoryType.CLOTHINGS,
-                        MaxWeight = 12
+                        Name = "Schutzweste", InventoryType = InventoryType.CLOTHINGS, MaxWeight = 12
                     }
                 });
                 break;
@@ -424,12 +377,9 @@ public class ItemCreationModule
                     IsBought = isBought,
                     IsStolen = isStolen,
                     BackgroundImageId = 0,
-                    InitialOwnerId =
-                        inventoryModel.CharacterModelId ?? -1,
-                    CurrentOwnerId =
-                        inventoryModel.CharacterModelId ?? null,
-                    PhoneNumber =
-                        await _phoneModule.GetRandomPhoneNumber(),
+                    InitialOwnerId = inventoryModel.CharacterModelId ?? -1,
+                    CurrentOwnerId = inventoryModel.CharacterModelId ?? null,
+                    PhoneNumber = await _phoneModule.GetRandomPhoneNumber(),
                     LastTimeOpenedNotifications = DateTime.Now,
                     Contacts = new List<PhoneContactModel>(),
                     Chats = new List<PhoneChatModel>(),
@@ -628,7 +578,7 @@ public class ItemCreationModule
                 });
                 break;
             case ItemCatalogIds.POLICE_TICKET:
-                createdItemModel = await _itemService.Add(new ItemPoliceTicketModel()
+                createdItemModel = await _itemService.Add(new ItemPoliceTicketModel
                 {
                     InventoryModelId = inventoryModel.Id,
                     Slot = slot,
@@ -657,10 +607,8 @@ public class ItemCreationModule
         }
         else if (WeaponModule.IsItemWeapon(newItemModel.CatalogItemModelId))
         {
-            _weaponModule.Give(player,
-                               WeaponModule.GetModelFromId(newItemModel.CatalogItemModelId),
-                               true,
-                               newItemModel.Amount);
+            _weaponModule.Give(player, WeaponModule.GetModelFromId(newItemModel.CatalogItemModelId), true,
+                newItemModel.Amount);
         }
         else if (AmmoModule.IsItemAmmo(newItemModel.CatalogItemModelId))
         {

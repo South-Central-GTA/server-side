@@ -15,17 +15,13 @@ namespace Server.Handlers.Company;
 
 public class DeliveryVisibilityHandler : ISingletonScript
 {
+    private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
+    private readonly PhoneModule _phoneModule;
     private readonly RegistrationOfficeService _registrationOfficeService;
 
-    private readonly GroupModule _groupModule;
-    private readonly PhoneModule _phoneModule;
-
-    public DeliveryVisibilityHandler(
-        GroupService groupService,
-        RegistrationOfficeService registrationOfficeService,
-        GroupModule groupModule,
-        PhoneModule phoneModule)
+    public DeliveryVisibilityHandler(GroupService groupService, RegistrationOfficeService registrationOfficeService,
+        GroupModule groupModule, PhoneModule phoneModule)
     {
         _groupService = groupService;
         _registrationOfficeService = registrationOfficeService;
@@ -49,7 +45,7 @@ public class DeliveryVisibilityHandler : ISingletonScript
         if (!isRegistered)
         {
             player.SendNotification("Dein Charakter ist nicht im Registration Office gemeldet.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 

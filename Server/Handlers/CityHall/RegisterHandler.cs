@@ -3,7 +3,6 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
-using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models;
 
@@ -30,7 +29,7 @@ public class RegisterHandler : ISingletonScript
         var isRegistered = await _registrationOfficeService.IsRegistered(player.CharacterModel.Id);
         if (!isRegistered)
         {
-            await _registrationOfficeService.Add(new RegistrationOfficeEntryModel()
+            await _registrationOfficeService.Add(new RegistrationOfficeEntryModel
             {
                 CharacterModelId = player.CharacterModel.Id
             });

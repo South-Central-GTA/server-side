@@ -15,9 +15,7 @@ public class RemovePermissionGroupHandler : ISingletonScript
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
 
-    public RemovePermissionGroupHandler(
-        GroupService groupService,
-        GroupModule groupModule)
+    public RemovePermissionGroupHandler(GroupService groupService, GroupModule groupModule)
     {
         _groupService = groupService;
         _groupModule = groupModule;

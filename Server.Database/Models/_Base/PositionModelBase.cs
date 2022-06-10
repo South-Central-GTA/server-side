@@ -3,8 +3,7 @@ using System.Numerics;
 
 namespace Server.Database.Models._Base;
 
-public abstract class PositionModelBase
-    : ModelBase
+public abstract class PositionModelBase : ModelBase
 {
     public float PositionX { get; set; }
 

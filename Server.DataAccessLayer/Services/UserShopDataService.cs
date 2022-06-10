@@ -6,11 +6,9 @@ using Server.Database.Models.Housing;
 
 namespace Server.DataAccessLayer.Services;
 
-public class UserShopDataService
-    : BaseService<UserShopDataModel>, ITransientScript
+public class UserShopDataService : BaseService<UserShopDataModel>, ITransientScript
 {
-    public UserShopDataService(IDbContextFactory<DatabaseContext> dbContextFactory)
-        : base(dbContextFactory)
+    public UserShopDataService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
     }
 }

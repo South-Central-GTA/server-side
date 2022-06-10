@@ -23,11 +23,8 @@ public class StartDrivingSchoolHandler : ISingletonScript
     private readonly DrivingSchoolModule _drivingSchoolModule;
     private readonly WorldLocationOptions _worldLocationOptions;
 
-    public StartDrivingSchoolHandler(
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        BankAccountService bankAccountService,
-        DrivingSchoolModule drivingSchoolModule,
-        BankModule bankModule)
+    public StartDrivingSchoolHandler(IOptions<WorldLocationOptions> worldLocationOptions,
+        BankAccountService bankAccountService, DrivingSchoolModule drivingSchoolModule, BankModule bankModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
 
@@ -46,9 +43,8 @@ public class StartDrivingSchoolHandler : ISingletonScript
             return;
         }
 
-        var drivingSchoolData =
-            _worldLocationOptions.DrivingSchools.Find(
-                g => player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
+        var drivingSchoolData = _worldLocationOptions.DrivingSchools.Find(g =>
+            player.Position.Distance(new Position(g.PedPointX, g.PedPointY, g.PedPointZ)) <= 3);
         if (drivingSchoolData == null)
         {
             player.SendNotification(
@@ -64,17 +60,13 @@ public class StartDrivingSchoolHandler : ISingletonScript
             return;
         }
 
-        if (Alt.GetAllVehicles()
-               .FirstOrDefault(v => v.Position.Distance(new Position(drivingSchoolData.StartPointX,
-                                                                     drivingSchoolData.StartPointY,
-                                                                     drivingSchoolData.StartPointZ)) <= 2) != null
-            || Alt.GetAllPlayers()
-                  .FirstOrDefault(p => p.Position.Distance(new Position(drivingSchoolData.StartPointX,
-                                                                        drivingSchoolData.StartPointY,
-                                                                        drivingSchoolData.StartPointZ)) <= 2) != null)
+        if (Alt.GetAllVehicles().FirstOrDefault(v => v.Position.Distance(new Position(drivingSchoolData.StartPointX,
+                drivingSchoolData.StartPointY, drivingSchoolData.StartPointZ)) <= 2) != null || Alt.GetAllPlayers()
+                .FirstOrDefault(p => p.Position.Distance(new Position(drivingSchoolData.StartPointX,
+                    drivingSchoolData.StartPointY, drivingSchoolData.StartPointZ)) <= 2) != null)
         {
             player.SendNotification("Die Prüfung konnte nicht begonnen werden, da der Parkplatz besetzt ist.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
@@ -87,14 +79,12 @@ public class StartDrivingSchoolHandler : ISingletonScript
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {
             player.SendNotification($"Dein Charakter hat keine Transferrechte für das Konto {bankAccount.BankDetails}.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
             return;
         }
 
-        var success = await _bankModule.Withdraw(bankAccount,
-                                                 drivingSchoolData.DrivingLicensePrice,
-                                                 false,
-                                                 "Führerscheinprüfung");
+        var success = await _bankModule.Withdraw(bankAccount, drivingSchoolData.DrivingLicensePrice, false,
+            "Führerscheinprüfung");
         if (success)
         {
             await _drivingSchoolModule.SetPlayerInExam(drivingSchoolData, player);
@@ -102,7 +92,7 @@ public class StartDrivingSchoolHandler : ISingletonScript
         else
         {
             player.SendNotification("Dein Charakter hat nicht genug Geld auf dem Bankkonto für die Prüfung.",
-                                    NotificationType.ERROR);
+                NotificationType.ERROR);
         }
     }
 }

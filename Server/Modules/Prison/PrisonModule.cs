@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Threading.Tasks;
 using AltV.Net.Async;
 using AltV.Net.Data;
@@ -12,15 +11,12 @@ using Server.DataAccessLayer.Services;
 
 namespace Server.Modules.Prison;
 
-public class PrisonModule
-    : ITransientScript
+public class PrisonModule : ITransientScript
 {
-    private readonly WorldLocationOptions _worldLocationOptions;
     private readonly CharacterService _characterService;
+    private readonly WorldLocationOptions _worldLocationOptions;
 
-    public PrisonModule(
-        IOptions<WorldLocationOptions> worldLocationOptions,
-        CharacterService characterService)
+    public PrisonModule(IOptions<WorldLocationOptions> worldLocationOptions, CharacterService characterService)
     {
         _worldLocationOptions = worldLocationOptions.Value;
 
@@ -36,8 +32,7 @@ public class PrisonModule
 
         player.SetUniqueDimension();
         player.SetPositionLocked(new Position(_worldLocationOptions.FreeJailPositionX,
-                                              _worldLocationOptions.FreeJailPositionY,
-                                              _worldLocationOptions.FreeJailPositionZ));
+            _worldLocationOptions.FreeJailPositionY, _worldLocationOptions.FreeJailPositionZ));
 
         player.EmitLocked("prison:start", JsonSerializer.Serialize(player.CharacterModel.JailedUntil));
     }
@@ -51,8 +46,7 @@ public class PrisonModule
 
         await player.SetDimensionAsync(0);
         player.SetPositionLocked(new Position(_worldLocationOptions.FreeJailPositionX,
-                                              _worldLocationOptions.FreeJailPositionY,
-                                              _worldLocationOptions.FreeJailPositionZ));
+            _worldLocationOptions.FreeJailPositionY, _worldLocationOptions.FreeJailPositionZ));
 
         player.CharacterModel.JailedUntil = null;
         await _characterService.Update(player.CharacterModel);
