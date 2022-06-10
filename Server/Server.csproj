@@ -13,12 +13,12 @@
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-        <OutputPath>..\..\..\altv-server\resources\southcentral\server\</OutputPath>
+        <OutputPath />
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-        <OutputPath>..\..\..\altv-server\resources\southcentral\server\</OutputPath>
+        <OutputPath />
     </PropertyGroup>
 
     <ItemGroup>
