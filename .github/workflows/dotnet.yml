@@ -35,6 +35,6 @@ jobs:
           port: '8459'
           sftp_only: 'true'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
-          local_path: 'Server/bin/Debug/*'
+          local_path: '../../altv-server/resources/southcentral/server/*'
           remote_path: '/home/tstolzenberg/altv/resources/southcentral/server'
           args: '-o ConnectTimeout=5'
