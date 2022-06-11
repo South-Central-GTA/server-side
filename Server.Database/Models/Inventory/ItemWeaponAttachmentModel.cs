@@ -60,9 +60,6 @@ public class ItemWeaponAttachmentModel : ItemModel
         writer.Name("positionZ");
         writer.Value(model.PositionZ);
 
-        writer.Name("lastUsageJson");
-        writer.Value(JsonSerializer.Serialize(model.LastUsage));
-
         writer.Name("attachedToWeaponItem");
         writer.Value(model.ItemWeaponId ?? -1);
 

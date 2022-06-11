@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 using AltV.Net;
 using AltV.Net.Data;
 using Server.Database.Enums;
@@ -95,6 +96,9 @@ public class CatalogItemModel : PositionRotationModelBase, IWritable
 
         writer.Name("price");
         writer.Value(model.Price);
+
+        writer.Name("lastUsageJson");
+        writer.Value(JsonSerializer.Serialize(model.LastUsage));
 
         writer.EndObject();
     }
