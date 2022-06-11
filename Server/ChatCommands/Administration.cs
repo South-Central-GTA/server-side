@@ -3182,7 +3182,7 @@ public class Administration : ISingletonScript
 
         target.AccountModel.BannedFrom = player.DiscordId;
         target.AccountModel.BannedReason = expectedReason;
-        target.AccountModel.BannedUntil = DateTime.Now.AddHours(hours);
+        target.AccountModel.BannedUntil = DateTime.Now.AddHours(hours + 2); // cause timezone
 
         await _characterService.Update(target);
         await _accountService.Update(target.AccountModel);

@@ -23,11 +23,6 @@ public class PlayerListsHandler : ISingletonScript
         }
 
         var players = Alt.GetAllPlayers().GetAllServerPlayers();
-        if (players == null)
-        {
-            return;
-        }
-
         var playerInformationDatas = players.Select(target => new PlayerInformationData
         {
             Id = target.Id, CharacterName = target.CharacterModel.Name

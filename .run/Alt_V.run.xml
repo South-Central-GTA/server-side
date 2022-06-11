@@ -1,25 +1,26 @@
 ﻿<component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="Alt:V" type="RunExe" factoryName=".NET Executable" singleton="false">
-        <option name="EXE_PATH" value="$PROJECT_DIR$/../../altv-server/altv-server.exe"/>
-        <option name="PROGRAM_PARAMETERS" value=""/>
-        <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../altv-server"/>
-        <option name="PASS_PARENT_ENVS" value="1"/>
-        <option name="USE_EXTERNAL_CONSOLE" value="0"/>
-        <option name="USE_MONO" value="0"/>
-        <option name="RUNTIME_ARGUMENTS" value=""/>
-        <option name="RUNTIME_TYPE" value="coreclr"/>
-        <method v="2">
-            <option name="CleanSolution" enabled="true"/>
-            <option name="Build Solution" enabled="true"/>
-            <option name="NpmBeforeRunTask" enabled="true">
-                <package-json value="$PROJECT_DIR$/../client-side-ts/package.json"/>
-                <command value="run"/>
-                <scripts>
-                    <script value="build"/>
-                </scripts>
-                <node-interpreter value="project"/>
-                <envs/>
-            </option>
-        </method>
-    </configuration>
+  <configuration default="false" name="Alt:V" type="RunExe" factoryName=".NET Executable" singleton="false">
+    <option name="EXE_PATH" value="$PROJECT_DIR$/../../altv-server/altv-server.exe" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../altv-server" />
+    <option name="PASS_PARENT_ENVS" value="1" />
+    <option name="USE_EXTERNAL_CONSOLE" value="0" />
+    <option name="USE_MONO" value="0" />
+    <option name="RUNTIME_ARGUMENTS" value="" />
+    <option name="RUNTIME_TYPE" value="coreclr" />
+    <method v="2">
+      <option name="CleanSolution" enabled="true" />
+      <option name="Build Solution" enabled="true" />
+      <option name="NpmBeforeRunTask" enabled="true">
+        <package-json value="$PROJECT_DIR$/../client-side-ts/package.json" />
+        <command value="run" />
+        <scripts>
+          <script value="build" />
+        </scripts>
+        <node-interpreter value="project" />
+        <envs />
+      </option>
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_SC move Files" />
+    </method>
+  </configuration>
 </component>

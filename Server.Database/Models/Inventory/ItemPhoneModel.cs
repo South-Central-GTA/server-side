@@ -45,7 +45,7 @@ public class ItemPhoneModel : ItemModel
         writer.Value(model.BackgroundImageId);
 
         writer.Name("ownerId");
-        writer.Value(model.CurrentOwnerId.HasValue ? model.CurrentOwnerId.Value : -1);
+        writer.Value(model.CurrentOwnerId ?? -1);
 
         writer.Name("lastTimeOpenedNotificationsJson");
         writer.Value(JsonSerializer.Serialize(model.LastTimeOpenedNotifications));
@@ -89,5 +89,7 @@ public class ItemPhoneModel : ItemModel
         writer.Name("catalogItem");
 
         CatalogItemModel.Serialize(model.CatalogItemModel, writer);
+        
+        writer.EndObject();
     }
 }
