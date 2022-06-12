@@ -274,7 +274,6 @@ public class General : ISingletonScript
         }
 
         itemHandCuff.Slot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id);
-        ;
         itemHandCuff.InventoryModelId = player.CharacterModel.InventoryModel.Id;
         itemHandCuff.ItemState = ItemState.NOT_EQUIPPED;
 

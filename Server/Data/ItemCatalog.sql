@@ -1065,3 +1065,9 @@ INSERT INTO public."ItemCatalog" ("Id", "Name", "Model", "ZOffset", "Image", "De
 VALUES (184, 'Strafzettel', 'prop_cd_paper_pile1', 0, 'police-ticket', 'Eine zahlungspflichtigen Verwarnung.', 1, 0.001,
         false, false, false, false, 0, null, '2022-05-01 10:35:22.221676 +00:00', '2022-05-01 10:35:22.221676 +00:00',
         0, 0, 0, 90, 0, 0);
+INSERT INTO public."ItemCatalog" ("Id", "Name", "Model", "ZOffset", "Image", "Description", "Rarity", "Weight",
+                                  "Equippable", "Stackable", "Buyable", "Sellable", "Price", "MaxLimit", "CreatedAt",
+                                  "LastUsage", "PositionX", "PositionY", "PositionZ", "Roll", "Pitch", "Yaw")
+VALUES (185, 'Dietrich', 'bkr_prop_jailer_keys_01a', 0, 'lockpick', 'Ein Dietrich ist ein Werkzeug zum gewaltfreien Öffnen bestimmter Schlösser.', 1, 0.001,
+        false, true, false, false, 25, 20, '2022-05-01 10:35:22.221676 +00:00', '2022-05-01 10:35:22.221676 +00:00',
+        0, 0, 0, 0, 0, 0);

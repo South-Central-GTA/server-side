@@ -592,6 +592,21 @@ public class ItemCreationModule : ITransientScript
                     IsStolen = isStolen
                 });
                 break;
+            case ItemCatalogIds.LOCKPICK:
+                createdItemModel = await _itemService.Add(new ItemLockPickModel
+                {
+                    InventoryModelId = inventoryModel.Id,
+                    Slot = slot,
+                    CatalogItemModelId = catalogId,
+                    Amount = amount,
+                    CustomData = customData,
+                    Note = note,
+                    Condition = condition,
+                    ItemState = itemState,
+                    IsBought = isBought,
+                    IsStolen = isStolen
+                });
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(catalogId), catalogId, null);
         }

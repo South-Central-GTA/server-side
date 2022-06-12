@@ -565,7 +565,8 @@ public static class ItemActionsSet
         { (int)ItemCatalogIds.DRUG_XANAX, new List<ActionData>() },
         { (int)ItemCatalogIds.DRUG_CODEINE, new List<ActionData>() },
         { (int)ItemCatalogIds.DRUG_METH, new List<ActionData>() },
-        { (int)ItemCatalogIds.POLICE_TICKET, new List<ActionData> { new("Ticket anschauen", "ticket:show") } }
+        { (int)ItemCatalogIds.POLICE_TICKET, new List<ActionData> { new("Ticket anschauen", "ticket:show") } },
+        { (int)ItemCatalogIds.LOCKPICK, new List<ActionData>() }
     };
 
     public static List<ActionData> Get(ItemCatalogIds id)

@@ -77,7 +77,7 @@ public class VehicleEnterHandler : ISingletonScript
             vehicle.GetData("DRIVING_SCHOOL_CHARACTER_ID", out int id);
             if (id == player.CharacterModel.Id)
             {
-                await vehicle.SetLockStateAsync(VehicleLockState.Unlocked);
+                vehicle.LockState = VehicleLockState.Unlocked;
             }
         }
     }
@@ -138,7 +138,7 @@ public class VehicleEnterHandler : ISingletonScript
                     vehicle.GetData("DRIVING_SCHOOL_CHARACTER_ID", out int id);
                     if (id == player.CharacterModel.Id)
                     {
-                        await vehicle.SetLockStateAsync(VehicleLockState.Locked);
+                        vehicle.LockState = VehicleLockState.Locked;
                         vehicle.ClearTimer("fail_exam");
 
                         if (!player.HasData("DRIVING_SCHOOL_VEH"))

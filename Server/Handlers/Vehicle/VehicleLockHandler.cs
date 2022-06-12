@@ -24,7 +24,7 @@ public class VehicleLockHandler : ISingletonScript
         AltAsync.OnClient<ServerPlayer, int>("vehiclemenu:lock", OnLockVehicle);
     }
 
-    private async void OnLockVehicle(ServerPlayer player, int vehicleId)
+    private async void OnLockVehicle(ServerPlayer player, int vehicleDbId)
     {
         if (!player.Exists)
         {
@@ -37,7 +37,7 @@ public class VehicleLockHandler : ISingletonScript
             return;
         }
 
-        var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleId);
+        var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleDbId);
         if (vehicle is not { Exists: true })
         {
             return;
@@ -51,12 +51,12 @@ public class VehicleLockHandler : ISingletonScript
 
         if (lockState == LockState.OPEN)
         {
-            await vehicle.SetLockStateAsync(VehicleLockState.Unlocked);
+            vehicle.LockState = VehicleLockState.Unlocked;
         }
 
         if (lockState == LockState.CLOSED)
         {
-            await vehicle.SetLockStateAsync(VehicleLockState.Locked);
+            vehicle.LockState = VehicleLockState.Locked;
         }
 
         await _vehicleModule.SetSyncedDataAsync(vehicle);

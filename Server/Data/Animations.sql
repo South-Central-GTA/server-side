@@ -1312,3 +1312,6 @@ VALUES (default, 'anim@mp_player_intincarthumbs_upstd@ds@', 'idle_a', 'Daumen Ho
 INSERT INTO public."Animations" ("Id", "Dictionary", "Clip", "Name", "Flags", "CreatedAt", "LastUsage")
 VALUES (default, 'amb@prop_human_seat_bar@female@elbows_on_bar@idle_a', 'idle_b', 'Sitzen Bartheke 5 ', 1,
         '2022-03-02 01:30:39.602015+00', '2022-05-04 20:24:56.540856+00');
+INSERT INTO public."Animations" ("Id", "Dictionary", "Clip", "Name", "Flags", "CreatedAt", "LastUsage")
+VALUES (default, 'random@shop_robbery', 'kneel_loop_p', 'Kniend Hände auf Hinterkopf', 1,
+        '2022-03-02 01:30:39.602015+00', '2022-05-04 20:24:56.540856+00');

@@ -92,7 +92,7 @@ public class ObjectActionHandler : ISingletonScript
             case 2330564864: // radio
             case 2709416104: // megaphone
             case 1070220657: // handcuffs
-            case 3369309184: // licenses
+            case 3369309184: // licenses / ticket
             case 887694239: // toolbox
             case 1725061196: // weapon - dagger
             case 1742452667: // weapon - baseball bat
@@ -124,6 +124,7 @@ public class ObjectActionHandler : ISingletonScript
             case 1470358132: // all attachments (prop_champ_box_01)    
             case 3575239779: // clothing box
             case 525896218: // drug box
+            case 494219267: // lockpicks
                 if (!objId.HasValue)
                 {
                     return;

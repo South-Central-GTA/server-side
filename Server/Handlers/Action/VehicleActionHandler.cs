@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
+using Server.Core.Extensions;
+using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
+using Server.Database.Enums;
+using Server.Database.Models.Inventory;
 using Server.Modules.Context;
 using Server.Modules.Group;
 
@@ -65,6 +70,11 @@ public class VehicleActionHandler : ISingletonScript
         if (player.CharacterModel.Id == dbVehicle.CharacterModelId || isInGroup)
         {
             actions.Add(new ActionData("Fahrzeug verkaufen", "vehiclemenu:sell", vehicleDbId));
+        }
+        
+        if (player.CharacterModel.InventoryModel.Items.Any(i => i.CatalogItemModelId == ItemCatalogIds.LOCKPICK))
+        {
+            actions.Add(new ActionData("Schloss aufknacken", "vehiclemenu:lockpicking", vehicleDbId));
         }
 
         _contextModule.OpenMenu(player, catalogVehicle.DisplayName, actions);

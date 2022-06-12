@@ -44,7 +44,7 @@ public class LockModule : ITransientScript
         _keyModule = keyModule;
     }
 
-    public async Task<ILockableEntity?> GetClosestLockableEntity(ServerPlayer player, int maxDistance = 2)
+    public async Task<List<ILockableEntity>> GetAllLockableEntities(ServerPlayer player, int maxDistance = 2)
     {
         var lockableEntities = new List<ILockableEntity>();
 
@@ -67,6 +67,13 @@ public class LockModule : ITransientScript
         {
             lockableEntities.Add(door);
         }
+
+        return lockableEntities;
+    }
+
+    public async Task<ILockableEntity?> GetClosestLockableEntity(ServerPlayer player, int maxDistance = 2)
+    {
+        var lockableEntities = await GetAllLockableEntities(player, maxDistance);
 
         var closestDistance = float.MaxValue;
         ILockableEntity lockableEntity = null;
@@ -136,7 +143,7 @@ public class LockModule : ITransientScript
         return lockableEntity.LockState;
     }
 
-    private async Task HandleVehicleLock(PlayerVehicleModel vehicleModel)
+    public async Task HandleVehicleLock(PlayerVehicleModel vehicleModel)
     {
         await _vehicleService.Update(vehicleModel);
 
@@ -149,10 +156,10 @@ public class LockModule : ITransientScript
         switch (vehicleModel.LockState)
         {
             case LockState.OPEN:
-                await serverVehicle.SetLockStateAsync(VehicleLockState.Unlocked);
+                serverVehicle.LockState = VehicleLockState.Unlocked;
                 break;
             case LockState.CLOSED:
-                await serverVehicle.SetLockStateAsync(VehicleLockState.Locked);
+                serverVehicle.LockState = VehicleLockState.Locked;
                 break;
         }
 
