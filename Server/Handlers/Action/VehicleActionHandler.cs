@@ -59,20 +59,27 @@ public class VehicleActionHandler : ISingletonScript
             isInGroup = await _groupModule.IsPlayerInGroup(player, dbVehicle.GroupModelOwnerId.Value);
         }
 
+        var toggledDoorState = dbVehicle.LockState == LockState.OPEN ? "Abschließen" : "Aufschließen";
+
         var actions = new List<ActionData>
         {
-            new("Kofferraum öffnen", "vehiclemenu:trunk", vehicleDbId),
-            new("Auf- & Abschließen", "vehiclemenu:lock", vehicleDbId),
+            new(toggledDoorState, "vehiclemenu:lock", vehicleDbId),
             new("Letzten Fahrer", "vehiclemenu:requestlastdrivers", vehicleDbId),
-            new("Fahrzeug auftanken", "vehiclemenu:requestrefuel", vehicleDbId)
         };
 
+        if (dbVehicle.LockState == LockState.OPEN)
+        {
+            actions.Add(new ActionData("Kofferraum öffnen", "vehiclemenu:trunk", vehicleDbId));
+            actions.Add(new ActionData("Fahrzeug auftanken", "vehiclemenu:requestrefuel", vehicleDbId));
+        }
+        
         if (player.CharacterModel.Id == dbVehicle.CharacterModelId || isInGroup)
         {
             actions.Add(new ActionData("Fahrzeug verkaufen", "vehiclemenu:sell", vehicleDbId));
         }
         
-        if (player.CharacterModel.InventoryModel.Items.Any(i => i.CatalogItemModelId == ItemCatalogIds.LOCKPICK))
+        if (dbVehicle.LockState == LockState.CLOSED 
+            && player.CharacterModel.InventoryModel.Items.Any(i => i.CatalogItemModelId == ItemCatalogIds.LOCKPICK))
         {
             actions.Add(new ActionData("Schloss aufknacken", "vehiclemenu:lockpicking", vehicleDbId));
         }

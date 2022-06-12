@@ -13,6 +13,11 @@ namespace Server.Core.Extensions;
 
 public static class ServerPlayerExtensions
 {
+    public static void BlockGameControls(this ServerPlayer player, bool state)
+    {
+        player.EmitLocked("player:blockgamecontrols", state);
+    }
+    
     public static void EmitGui(this ServerPlayer player, string eventName, params object[] args)
     {
         player.EmitLocked("webview:emit", eventName, args);

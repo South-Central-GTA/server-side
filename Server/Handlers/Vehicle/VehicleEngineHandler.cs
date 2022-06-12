@@ -13,10 +13,12 @@ public class VehicleEngineHandler : ISingletonScript
     {
         _vehicleModule = vehicleModule;
 
-        AltAsync.OnClient<ServerPlayer>("vehicle:toggleengine", OnVehicleEngineToggle);
+        AltAsync.OnClient<ServerPlayer>("vehicle:toggleengine", OnExecute);
+        AltAsync.OnClient<ServerPlayer>("invehiclemenu:toggleengine", OnExecute);
+
     }
 
-    private async void OnVehicleEngineToggle(ServerPlayer player)
+    private async void OnExecute(ServerPlayer player)
     {
         if (!player.Exists)
         {

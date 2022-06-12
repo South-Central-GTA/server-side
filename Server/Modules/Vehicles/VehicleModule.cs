@@ -370,7 +370,6 @@ public class VehicleModule : ITransientScript
         await _vehicleService.Update(vehicle.DbEntity);
     }
 
-
     public async Task SaveRange(List<ServerVehicle> vehicles)
     {
         var vehiclesToUpdate = new List<PlayerVehicleModel>();
@@ -457,7 +456,7 @@ public class VehicleModule : ITransientScript
             }
         }
 
-        await vehicle.SetEngineOnAsync(state);
+        vehicle.EngineOn = state;
 
         var stateString = state ? "gestartet" : "gestoppt";
         player.SendNotification($"Du hast den Motor {stateString}.", NotificationType.INFO);
