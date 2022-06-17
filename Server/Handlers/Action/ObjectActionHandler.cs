@@ -159,7 +159,7 @@ public class ObjectActionHandler : ISingletonScript
             new($"{GetItemName(item)} aufheben", "placeableitem:pickup", serverObject.Id)
         };
 
-        if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId))
+        if (item is ItemClothModel)
         {
             actions.Add(new ActionData($"{GetItemName(item)} anziehen", "placeableitem:puton", serverObject.Id));
         }
@@ -175,15 +175,9 @@ public class ObjectActionHandler : ISingletonScript
 
     private string GetItemName(ItemModel itemModel)
     {
-        if (ClothingModule.IsClothesOrProp(itemModel.CatalogItemModelId))
+        if (itemModel is ItemClothModel itemClothModel)
         {
-            if (string.IsNullOrEmpty(itemModel.CustomData))
-            {
-                return "";
-            }
-
-            var data = _serializer.Deserialize<ClothingData>(itemModel.CustomData);
-            return data.Title;
+            return itemClothModel.Title;
         }
 
         return itemModel.CatalogItemModel.Name;

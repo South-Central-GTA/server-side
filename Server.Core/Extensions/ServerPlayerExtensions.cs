@@ -86,11 +86,6 @@ public static class ServerPlayerExtensions
         player.EmitLocked("dialog:create", dialogData);
     }
 
-    public static void UpdateClothes(this ServerPlayer player)
-    {
-        player.EmitLocked("character:updateclothes", player.CharacterModel.InventoryModel);
-    }
-
     public static void CreateTimer(this ServerPlayer player, string id, ElapsedEventHandler callback, int milliseconds,
         bool restart = false)
     {

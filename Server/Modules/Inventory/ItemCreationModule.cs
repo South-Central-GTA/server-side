@@ -40,13 +40,13 @@ public class ItemCreationModule : ITransientScript
         _ammoModule = ammoModule;
         _phoneCallModule = phoneCallModule;
     }
-
+    
     public async Task<ItemModel?> AddItemAsync(ServerPlayer player, ItemCatalogIds catalogId, int amount,
-        int? condition = null, string? customData = null, string? note = null, bool asNew = true, bool isBought = true,
+        string? customData = null, string? note = null, bool asNew = true, bool isBought = true,
         bool isStolen = false, int? slot = null, ItemState itemState = ItemState.NOT_EQUIPPED)
     {
-        var createdItem = await AddItemAsync(player.CharacterModel.InventoryModel, catalogId, amount, condition,
-            customData, note, asNew, isBought, isStolen, slot, itemState);
+        var createdItem = await AddItemAsync(player.CharacterModel.InventoryModel, catalogId, amount,
+            customData, note, isBought, isStolen, slot, itemState);
 
         if (createdItem == null)
         {
@@ -71,22 +71,14 @@ public class ItemCreationModule : ITransientScript
     /// <summary>
     ///     Add a new item to the inventory but can return null when the inventory is full.
     /// </summary>
-    /// <param name="inventoryModel"></param>
-    /// <param name="catalogId"></param>
-    /// <param name="amount"></param>
-    /// <param name="condition"></param>
-    /// <param name="customData"></param>
-    /// <param name="note"></param>
-    /// <param name="asNew"></param>
-    /// <param name="slot"></param>
     /// <returns>New added item that are already saved to the database.</returns>
     public async Task<ItemModel?> AddItemAsync(InventoryModel inventoryModel, ItemCatalogIds catalogId, int amount,
-        int? condition = null, string? customData = "", string? note = "", bool asNew = true, bool isBought = true,
-        bool isStolen = false, int? slot = null, ItemState itemState = ItemState.NOT_EQUIPPED)
+        string? customData = null, string? note = null, bool isBought = true, bool isStolen = false, int? slot = null, 
+        ItemState itemState = ItemState.NOT_EQUIPPED)
     {
         if (slot != null)
         {
-            return await AddItemAsync(inventoryModel, slot.Value, catalogId, amount, condition, customData, note,
+            return await AddItemAsync(inventoryModel, slot.Value, catalogId, amount, customData, note,
                 isBought, isStolen, itemState);
         }
 
@@ -109,7 +101,7 @@ public class ItemCreationModule : ITransientScript
 
         slot = freeSlot;
 
-        return await AddItemAsync(inventoryModel, slot.Value, catalogId, amount, condition, customData, note, isBought,
+        return await AddItemAsync(inventoryModel, slot.Value, catalogId, amount, customData, note, isBought,
             isStolen, itemState);
     }
 
@@ -164,7 +156,7 @@ public class ItemCreationModule : ITransientScript
     }
 
     private async Task<ItemModel> AddItemAsync(InventoryModel inventoryModel, int slot, ItemCatalogIds catalogId,
-        int amount, int? condition, string? customData = "", string? note = "", bool isBought = true,
+        int amount, string? customData = null, string? note = null, bool isBought = true,
         bool isStolen = false, ItemState itemState = ItemState.NOT_EQUIPPED)
     {
         var existingItem = inventoryModel.Items.FirstOrDefault(i => i.CatalogItemModelId == catalogId);
@@ -269,7 +261,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen,
@@ -295,7 +286,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -310,7 +300,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen,
@@ -329,7 +318,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen,
@@ -358,7 +346,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -372,7 +359,6 @@ public class ItemCreationModule : ITransientScript
                     CatalogItemModelId = catalogId,
                     Amount = amount,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen,
@@ -395,7 +381,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -410,7 +395,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -425,7 +409,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -440,7 +423,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -460,7 +442,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -480,7 +461,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -551,7 +531,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -571,7 +550,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -586,7 +564,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -601,7 +578,6 @@ public class ItemCreationModule : ITransientScript
                     Amount = amount,
                     CustomData = customData,
                     Note = note,
-                    Condition = condition,
                     ItemState = itemState,
                     IsBought = isBought,
                     IsStolen = isStolen
@@ -616,11 +592,7 @@ public class ItemCreationModule : ITransientScript
 
     private async Task<ItemModel> HandleAddSpecialItems(ServerPlayer player, ItemModel newItemModel)
     {
-        if (newItemModel.CatalogItemModelId == ItemCatalogIds.LICENSES)
-        {
-            newItemModel.CustomData = player.CharacterModel.Id.ToString();
-        }
-        else if (WeaponModule.IsItemWeapon(newItemModel.CatalogItemModelId))
+        if (WeaponModule.IsItemWeapon(newItemModel.CatalogItemModelId))
         {
             _weaponModule.Give(player, WeaponModule.GetModelFromId(newItemModel.CatalogItemModelId), true,
                 newItemModel.Amount);

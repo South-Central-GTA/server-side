@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AltV.Net.Async;
 using AltV.Net.Data;
@@ -14,6 +15,7 @@ using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Character;
+using Server.Database.Models.Inventory;
 using Server.Helper;
 using Server.Modules.Clothing;
 using Server.Modules.Houses;
@@ -116,7 +118,7 @@ public class CharacterCreationModule : ITransientScript
                 case CharacterCreatorPurchaseType.MONEY:
                     characterCosts += _southCentralPointsModule.GetPointsPrice(characterCreatorData.StartMoney);
                     break;
-                case CharacterCreatorPurchaseType.VEHICLE when Enum.TryParse(order.OrderedVehicle.Model,
+                case CharacterCreatorPurchaseType.VEHICLE when Enum.TryParse(order.OrderedVehicle?.Model,
                     true, out VehicleModel vehicleModel):
                     characterCosts += await _vehicleModule.GetPointsPrice(vehicleModel.ToString());
                     break;
@@ -129,19 +131,8 @@ public class CharacterCreationModule : ITransientScript
             characterCosts += _southCentralPointsModule.GetPointsPrice(phoneCatalogItem.Price);
         }
 
-        foreach (var item in characterCreatorData.CharacterModel.InventoryModel.Items)
+        foreach (var item in characterCreatorData.CharacterModel.InventoryModel.Items.Where(i => i is not ItemClothModel))
         {
-            if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId))
-            {
-                continue;
-            }
-
-            var componentId = ClothingModule.GetComponentId(item.CatalogItemModelId);
-            if (!componentId.HasValue)
-            {
-                continue;
-            }
-
             var dbItem = await _itemCatalogService.GetByKey(item.CatalogItemModelId);
             characterCosts += (int)Math.Round(dbItem.Price * _gameOptions.MoneyToPointsExchangeRate);
         }

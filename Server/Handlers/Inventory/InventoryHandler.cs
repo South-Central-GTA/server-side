@@ -244,6 +244,10 @@ public class InventoryHandler : ISingletonScript
         }
 
         var splittedItem = await _itemService.GetByKey(itemId);
+        if (splittedItem == null)
+        {
+            return;
+        }
 
         if (!splittedItem.IsBought)
         {
@@ -253,7 +257,7 @@ public class InventoryHandler : ISingletonScript
 
         var freeSlot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id);
         await _itemService.Add(new ItemModel(splittedItem.CatalogItemModelId,
-            freeSlot, splittedItem.CustomData, "", amount, splittedItem.Condition, splittedItem.IsBought,
+            freeSlot, splittedItem.CustomData, "", amount, splittedItem.IsBought,
             splittedItem.IsStolen, ItemState.NOT_EQUIPPED) { InventoryModelId = splittedItem.InventoryModelId });
 
         splittedItem.Amount -= amount;
@@ -285,13 +289,17 @@ public class InventoryHandler : ISingletonScript
         }
 
         var item = await _itemService.GetByKey(itemId);
-
-        var data = _serializer.Deserialize<ClothingData>(item.CustomData);
-        data.Title = newName;
-
-        item.CustomData = _serializer.Serialize(data);
-
-        await _itemService.Update(item);
+        if (item == null)
+        {
+            return;
+        }
+        
+        if (item is ItemClothModel itemClothModel)
+        {
+            itemClothModel.Title = newName;
+            await _itemService.Update(itemClothModel);
+        }
+        
         await _inventoryModule.UpdateInventoryUIs(player, item.InventoryModel);
     }
 

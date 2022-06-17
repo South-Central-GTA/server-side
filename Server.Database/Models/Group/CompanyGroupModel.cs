@@ -7,6 +7,11 @@ namespace Server.Database.Models.Group;
 
 public class CompanyGroupModel : GroupModel
 {
+    public CompanyGroupModel()
+    {
+        
+    }
+    
     public CompanyGroupModel(string name) : base(name)
     {
         GroupType = GroupType.COMPANY;

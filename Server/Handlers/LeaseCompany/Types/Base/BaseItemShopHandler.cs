@@ -9,6 +9,7 @@ using Server.Data.Enums;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Housing;
+using Server.Database.Models.Inventory;
 using Server.Modules.Bank;
 using Server.Modules.Clothing;
 using Server.Modules.Inventory;
@@ -27,7 +28,6 @@ public class BaseItemShopHandler : ISingletonScript
     private readonly InventoryModule _inventoryModule;
     private readonly InventoryService _inventoryService;
     private readonly ItemCatalogService _itemCatalogService;
-    private readonly ItemCreationModule _itemCreationModule;
     private readonly ItemService _itemService;
     private readonly MoneyModule _moneyModule;
     private readonly UserShopDataService _userShopDataService;
@@ -35,7 +35,7 @@ public class BaseItemShopHandler : ISingletonScript
     public BaseItemShopHandler(IOptions<CompanyOptions> companyOptions, ItemCatalogService itemCatalogService,
         HouseService houseService, BankAccountService bankAccountService, ItemService itemService,
         GroupService groupService, UserShopDataService userShopDataService, InventoryService inventoryService,
-        InventoryModule inventoryModule, ItemCreationModule itemCreationModule, MoneyModule moneyModule,
+        InventoryModule inventoryModule, MoneyModule moneyModule,
         BankModule bankModule)
     {
         _companyOptions = companyOptions.Value;
@@ -48,69 +48,8 @@ public class BaseItemShopHandler : ISingletonScript
         _inventoryService = inventoryService;
 
         _inventoryModule = inventoryModule;
-        _itemCreationModule = itemCreationModule;
         _moneyModule = moneyModule;
         _bankModule = bankModule;
-    }
-
-    protected async void OnBuyItem(ServerPlayer player, ItemCatalogIds catalogItemId, int amount)
-    {
-        if (!player.Exists)
-        {
-            return;
-        }
-
-        var catalogItem = await _itemCatalogService.GetByKey(catalogItemId);
-        if (catalogItem == null)
-        {
-            return;
-        }
-
-        if (await _houseService.GetByDistance(player.Position, 20) is not LeaseCompanyHouseModel leaseCompanyHouse)
-        {
-            player.SendNotification("Hier kannst du nicht einkaufen.", NotificationType.ERROR);
-            return;
-        }
-
-        if (!leaseCompanyHouse.HasOpen && !leaseCompanyHouse.PlayerDuty)
-        {
-            player.SendNotification("Dieser Laden hat geschlossen.", NotificationType.ERROR);
-            return;
-        }
-
-        // We have to split here because the logic for add items to the inventory cant handle not stackable items.
-        // If the item is not stackable we have to check the required slots by the amount.
-        if (!await _inventoryModule.CanCarry(player, catalogItem.Id, amount))
-        {
-            return;
-        }
-
-        if (!catalogItem.Stackable)
-        {
-            for (var i = 0; i < amount; i++)
-            {
-                await _itemCreationModule.AddItemAsync(player, catalogItemId, 1, null, null, null, true, false);
-            }
-
-            player.SendNotification(
-                amount <= 1
-                    ? $"{catalogItem.Name} wurde dem Warenkorb hinzugefügt."
-                    : $"{catalogItem.Name} wurde {amount} mal dem Warenkorb hinzugefügt.", NotificationType.SUCCESS);
-        }
-        else
-        {
-            var item = await _itemCreationModule.AddItemAsync(player, catalogItemId, amount, null, null, null, true,
-                false);
-            if (item == null)
-            {
-                return;
-            }
-
-            player.SendNotification($"{catalogItem.Name} wurde dem Warenkorb hinzugefügt.", NotificationType.SUCCESS);
-        }
-
-        await _inventoryModule.UpdateInventoryUiAsync(player);
-        await SetUnboughtItems(player, catalogItemId, amount);
     }
 
     protected async void OnBuyWithBank(ServerPlayer player, int bankAccountId)
@@ -188,10 +127,13 @@ public class BaseItemShopHandler : ISingletonScript
         {
             var unboughtItems = player.CharacterModel.InventoryModel.Items.FindAll(i => !i.IsBought);
 
-            foreach (var item in unboughtItems.Where(item => ClothingModule.IsClothesOrProp(item.CatalogItemModelId)))
+            foreach (var item in unboughtItems.Where(item => item is ItemClothModel))
             {
                 var inv = await _inventoryService.Find(i => i.ItemClothModelId == item.Id);
-                await _inventoryService.Remove(inv);
+                if (inv != null)
+                {
+                    await _inventoryService.Remove(inv);
+                }
             }
 
             await _itemService.RemoveRange(unboughtItems);

@@ -27,14 +27,15 @@ public class PlaceableItemHandler : ISingletonScript
 
     private readonly ItemDestructionModule _itemDestructionModule;
     private readonly ItemDropModule _itemDropModule;
-
+    private readonly ClothingModule _clothingModule;
+    
     private readonly ItemService _itemService;
     private readonly ObjectSyncModule _objectSyncModule;
     private readonly Serializer _serializer;
 
     public PlaceableItemHandler(Serializer serializer, ItemService itemService, InventoryModule inventoryModule,
         ItemDropModule itemDropModule, AntiCheatModule antiCheatModule, ItemCreationModule itemCreationModule,
-        ObjectSyncModule objectSyncModule, ItemDestructionModule itemDestructionModule)
+        ObjectSyncModule objectSyncModule, ItemDestructionModule itemDestructionModule, ClothingModule clothingModule)
     {
         _serializer = serializer;
 
@@ -46,6 +47,7 @@ public class PlaceableItemHandler : ISingletonScript
         _itemCreationModule = itemCreationModule;
         _objectSyncModule = objectSyncModule;
         _itemDestructionModule = itemDestructionModule;
+        _clothingModule = clothingModule;
 
         AltAsync.OnClient<ServerPlayer, string>("placeableitem:place", OnPlayerDropItem);
         AltAsync.OnClient<ServerPlayer, ulong>("placeableitem:pickup", OnPlayerPickupItem);
@@ -112,18 +114,11 @@ public class PlaceableItemHandler : ISingletonScript
         }
 
         await _itemCreationModule.HandleRemoveSpecialItems(player, item);
-        if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId) && item.CustomData != null)
-        {
-            var data = _serializer.Deserialize<ClothingData>(item.CustomData);
-            player.SendNotification($"Dein Charakter hat {item.Amount}x {data.Title} abgelegt.",
-                NotificationType.SUCCESS);
-        }
-        else
-        {
-            player.SendNotification($"Dein Charakter hat {item.Amount}x {item.CatalogItemModel.Name} abgelegt.",
-                NotificationType.SUCCESS);
-        }
-
+    
+        var name = item is ItemClothModel cloth ? cloth.Title : item.CatalogItemModel.Name;
+        player.SendNotification($"Dein Charakter hat {item.Amount}x {name} abgelegt.",
+            NotificationType.SUCCESS);
+        
         item.ItemState = ItemState.DROPPED;
         item.Position = dropItemData.Position;
         item.Rotation = player.Rotation;
@@ -140,9 +135,9 @@ public class PlaceableItemHandler : ISingletonScript
             item.CatalogItemModel.Rotation, player.Dimension, 200, true, false, item.Id, item.DroppedByCharacter,
             _serializer.Serialize(DateTime.Now));
 
-        if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId))
+        if (item is ItemClothModel)
         {
-            player.UpdateClothes();
+            _clothingModule.UpdateClothes(player);
         }
     }
 
@@ -225,7 +220,7 @@ public class PlaceableItemHandler : ISingletonScript
         await _itemDropModule.PutOn(player, serverObject.ItemId);
         await _inventoryModule.UpdateInventoryUiAsync(player);
         _objectSyncModule.Delete(objectId);
-        player.UpdateClothes();
+        _clothingModule.UpdateClothes(player);
     }
 
     private async void OnPlayerDeleteItem(ServerPlayer player, ulong objectId)

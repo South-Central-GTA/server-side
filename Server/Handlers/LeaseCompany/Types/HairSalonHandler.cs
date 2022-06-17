@@ -82,7 +82,7 @@ public class HairSalonHandler : ISingletonScript
             return;
         }
 
-        await player.SetDimensionAsync(0);
+        player.Dimension = 0;
     }
 
     private async void OnRequestBuyDialog(ServerPlayer player, string newAppearancesJson)
@@ -92,7 +92,7 @@ public class HairSalonHandler : ISingletonScript
             return;
         }
 
-        await player.SetDimensionAsync(0);
+        player.Dimension = 0;
 
         var newAppearances = _serializer.Deserialize<AppearancesModel>(newAppearancesJson);
         var diff = player.CharacterModel.AppearancesModel.Diff(newAppearances);

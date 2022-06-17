@@ -42,9 +42,6 @@ public class ItemWeaponAttachmentModel : ItemModel
         writer.Name("amount");
         writer.Value(model.Amount);
 
-        writer.Name("condition");
-        writer.Value(model.Condition ?? -1);
-
         writer.Name("isBought");
         writer.Value(model.IsBought);
 

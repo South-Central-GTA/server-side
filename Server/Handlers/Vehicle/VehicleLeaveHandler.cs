@@ -7,6 +7,7 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
+using Server.Modules.Clothing;
 using Server.Modules.DrivingSchool;
 using Server.Modules.Vehicles;
 
@@ -15,12 +16,12 @@ namespace Server.Handlers.Vehicle
     public class VehicleLeaveHandler : ISingletonScript
     {
         private readonly DrivingSchoolModule _drivingSchoolModule;
-        private readonly VehicleModule _vehicleModule;
+        private readonly ClothingModule _clothingModule;
 
-        public VehicleLeaveHandler(VehicleModule vehicleModule, DrivingSchoolModule drivingSchoolModule)
+        public VehicleLeaveHandler(DrivingSchoolModule drivingSchoolModule, ClothingModule clothingModule)
         {
-            _vehicleModule = vehicleModule;
             _drivingSchoolModule = drivingSchoolModule;
+            _clothingModule = clothingModule;
 
             AltAsync.OnPlayerLeaveVehicle += (vehicle, player, seat) =>
                 OnPlayerLeaveVehicle(vehicle as ServerVehicle ?? throw new InvalidOperationException(),
@@ -76,7 +77,7 @@ namespace Server.Handlers.Vehicle
                 }
             }
 
-            player.UpdateClothes();
+            _clothingModule.UpdateClothes(player);
         }
     }
 }

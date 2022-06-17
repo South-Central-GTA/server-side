@@ -17,7 +17,7 @@ public class MailAccountGroupAccessModel : IWritable
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int GroupModelId { get; set; }
 
-    public GroupModel GroupModel { get; set; }
+    public GroupModel? GroupModel { get; set; }
 
     public bool Owner { get; set; }
 
@@ -34,7 +34,7 @@ public class MailAccountGroupAccessModel : IWritable
         writer.Value(model.GroupModelId);
 
         writer.Name("groupName");
-        writer.Value(model.GroupModel.Name);
+        writer.Value(model.GroupModel == null ? string.Empty : model.GroupModel.Name);
 
         writer.Name("owner");
         writer.Value(model.Owner);

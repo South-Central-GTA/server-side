@@ -412,8 +412,8 @@ public class Administration : ISingletonScript
             return;
         }
 
-        await target.SetPositionAsync(player.Position);
-        await target.SetDimensionAsync(player.Dimension);
+        target.Position = player.Position;
+        target.Dimension =player.Dimension;
 
         target.SendNotification($"Du wurdest von {player.AccountName} teleportiert.", NotificationType.INFO);
         player.SendNotification($"Du hast erfolgreich {target.AccountName} zu dir teleportiert.",
@@ -442,14 +442,14 @@ public class Administration : ISingletonScript
 
         if (!player.IsInFreeCam)
         {
-            await player.SetPositionAsync(target.Position);
+            player.Position = target.Position;
         }
         else
         {
             _freecamModule.SetPosition(player, target.Position);
         }
 
-        await player.SetDimensionAsync(target.Dimension);
+        player.Dimension = target.Dimension;
 
         player.SendNotification($"Du hast dich zu {target.AccountName} teleportiert.", NotificationType.INFO);
     }
@@ -759,55 +759,6 @@ public class Administration : ISingletonScript
         }
 
         await _lockModule.Lock(player, entity, true);
-    }
-
-    [Command("auncuff", "Nehmen einen Charakter administrativ Handschellen ab.", Permission.STAFF,
-        new[] { "Spieler ID" })]
-    public async void OnAUncuff(ServerPlayer player, string expectedPlayerId)
-    {
-        if (!player.Exists)
-        {
-            return;
-        }
-
-        var target = Alt.GetAllPlayers().GetPlayerById(player, expectedPlayerId);
-        if (target == null)
-        {
-            return;
-        }
-
-        var itemHandCuff = (ItemHandCuffModel)target.CharacterModel.InventoryModel.Items.FirstOrDefault(i =>
-            i.CatalogItemModelId == ItemCatalogIds.HANDCUFF && i.ItemState == ItemState.FORCE_EQUIPPED);
-        if (itemHandCuff == null)
-        {
-            player.SendNotification("Der Charakter hat keine Handschellen angelegt.", NotificationType.ERROR);
-            return;
-        }
-
-        if (!await _inventoryModule.CanCarry(player, ItemCatalogIds.HANDCUFF))
-        {
-            return;
-        }
-
-        itemHandCuff.Slot = await _inventoryModule.GetFreeNextSlot(player.CharacterModel.InventoryModel.Id);
-        ;
-        itemHandCuff.InventoryModelId = player.CharacterModel.InventoryModel.Id;
-        itemHandCuff.ItemState = ItemState.NOT_EQUIPPED;
-
-        await _itemService.Update(itemHandCuff);
-
-        target.Cuffed = false;
-        target.UpdateClothes();
-
-        await _inventoryModule.UpdateInventoryUiAsync(player);
-        await _inventoryModule.UpdateInventoryUiAsync(target);
-
-        target.SendNotification(
-            $"Deinem Charakter wurden von {player.AccountName} administartiv die Handschellen abgenommen.",
-            NotificationType.INFO);
-        player.SendNotification(
-            $"Du hast Charakter {target.CharacterModel.Name} administrativ Handschellen abgenommen.",
-            NotificationType.SUCCESS);
     }
 
     [Command("aopeninventory", "Öffne administrativ das Inventar eines Charakters.", Permission.STAFF,
@@ -1200,10 +1151,10 @@ public class Administration : ISingletonScript
             return;
         }
 
-        await vehicle.SetPositionAsync(player.Position);
-        await vehicle.SetRotationAsync(player.Rotation);
-        await vehicle.SetDimensionAsync(player.Dimension);
-        await player.SetPositionAsync(new Position(player.Position.X, player.Position.Y, player.Position.Z + 3));
+        vehicle.Position = player.Position;
+        vehicle.Rotation = player.Rotation;
+        vehicle.Dimension = player.Dimension;
+        player.Position = new Position(player.Position.X, player.Position.Y, player.Position.Z + 3);
 
         player.SendNotification($"Du hast das Fahrzeug Model: {vehicle.DbEntity.Model} zu dir teleportiert.",
             NotificationType.SUCCESS);
@@ -1230,8 +1181,8 @@ public class Administration : ISingletonScript
             return;
         }
 
-        await player.SetPositionAsync(vehicle.Position);
-        await player.SetDimensionAsync(vehicle.Dimension);
+        player.Position = vehicle.Position;
+        player.Dimension = vehicle.Dimension;
 
         player.SendNotification($"Du hast das dich zum Fahrzeug Model: {vehicle.DbEntity.Model} teleportiert.",
             NotificationType.SUCCESS);

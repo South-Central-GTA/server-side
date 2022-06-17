@@ -22,17 +22,21 @@ public class SupermarketHandler : BaseItemShopHandler
 {
     private readonly HouseService _houseService;
     private readonly ItemCatalogService _itemCatalogService;
+    private readonly ItemCreationModule _itemCreationModule;
+    private readonly InventoryModule _inventoryModule;
 
     public SupermarketHandler(IOptions<CompanyOptions> companyOptions, ItemCatalogService itemCatalogService,
         HouseService houseService, BankAccountService bankAccountService, ItemService itemService,
         GroupService groupService, UserShopDataService userShopDataService, InventoryService inventoryService,
         InventoryModule inventoryModule, ItemCreationModule itemCreationModule, MoneyModule moneyModule,
         BankModule bankModule) : base(companyOptions, itemCatalogService, houseService, bankAccountService, itemService,
-        groupService, userShopDataService, inventoryService, inventoryModule, itemCreationModule, moneyModule,
+        groupService, userShopDataService, inventoryService, inventoryModule, moneyModule,
         bankModule)
     {
         _itemCatalogService = itemCatalogService;
         _houseService = houseService;
+        _inventoryModule = inventoryModule;
+        _itemCreationModule = itemCreationModule;
 
         AltAsync.OnClient<ServerPlayer>("supermarket:requestopenmenu", OnRequestOpenMenu);
         AltAsync.OnClient<ServerPlayer, ItemCatalogIds, int>("supermarket:buyitem", OnBuyItem);
@@ -42,6 +46,66 @@ public class SupermarketHandler : BaseItemShopHandler
         AltAsync.OnClient<ServerPlayer>("supermarket:requestreturnitems", OnRequestReturnItems);
     }
 
+    protected async void OnBuyItem(ServerPlayer player, ItemCatalogIds catalogItemId, int amount)
+    {
+        if (!player.Exists)
+        {
+            return;
+        }
+
+        var catalogItem = await _itemCatalogService.GetByKey(catalogItemId);
+        if (catalogItem == null)
+        {
+            return;
+        }
+
+        if (await _houseService.GetByDistance(player.Position, 20) is not LeaseCompanyHouseModel leaseCompanyHouse)
+        {
+            player.SendNotification("Hier kannst du nicht einkaufen.", NotificationType.ERROR);
+            return;
+        }
+
+        if (!leaseCompanyHouse.HasOpen && !leaseCompanyHouse.PlayerDuty)
+        {
+            player.SendNotification("Dieser Laden hat geschlossen.", NotificationType.ERROR);
+            return;
+        }
+
+        // We have to split here because the logic for add items to the inventory cant handle not stackable items.
+        // If the item is not stackable we have to check the required slots by the amount.
+        if (!await _inventoryModule.CanCarry(player, catalogItem.Id, amount))
+        {
+            return;
+        }
+
+        if (!catalogItem.Stackable)
+        {
+            for (var i = 0; i < amount; i++)
+            {
+                await _itemCreationModule.AddItemAsync(player, catalogItemId, 1, null, null, true, false);
+            }
+
+            player.SendNotification(
+                amount <= 1
+                    ? $"{catalogItem.Name} wurde dem Warenkorb hinzugefügt."
+                    : $"{catalogItem.Name} wurde {amount} mal dem Warenkorb hinzugefügt.", NotificationType.SUCCESS);
+        }
+        else
+        {
+            var item = await _itemCreationModule.AddItemAsync(player, catalogItemId, amount, null, null, true,
+                false);
+            if (item == null)
+            {
+                return;
+            }
+
+            player.SendNotification($"{catalogItem.Name} wurde dem Warenkorb hinzugefügt.", NotificationType.SUCCESS);
+        }
+
+        await _inventoryModule.UpdateInventoryUiAsync(player);
+        await SetUnboughtItems(player, catalogItemId, amount);
+    }
+    
     private async void OnRequestOpenMenu(ServerPlayer player)
     {
         if (!player.Exists)

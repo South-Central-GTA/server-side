@@ -13,15 +13,13 @@ public class ItemModel : PositionRotationDimensionModelBase, IWritable
     {
     }
 
-    public ItemModel(ItemCatalogIds itemModelCatalogIds, int? slot, string customData, string note, int amount,
-        int? condition, bool isBought, bool isStolen, ItemState itemState)
+    public ItemModel(ItemCatalogIds itemModelCatalogIds, int? slot, string? customData, string? note, int amount, bool isBought, bool isStolen, ItemState itemState)
     {
         CatalogItemModelId = itemModelCatalogIds;
         Slot = slot;
         CustomData = customData;
         Note = note;
         Amount = amount;
-        Condition = condition;
         IsBought = isBought;
         IsStolen = isStolen;
         ItemState = itemState;
@@ -55,49 +53,37 @@ public class ItemModel : PositionRotationDimensionModelBase, IWritable
         Serialize(this, writer);
     }
 
-    public static void Serialize(ItemModel item, IMValueWriter writer)
+    public static void Serialize(ItemModel model, IMValueWriter writer)
     {
         writer.BeginObject();
 
         writer.Name("id");
-        writer.Value(item.Id);
+        writer.Value(model.Id);
 
         writer.Name("catalogItemName");
-        writer.Value(item.CatalogItemModelId.ToString());
+        writer.Value(model.CatalogItemModelId.ToString());
 
         writer.Name("catalogItem");
 
-        CatalogItemModel.Serialize(item.CatalogItemModel, writer);
+        CatalogItemModel.Serialize(model.CatalogItemModel, writer);
 
         writer.Name("slot");
-        writer.Value(item.Slot ?? -1);
+        writer.Value(model.Slot ?? -1);
 
         writer.Name("customData");
-        writer.Value(item.CustomData ?? string.Empty);
+        writer.Value(model.CustomData ?? string.Empty);
 
         writer.Name("note");
-        writer.Value(item.Note ?? string.Empty);
+        writer.Value(model.Note ?? string.Empty);
 
         writer.Name("amount");
-        writer.Value(item.Amount);
-
-        writer.Name("condition");
-        writer.Value(item.Condition ?? -1);
+        writer.Value(model.Amount);
 
         writer.Name("isBought");
-        writer.Value(item.IsBought);
+        writer.Value(model.IsBought);
 
         writer.Name("itemState");
-        writer.Value((int)item.ItemState);
-
-        var value = -1;
-        if (item is ItemWeaponAttachmentModel weaponAttachment)
-        {
-            value = weaponAttachment.ItemWeaponId ?? -1;
-        }
-
-        writer.Name("attachedToWeaponItem");
-        writer.Value(value);
+        writer.Value((int)model.ItemState);
 
         writer.EndObject();
     }

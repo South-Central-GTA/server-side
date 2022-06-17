@@ -1,32 +1,39 @@
 ﻿using System.Text.Json.Serialization;
+using AltV.Net;
+using Server.Database.Enums;
 
 namespace Server.Data.Models;
 
-public class ClothingsData
+public class ClothingData
 {
-    [JsonPropertyName("hat")] public ClothingData? Hat { get; set; } = null;
+    [JsonPropertyName("genderType")]
+    public GenderType GenderType { get; set; }
 
-    [JsonPropertyName("glasses")] public ClothingData? Glasses { get; set; } = null;
+    [JsonPropertyName("drawableId")]
+    public byte DrawableId { get; set; }
 
-    [JsonPropertyName("ears")] public ClothingData? Ears { get; set; } = null;
+    [JsonPropertyName("textureId")]
+    public byte TextureId { get; set; }
 
-    [JsonPropertyName("watch")] public ClothingData? Watch { get; set; } = null;
+    [JsonPropertyName("title")]
+    public string Title { get; set; }
 
-    [JsonPropertyName("bracelets")] public ClothingData? Bracelets { get; set; } = null;
+    public static void Serialize(ClothingData data, IMValueWriter writer)
+    {
+        writer.BeginObject();
 
-    [JsonPropertyName("mask")] public ClothingData? Mask { get; set; } = null;
+        writer.Name("genderType");
+        writer.Value((int)data.GenderType);
 
-    [JsonPropertyName("top")] public ClothingData? Top { get; set; } = null;
+        writer.Name("drawableId");
+        writer.Value(data.DrawableId);
 
-    [JsonPropertyName("bodyArmor")] public ClothingData? BodyArmor { get; set; } = null;
+        writer.Name("textureId");
+        writer.Value(data.TextureId);
 
-    [JsonPropertyName("backPack")] public ClothingData? BackPack { get; set; } = null;
+        writer.Name("title");
+        writer.Value(data.Title);
 
-    [JsonPropertyName("underShirt")] public ClothingData? UnderShirt { get; set; } = null;
-
-    [JsonPropertyName("accessories")] public ClothingData? Accessories { get; set; } = null;
-
-    [JsonPropertyName("pants")] public ClothingData? Pants { get; set; } = null;
-
-    [JsonPropertyName("shoes")] public ClothingData? Shoes { get; set; } = null;
+        writer.EndObject();
+    }
 }

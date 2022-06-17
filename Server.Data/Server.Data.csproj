@@ -17,12 +17,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AltV.Net" Version="10.0.2"/>
-        <PackageReference Include="AltV.Net.Async" Version="10.0.2"/>
+        <PackageReference Include="AltV.Net" Version="10.0.2" />
+        <PackageReference Include="AltV.Net.Async" Version="10.0.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Server.Database\Server.Database.csproj"/>
+        <ProjectReference Include="..\Server.Database\Server.Database.csproj" />
     </ItemGroup>
 
 </Project>

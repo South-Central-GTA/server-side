@@ -165,7 +165,7 @@ public class HouseModule : ISingletonScript
     public async Task<bool> CreateHouseKey(CharacterModel character, HouseModel houseModel)
     {
         var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.KEY,
-            1, null, null, "Immobilienschlüssel");
+            1, null, "Immobilienschlüssel");
         if (itemKey == null)
         {
             return false;
@@ -589,15 +589,7 @@ public class HouseModule : ISingletonScript
 
     public bool IsHouseBlocked(int houseId)
     {
-        var used = false;
-
-        _playerSelections.TryGetValue(houseId, out var buyer);
-        if (buyer != null)
-        {
-            used = true;
-        }
-
-        return used;
+        return _playerSelections.ContainsKey(houseId);
     }
 
     public async Task Sync(ServerPlayer player)

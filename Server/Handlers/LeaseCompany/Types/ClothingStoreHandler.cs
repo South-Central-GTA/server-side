@@ -10,10 +10,10 @@ using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Housing;
+using Server.Database.Models.Inventory;
 using Server.Handlers.LeaseCompany.Types.Base;
 using Server.Helper;
 using Server.Modules.Bank;
-using Server.Modules.Chat;
 using Server.Modules.Clothing;
 using Server.Modules.Inventory;
 using Server.Modules.Money;
@@ -27,17 +27,17 @@ public class ClothingStoreHandler : BaseItemShopHandler
     private readonly InventoryModule _inventoryModule;
 
     private readonly ItemCatalogService _itemCatalogService;
-    private readonly ItemCreationModule _itemCreationModule;
+    private readonly ClothingItemCreationModule _clothingItemCreationModule;
     private readonly Serializer _serializer;
     private readonly UserShopDataService _userShopDataService;
 
     public ClothingStoreHandler(IOptions<CompanyOptions> companyOptions, Serializer serializer,
         ItemCatalogService itemCatalogService, HouseService houseService, BankAccountService bankAccountService,
         ItemService itemService, GroupService groupService, UserShopDataService userShopDataService,
-        InventoryService inventoryService, ChatModule chatModule, InventoryModule inventoryModule,
-        ItemCreationModule itemCreationModule, MoneyModule moneyModule, BankModule bankModule) : base(companyOptions,
+        InventoryService inventoryService, InventoryModule inventoryModule,
+        ClothingItemCreationModule clothingItemCreationModule, MoneyModule moneyModule, BankModule bankModule) : base(companyOptions,
         itemCatalogService, houseService, bankAccountService, itemService, groupService, userShopDataService,
-        inventoryService, inventoryModule, itemCreationModule, moneyModule, bankModule)
+        inventoryService, inventoryModule, moneyModule, bankModule)
     {
         _serializer = serializer;
 
@@ -46,7 +46,7 @@ public class ClothingStoreHandler : BaseItemShopHandler
         _userShopDataService = userShopDataService;
 
         _inventoryModule = inventoryModule;
-        _itemCreationModule = itemCreationModule;
+        _clothingItemCreationModule = clothingItemCreationModule;
 
         AltAsync.OnClient<ServerPlayer>("clothingstore:requeststartchangeclothes", OnRequestStartChangeClothes);
         AltAsync.OnClient<ServerPlayer>("clothingstore:cancel", OnCancel);
@@ -90,7 +90,7 @@ public class ClothingStoreHandler : BaseItemShopHandler
             return;
         }
 
-        await player.SetDimensionAsync(0);
+        player.Dimension = 0;
     }
 
     private async void OnRequestItems(ServerPlayer player, string clothingsJson)
@@ -100,7 +100,7 @@ public class ClothingStoreHandler : BaseItemShopHandler
             return;
         }
 
-        await player.SetDimensionAsync(0);
+        player.Dimension = 0;
 
         var clothingsData = _serializer.Deserialize<ClothingsData>(clothingsJson);
         float weight = 0;
@@ -192,8 +192,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Hat != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_HAT, 1, null,
-                _serializer.Serialize(clothingsData.Hat), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_HAT, 
+                clothingsData.Hat, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_HAT, 1);
@@ -206,8 +206,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Glasses != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_GLASSES, 1, null,
-                _serializer.Serialize(clothingsData.Glasses), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_GLASSES, 
+                clothingsData.Glasses, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_GLASSES, 1);
@@ -220,8 +220,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Ears != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_EARS, 1, null,
-                _serializer.Serialize(clothingsData.Ears), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_EARS, 
+                clothingsData.Ears, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_EARS, 1);
@@ -234,8 +234,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Watch != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_WATCH, 1, null,
-                _serializer.Serialize(clothingsData.Watch), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_WATCH, 
+                clothingsData.Watch, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_WATCH, 1);
@@ -248,8 +248,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Bracelets != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_BRACELET, 1, null,
-                _serializer.Serialize(clothingsData.Bracelets), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_BRACELET, 
+                clothingsData.Bracelets, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_BRACELET, 1);
@@ -262,8 +262,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Mask != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_MASK, 1, null,
-                _serializer.Serialize(clothingsData.Mask), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_MASK, 
+                clothingsData.Mask, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_MASK, 1);
@@ -276,8 +276,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Top != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_TOP, 1, null,
-                _serializer.Serialize(clothingsData.Top), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_TOP, 
+                clothingsData.Top, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_TOP, 1);
@@ -290,8 +290,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.BodyArmor != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_BODY_ARMOR, 1, null,
-                _serializer.Serialize(clothingsData.BodyArmor), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_BODY_ARMOR, 
+                clothingsData.BodyArmor, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_BODY_ARMOR, 1);
@@ -304,13 +304,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.BackPack != null)
         {
-            if (!await _inventoryModule.CanCarry(player, ItemCatalogIds.CLOTHING_BACKPACK))
-            {
-                return;
-            }
-
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_BACKPACK, 1, null,
-                _serializer.Serialize(clothingsData.BackPack), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_BACKPACK, 
+                clothingsData.BackPack, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_BACKPACK, 1);
@@ -323,8 +318,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.UnderShirt != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_UNDERSHIRT, 1, null,
-                _serializer.Serialize(clothingsData.UnderShirt), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_UNDERSHIRT, 
+                clothingsData.UnderShirt, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_UNDERSHIRT, 1);
@@ -337,8 +332,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Accessories != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_ACCESSORIES, 1, null,
-                _serializer.Serialize(clothingsData.Accessories), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_ACCESSORIES, 
+                clothingsData.Accessories, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_ACCESSORIES, 1);
@@ -351,8 +346,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Pants != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_PANTS, 1, null,
-                _serializer.Serialize(clothingsData.Pants), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_PANTS, 
+                clothingsData.Pants, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_PANTS, 1);
@@ -365,8 +360,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
 
         if (clothingsData.Shoes != null)
         {
-            var item = await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.CLOTHING_SHOES, 1, null,
-                _serializer.Serialize(clothingsData.Shoes), null, true, false);
+            var item = await _clothingItemCreationModule.AddItemAsync(player.CharacterModel.InventoryModel, ItemCatalogIds.CLOTHING_SHOES, 
+                clothingsData.Shoes, 1, "", false);
             if (item != null)
             {
                 await SetUnboughtItems(player, ItemCatalogIds.CLOTHING_SHOES, 1);
@@ -437,14 +432,8 @@ public class ClothingStoreHandler : BaseItemShopHandler
         var price = 0;
 
         foreach (var item in player.CharacterModel.InventoryModel.Items.Where(i =>
-                     !i.IsBought && ClothingModule.IsClothesOrProp(i.CatalogItemModelId)))
+                     !i.IsBought && i is ItemClothModel))
         {
-            var componentId = ClothingModule.GetComponentId(item.CatalogItemModelId);
-            if (!componentId.HasValue)
-            {
-                continue;
-            }
-
             var dbItem = await _itemCatalogService.GetByKey(item.CatalogItemModelId);
             price += dbItem.Price;
         }

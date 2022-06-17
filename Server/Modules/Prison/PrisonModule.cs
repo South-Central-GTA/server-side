@@ -44,7 +44,7 @@ public class PrisonModule : ITransientScript
             return;
         }
 
-        await player.SetDimensionAsync(0);
+        player.Dimension =0;
         player.SetPositionLocked(new Position(_worldLocationOptions.FreeJailPositionX,
             _worldLocationOptions.FreeJailPositionY, _worldLocationOptions.FreeJailPositionZ));
 

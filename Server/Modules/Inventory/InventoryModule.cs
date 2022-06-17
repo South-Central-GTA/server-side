@@ -170,7 +170,7 @@ public class InventoryModule : ITransientScript
         player.EmitLocked("inventory:open", inventories);
         player.UpdateMoneyUi();
     }
-
+ 
     public void CloseInventory(ServerPlayer player)
     {
         if (!player.Exists)

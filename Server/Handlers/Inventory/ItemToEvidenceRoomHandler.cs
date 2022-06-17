@@ -3,6 +3,7 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
+using Server.Modules.Clothing;
 using Server.Modules.Inventory;
 
 namespace Server.Handlers.Inventory;
@@ -11,11 +12,13 @@ public class ItemToEvidenceRoomHandler : ISingletonScript
 {
     private readonly InventoryModule _inventoryModule;
     private readonly ItemDestructionModule _itemDestructionModule;
+    private readonly ClothingModule _clothingModule;
 
-    public ItemToEvidenceRoomHandler(InventoryModule inventoryModule, ItemDestructionModule itemDestructionModule)
+    public ItemToEvidenceRoomHandler(InventoryModule inventoryModule, ItemDestructionModule itemDestructionModule, ClothingModule clothingModule)
     {
         _inventoryModule = inventoryModule;
         _itemDestructionModule = itemDestructionModule;
+        _clothingModule = clothingModule;
 
         AltAsync.OnClient<ServerPlayer, int>("item:toevidenceroom", OnExecute);
     }
@@ -32,6 +35,7 @@ public class ItemToEvidenceRoomHandler : ISingletonScript
         player.SendNotification("Du hast das Item in die Asservatenkammer übertragen.", NotificationType.INFO);
 
         await _inventoryModule.UpdateInventoryUiAsync(player);
-        player.UpdateClothes();
+        _clothingModule.UpdateClothes(player);
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AltV.Net.Async;
 using AltV.Net.Data;
@@ -9,10 +10,12 @@ using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
 using Server.Data.Enums;
+using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Modules.Bank;
 using Server.Modules.Chat;
+using Server.Modules.Clothing;
 using Server.Modules.EntitySync;
 using Server.Modules.Group;
 using Server.Modules.Houses;
@@ -37,6 +40,7 @@ public class CharacterSelectionModule : ITransientScript
     private readonly PedSyncModule _pedSyncModule;
     private readonly PrisonModule _prisonModule;
     private readonly VehicleLocatingModule _vehicleLocatingModule;
+    private readonly ClothingModule _clothingModule;
     private readonly WorldLocationOptions _worldLocationOptions;
 
     public CharacterSelectionModule(ILogger<CharacterSelectionModule> logger,
@@ -44,7 +48,7 @@ public class CharacterSelectionModule : ITransientScript
         DeliveryService deliveryService, HouseService houseService, AccountService accountService,
         CharacterSpawnModule characterSpawnModule, HouseModule houseModule, CommandModule commandModule,
         BankModule bankModule, GroupModule groupModule, VehicleLocatingModule vehicleLocatingModule,
-        PrisonModule prisonModule, PedSyncModule pedSyncModule)
+        PrisonModule prisonModule, PedSyncModule pedSyncModule, ClothingModule clothingModule)
     {
         _logger = logger;
         _characterSpawnModule = characterSpawnModule;
@@ -60,6 +64,7 @@ public class CharacterSelectionModule : ITransientScript
         _vehicleLocatingModule = vehicleLocatingModule;
         _prisonModule = prisonModule;
         _pedSyncModule = pedSyncModule;
+        _clothingModule = clothingModule;
     }
 
     public async Task OpenAsync(ServerPlayer player)
@@ -74,7 +79,9 @@ public class CharacterSelectionModule : ITransientScript
 
         var characters = await _characterService.GetAllFromAccount(player.AccountModel);
         characters = characters.FindAll(c => c.CharacterState == CharacterState.PLAYABLE);
-
+        
+        var characterDatas = characters.Select(c => new CharacterData(c, _clothingModule.GetClothingsData(c.InventoryModel))).ToList();
+        
         player.IsSpawned = false;
         player.IsAduty = false;
         player.IsDuty = false;
@@ -86,7 +93,7 @@ public class CharacterSelectionModule : ITransientScript
         _vehicleLocatingModule.StopTracking(player);
         _pedSyncModule.Delete(player);
 
-        player.EmitLocked("charselector:open", characters, player.AccountModel.LastSelectedCharacterId);
+        player.EmitLocked("charselector:open", characterDatas, player.AccountModel.LastSelectedCharacterId);
     }
 
     public async Task UpdateAsync(ServerPlayer player)
@@ -98,7 +105,9 @@ public class CharacterSelectionModule : ITransientScript
 
         var characters = await _characterService.GetAllFromAccount(player.AccountModel);
         characters = characters.FindAll(c => c.CharacterState == CharacterState.PLAYABLE);
-        player.EmitLocked("charselector:update", characters, player.AccountModel.LastSelectedCharacterId);
+        var characterDatas = characters.Select(c => new CharacterData(c, _clothingModule.GetClothingsData(c.InventoryModel))).ToList();
+
+        player.EmitLocked("charselector:update", characterDatas, player.AccountModel.LastSelectedCharacterId);
     }
 
     public async Task SelectCharacter(ServerPlayer player, int characterId)

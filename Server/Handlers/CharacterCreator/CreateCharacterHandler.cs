@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AltV.Net.Async;
 using AltV.Net.Enums;
 using Server.Core.Abstractions.ScriptStrategy;
@@ -10,8 +11,10 @@ using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models;
 using Server.Database.Models.Character;
+using Server.Database.Models.Inventory;
 using Server.Helper;
 using Server.Modules.Character;
+using Server.Modules.Clothing;
 using Server.Modules.Houses;
 using Server.Modules.Inventory;
 using Server.Modules.SouthCentralPoints;
@@ -27,6 +30,7 @@ public class CreateCharacterHandler : ISingletonScript
     private readonly CharacterSpawnModule _characterSpawnModule;
     private readonly HouseModule _houseModule;
     private readonly ItemCreationModule _itemCreationModule;
+    private readonly ClothingItemCreationModule _clothingItemCreationModule;
     private readonly PersonalLicenseService _personalLicenseService;
 
     private readonly Random _rand = new();
@@ -40,7 +44,7 @@ public class CreateCharacterHandler : ISingletonScript
         HouseModule houseModule, ItemCreationModule itemCreationModule,
         SouthCentralPointsModule southCentralPointsModule, VehicleModule vehicleModule,
         CharacterService characterService, RegistrationOfficeService registrationOfficeService,
-        PersonalLicenseService personalLicenseService)
+        PersonalLicenseService personalLicenseService, ClothingItemCreationModule clothingItemCreationModule)
     {
         _serializer = serializer;
         _characterCreationModule = characterCreationModule;
@@ -53,6 +57,7 @@ public class CreateCharacterHandler : ISingletonScript
         _characterService = characterService;
         _registrationOfficeService = registrationOfficeService;
         _personalLicenseService = personalLicenseService;
+        _clothingItemCreationModule = clothingItemCreationModule;
 
         AltAsync.OnClient<ServerPlayer, string>("charcreator:createcharacter", OnCreateCharacter);
     }
@@ -120,12 +125,8 @@ public class CreateCharacterHandler : ISingletonScript
             await _characterService.Add(new CharacterModel(characterCreatorData.CharacterModel,
                 characterCreatorData.StartMoney));
 
-        foreach (var item in characterCreatorData.CharacterModel.InventoryModel.Items)
-        {
-            await _itemCreationModule.AddItemAsync(newCharacter.InventoryModel, item.CatalogItemModelId, item.Amount,
-                item.Condition, item.CustomData, item.Note, true, true, false, null, ItemState.EQUIPPED);
-        }
-
+        await GiveClothingItems(newCharacter, characterCreatorData);
+        
         var house = await _houseModule.GetStarterHouse(player);
         if (house != null)
         {
@@ -167,7 +168,7 @@ public class CreateCharacterHandler : ISingletonScript
                 CharacterModelId = newCharacter.Id, Type = PersonalLicensesType.DRIVING
             });
 
-            await _itemCreationModule.AddItemAsync(newCharacter.InventoryModel, ItemCatalogIds.LICENSES, 1);
+            await _itemCreationModule.AddItemAsync(newCharacter.InventoryModel, ItemCatalogIds.LICENSES, 1, newCharacter.Id.ToString());
         }
 
         player.SendNotification("Dein Charakter wurde erfolgreich erstellt.", NotificationType.SUCCESS);
@@ -176,5 +177,86 @@ public class CreateCharacterHandler : ISingletonScript
         await _characterSelectionModule.SelectCharacter(player, newCharacter.Id);
 
         _houseModule.UnselectHouseInCreation(player, false);
+    }
+
+    private async Task GiveClothingItems(CharacterModel character, CharacterCreatorData characterCreatorData)
+    {
+        var hat = characterCreatorData.ClothingsData.Hat;
+        if (hat != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_HAT, hat);
+        }
+        
+        var glasses = characterCreatorData.ClothingsData.Glasses;
+        if (glasses != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_GLASSES, glasses);
+        }
+        
+        var ears = characterCreatorData.ClothingsData.Ears;
+        if (ears != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_EARS, ears);
+        }
+        
+        var watch = characterCreatorData.ClothingsData.Watch;
+        if (watch != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_WATCH, watch);
+        }
+        
+        var bracelets = characterCreatorData.ClothingsData.Bracelets;
+        if (bracelets != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_BRACELET, bracelets);
+        }
+        
+        var mask = characterCreatorData.ClothingsData.Mask;
+        if (mask != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_MASK, mask);
+        }
+        
+        var top = characterCreatorData.ClothingsData.Top;
+        if (top != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_TOP, top);
+        }
+        
+        var bodyArmor = characterCreatorData.ClothingsData.BodyArmor;
+        if (bodyArmor != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_BODY_ARMOR, bodyArmor);
+        }
+        
+        var backPack = characterCreatorData.ClothingsData.BackPack;
+        if (backPack != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_BACKPACK, backPack);
+        }
+        
+        var underShirt = characterCreatorData.ClothingsData.UnderShirt;
+        if (underShirt != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_UNDERSHIRT, underShirt);
+        }
+        
+        var accessories = characterCreatorData.ClothingsData.Accessories;
+        if (accessories != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_ACCESSORIES, accessories);
+        }
+        
+        var pants = characterCreatorData.ClothingsData.Pants;
+        if (pants != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_PANTS, pants);
+        }
+        
+        var shoes = characterCreatorData.ClothingsData.Shoes;
+        if (shoes != null)
+        {
+            await _clothingItemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.CLOTHING_SHOES, shoes);
+        }
     }
 }

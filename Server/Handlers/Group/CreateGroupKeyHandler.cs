@@ -79,8 +79,7 @@ public class CreateGroupKeyHandler : ISingletonScript
         var success = await _bankModule.Withdraw(bankAccount, catalogItem.Price, false, "Gruppenschlüssel nachgemacht");
         if (success)
         {
-            var item = (ItemGroupKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.GROUP_KEY, 1,
-                null, null, group.Name);
+            var item = (ItemGroupKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.GROUP_KEY, 1, null, group.Name);
             if (item == null)
             {
                 return;

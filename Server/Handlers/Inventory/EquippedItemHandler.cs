@@ -7,7 +7,9 @@ using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
+using Server.Database.Models.Inventory;
 using Server.Helper;
+using Server.Modules.Clothing;
 using Server.Modules.Inventory;
 
 namespace Server.Handlers.Inventory;
@@ -15,13 +17,14 @@ namespace Server.Handlers.Inventory;
 public class EquippedItemHandler : ISingletonScript
 {
     private readonly InventoryModule _inventoryModule;
+    private readonly ClothingModule _clothingModule;
     private readonly InventoryService _inventoryService;
 
     private readonly ItemService _itemService;
     private readonly Serializer _serializer;
 
     public EquippedItemHandler(Serializer serializer, ItemService itemService, InventoryService inventoryService,
-        InventoryModule inventoryModule)
+        InventoryModule inventoryModule, ClothingModule clothingModule)
     {
         _serializer = serializer;
 
@@ -29,6 +32,7 @@ public class EquippedItemHandler : ISingletonScript
         _inventoryService = inventoryService;
 
         _inventoryModule = inventoryModule;
+        _clothingModule = clothingModule;
 
         AltAsync.OnClient<ServerPlayer, int>("item:unequip", OnPlayerUnequipItem);
         AltAsync.OnClient<ServerPlayer, int>("item:equip", OnPlayerEquipItem);
@@ -59,7 +63,7 @@ public class EquippedItemHandler : ISingletonScript
 
         await _itemService.Update(item);
         await _inventoryModule.UpdateInventoryUiAsync(player);
-        player.UpdateClothes();
+        _clothingModule.UpdateClothes(player);
     }
 
     private async void OnPlayerEquipItem(ServerPlayer player, int itemId)
@@ -99,8 +103,12 @@ public class EquippedItemHandler : ISingletonScript
             return;
         }
 
-        var clothingData = _serializer.Deserialize<ClothingData>(item.CustomData);
-        if (clothingData.GenderType != player.CharacterModel.Gender)
+        if (item is not ItemClothModel itemClothModel)
+        {
+            return;
+        }
+        
+        if (itemClothModel.GenderType != player.CharacterModel.Gender)
         {
             player.SendNotification("Dein Charakiter kann keine Kleidung des anderen Geschlechtes anziehen.",
                 NotificationType.ERROR);
@@ -112,7 +120,7 @@ public class EquippedItemHandler : ISingletonScript
         item.Slot = null;
 
         await _itemService.Update(item);
-        await _inventoryModule.UpdateInventoryUiAsync(player);
-        player.UpdateClothes();
+        await _inventoryModule.UpdateInventoryUiAsync(player);     
+        _clothingModule.UpdateClothes(player);
     }
 }

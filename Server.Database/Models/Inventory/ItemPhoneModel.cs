@@ -86,6 +86,9 @@ public class ItemPhoneModel : ItemModel
         writer.Name("catalogItemName");
         writer.Value(model.CatalogItemModelId.ToString());
 
+        writer.Name("isBought");
+        writer.Value(model.IsBought);
+        
         writer.Name("catalogItem");
 
         CatalogItemModel.Serialize(model.CatalogItemModel, writer);

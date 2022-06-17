@@ -223,6 +223,11 @@ public class GroupModule : ITransientScript
         var groupMember = await _groupMemberService.Find(m =>
             m.GroupModelId == groupModel.Id && m.CharacterModelId == player.CharacterModel.Id);
 
+        if (groupMember == null)
+        {
+            return;
+        }
+        
         await _groupMemberService.Remove(groupMember);
         await UpdateGroupUi(groupModel);
         await RemoveMemberInventory(player, groupModel);
@@ -269,25 +274,18 @@ public class GroupModule : ITransientScript
             await _vehicleService.Remove(ownedVehicle);
         }
 
-        if (groupModel.Members != null)
-        {
-            await _groupMemberService.RemoveRange(groupModel.Members);
-        }
-
-        if (groupModel.Ranks != null)
-        {
-            await _groupRankService.RemoveRange(groupModel.Ranks);
-        }
+        await _groupMemberService.RemoveRange(groupModel.Members);
+        await _groupRankService.RemoveRange(groupModel.Ranks);
 
         var orderedVehicles = await _orderedVehicleService.Where(h => h.GroupModelId == groupModel.Id);
-        if (orderedVehicles != null)
-        {
-            await _orderedVehicleService.RemoveRange(orderedVehicles);
-        }
+        await _orderedVehicleService.RemoveRange(orderedVehicles);
 
         var mailAccount = await _mailAccountService.GetByGroup(groupModel.Id);
-        await _mailAccountService.Remove(mailAccount);
-
+        if (mailAccount != null)
+        {
+            await _mailAccountService.Remove(mailAccount);
+        }
+        
         var deletedGroup = await _groupService.Remove(groupModel);
         await UpdateGroupUi(deletedGroup);
     }
@@ -313,9 +311,9 @@ public class GroupModule : ITransientScript
     public async Task CreateRank(GroupModel groupModel, string name)
     {
         var ranks = await _groupRankService.Where(r => r.GroupModelId == groupModel.Id);
-        var newLevel = ranks.Max(r => r.Level) + 1;
+        var nextLevel = ranks.Count < 1 ? 1 : ranks.Max(r => r.Level) + 1;
 
-        await _groupRankService.Add(new GroupRankModel { GroupModelId = groupModel.Id, Name = name, Level = newLevel });
+        await _groupRankService.Add(new GroupRankModel { GroupModelId = groupModel.Id, Name = name, Level = nextLevel });
     }
 
     public async Task UpdateUi(ServerPlayer player)

@@ -68,7 +68,7 @@ public class VehicleModule : ITransientScript
             return null;
         }
 
-        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.KEY, 1, null, null,
+        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(character.InventoryModel, ItemCatalogIds.KEY, 1, null,
             "Schlüssel für " + catalogVehicle.DisplayName);
         if (itemKey == null)
         {
@@ -284,7 +284,7 @@ public class VehicleModule : ITransientScript
             return;
         }
 
-        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null, null,
+        var itemKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null,
             "Schlüssel für " + catalogVehicle.DisplayName);
         if (itemKey == null)
         {

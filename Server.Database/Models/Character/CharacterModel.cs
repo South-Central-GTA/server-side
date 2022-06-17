@@ -57,7 +57,7 @@ public class CharacterModel : PositionRotationDimensionModelBase, IWritable
 
         if (startMoney > 0)
         {
-            itemsToAdd.Add(new ItemModel(ItemCatalogIds.DOLLAR, 0, null, null, startMoney, null, true, false,
+            itemsToAdd.Add(new ItemModel(ItemCatalogIds.DOLLAR, 0, null, null, startMoney, true, false,
                 ItemState.NOT_EQUIPPED));
         }
 
@@ -149,37 +149,21 @@ public class CharacterModel : PositionRotationDimensionModelBase, IWritable
         writer.Name("accountName");
         writer.Value(model.AccountModel != null ? model.AccountModel.CurrentName : "NotSavedCharacter");
 
-        #region Inventory
-
         writer.Name("inventory");
 
         InventoryModel.Serialize(model.InventoryModel, writer);
-
-        #endregion
-
-        #region FaceFeatures
-
+        
         writer.Name("faceFeatures");
 
         FaceFeaturesModel.Serialize(model.FaceFeaturesModel, writer);
-
-        #endregion
-
-        #region Appearances
 
         writer.Name("appearances");
 
         AppearancesModel.Serialize(model.AppearancesModel, writer);
 
-        #endregion
-
-        #region Tattoos
-
         writer.Name("tattoos");
 
         TattoosModel.Serialize(model.TattoosModel, writer);
-
-        #endregion
 
         writer.Name("onlineSinceJson");
         writer.Value(JsonSerializer.Serialize(model.OnlineSince));

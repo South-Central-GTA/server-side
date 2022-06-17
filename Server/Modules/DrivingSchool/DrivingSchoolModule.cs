@@ -147,7 +147,7 @@ public class DrivingSchoolModule : ITransientScript
                 CharacterModelId = player.CharacterModel.Id, Type = PersonalLicensesType.DRIVING
             });
 
-            await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.LICENSES, 1);
+            await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.LICENSES, 1, null, player.CharacterModel.Id.ToString());
 
             player.SendNotification("Dein Charakter hat die Prüfung bestanden.", NotificationType.SUCCESS);
         }

@@ -13,6 +13,7 @@ using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Inventory;
+using Server.Modules.Clothing;
 using Server.Modules.Death;
 using Server.Modules.Phone;
 using Server.Modules.Weapon;
@@ -24,6 +25,7 @@ public class CharacterSpawnModule : ITransientScript
     private readonly AmmoModule _ammoModule;
     private readonly DeathModule _deathModule;
     private readonly GroupFactionService _groupFactionService;
+    private readonly ClothingModule _clothingModule;
 
     private readonly ILogger<CharacterSpawnModule> _logger;
     private readonly PhoneModule _phoneModule;
@@ -171,7 +173,7 @@ public class CharacterSpawnModule : ITransientScript
     private readonly WeaponModule _weaponModule;
 
     public CharacterSpawnModule(ILogger<CharacterSpawnModule> logger, WeaponModule weaponModule, AmmoModule ammoModule,
-        PhoneModule phoneModule, DeathModule deathModule, GroupFactionService groupFactionService)
+        PhoneModule phoneModule, DeathModule deathModule, GroupFactionService groupFactionService, ClothingModule clothingModule)
     {
         _logger = logger;
         _weaponModule = weaponModule;
@@ -179,6 +181,7 @@ public class CharacterSpawnModule : ITransientScript
         _phoneModule = phoneModule;
         _deathModule = deathModule;
         _groupFactionService = groupFactionService;
+        _clothingModule = clothingModule;
     }
 
     public async Task Spawn(ServerPlayer player, Position position, Rotation rotation, int dimension)
@@ -208,6 +211,8 @@ public class CharacterSpawnModule : ITransientScript
         player.SetSyncedMetaData("ID", player.Id);
         player.UpdateMoneyUi();
 
+        _clothingModule.UpdateClothes(player);
+        
         if (player.IsAduty)
         {
             player.SetSyncedMetaData("CHARACTER_NAME", player.AccountName);

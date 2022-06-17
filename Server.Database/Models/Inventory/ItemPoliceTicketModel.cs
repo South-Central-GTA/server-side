@@ -12,7 +12,7 @@ public class ItemPoliceTicketModel : ItemModel, IWritable
     public string CreatorCharacterName { get; set; }
     public int TargetCharacterId { get; set; }
 
-    public void OnWrite(IMValueWriter writer)
+    public override void OnWrite(IMValueWriter writer)
     {
         Serialize(this, writer);
     }

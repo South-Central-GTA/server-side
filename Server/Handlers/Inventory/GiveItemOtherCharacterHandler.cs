@@ -8,6 +8,7 @@ using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
+using Server.Database.Models.Inventory;
 using Server.Helper;
 using Server.Modules.Clothing;
 using Server.Modules.Inventory;
@@ -18,12 +19,13 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
 {
     private readonly InventoryModule _inventoryModule;
     private readonly ItemCreationModule _itemCreationModule;
-
+    private readonly ClothingModule _clothingModule;
+    
     private readonly ItemService _itemService;
     private readonly Serializer _serializer;
 
     public GiveItemOtherCharacterHandler(Serializer serializer, ItemService itemService,
-        InventoryModule inventoryModule, ItemCreationModule itemCreationModule)
+        InventoryModule inventoryModule, ItemCreationModule itemCreationModule, ClothingModule clothingModule)
     {
         _serializer = serializer;
 
@@ -31,6 +33,7 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
 
         _inventoryModule = inventoryModule;
         _itemCreationModule = itemCreationModule;
+        _clothingModule = clothingModule;
 
         AltAsync.OnClient<ServerPlayer>("item:getplayersaround", OnGetPlayersAround);
         AltAsync.OnClient<ServerPlayer, int, int>("item:giveitemtocharacter", OnGiveItemToCharacter);
@@ -109,14 +112,13 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
         item.InventoryModelId = target.CharacterModel.InventoryModel.Id;
         await _itemService.Update(item);
 
-        if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId))
+        if (item is ItemClothModel itemClothModel)
         {
-            var data = _serializer.Deserialize<ClothingData>(item.CustomData);
             player.SendNotification(
-                $"Dein Charakter hat {target.CharacterModel.Name} das Kleidungsstück {data.Title} gegeben.",
+                $"Dein Charakter hat {target.CharacterModel.Name} das Kleidungsstück {itemClothModel.Title} gegeben.",
                 NotificationType.SUCCESS);
             target.SendNotification(
-                $"Dein Charakter hat von {player.CharacterModel.Name} das Kleidungsstück {data.Title} erhalten.",
+                $"Dein Charakter hat von {player.CharacterModel.Name} das Kleidungsstück {itemClothModel.Title} erhalten.",
                 NotificationType.INFO);
         }
         else
@@ -135,7 +137,7 @@ public class GiveItemOtherCharacterHandler : ISingletonScript
 
         if (oldState == ItemState.EQUIPPED)
         {
-            player.UpdateClothes();
+            _clothingModule.UpdateClothes(player);
         }
     }
 }

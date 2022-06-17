@@ -105,7 +105,7 @@ public class PlayerItemEventsHandler : ISingletonScript
             return;
         }
 
-        var newKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null, null,
+        var newKey = (ItemKeyModel)await _itemCreationModule.AddItemAsync(player, ItemCatalogIds.KEY, 1, null,
             "Kopie von " + itemKey.Note);
 
         if (newKey == null)

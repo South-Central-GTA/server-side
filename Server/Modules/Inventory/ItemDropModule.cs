@@ -117,17 +117,9 @@ public class ItemDropModule : ITransientScript
 
         await _itemCreationModule.HandleGiveSpecialItems(player, item);
 
-        if (ClothingModule.IsClothesOrProp(item.CatalogItemModelId))
-        {
-            var data = _serializer.Deserialize<ClothingData>(item.CustomData);
-            player.SendNotification($"Dein Charakter hat {item.Amount}x {data.Title} aufgehoben.",
-                NotificationType.SUCCESS);
-        }
-        else
-        {
-            player.SendNotification($"Dein Charakter hat {item.Amount}x {item.CatalogItemModel.Name} aufgehoben.",
-                NotificationType.SUCCESS);
-        }
+        var name = item is ItemClothModel cloth ? cloth.Title : item.CatalogItemModel.Name;
+        player.SendNotification($"Dein Charakter hat {item.Amount}x { name } aufgehoben.",
+            NotificationType.SUCCESS);
 
         return true;
     }
@@ -145,10 +137,14 @@ public class ItemDropModule : ITransientScript
             return;
         }
 
-        var clothingData = _serializer.Deserialize<ClothingData>(item.CustomData);
-        if (clothingData.GenderType != player.CharacterModel.Gender)
+        if (item is not ItemClothModel itemClothModel)
         {
-            player.SendNotification("Dein Charakter kann keine Kleidung des anderen Geschlechtes anziehen.",
+            return;
+        }
+        
+        if (itemClothModel.GenderType != player.CharacterModel.Gender)
+        {
+            player.SendNotification("Dein Charakiter kann keine Kleidung des anderen Geschlechtes anziehen.",
                 NotificationType.ERROR);
             return;
         }

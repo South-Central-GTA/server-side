@@ -80,7 +80,7 @@ public class TattooStudioHandler : ISingletonScript
             return;
         }
 
-        await player.SetDimensionAsync(0);
+        player.Dimension = 0;
     }
 
     private async void OnRequestBuyDialog(ServerPlayer player, string newTattoosJson)
@@ -90,7 +90,7 @@ public class TattooStudioHandler : ISingletonScript
             return;
         }
 
-        await player.SetDimensionAsync(0);
+        player.Dimension = 0;
 
         var newTattoos = _serializer.Deserialize<TattoosModel>(newTattoosJson);
         var diff = player.CharacterModel.TattoosModel.Diff(newTattoos);

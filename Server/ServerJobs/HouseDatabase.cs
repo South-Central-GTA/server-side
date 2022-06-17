@@ -65,7 +65,7 @@ public class HouseDatabase : IJob
             {
                 foreach (var houseDoor in house.Doors)
                 {
-                    _doorSyncModule.Create(houseDoor.Hash, houseDoor.Position, 0, house.LockState == LockState.CLOSED,
+                    _doorSyncModule.Create(houseDoor.Hash, houseDoor.Position, 0, houseDoor.LockState == LockState.CLOSED,
                         house.Id);
                 }
             }

@@ -62,7 +62,24 @@ public class InventoryModel : ModelBase, IWritable
 
         foreach (var item in model.Items)
         {
-            ItemModel.Serialize(item, writer);
+            switch (item)
+            {
+                case ItemClothModel itemClothModel:
+                    ItemClothModel.Serialize(itemClothModel, writer);
+                    break;
+                case ItemPhoneModel itemPhoneModel:
+                    ItemPhoneModel.Serialize(itemPhoneModel, writer);
+                    break;
+                case ItemPoliceTicketModel itemPoliceTicketModel:
+                    ItemPoliceTicketModel.Serialize(itemPoliceTicketModel, writer);
+                    break;
+                case ItemWeaponAttachmentModel itemWeaponAttachmentModel:
+                    ItemWeaponAttachmentModel.Serialize(itemWeaponAttachmentModel, writer);
+                    break;
+                default:
+                    ItemModel.Serialize(item, writer);
+                    break;
+            }
         }
 
         writer.EndArray();
