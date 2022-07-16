@@ -108,7 +108,7 @@ public class PublicGarageHandler : ISingletonScript
 
         var vehicle = Alt.GetAllVehicles().GetClosest(new Position(publicGarageData.ParkingPointX,
             publicGarageData.ParkingPointY, publicGarageData.ParkingPointZ));
-        if (vehicle == null || !vehicle.Exists)
+        if (vehicle is not { Exists: true })
         {
             player.SendNotification("Es befindet sich kein Fahrzeug auf dem Marker.", NotificationType.ERROR);
             return;
@@ -348,7 +348,7 @@ public class PublicGarageHandler : ISingletonScript
 
         var vehicle = Alt.GetAllVehicles().GetClosest(new Position(publicGarageData.ParkingPointX,
             publicGarageData.ParkingPointY, publicGarageData.ParkingPointZ));
-        if (vehicle == null || !vehicle.Exists)
+        if (vehicle is not { Exists: true })
         {
             player.SendNotification("Es befindet sich kein Fahrzeug auf dem Marker.", NotificationType.ERROR);
             return;
@@ -418,20 +418,10 @@ public class PublicGarageHandler : ISingletonScript
         }
 
         var groups = await _groupService.GetByOwner(player.CharacterModel.Id);
-        if (groups != null)
+        if (vehicle.CharacterModelId != player.CharacterModel.Id &&
+            groups.All(g => g.Id != vehicle.GroupModelOwnerId))
         {
-            if (vehicle.CharacterModelId != player.CharacterModel.Id &&
-                groups.All(g => g.Id != vehicle.GroupModelOwnerId))
-            {
-                return;
-            }
-        }
-        else
-        {
-            if (vehicle.CharacterModelId != player.CharacterModel.Id)
-            {
-                return;
-            }
+            return;
         }
 
         var bankAccount = await _bankAccountService.GetByKey(bankAccountId);

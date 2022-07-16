@@ -88,6 +88,7 @@ public class PublicGarageModule : ITransientScript
         vehicleModel.PositionZ = publicGarageData.ParkingPointZ;
 
         await _vehicleModule.Update(vehicleModel);
+        
         await _vehicleModule.Create(vehicleModel);
 
         var genderString = player.CharacterModel.Gender == GenderType.MALE ? "sein" : "ihr";

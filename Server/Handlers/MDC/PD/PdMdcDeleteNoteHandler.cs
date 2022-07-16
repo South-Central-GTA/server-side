@@ -10,19 +10,19 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcDeleteNoteHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly GroupModule _groupModule;
     private readonly MdcNoteService _mdcNoteService;
 
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcDeleteNoteHandler(GroupFactionService groupFactionService, MdcNoteService mdcNoteService,
+    public PdMdcDeleteNoteHandler(FactionGroupService factionGroupService, MdcNoteService mdcNoteService,
         PoliceMdcModule policeMdcModule, GroupModule groupModule)
     {
         _policeMdcModule = policeMdcModule;
         _groupModule = groupModule;
         _mdcNoteService = mdcNoteService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         AltAsync.OnClient<ServerPlayer, int>("policemdc:deletenote", OnDeleteNote);
     }
@@ -34,7 +34,7 @@ public class PdMdcDeleteNoteHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
             return;

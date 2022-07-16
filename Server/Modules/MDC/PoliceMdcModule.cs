@@ -23,7 +23,7 @@ public class PoliceMdcModule : ISingletonScript
     private readonly CriminalRecordService _criminalRecordService;
 
     private readonly EmergencyCallService _emergencyCallService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly HouseService _houseService;
     private readonly ItemPhoneService _itemPhoneService;
     private readonly ItemWeaponService _itemWeaponService;
@@ -34,15 +34,15 @@ public class PoliceMdcModule : ISingletonScript
     private readonly VehicleCatalogService _vehicleCatalogService;
     private readonly VehicleService _vehicleService;
 
-    public PoliceMdcModule(GroupFactionService groupFactionService, EmergencyCallService emergencyCallService,
+    public PoliceMdcModule(FactionGroupService factionGroupService, EmergencyCallService emergencyCallService,
         CriminalRecordService criminalRecordService, MdcNoteService mdcNoteService, CharacterService characterService,
         VehicleService vehicleService, VehicleCatalogService vehicleCatalogService, HouseService houseService,
         BankAccountService bankAccountService, ItemPhoneService itemPhoneService, ItemWeaponService itemWeaponService,
         MailAccountService mailAccountService, RegistrationOfficeService registrationOfficeService,
         PoliceTicketService policeTicketService)
     {
-        CallSign = new CallSign(groupFactionService);
-        _groupFactionService = groupFactionService;
+        CallSign = new CallSign(factionGroupService);
+        _factionGroupService = factionGroupService;
         _emergencyCallService = emergencyCallService;
         _characterService = characterService;
         _vehicleService = vehicleService;
@@ -68,7 +68,7 @@ public class PoliceMdcModule : ISingletonScript
 
     public async Task UpdateEmergencyCallsUi(ServerPlayer player)
     {
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
             return;

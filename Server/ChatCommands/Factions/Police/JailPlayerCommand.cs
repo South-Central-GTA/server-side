@@ -17,16 +17,16 @@ namespace Server.ChatCommands.Factions.Police;
 internal class JailPlayerCommand : ISingletonScript
 {
     private readonly CharacterService _characterService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
     private readonly PrisonModule _prisonModule;
     private readonly WorldLocationOptions _worldLocationOptions;
 
     public JailPlayerCommand(IOptions<WorldLocationOptions> worldLocationOptions,
-        GroupFactionService groupFactionService, CharacterService characterService, PrisonModule prisonModule)
+        FactionGroupService factionGroupService, CharacterService characterService, PrisonModule prisonModule)
     {
         _worldLocationOptions = worldLocationOptions.Value;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
         _characterService = characterService;
 
         _prisonModule = prisonModule;
@@ -41,7 +41,7 @@ internal class JailPlayerCommand : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.POLICE_DEPARTMENT })
         {
             player.SendNotification("Das kann dein Charakter nicht.", NotificationType.ERROR);

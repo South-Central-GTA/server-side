@@ -2036,8 +2036,29 @@ namespace Server.DataAccessLayer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Aerials")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AirFilter")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ArchCover")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Armor")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BackWheels")
+                        .HasColumnType("integer");
+
                     b.Property<long>("BodyHealth")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("Boost")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Brakes")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("CharacterModelId")
                         .HasColumnType("integer");
@@ -2045,11 +2066,26 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Dashboard")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DialDesign")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Dimension")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DoorSpeaker")
                         .HasColumnType("integer");
 
                     b.Property<float>("DrivenKilometre")
                         .HasColumnType("real");
+
+                    b.Property<int>("Engine")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EngineBlock")
+                        .HasColumnType("integer");
 
                     b.Property<int>("EngineHealth")
                         .HasColumnType("integer");
@@ -2057,10 +2093,37 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<bool>("EngineOn")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("Exhaust")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Fender")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Frame")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FrontBumper")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FrontWheels")
+                        .HasColumnType("integer");
+
                     b.Property<float>("Fuel")
                         .HasColumnType("real");
 
+                    b.Property<int>("Grille")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("GroupModelOwnerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Hood")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Horns")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Hydraulics")
                         .HasColumnType("integer");
 
                     b.Property<List<int>>("Keys")
@@ -2088,8 +2151,23 @@ namespace Server.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Ornaments")
+                        .HasColumnType("integer");
+
                     b.Property<float>("Pitch")
                         .HasColumnType("real");
+
+                    b.Property<int>("Plaques")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Plate")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PlateHolder")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PlateVanity")
+                        .HasColumnType("integer");
 
                     b.Property<float>("PositionX")
                         .HasColumnType("real");
@@ -2106,13 +2184,73 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<int>("PrimaryColor")
                         .HasColumnType("integer");
 
+                    b.Property<int>("RearBumper")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RightFender")
+                        .HasColumnType("integer");
+
                     b.Property<float>("Roll")
                         .HasColumnType("real");
+
+                    b.Property<int>("Roof")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Seats")
+                        .HasColumnType("integer");
 
                     b.Property<int>("SecondaryColor")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ShiftLever")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SideSkirt")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Speaker")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Spoilers")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SteeringWheel")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Struts")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Suspension")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tank")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Transmission")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Trim")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TrimDesign")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Trunk")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Turbo")
+                        .HasColumnType("integer");
+
                     b.Property<int>("VehicleState")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WindowTint")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Windows")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Xenon")
                         .HasColumnType("integer");
 
                     b.Property<float>("Yaw")
@@ -2205,11 +2343,32 @@ namespace Server.DataAccessLayer.Migrations
                     b.Property<int>("LicensesFlags")
                         .HasColumnType("integer");
 
+                    b.Property<decimal?>("MarkerId")
+                        .HasColumnType("numeric(20,0)");
+
                     b.Property<int>("Products")
                         .HasColumnType("integer");
 
                     b.Property<int>("PurchasedLicenses")
                         .HasColumnType("integer");
+
+                    b.Property<float?>("VehicleInteractionPointPitch")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("VehicleInteractionPointRoll")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("VehicleInteractionPointX")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("VehicleInteractionPointY")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("VehicleInteractionPointYaw")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("VehicleInteractionPointZ")
+                        .HasColumnType("real");
 
                     b.HasDiscriminator().HasValue(2);
                 });

@@ -25,8 +25,8 @@ namespace Server.Handlers.Delivery
                     worldLocationOptions.Value.HarbourSelectionPositionY,
                     worldLocationOptions.Value.HarbourSelectionPositionZ), 4f);
 
-            AltAsync.OnColShape += ((IColShape colShape, IEntity targetEntity, bool state) =>
-                OnColShape(colShape, targetEntity, state));
+            AltAsync.OnColShape += (IColShape colShape, IEntity targetEntity, bool state) =>
+                OnColShape(colShape, targetEntity, state);
         }
 
         private async Task OnColShape(IColShape colShape, IEntity targetEntity, bool state)

@@ -8,8 +8,7 @@ namespace Server.Core.Entities;
 
 public class ServerBlip : Entity
 {
-    public ServerBlip(Vector3 position, int dimension, uint range) : base((ulong)EntityType.BLIP, position, dimension,
-        range)
+    public ServerBlip(Vector3 position, int dimension, uint range) : base((ulong)EntityType.BLIP, position, dimension, range)
     {
     }
 

@@ -10,17 +10,17 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcCreateNoteHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly MdcNoteService _mdcNoteService;
 
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcCreateNoteHandler(GroupFactionService groupFactionService, MdcNoteService mdcNoteService,
+    public PdMdcCreateNoteHandler(FactionGroupService factionGroupService, MdcNoteService mdcNoteService,
         PoliceMdcModule policeMdcModule)
     {
         _policeMdcModule = policeMdcModule;
         _mdcNoteService = mdcNoteService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         AltAsync.OnClient<ServerPlayer, string, MdcSearchType, string>("policemdc:createnote", OnCreateNote);
     }
@@ -32,7 +32,7 @@ public class PdMdcCreateNoteHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.POLICE_DEPARTMENT })
         {
             return;

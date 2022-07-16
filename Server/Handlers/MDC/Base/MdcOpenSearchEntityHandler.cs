@@ -11,13 +11,13 @@ namespace Server.Handlers.MDC.Base;
 public class MdcOpenSearchEntityHandler : ISingletonScript
 {
     private readonly FireMdcModule _fireMdcModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public MdcOpenSearchEntityHandler(GroupFactionService groupFactionService, FireMdcModule fireMdcModule,
+    public MdcOpenSearchEntityHandler(FactionGroupService factionGroupService, FireMdcModule fireMdcModule,
         PoliceMdcModule policeMdcModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _fireMdcModule = fireMdcModule;
         _policeMdcModule = policeMdcModule;
@@ -32,7 +32,7 @@ public class MdcOpenSearchEntityHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is null)
         {
             return;

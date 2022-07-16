@@ -14,17 +14,17 @@ namespace Server.Handlers.MDC.PD;
 public class PdMdcRemoveLicenseHandler : ISingletonScript
 {
     private readonly CriminalRecordModule _criminalRecordModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly PersonalLicenseService _personalLicenseService;
 
     private readonly PoliceMdcModule _policeMdcModule;
 
     public PdMdcRemoveLicenseHandler(PersonalLicenseService personalLicenseService,
-        GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule,
+        FactionGroupService factionGroupService, PoliceMdcModule policeMdcModule,
         CriminalRecordModule criminalRecordModule)
     {
         _personalLicenseService = personalLicenseService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _policeMdcModule = policeMdcModule;
         _criminalRecordModule = criminalRecordModule;
@@ -39,7 +39,7 @@ public class PdMdcRemoveLicenseHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.POLICE_DEPARTMENT })
         {
             return;

@@ -114,7 +114,7 @@ public class RequestDeleteCharacterHandler : ISingletonScript
             }
 
             var vehicle = Alt.GetAllVehicles().FindByDbId(ownedVehicle.Id);
-            if (vehicle is not { Exists: true })
+            if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
             {
                 continue;
             }

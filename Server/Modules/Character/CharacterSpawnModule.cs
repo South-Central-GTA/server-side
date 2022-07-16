@@ -24,7 +24,7 @@ public class CharacterSpawnModule : ITransientScript
 {
     private readonly AmmoModule _ammoModule;
     private readonly DeathModule _deathModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly ClothingModule _clothingModule;
 
     private readonly ILogger<CharacterSpawnModule> _logger;
@@ -173,14 +173,14 @@ public class CharacterSpawnModule : ITransientScript
     private readonly WeaponModule _weaponModule;
 
     public CharacterSpawnModule(ILogger<CharacterSpawnModule> logger, WeaponModule weaponModule, AmmoModule ammoModule,
-        PhoneModule phoneModule, DeathModule deathModule, GroupFactionService groupFactionService, ClothingModule clothingModule)
+        PhoneModule phoneModule, DeathModule deathModule, FactionGroupService factionGroupService, ClothingModule clothingModule)
     {
         _logger = logger;
         _weaponModule = weaponModule;
         _ammoModule = ammoModule;
         _phoneModule = phoneModule;
         _deathModule = deathModule;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
         _clothingModule = clothingModule;
     }
 
@@ -224,7 +224,7 @@ public class CharacterSpawnModule : ITransientScript
             player.SetSyncedMetaData("NAMECOLOR", "~w~");
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         player.SetSyncedMetaData("IS_MEDIC", factionGroup?.FactionType == FactionType.FIRE_DEPARTMENT);
 
         foreach (var item in player.CharacterModel.InventoryModel.Items)

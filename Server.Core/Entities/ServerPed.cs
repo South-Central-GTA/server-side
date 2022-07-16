@@ -7,8 +7,7 @@ namespace Server.Core.Entities;
 
 public class ServerPed : Entity
 {
-    public ServerPed(Vector3 position, int dimension, uint range) : base((ulong)EntityType.PED, position, dimension,
-        range)
+    public ServerPed(Vector3 position, int dimension, uint range) : base((ulong)EntityType.PED, position, dimension, range)
     {
     }
 

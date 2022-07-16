@@ -17,7 +17,7 @@ public static class ServerPlayerExtensions
     {
         player.EmitLocked("player:blockgamecontrols", state);
     }
-    
+
     public static void EmitGui(this ServerPlayer player, string eventName, params object[] args)
     {
         player.EmitLocked("webview:emit", eventName, args);
@@ -77,8 +77,7 @@ public static class ServerPlayerExtensions
     public static void UpdateMoneyUi(this ServerPlayer player)
     {
         player.EmitLocked("hud:setmoney",
-            player.CharacterModel.InventoryModel.Items.Where(i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR)
-                .Sum(i => i.Amount));
+            player.CharacterModel.InventoryModel.Items.Where(i => i.CatalogItemModelId == ItemCatalogIds.DOLLAR).Sum(i => i.Amount));
     }
 
     public static void CreateDialog(this ServerPlayer player, DialogData dialogData)

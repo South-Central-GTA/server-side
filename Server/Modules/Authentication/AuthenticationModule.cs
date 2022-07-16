@@ -7,6 +7,7 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
+using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models;
 using Server.Modules.Admin;
@@ -43,7 +44,7 @@ public class AuthenticationModule : ISingletonScript
         _adminPrisonModule = adminPrisonModule;
     }
 
-    public async Task SignIn(ServerPlayer player)
+    public async Task SignIn(ServerPlayer player, DiscordUserDto discordUser)
     {
         if (!player.Exists)
         {
@@ -59,26 +60,17 @@ public class AuthenticationModule : ISingletonScript
             return;
         }
 
-        // // Check for faking authentication
-        // if (account.SocialClubId != player.SocialClubId
-        //     || account.HardwareIdHash != player.HardwareIdHash
-        //     || account.HardwareIdExHash != player.HardwareIdExHash)
-        // {
-        //     player.Kick("Die abgespeicherten Sicherheitsdaten wie Social Club ID und weitere Merkmale sind nicht mehr gleich, der Account gehört nicht zu deinem GTA.");
-        //     return;
-        // }
-
-        await ContinueLoginProcess(player, account);
+        await ContinueLoginProcess(player, account, discordUser);
     }
 
-    public async Task SignUp(ServerPlayer player)
+    public async Task SignUp(ServerPlayer player, DiscordUserDto discordUser)
     {
         var account = await _accountService.Add(new AccountModel
         {
             MaxCharacters = _accOptions.MaxCharacters,
             SouthCentralPoints = _accOptions.StartSouthCentralPoints,
             SocialClubId = player.SocialClubId,
-            CurrentName = player.Name,
+            CurrentName = discordUser.UserName,
             DiscordId = player.DiscordId,
             HardwareIdHash = player.HardwareIdHash,
             HardwareIdExHash = player.HardwareIdExHash,
@@ -91,10 +83,10 @@ public class AuthenticationModule : ISingletonScript
             MaxRoleplayInfos = 6
         });
 
-        await ContinueLoginProcess(player, account);
+        await ContinueLoginProcess(player, account, discordUser);
     }
 
-    public async Task ContinueLoginProcess(ServerPlayer player, AccountModel accountModel)
+    public async Task ContinueLoginProcess(ServerPlayer player, AccountModel accountModel, DiscordUserDto discordUser)
     {
         accountModel.LastLogin = DateTime.Now;
         accountModel.LastIp = player.Ip;

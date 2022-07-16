@@ -118,7 +118,7 @@ public class PlayerVehicleDealerHandler : ISingletonScript
         }
 
         var vehicle = (ServerVehicle)player.Vehicle;
-        if (!vehicle.Exists || vehicle.DbEntity == null)
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             return;
         }

@@ -7,6 +7,7 @@ using Server.Core.Abstractions;
 using Server.Core.Configuration;
 using Server.Data.Enums.EntitySync;
 using Server.DataAccessLayer.Services;
+using Server.Database.Models.Group;
 using Server.Modules.EntitySync;
 
 namespace Server.ServerJobs;
@@ -16,13 +17,14 @@ public class Marker : IJob
     private readonly DevelopmentOptions _developmentOptions;
 
     private readonly HouseService _houseService;
+    private readonly GroupService _groupService;
     private readonly ILogger<DroppedItems> _logger;
 
     private readonly MarkerSyncModule _markerSyncModule;
     private readonly WorldLocationOptions _worldLocationOptions;
 
     public Marker(ILogger<DroppedItems> logger, IOptions<WorldLocationOptions> worldLocationOptions,
-        IOptions<DevelopmentOptions> developmentOptions, HouseService houseService, MarkerSyncModule markerSyncModule)
+        IOptions<DevelopmentOptions> developmentOptions, HouseService houseService, MarkerSyncModule markerSyncModule, GroupService groupService)
     {
         _logger = logger;
         _worldLocationOptions = worldLocationOptions.Value;
@@ -31,6 +33,7 @@ public class Marker : IJob
         _houseService = houseService;
 
         _markerSyncModule = markerSyncModule;
+        _groupService = groupService;
     }
 
     public async Task OnSave()
@@ -82,6 +85,29 @@ public class Marker : IJob
                 new Position(interiorData.X, interiorData.Y, interiorData.Z), Vector3.Zero, Vector3.Zero,
                 new Vector3(0.8f, 0.8f, 1f), new Rgba(255, 255, 255, 10), 0, false, 5);
         }
+
+        var groups = await _groupService.GetAll();
+        foreach (var group in groups)
+        {
+            if (group is not CompanyGroupModel companyGroupModel)
+            {
+                continue;
+            }
+
+            if (!companyGroupModel.VehicleInteractionPointX.HasValue || !companyGroupModel.VehicleInteractionPointY.HasValue || !companyGroupModel.VehicleInteractionPointZ.HasValue)
+            {
+                continue;
+            }
+            
+            var serverMarker = _markerSyncModule.Create(MarkerType.VERTICAL_CYLINDER,
+                new Position(companyGroupModel.VehicleInteractionPointX.Value, companyGroupModel.VehicleInteractionPointY.Value, companyGroupModel.VehicleInteractionPointZ.Value),
+                Vector3.Zero, Vector3.Zero, new Vector3(4f, 4f, 1f), new Rgba(255, 255, 255, 50), 0, false, 20,
+                "~o~Fahrzeuginteraktionspunkt\n~w~Nutze /service");
+
+            companyGroupModel.MarkerId = serverMarker.Id;
+        }
+
+        await _groupService.UpdateRange(groups);
 
         await Task.CompletedTask;
     }

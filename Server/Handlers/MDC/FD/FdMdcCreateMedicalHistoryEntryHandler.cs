@@ -10,14 +10,14 @@ namespace Server.Handlers.MDC.FD;
 public class FdMdcCreateMedicalHistoryEntryHandler : ISingletonScript
 {
     private readonly FireMdcModule _fireMdcModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
     private readonly MedicalHistoryModule _medicalHistoryModule;
 
-    public FdMdcCreateMedicalHistoryEntryHandler(GroupFactionService groupFactionService,
+    public FdMdcCreateMedicalHistoryEntryHandler(FactionGroupService factionGroupService,
         MedicalHistoryModule medicalHistoryModule, FireMdcModule fireMdcModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _medicalHistoryModule = medicalHistoryModule;
         _fireMdcModule = fireMdcModule;
@@ -32,7 +32,7 @@ public class FdMdcCreateMedicalHistoryEntryHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.FIRE_DEPARTMENT })
         {
             return;

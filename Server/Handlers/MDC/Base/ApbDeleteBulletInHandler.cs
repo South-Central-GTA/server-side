@@ -12,13 +12,13 @@ public class ApbDeleteBulletInHandler : ISingletonScript
 {
     private readonly ApbModule _apbModule;
     private readonly BulletInService _bulletInService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly GroupModule _groupModule;
 
-    public ApbDeleteBulletInHandler(GroupFactionService groupFactionService, BulletInService bulletInService,
+    public ApbDeleteBulletInHandler(FactionGroupService factionGroupService, BulletInService bulletInService,
         ApbModule apbModule, GroupModule groupModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
         _bulletInService = bulletInService;
         _apbModule = apbModule;
         _groupModule = groupModule;
@@ -33,7 +33,7 @@ public class ApbDeleteBulletInHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup == null || factionGroup.FactionType != factionType)
         {
             return;

@@ -37,7 +37,7 @@ public class General : ISingletonScript
     private readonly ChatModule _chatModule;
     private readonly DeliveryModule _deliveryModule;
     private readonly DiscordModule _discordModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
     private readonly HelpMeModule _helpMeModule;
@@ -56,7 +56,7 @@ public class General : ISingletonScript
     private readonly VehicleModule _vehicleModule;
 
     public General(HouseService houseService, CharacterService characterService, ItemService itemService,
-        GroupService groupService, GroupFactionService groupFactionService, ItemCatalogService itemCatalogService,
+        GroupService groupService, FactionGroupService factionGroupService, ItemCatalogService itemCatalogService,
         InventoryService inventoryService, LockModule lockModule, ItemCreationModule itemCreationModule,
         InventoryModule inventoryModule, HouseModule houseModule, VehicleModule vehicleModule, BankModule bankModule,
         GroupModule groupModule, DeliveryModule deliveryModule, ChatModule chatModule, PedSyncModule pedSyncModule,
@@ -68,7 +68,7 @@ public class General : ISingletonScript
         _characterService = characterService;
         _itemService = itemService;
         _groupService = groupService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
         _itemCatalogService = itemCatalogService;
         _inventoryService = inventoryService;
 
@@ -167,7 +167,7 @@ public class General : ISingletonScript
         }
         else
         {
-            var faction = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+            var faction = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
             if (faction == null)
             {
                 return;
@@ -218,10 +218,10 @@ public class General : ISingletonScript
         {
             return;
         }
-
+        
         if (player.IsInVehicle)
         {
-            player.SendNotification("Du kannst in einem Fahrzeug keine Info erstellen.", NotificationType.ERROR);
+            player.SendNotification("Dein Charakter darf in keinem Fahrzeug sitzen.", NotificationType.ERROR);
             return;
         }
 
@@ -532,7 +532,7 @@ public class General : ISingletonScript
         }
 
         var house = await _houseService.GetByDistance(player.Position);
-        if (house == null || house.HouseType != HouseType.HOUSE)
+        if (house is not { HouseType: HouseType.HOUSE })
         {
             player.SendNotification("Es ist kein Haus in der Nähe deines Charakters.", NotificationType.ERROR);
             return;

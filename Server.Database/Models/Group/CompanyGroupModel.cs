@@ -24,6 +24,14 @@ public class CompanyGroupModel : GroupModel
     public int Products { get; set; }
     public VisiblityState DeliveryVisibilityStatus { get; set; }
 
+    public ulong? MarkerId { get; set; }
+    public float? VehicleInteractionPointX { get; set; }
+    public float? VehicleInteractionPointY { get; set; }
+    public float? VehicleInteractionPointZ { get; set; }
+    public float? VehicleInteractionPointRoll { get; set; }
+    public float? VehicleInteractionPointPitch { get; set; }
+    public float? VehicleInteractionPointYaw { get; set; }
+
     public override void OnWrite(IMValueWriter writer)
     {
         Serialize(this, writer);

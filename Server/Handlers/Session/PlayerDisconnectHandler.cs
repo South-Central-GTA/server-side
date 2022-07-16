@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AltV.Net;
 using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.Core.Extensions;
+using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Models.Housing;
 using Server.Modules.EntitySync;
@@ -47,16 +49,22 @@ public class PlayerDisconnectHandler : ISingletonScript
             player.CharacterModel.Roll = player.Rotation.Roll;
             player.CharacterModel.Pitch = player.Rotation.Pitch;
             player.CharacterModel.Yaw = player.Rotation.Yaw;
+            
+            // Reset dimension if necessary.
+            if (player.GetData("VEHICLE_SERVICE_DATA", out VehicleServiceData vehicleServiceData))
+            {
+                player.Dimension = 0;
+                
+                var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleServiceData.VehicleDbId);
+                if (vehicle is { Exists: true })
+                {
+                    vehicle.Dimension = 0;
+                }
+            }
 
             player.CharacterModel.Dimension = player.Dimension;
             player.CharacterModel.Health = player.Health;
             player.CharacterModel.Armor = player.Armor;
-
-            player.EmitLocked("charcreator:reset");
-            player.EmitLocked("charselector:reset");
-            player.EmitLocked("hairsalon:reset");
-            player.EmitLocked("clothingstore:reset");
-            player.EmitLocked("tattoostudio:reset");
 
             if (player.IsDuty)
             {

@@ -2,7 +2,7 @@
 
 namespace Server.Modules.Clothing.Exceptions;
 
-public class NoClothingItemException : Exception
+public class CalculationException : Exception
 {
     
 }

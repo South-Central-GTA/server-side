@@ -10,8 +10,7 @@ namespace Server.Core.Entities;
 
 public class ServerMarker : Entity
 {
-    public ServerMarker(Vector3 position, int dimension, uint range) : base((ulong)EntityType.MARKER, position,
-        dimension, range)
+    public ServerMarker(Vector3 position, int dimension, uint range) : base((ulong)EntityType.MARKER, position, dimension, range)
     {
     }
 
@@ -50,10 +49,7 @@ public class ServerMarker : Entity
                 return default;
             }
 
-            return new Vector3
-            {
-                X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"])
-            };
+            return new Vector3 { X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"]) };
         }
         set
         {
@@ -71,10 +67,7 @@ public class ServerMarker : Entity
                 return default;
             }
 
-            return new Vector3
-            {
-                X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"])
-            };
+            return new Vector3 { X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"]) };
         }
         set
         {
@@ -92,10 +85,7 @@ public class ServerMarker : Entity
                 return default;
             }
 
-            return new Vector3
-            {
-                X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"])
-            };
+            return new Vector3 { X = Convert.ToSingle(data["x"]), Y = Convert.ToSingle(data["y"]), Z = Convert.ToSingle(data["z"]) };
         }
         set
         {

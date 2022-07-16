@@ -18,18 +18,18 @@ public class FireMdcModule : ISingletonScript
     private readonly CharacterService _characterService;
 
     private readonly EmergencyCallService _emergencyCallService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly HouseService _houseService;
     private readonly ItemPhoneService _itemPhoneService;
 
     private readonly MedicalHistoryModule _medicalHistoryModule;
 
-    public FireMdcModule(GroupFactionService groupFactionService, EmergencyCallService emergencyCallService,
+    public FireMdcModule(FactionGroupService factionGroupService, EmergencyCallService emergencyCallService,
         CharacterService characterService, HouseService houseService, ItemPhoneService itemPhoneService,
         MedicalHistoryModule medicalHistoryModule, AllergiesModule allergiesModule)
     {
-        CallSign = new CallSign(groupFactionService);
-        _groupFactionService = groupFactionService;
+        CallSign = new CallSign(factionGroupService);
+        _factionGroupService = factionGroupService;
         _emergencyCallService = emergencyCallService;
         _characterService = characterService;
         _houseService = houseService;
@@ -49,7 +49,7 @@ public class FireMdcModule : ISingletonScript
 
     public async Task UpdateEmergencyCallsUi(ServerPlayer player)
     {
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
             return;

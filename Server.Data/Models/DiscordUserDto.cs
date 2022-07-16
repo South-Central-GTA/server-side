@@ -1,8 +1,8 @@
-﻿namespace Server.Modules.Discord;
+﻿namespace Server.Data.Models;
 
 public struct DiscordUserDto
 {
-    public string Id { get; set; }
+    public ulong Id { get; set; }
     public string UserName { get; set; }
     public string Discriminator { get; set; }
     public string Avatar { get; set; }
@@ -11,6 +11,6 @@ public struct DiscordUserDto
     public int Flags { get; set; }
     public string Banner { get; set; }
     public int AccentColor { get; set; }
-    public int PremiumType { get; set; }
+    public int? PremiumType { get; set; }
     public int PublicFlags { get; set; }
 }

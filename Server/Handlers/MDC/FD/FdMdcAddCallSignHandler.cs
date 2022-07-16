@@ -10,11 +10,11 @@ namespace Server.Handlers.MDC.FD;
 public class FdMdcAddCallSignHandler : ISingletonScript
 {
     private readonly FireMdcModule _fireMdcModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
-    public FdMdcAddCallSignHandler(GroupFactionService groupFactionService, FireMdcModule fireMdcModule)
+    public FdMdcAddCallSignHandler(FactionGroupService factionGroupService, FireMdcModule fireMdcModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _fireMdcModule = fireMdcModule;
 
@@ -28,7 +28,7 @@ public class FdMdcAddCallSignHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.FIRE_DEPARTMENT })
         {
             return;

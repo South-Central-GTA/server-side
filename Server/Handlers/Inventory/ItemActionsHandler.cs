@@ -18,18 +18,18 @@ namespace Server.Handlers.Inventory;
 
 public class ItemActionHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly ItemService _itemService;
     private readonly ItemWeaponAttachmentService _itemWeaponAttachmentService;
     private readonly Serializer _serializer;
 
     public ItemActionHandler(Serializer serializer, ItemService itemService,
-        ItemWeaponAttachmentService itemWeaponAttachmentService, GroupFactionService groupFactionService)
+        ItemWeaponAttachmentService itemWeaponAttachmentService, FactionGroupService factionGroupService)
     {
         _serializer = serializer;
         _itemService = itemService;
         _itemWeaponAttachmentService = itemWeaponAttachmentService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         AltAsync.OnClient<ServerPlayer, int>("itemactions:get", OnGetItemActions);
     }
@@ -96,7 +96,7 @@ public class ItemActionHandler : ISingletonScript
             actions.Add(new ActionData($"[Admin] {GetItemName(item)} löschen", "item:delete"));
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is { FactionType: FactionType.POLICE_DEPARTMENT })
         {
             // Evidence Room Position

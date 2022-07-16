@@ -159,70 +159,10 @@ public class PlayerItemEventsHandler : ISingletonScript
         }
 
         var vehicle = (ServerVehicle)player.Vehicle;
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             player.SendNotification("Dieses Fahrzeug kannst du nicht reparieren.", NotificationType.ERROR);
             return;
-        }
-
-        // Check if user is nearby an vehicle workshop
-        var house = await _houseService.GetByDistance(player.Position, 20);
-        if (house is { GroupModelId: { } })
-        {
-            var group = await _groupService.GetByKey(house.GroupModelId.Value);
-            if (group != null)
-            {
-                if (house.GroupModelId.Value == group.Id)
-                {
-                    var companyGroup = (CompanyGroupModel)group;
-                    if (companyGroup.LicensesFlags.HasFlag(LicensesFlags.VEHICLE_WORKSHOP))
-                    {
-                        var groupMember = group.Members.Find(m => m.CharacterModelId == player.CharacterModel.Id);
-                        if (groupMember != null)
-                        {
-                            if (vehicle.BodyHealth >= 1000 && vehicle.EngineHealth >= 1000)
-                            {
-                                player.SendNotification("Dieses Fahrzeug kann nicht weiter repariert werden.",
-                                    NotificationType.ERROR);
-                                return;
-                            }
-
-                            var bodyPercentage = vehicle.BodyHealth * 0.001;
-                            var enginePercentage = vehicle.EngineHealth * 0.001;
-                            var percentage = (bodyPercentage + enginePercentage) * 0.5;
-
-                            var neededProducts = (int)(_vehicleOptions.ProductPriceFullRepair -
-                                                       _vehicleOptions.ProductPriceFullRepair * percentage);
-
-                            if (companyGroup.Products < neededProducts)
-                            {
-                                player.SendNotification("Das Unternehmen hat nicht genug Produkte.",
-                                    NotificationType.ERROR);
-                                return;
-                            }
-
-                            var data = new object[3];
-                            data[0] = companyGroup.Id;
-                            data[1] = neededProducts;
-                            data[2] = vehicle.DbEntity.Id;
-
-                            player.CreateDialog(new DialogData
-                            {
-                                Type = DialogType.ONE_BUTTON_DIALOG,
-                                Title = "Fahrzeug reparieren",
-                                Description =
-                                    $"Möchtest du dieses Fahrzeug für <b>{neededProducts} Produkte</b> reparieren?",
-                                FreezeGameControls = true,
-                                Data = data,
-                                PrimaryButton = "Reparieren",
-                                PrimaryButtonServerEvent = "repairdialog:repairdialogsuccess"
-                            });
-
-                            return;
-                        }
-                    }
-                }
-            }
         }
 
         if (vehicle.BodyHealth >= 600 && vehicle.EngineHealth >= 600)
@@ -272,7 +212,7 @@ public class PlayerItemEventsHandler : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleDbId);
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             return;
         }

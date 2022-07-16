@@ -61,7 +61,7 @@ public class Administration : ISingletonScript
 
     private readonly FreecamModule _freecamModule;
     private readonly GameOptions _gameOptions;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly GroupMemberService _groupMemberService;
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
@@ -87,7 +87,7 @@ public class Administration : ISingletonScript
     public Administration(IOptions<WorldLocationOptions> worldLocationOptions, IOptions<CompanyOptions> companyOptions,
         IOptions<GameOptions> gameOptions, AccountService accountService, ItemCatalogService itemCatalogService,
         VehicleService vehicleService, HouseService houseService, VehicleCatalogService vehicleCatalogService,
-        GroupService groupService, GroupFactionService groupFactionService, DefinedJobService definedJobService,
+        GroupService groupService, FactionGroupService factionGroupService, DefinedJobService definedJobService,
         CharacterService characterService, ItemService itemService, BankAccountService bankAccountService,
         UserRecordLogService userRecordLogService, AnimationService animationService, InventoryService inventoryService,
         FreecamModule freecamModule, InventoryModule inventorySpaceModule, DiscordModule discordModule,
@@ -108,7 +108,7 @@ public class Administration : ISingletonScript
         _houseService = houseService;
         _definedJobService = definedJobService;
         _groupService = groupService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
         _groupMemberService = groupMemberService;
         _characterService = characterService;
         _itemService = itemService;
@@ -590,7 +590,7 @@ public class Administration : ISingletonScript
             return;
         }
 
-        await player.SetPositionAsync(new Position(x, y, z));
+        player.Position = new Position(x, y, z);
         player.SendNotification("Du hast dich erfolgreich teleportiert.", NotificationType.INFO);
     }
 
@@ -958,7 +958,7 @@ public class Administration : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleId);
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             player.SendNotification("Es wurde kein persistentes Fahrzeug gefunden.", NotificationType.ERROR);
             return;
@@ -1071,7 +1071,7 @@ public class Administration : ISingletonScript
             }
 
             var vehicle = (ServerVehicle)player.Vehicle;
-            if (!vehicle.Exists)
+            if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
             {
                 return;
             }
@@ -1098,7 +1098,7 @@ public class Administration : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleId);
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             player.SendNotification("Es wurde kein persistentes Fahrzeug gefunden.", NotificationType.ERROR);
             return;
@@ -1145,7 +1145,7 @@ public class Administration : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleId);
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             player.SendNotification("Es wurde kein persistentes Fahrzeug gefunden.", NotificationType.ERROR);
             return;
@@ -1175,7 +1175,7 @@ public class Administration : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleId);
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             player.SendNotification("Es wurde kein persistentes Fahrzeug gefunden.", NotificationType.ERROR);
             return;
@@ -1820,8 +1820,9 @@ public class Administration : ISingletonScript
             return;
         }
 
-        await player.SetPositionAsync(new Position(house.PositionX, house.PositionY, house.PositionZ));
-
+        player.Position = new Position(house.PositionX, house.PositionY, house.PositionZ);
+        player.Dimension = 0;
+        
         player.SendNotification("Du hast dich zum Haus teleportiert.", NotificationType.SUCCESS);
     }
 
@@ -2376,7 +2377,7 @@ public class Administration : ISingletonScript
             return;
         }
 
-        var faction = await _groupFactionService.GetByKey(groupId);
+        var faction = await _factionGroupService.GetByKey(groupId);
         if (faction == null)
         {
             player.SendNotification("Es wurde keine Gruppe gefunden.", NotificationType.ERROR);
@@ -2387,7 +2388,7 @@ public class Administration : ISingletonScript
 
         faction.FactionType = factionType;
 
-        await _groupFactionService.Update(faction);
+        await _factionGroupService.Update(faction);
 
         player.SendNotification(
             $"Du hast erfolgreich den Typen der Fraktion von {oldType} auf {faction.FactionType} geändert.",

@@ -191,7 +191,7 @@ public class PhoneCallModule : ISingletonScript
             }
 
             var caller = Alt.GetAllPlayers().GetPlayerById(player, player.PhoneCallData.PartnerPlayerId);
-            if (caller is not { Exists: true })
+            if (caller is { Exists: false })
             {
                 return;
             }

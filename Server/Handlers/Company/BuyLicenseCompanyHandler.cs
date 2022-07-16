@@ -82,8 +82,7 @@ public class BuyLicenseCompanyHandler : ISingletonScript
             return;
         }
 
-        var bankAccount = await _bankAccountService.Find(ba =>
-            ba.Type == OwnableAccountType.GROUP && ba.GroupRankAccess.Any(gra => gra.GroupModelId == companyGroup.Id));
+        var bankAccount = await _bankAccountService.GetByGroup(companyGroup.Id);
 
         if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
         {

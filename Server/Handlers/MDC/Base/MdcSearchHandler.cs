@@ -16,7 +16,7 @@ public class MdcSearchHandler : ISingletonScript
 {
     private readonly BankAccountService _bankAccountService;
     private readonly CharacterService _characterService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly ItemPhoneService _itemPhoneService;
     private readonly ItemWeaponService _itemWeaponService;
     private readonly MailAccountService _mailAccountService;
@@ -24,14 +24,14 @@ public class MdcSearchHandler : ISingletonScript
 
     public MdcSearchHandler(CharacterService characterService, ItemPhoneService itemPhoneService,
         VehicleService vehicleService, BankAccountService bankAccountService, MailAccountService mailAccountService,
-        GroupFactionService groupFactionService, ItemWeaponService itemWeaponService)
+        FactionGroupService factionGroupService, ItemWeaponService itemWeaponService)
     {
         _characterService = characterService;
         _itemPhoneService = itemPhoneService;
         _vehicleService = vehicleService;
         _bankAccountService = bankAccountService;
         _mailAccountService = mailAccountService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
         _itemWeaponService = itemWeaponService;
 
         AltAsync.OnClient<ServerPlayer, string>("mdc:search", OnSearch);
@@ -44,7 +44,7 @@ public class MdcSearchHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is null)
         {
             return;

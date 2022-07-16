@@ -40,11 +40,11 @@ public class RoleplayInfoService : BaseService<RoleplayInfoModel>, ITransientScr
         return await dbContext.RoleplayInfos.Include(i => i.CharacterModel).ToListAsync();
     }
 
-    public async Task<RoleplayInfoModel> GetByDistance(Position position, float distance = 1.5f)
+    public async Task<RoleplayInfoModel?> GetByDistance(Position position, float distance = 1.5f)
     {
         var houses = await GetAll();
         var closestDistance = float.MaxValue;
-        RoleplayInfoModel closestInfoModel = null;
+        RoleplayInfoModel? closestInfoModel = null;
         foreach (var h in houses)
         {
             var distanceToHouse = new Position(h.PositionX, h.PositionY, h.PositionZ).Distance(position);

@@ -28,7 +28,7 @@ public class VehicleLockpickingHandler : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleDbId);
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             return;
         }

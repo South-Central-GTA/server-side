@@ -9,13 +9,13 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcAddCallSignHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcAddCallSignHandler(GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule)
+    public PdMdcAddCallSignHandler(FactionGroupService factionGroupService, PoliceMdcModule policeMdcModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _policeMdcModule = policeMdcModule;
 
@@ -29,7 +29,7 @@ public class PdMdcAddCallSignHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.POLICE_DEPARTMENT })
         {
             return;

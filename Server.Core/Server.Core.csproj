@@ -17,16 +17,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AltV.Net" Version="10.0.2"/>
-        <PackageReference Include="AltV.Net.Async" Version="10.0.2"/>
-        <PackageReference Include="AltV.Net.EntitySync" Version="1.18.0"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0"/>
+        <PackageReference Include="AltV.Net" Version="11.0.0" />
+        <PackageReference Include="AltV.Net.Async" Version="11.0.0" />
+        <PackageReference Include="AltV.Net.EntitySync" Version="1.18.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Server.Database\Server.Database.csproj"/>
-        <ProjectReference Include="..\Server.Data\Server.Data.csproj"/>
+        <ProjectReference Include="..\Server.Database\Server.Database.csproj" />
+        <ProjectReference Include="..\Server.Data\Server.Data.csproj" />
     </ItemGroup>
 
 </Project>

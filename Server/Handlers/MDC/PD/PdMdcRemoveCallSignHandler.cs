@@ -9,13 +9,13 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcRemoveCallSignHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcRemoveCallSignHandler(GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule)
+    public PdMdcRemoveCallSignHandler(FactionGroupService factionGroupService, PoliceMdcModule policeMdcModule)
     {
         _policeMdcModule = policeMdcModule;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         AltAsync.OnClient<ServerPlayer>("policemdc:removecallsign", OnRemoveCallSign);
     }
@@ -27,7 +27,7 @@ public class PdMdcRemoveCallSignHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.POLICE_DEPARTMENT })
         {
             return;

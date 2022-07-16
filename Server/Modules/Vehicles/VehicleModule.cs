@@ -22,6 +22,7 @@ using Server.Modules.Dump;
 using Server.Modules.Inventory;
 using Server.Modules.Key;
 using Server.Modules.SouthCentralPoints;
+using VehicleModType = Server.Data.Enums.VehicleModType;
 
 namespace Server.Modules.Vehicles;
 
@@ -192,10 +193,12 @@ public class VehicleModule : ITransientScript
 
         await _vehicleService.Update(vehicleModel);
 
+        SetTuningParts(vehicleModel, vehicle);
         await SetSyncedDataAsync(vehicle);
 
         return vehicle;
     }
+
 
     public async Task<ServerVehicle?> Create(string vehicleModel, Position position, Rotation rotation,
         int primaryColor, int secondaryColor, byte livery = 0, uint bodyHealth = 1000, int engineHealth = 1000,
@@ -235,7 +238,7 @@ public class VehicleModule : ITransientScript
         await Save(vehicle);
         await SetSyncedDataAsync(vehicle);
     }
-
+    
     public async Task SetSyncedDataAsync(ServerVehicle vehicle)
     {
         if (vehicle.DbEntity == null)
@@ -627,5 +630,149 @@ public class VehicleModule : ITransientScript
 
 
         return trunkSize;
+    }
+    
+    
+
+    private void SetTuningParts(PlayerVehicleModel vehicleModel, ServerVehicle vehicle)
+    {
+        foreach (int entry in Enum.GetValues(typeof(VehicleModType)))
+        {
+            var value = (VehicleModType)entry;
+            if (value == VehicleModType.Repair)
+            {
+                continue;
+            }
+            
+            var tuningPart = GetTuningPartValue(vehicleModel, value);
+            switch (value)
+            {
+                case VehicleModType.FrontWheels:
+                    vehicle.SetWheels(tuningPart, 0);
+                    break;
+                case VehicleModType.BackWheels:
+                    vehicle.RearWheel = tuningPart;
+                    break;
+                case VehicleModType.PlateHolder:
+                    vehicle.NumberplateIndex = tuningPart;
+                    break;
+                case VehicleModType.Colour1:
+                    vehicle.PrimaryColor = tuningPart;
+                    break;
+                case VehicleModType.Colour2:
+                    vehicle.SecondaryColor = tuningPart;
+                    break;
+                default:
+                    vehicle.SetMod((byte)entry, tuningPart);
+                    break;
+            }
+            
+        }
+    }
+
+    private byte GetTuningPartValue(PlayerVehicleModel vehicleModel, VehicleModType type)
+    {
+        switch (type)
+        {
+            case VehicleModType.Spoilers:
+                return (byte)vehicleModel.Spoilers;
+            case VehicleModType.FrontBumper:
+                return (byte)vehicleModel.FrontBumper;
+            case VehicleModType.RearBumper:
+                return (byte)vehicleModel.RearBumper;
+            case VehicleModType.SideSkirt:
+                return (byte)vehicleModel.SideSkirt;
+            case VehicleModType.Exhaust:
+                return (byte)vehicleModel.Exhaust;
+            case VehicleModType.Frame:
+                return (byte)vehicleModel.Frame;
+            case VehicleModType.Grille:
+                return (byte)vehicleModel.Grille;
+            case VehicleModType.Hood:
+                return (byte)vehicleModel.Hood;
+            case VehicleModType.Fender:
+                return (byte)vehicleModel.Fender;
+            case VehicleModType.RightFender:
+                return (byte)vehicleModel.RightFender;
+            case VehicleModType.Roof:
+                return (byte)vehicleModel.Roof;
+            case VehicleModType.Engine:
+                return (byte)vehicleModel.Engine;
+            case VehicleModType.Brakes:
+                return (byte)vehicleModel.Brakes;
+            case VehicleModType.Transmission:
+                return (byte)vehicleModel.Transmission;
+            case VehicleModType.Horns:
+                return (byte)vehicleModel.Horns;
+            case VehicleModType.Suspension:
+                return (byte)vehicleModel.Suspension;
+            case VehicleModType.Armor:
+                return (byte)vehicleModel.Armor;
+            case VehicleModType.Turbo:
+                return (byte)vehicleModel.Turbo;
+            case VehicleModType.Xenon:
+                return (byte)vehicleModel.Xenon;
+            case VehicleModType.FrontWheels:
+                return (byte)vehicleModel.FrontWheels;
+            case VehicleModType.BackWheels:
+                return (byte)vehicleModel.BackWheels;
+            case VehicleModType.PlateHolder:
+                return (byte)vehicleModel.PlateHolder;
+            case VehicleModType.PlateVanity:
+                return (byte)vehicleModel.PlateVanity;
+            case VehicleModType.TrimDesign:
+                return (byte)vehicleModel.TrimDesign;
+            case VehicleModType.Ornaments:
+                return (byte)vehicleModel.Ornaments;
+            case VehicleModType.Dashboard:
+                return (byte)vehicleModel.Dashboard;
+            case VehicleModType.DialDesign:
+                return (byte)vehicleModel.DialDesign;
+            case VehicleModType.DoorSpeaker:
+                return (byte)vehicleModel.DoorSpeaker;
+            case VehicleModType.Seats:
+                return (byte)vehicleModel.Seats;
+            case VehicleModType.SteeringWheel:
+                return (byte)vehicleModel.SteeringWheel;
+            case VehicleModType.ShiftLever:
+                return (byte)vehicleModel.ShiftLever;
+            case VehicleModType.Plaques:
+                return (byte)vehicleModel.Plaques;
+            case VehicleModType.Speaker:
+                return (byte)vehicleModel.Speaker;
+            case VehicleModType.Trunk:
+                return (byte)vehicleModel.Trunk;
+            case VehicleModType.Hydraulics:
+                return (byte)vehicleModel.Hydraulics;
+            case VehicleModType.EngineBlock:
+                return (byte)vehicleModel.EngineBlock;
+            case VehicleModType.BoostOrAirFilter:
+                return (byte)vehicleModel.AirFilter;
+            case VehicleModType.Struts:
+                return (byte)vehicleModel.Struts;
+            case VehicleModType.ArchCover:
+                return (byte)vehicleModel.ArchCover;
+            case VehicleModType.Aerials:
+                return (byte)vehicleModel.Aerials;
+            case VehicleModType.Trim:
+                return (byte)vehicleModel.Trim;
+            case VehicleModType.Tank:
+                return (byte)vehicleModel.Tank;
+            case VehicleModType.Windows:
+                return (byte)vehicleModel.Windows;
+            case VehicleModType.WindowTint:
+                return (byte)vehicleModel.WindowTint;
+            case VehicleModType.Livery:
+                return (byte)vehicleModel.Livery;
+            case VehicleModType.Plate:
+                return (byte)vehicleModel.Plate;
+            case VehicleModType.Colour1:
+                return (byte)vehicleModel.PrimaryColor;
+            case VehicleModType.Colour2:
+                return (byte)vehicleModel.SecondaryColor;
+
+        }
+            
+        return 0;
     }
 }

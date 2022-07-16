@@ -12,11 +12,11 @@ namespace Server.Modules.MDC;
 
 public class CallSign
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
-    public CallSign(GroupFactionService groupFactionService)
+    public CallSign(FactionGroupService factionGroupService)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
     }
 
     public Dictionary<string, List<CharacterModel>> CallSigns { get; } = new();
@@ -96,7 +96,7 @@ public class CallSign
 
     public async Task UpdateUi(ServerPlayer player)
     {
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
             return;

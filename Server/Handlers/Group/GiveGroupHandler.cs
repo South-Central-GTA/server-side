@@ -32,7 +32,7 @@ public class GiveGroupHandler : ISingletonScript
         }
 
         var newOwner = Alt.GetAllPlayers().GetPlayerById(player, targetPlayerId);
-        if (newOwner == null || !newOwner.Exists)
+        if (newOwner is not { Exists: true })
         {
             player.SendNotification("Es wurde kein Spieler gefunden.", NotificationType.ERROR);
             return;

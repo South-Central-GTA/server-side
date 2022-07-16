@@ -20,8 +20,7 @@ public static class ServerVehicleExtensions
         }
     }
 
-    public static void CreateTimer(this ServerVehicle vehicle, string id, ElapsedEventHandler callback,
-        int milliseconds)
+    public static void CreateTimer(this ServerVehicle vehicle, string id, ElapsedEventHandler callback, int milliseconds)
     {
         var timer = new Timer { Interval = milliseconds, AutoReset = false, Enabled = true };
         if (vehicle.Timers.TryAdd(id, timer))

@@ -12,12 +12,12 @@ namespace Server.ChatCommands.Factions.Police;
 
 internal class GivePlayerTicketCommand : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly PoliceTicketModule _policeTicketModule;
 
-    public GivePlayerTicketCommand(GroupFactionService groupFactionService, PoliceTicketModule policeTicketModule)
+    public GivePlayerTicketCommand(FactionGroupService factionGroupService, PoliceTicketModule policeTicketModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _policeTicketModule = policeTicketModule;
     }
@@ -32,7 +32,7 @@ internal class GivePlayerTicketCommand : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.POLICE_DEPARTMENT })
         {
             player.SendNotification("Das kann dein Charakter nicht.", NotificationType.ERROR);

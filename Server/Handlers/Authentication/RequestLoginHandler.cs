@@ -1,4 +1,5 @@
-﻿using AltV.Net.Async;
+﻿using System;
+using AltV.Net.Async;
 using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Entities;
 using Server.DataAccessLayer.Services;
@@ -25,22 +26,36 @@ public class RequestLoginHandler : ISingletonScript
 
     private async void OnAuthRequestLogin(ServerPlayer player, ulong discordId, string token)
     {
-        if (!player.Exists)
+        try
         {
-            return;
+            if (!player.Exists)
+            {
+                return;
+            }
+
+            player.DiscordId = discordId;
+
+            var discordUser = await _discordModule.Authenticate(token);
+
+            if (!discordUser.HasValue)
+            {
+                player.Kick("Leider konnten wir dich nicht authentifizieren.");
+                return;
+            }
+
+            if (await _accountService.Exists(a => a.SocialClubId == player.SocialClubId))
+            {
+                await _authenticationModule.SignIn(player, discordUser.Value);
+            }
+            else
+            {
+                await _authenticationModule.SignUp(player, discordUser.Value);
+            }
         }
-
-        player.DiscordId = discordId;
-
-        await _discordModule.AuthenticatePlayer(player, token);
-
-        if (await _accountService.Exists(a => a.SocialClubId == player.SocialClubId))
+        catch (Exception e)
         {
-            await _authenticationModule.SignIn(player);
-        }
-        else
-        {
-            await _authenticationModule.SignUp(player);
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

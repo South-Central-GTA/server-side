@@ -2,7 +2,6 @@
 
 public class VehicleOptions
 {
-    public int ProductPriceFullRepair { get; set; }
     public int VehicleFuelInterval { get; set; }
     public float VehicleFuelDefaultReduction { get; set; }
     public float VehicleFuelVelocityMultiplier { get; set; }

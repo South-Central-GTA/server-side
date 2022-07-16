@@ -48,12 +48,16 @@ public class MarkerSyncModule : ISingletonScript
             return false;
         }
 
+        return Delete(serverMarker);
+    }
+    
+    public bool Delete(ServerMarker serverMarker)
+    {
         _markers.Remove(serverMarker.ColShape);
         AltEntitySync.RemoveEntity(serverMarker);
 
         return true;
     }
-
 
     public void DeleteAll()
     {

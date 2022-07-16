@@ -17,8 +17,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AltV.Net" Version="10.0.2" />
-        <PackageReference Include="AltV.Net.Async" Version="10.0.2" />
+        <PackageReference Include="AltV.Net" Version="11.0.0" />
+        <PackageReference Include="AltV.Net.Async" Version="11.0.0" />
     </ItemGroup>
 
     <ItemGroup>

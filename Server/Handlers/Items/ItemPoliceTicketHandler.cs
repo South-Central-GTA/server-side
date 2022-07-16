@@ -11,17 +11,17 @@ public class ItemPoliceTicketHandler : ISingletonScript
 {
     private readonly BankAccountService _bankAccountService;
     private readonly CharacterService _characterService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
     private readonly NarratorModule _narratorModule;
     private readonly PoliceTicketService _policeTicketService;
 
     public ItemPoliceTicketHandler(PoliceTicketService policeTicketService, CharacterService characterService,
-        GroupFactionService groupFactionService, BankAccountService bankAccountService, NarratorModule narratorModule)
+        FactionGroupService factionGroupService, BankAccountService bankAccountService, NarratorModule narratorModule)
     {
         _policeTicketService = policeTicketService;
         _characterService = characterService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
         _bankAccountService = bankAccountService;
 
         _narratorModule = narratorModule;
@@ -43,7 +43,7 @@ public class ItemPoliceTicketHandler : ISingletonScript
             return;
         }
 
-        var pdFaction = await _groupFactionService.Find(gf => gf.FactionType == FactionType.POLICE_DEPARTMENT);
+        var pdFaction = await _factionGroupService.Find(gf => gf.FactionType == FactionType.POLICE_DEPARTMENT);
         if (pdFaction == null)
         {
             return;

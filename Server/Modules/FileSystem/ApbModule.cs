@@ -11,17 +11,17 @@ namespace Server.Modules.FileSystem;
 public class ApbModule : ISingletonScript
 {
     private readonly BaseMdcModule _baseMdcModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
-    public ApbModule(GroupFactionService groupFactionService, BaseMdcModule baseMdcModule)
+    public ApbModule(FactionGroupService factionGroupService, BaseMdcModule baseMdcModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
         _baseMdcModule = baseMdcModule;
     }
 
     public async Task UpdateUi(int groupId)
     {
-        var factionGroupModel = await _groupFactionService.GetByKey(groupId);
+        var factionGroupModel = await _factionGroupService.GetByKey(groupId);
         if (factionGroupModel == null)
         {
             return;

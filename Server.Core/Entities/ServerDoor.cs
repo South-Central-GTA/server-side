@@ -6,8 +6,7 @@ namespace Server.Core.Entities;
 
 public class ServerDoor : Entity
 {
-    public ServerDoor(Vector3 position, int dimension, uint range) : base((ulong)EntityType.DOOR, position, dimension,
-        range)
+    public ServerDoor(Vector3 position, int dimension, uint range) : base((ulong)EntityType.DOOR, position, dimension, range)
     {
     }
 

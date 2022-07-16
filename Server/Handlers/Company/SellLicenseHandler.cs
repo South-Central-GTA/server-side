@@ -11,6 +11,7 @@ using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models.Group;
 using Server.Modules.Bank;
+using Server.Modules.EntitySync;
 using Server.Modules.Group;
 using Server.Modules.Phone;
 
@@ -24,12 +25,12 @@ public class SellLicenseHandler : ISingletonScript
     private readonly CompanyOptions _companyOptions;
     private readonly GroupModule _groupModule;
     private readonly GroupService _groupService;
-    private readonly PhoneModule _phoneModule;
+    private readonly MarkerSyncModule _markerSyncModule;
     private readonly RegistrationOfficeService _registrationOfficeService;
 
     public SellLicenseHandler(IOptions<CompanyOptions> companyOptions, GroupService groupService,
         BankAccountService bankAccountService, RegistrationOfficeService registrationOfficeService,
-        GroupModule groupModule, BankModule bankModule, PhoneModule phoneModule)
+        GroupModule groupModule, BankModule bankModule, MarkerSyncModule markerSyncModule)
     {
         _companyOptions = companyOptions.Value;
 
@@ -39,7 +40,7 @@ public class SellLicenseHandler : ISingletonScript
 
         _groupModule = groupModule;
         _bankModule = bankModule;
-        _phoneModule = phoneModule;
+        _markerSyncModule = markerSyncModule;
 
         AltAsync.OnClient<ServerPlayer, int, int, LicensesFlags>("company:selllicenses", OnSellLicenses);
     }
@@ -74,8 +75,7 @@ public class SellLicenseHandler : ISingletonScript
             return;
         }
 
-        var bankAccount = await _bankAccountService.Find(ba =>
-            ba.Type == OwnableAccountType.GROUP && ba.GroupRankAccess.Any(gra => gra.GroupModelId == companyGroup.Id));
+        var bankAccount = await _bankAccountService.GetByGroup(companyGroup.Id);
 
         var price = (int)(license.Price * 0.5f);
 
@@ -88,6 +88,23 @@ public class SellLicenseHandler : ISingletonScript
         }
 
         await _bankModule.UpdateUi(player);
+
+        if (license.License == LicensesFlags.VEHICLE_WORKSHOP && companyGroup.MarkerId.HasValue)
+        {
+            var serverMarker = _markerSyncModule.Get(companyGroup.MarkerId.Value);
+            if (serverMarker != null)
+            {
+                companyGroup.MarkerId = null;
+                companyGroup.VehicleInteractionPointX = null;
+                companyGroup.VehicleInteractionPointY = null;
+                companyGroup.VehicleInteractionPointZ = null;
+                companyGroup.VehicleInteractionPointRoll = null;
+                companyGroup.VehicleInteractionPointPitch = null;
+                companyGroup.VehicleInteractionPointYaw = null;
+                
+                _markerSyncModule.Delete(serverMarker);
+            }
+        }
 
         companyGroup.LicensesFlags &= ~license.License;
         companyGroup.PurchasedLicenses--;

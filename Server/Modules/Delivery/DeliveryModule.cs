@@ -163,7 +163,7 @@ public class DeliveryModule : ITransientScript
 
         var vehicle = (ServerVehicle)(player.Vehicle.Attached ?? player.Vehicle);
 
-        if (vehicle == null || !vehicle.Exists)
+        if (vehicle is not { Exists: true })
         {
             return;
         }

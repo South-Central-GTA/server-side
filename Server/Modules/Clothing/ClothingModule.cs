@@ -5,6 +5,7 @@ using Server.Data.Models;
 using Server.Database.Enums;
 using Server.Database.Models.Inventory;
 using Server.Modules.Clothing.Exceptions;
+using Server.Modules.Vehicles.Exceptions;
 
 namespace Server.Modules.Clothing;
 

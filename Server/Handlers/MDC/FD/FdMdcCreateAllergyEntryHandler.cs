@@ -11,12 +11,12 @@ public class FdMdcCreateAllergyEntryHandler : ISingletonScript
 {
     private readonly AllergiesModule _allergiesModule;
     private readonly FireMdcModule _fireMdcModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
-    public FdMdcCreateAllergyEntryHandler(GroupFactionService groupFactionService, AllergiesModule allergiesModule,
+    public FdMdcCreateAllergyEntryHandler(FactionGroupService factionGroupService, AllergiesModule allergiesModule,
         FireMdcModule fireMdcModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _allergiesModule = allergiesModule;
         _fireMdcModule = fireMdcModule;
@@ -31,7 +31,7 @@ public class FdMdcCreateAllergyEntryHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not { FactionType: FactionType.FIRE_DEPARTMENT })
         {
             return;

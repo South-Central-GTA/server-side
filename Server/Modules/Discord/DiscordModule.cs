@@ -12,6 +12,7 @@ using Server.Core.Abstractions.ScriptStrategy;
 using Server.Core.Configuration;
 using Server.Core.Entities;
 using Server.Core.Extensions;
+using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Database.Enums;
 using Server.Database.Models;
@@ -78,7 +79,9 @@ public class DiscordModule : ISingletonScript
         var userClient = _serverGuild.GetUser(accountModel.DiscordId);
 
         var embed = new EmbedBuilder();
-        embed.WithColor(color).WithTitle(title).WithDescription(description)
+        embed.WithColor(color)
+            .WithTitle(title)
+            .WithDescription(description)
             .WithImageUrl("https://sc-rp.de/images/scrp/logo.png");
 
         userClient.SendMessageAsync(null, false, embed.Build());
@@ -104,6 +107,17 @@ public class DiscordModule : ISingletonScript
 
         var userClient = _serverGuild.GetUser(playerDiscordId);
         return userClient?.Username;
+    }
+
+    public async Task<DiscordUserDto?> Authenticate(string token)
+    {
+        var userResponseJson = await _discordApi.GetUser(token);
+        if (string.IsNullOrEmpty(userResponseJson.Content))
+        {
+            return null;
+        }
+
+        return _serializer.Deserialize<DiscordUserDto>(userResponseJson.Content);
     }
 
     public async Task UpdatePermissions(ServerPlayer serverPlayer)
@@ -213,7 +227,12 @@ public class DiscordModule : ISingletonScript
 
     private async Task Connect()
     {
-        var config = new DiscordSocketConfig { MessageCacheSize = 500 };
+        var config = new DiscordSocketConfig
+        {
+            MessageCacheSize = 500,
+            GatewayIntents = GatewayIntents.All
+        };
+
         _client = new DiscordSocketClient(config);
 
         //_client.Log += OnLog;
@@ -234,7 +253,7 @@ public class DiscordModule : ISingletonScript
     }
 
     private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> message,
-        ISocketMessageChannel socketMessageChannel, SocketReaction reaction)
+        Cacheable<IMessageChannel,ulong> messageChannel, SocketReaction reaction)
     {
         if (message.Id == _discordOptions.WecomeMessageId && reaction.Emote.Name == "✅")
         {
@@ -247,7 +266,7 @@ public class DiscordModule : ISingletonScript
     }
 
     private async Task OnReactionRemoved(Cacheable<IUserMessage, ulong> message,
-        ISocketMessageChannel socketMessageChannel, SocketReaction reaction)
+        Cacheable<IMessageChannel,ulong> messageChannel, SocketReaction reaction)
     {
         if (message.Id == _discordOptions.WecomeMessageId && reaction.Emote.Name == "✅")
         {
@@ -339,7 +358,7 @@ public class DiscordModule : ISingletonScript
         }
     }
 
-    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, ISocketMessageChannel socketMessageChannel)
+    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, Cacheable<IMessageChannel,ulong> messageChannel)
     {
         if (!msg.HasValue)
         {
@@ -389,16 +408,5 @@ public class DiscordModule : ISingletonScript
                 before.Value.Content + "\n\nBearbeitet: " + after.Content);
 
         await logChannel.SendMessageAsync(null, false, embedBuilder.Build());
-    }
-
-    public async Task<DiscordUserDto> AuthenticatePlayer(ServerPlayer player, string token)
-    {
-        var userResponseJson = await _discordApi.GetUser(token);
-        if (string.IsNullOrEmpty(userResponseJson.Content))
-        {
-            throw new NullReferenceException();
-        }
-
-        return _serializer.Deserialize<DiscordUserDto>(userResponseJson.Content);
     }
 }

@@ -11,16 +11,16 @@ using Server.Database.Models.Group;
 
 namespace Server.DataAccessLayer.Services;
 
-public class GroupFactionService : BaseService<FactionGroupModel>, ITransientScript
+public class FactionGroupService : BaseService<FactionGroupModel>, ITransientScript
 {
     private readonly IDbContextFactory<DatabaseContext> _dbContextFactory;
 
-    public GroupFactionService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
+    public FactionGroupService(IDbContextFactory<DatabaseContext> dbContextFactory) : base(dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task<FactionGroupModel?> GetFactionByCharacter(int characterId)
+    public async Task<FactionGroupModel?> GetByCharacter(int characterId)
     {
         var ownedFaction = await GetByOwner(characterId);
         if (ownedFaction != null)

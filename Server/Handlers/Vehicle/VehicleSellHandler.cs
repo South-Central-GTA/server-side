@@ -60,7 +60,7 @@ public class VehicleSellHandler : ISingletonScript
         }
 
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleDbId);
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             player.SendNotification("Dieses Fahrzeug kannst du nicht verkaufen.", NotificationType.ERROR);
             return;
@@ -342,7 +342,7 @@ public class VehicleSellHandler : ISingletonScript
         seller.DeleteData("VEHICLE_SELL_VEHICLE_ID");
 
         var vehicle = Alt.GetAllVehicles().FindByDbId(vehicleDbId);
-        if (vehicle is not { Exists: true })
+        if (vehicle is not { Exists: true } || vehicle.DbEntity == null)
         {
             player.SendNotification("Es wurde kein Fahrzeug gefunden.", NotificationType.ERROR);
             return null;

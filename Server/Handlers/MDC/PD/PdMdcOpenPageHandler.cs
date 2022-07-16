@@ -14,14 +14,14 @@ public class PdMdcOpenPageHandler : ISingletonScript
 {
     private readonly BaseMdcModule _baseMdcModule;
     private readonly FileModule _fileModule;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcOpenPageHandler(GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule,
+    public PdMdcOpenPageHandler(FactionGroupService factionGroupService, PoliceMdcModule policeMdcModule,
         BaseMdcModule baseMdcModule, FileModule fileModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _policeMdcModule = policeMdcModule;
         _baseMdcModule = baseMdcModule;
@@ -76,7 +76,7 @@ public class PdMdcOpenPageHandler : ISingletonScript
 
     private async Task OpenFileScreen(ServerPlayer player)
     {
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
             return;

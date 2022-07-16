@@ -11,16 +11,16 @@ namespace Server.Handlers.MDC.PD;
 public class PdMdcDeleteEmergencyCallHandler : ISingletonScript
 {
     private readonly EmergencyCallService _emergencyCallService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly GroupModule _groupModule;
 
     private readonly PoliceMdcModule _policeMdcModule;
 
     public PdMdcDeleteEmergencyCallHandler(EmergencyCallService emergencyCallService,
-        GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule, GroupModule groupModule)
+        FactionGroupService factionGroupService, PoliceMdcModule policeMdcModule, GroupModule groupModule)
     {
         _emergencyCallService = emergencyCallService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _policeMdcModule = policeMdcModule;
         _groupModule = groupModule;
@@ -35,7 +35,7 @@ public class PdMdcDeleteEmergencyCallHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
             return;

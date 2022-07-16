@@ -10,15 +10,15 @@ namespace Server.Handlers.MDC.PD;
 
 public class PdMdcDeleteCallSignHandler : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
     private readonly GroupModule _groupModule;
 
     private readonly PoliceMdcModule _policeMdcModule;
 
-    public PdMdcDeleteCallSignHandler(GroupFactionService groupFactionService, PoliceMdcModule policeMdcModule,
+    public PdMdcDeleteCallSignHandler(FactionGroupService factionGroupService, PoliceMdcModule policeMdcModule,
         GroupModule groupModule)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
 
         _policeMdcModule = policeMdcModule;
         _groupModule = groupModule;
@@ -33,7 +33,7 @@ public class PdMdcDeleteCallSignHandler : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup == null)
         {
             return;

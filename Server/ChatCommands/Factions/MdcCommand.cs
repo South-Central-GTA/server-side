@@ -12,11 +12,11 @@ namespace Server.ChatCommands.Factions;
 
 internal class MdcCommand : ISingletonScript
 {
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
-    public MdcCommand(GroupFactionService groupFactionService)
+    public MdcCommand(FactionGroupService factionGroupService)
     {
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
     }
 
     [Command("mdc", "Öffne den Mobile Data Computer.")]
@@ -49,7 +49,7 @@ internal class MdcCommand : ISingletonScript
             return;
         }
 
-        var vehicleFactionGroup = await _groupFactionService.GetByKey(vehicle.DbEntity.GroupModelOwnerId.Value);
+        var vehicleFactionGroup = await _factionGroupService.GetByKey(vehicle.DbEntity.GroupModelOwnerId.Value);
         if (vehicleFactionGroup == null || vehicleFactionGroup.FactionType == FactionType.CITIZEN)
         {
             player.SendNotification("Dieses Fahrzeug hat keinen Mobile Data Computer.", NotificationType.ERROR);
@@ -60,7 +60,7 @@ internal class MdcCommand : ISingletonScript
         string rankName = null;
         var factionType = FactionType.CITIZEN;
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is not null && factionGroup.FactionType == vehicleFactionGroup.FactionType)
         {
             var member = factionGroup.Members.FirstOrDefault(m => m.CharacterModelId == player.CharacterModel.Id);

@@ -13,12 +13,12 @@ namespace Server.Modules.Death;
 public class ReviveModule : ISingletonScript
 {
     private readonly CharacterService _characterService;
-    private readonly GroupFactionService _groupFactionService;
+    private readonly FactionGroupService _factionGroupService;
 
-    public ReviveModule(CharacterService characterService, GroupFactionService groupFactionService)
+    public ReviveModule(CharacterService characterService, FactionGroupService factionGroupService)
     {
         _characterService = characterService;
-        _groupFactionService = groupFactionService;
+        _factionGroupService = factionGroupService;
     }
 
     public async Task RevivePlayer(ServerPlayer player, ushort playerId)
@@ -28,7 +28,7 @@ public class ReviveModule : ISingletonScript
             return;
         }
 
-        var factionGroup = await _groupFactionService.GetFactionByCharacter(player.CharacterModel.Id);
+        var factionGroup = await _factionGroupService.GetByCharacter(player.CharacterModel.Id);
         if (factionGroup is null || factionGroup.FactionType != FactionType.FIRE_DEPARTMENT)
         {
             return;
@@ -64,7 +64,7 @@ public class ReviveModule : ISingletonScript
         await _characterService.Update(player.CharacterModel);
 
         await player.SetInvincibleAsync(false);
-        await player.SetPositionAsync(position ?? player.Position);
+        player.Position = position ?? player.Position;
 
         player.ClearTimer("player_respawn");
         player.EmitLocked("death:revive");
