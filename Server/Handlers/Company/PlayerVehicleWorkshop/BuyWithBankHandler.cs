@@ -95,8 +95,13 @@ public class BuyWithBankHandler : ISingletonScript
             player.DeleteData("VEHICLE_SERVICE_DATA");
             player.DeleteData("VEHICLE_SERVICE_COMPANY_ID");
             
-            var bankAccount = await _bankAccountService.GetByGroup(companyGroup.Id);
-
+            var bankAccount = await _bankAccountService.GetByKey(bankAccountId);
+            if (bankAccount == null)
+            {
+                player.SendNotification("Konto konnte nicht gefunden werden.", NotificationType.ERROR);
+                return;
+            }
+            
             if (!await _bankModule.HasPermission(player, bankAccount, BankingPermission.TRANSFER))
             {
                 player.SendNotification("Dein Charakter hat für dieses Konto keine Berechtigung zum Überweisen.", NotificationType.ERROR);
@@ -104,11 +109,19 @@ public class BuyWithBankHandler : ISingletonScript
                 return;
             }
             
+            var companyBankAccount = await _bankAccountService.GetByGroup(companyGroup.Id);
+
             var costs = _vehicleWorkshopModule.CalculatePrice(catalogVehicle.Price, vehicleServiceData.Orders);
             var success = await _bankModule.Withdraw(bankAccount, costs, false,
                 $"{companyGroup.Name} - Fahrzeug Tuning für {catalogVehicle.DisplayName}");
             if (success)
             {
+                if (companyBankAccount != null)
+                {
+                    await _bankModule.Deposit(companyBankAccount, costs,
+                        $"Fahrzeug Tuning für {catalogVehicle.DisplayName} von {player.CharacterModel.Name}");
+                }
+
                 foreach (var order in vehicleServiceData.Orders)
                 {
                     _tuningModule.TuneVehicle(playerVehicleModel, order.Type, order.Value);

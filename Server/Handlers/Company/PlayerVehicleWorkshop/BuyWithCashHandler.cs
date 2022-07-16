@@ -7,6 +7,7 @@ using Server.Data.Enums;
 using Server.Data.Models;
 using Server.DataAccessLayer.Services;
 using Server.Helper;
+using Server.Modules.Bank;
 using Server.Modules.Money;
 using Server.Modules.Vehicles;
 
@@ -22,10 +23,12 @@ public class BuyWithCashHandler : ISingletonScript
     private readonly TuningModule _tuningModule;
     private readonly PlayerVehicleWorkshopModule _vehicleWorkshopModule;
     private readonly VehicleCatalogService _vehicleCatalogService;
+    private readonly BankModule _bankModule;
+    private readonly BankAccountService _bankAccountService;
 
     public BuyWithCashHandler(PlayerVehicleWorkshopModule playerVehicleWorkshopModule, CompanyGroupService companyGroupService, 
         VehicleService vehicleService, VehicleModule vehicleModule, TuningModule tuningModule, 
-        PlayerVehicleWorkshopModule vehicleWorkshopModule, VehicleCatalogService vehicleCatalogService, MoneyModule moneyModule)
+        PlayerVehicleWorkshopModule vehicleWorkshopModule, VehicleCatalogService vehicleCatalogService, MoneyModule moneyModule, BankModule bankModule, BankAccountService bankAccountService)
     {
         _playerVehicleWorkshopModule = playerVehicleWorkshopModule;
         _companyGroupService = companyGroupService;
@@ -35,6 +38,8 @@ public class BuyWithCashHandler : ISingletonScript
         _vehicleWorkshopModule = vehicleWorkshopModule;
         _vehicleCatalogService = vehicleCatalogService;
         _moneyModule = moneyModule;
+        _bankModule = bankModule;
+        _bankAccountService = bankAccountService;
 
         AltAsync.OnClient<ServerPlayer, int>("playervehicleworkshop:buywithcash", OnExecute);
     }
@@ -90,11 +95,19 @@ public class BuyWithCashHandler : ISingletonScript
             
             player.DeleteData("VEHICLE_SERVICE_DATA");
             player.DeleteData("VEHICLE_SERVICE_COMPANY_ID");
+            
+            var companyBankAccount = await _bankAccountService.GetByGroup(companyGroup.Id);
 
             var costs = _vehicleWorkshopModule.CalculatePrice(catalogVehicle.Price, vehicleServiceData.Orders);
             var success = await _moneyModule.WithdrawAsync(player, costs);
             if (success)
             {
+                if (companyBankAccount != null)
+                {
+                    await _bankModule.Deposit(companyBankAccount, costs,
+                        $"Fahrzeug Tuning für {catalogVehicle.DisplayName} von {player.CharacterModel.Name}");
+                }
+                
                 foreach (var order in vehicleServiceData.Orders)
                 {
                     _tuningModule.TuneVehicle(playerVehicleModel, order.Type, order.Value);

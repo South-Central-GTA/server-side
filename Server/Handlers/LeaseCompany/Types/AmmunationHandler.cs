@@ -12,6 +12,7 @@ using Server.Database.Models.Housing;
 using Server.Modules.Bank;
 using Server.Modules.Inventory;
 using Server.Modules.Money;
+using Server.Modules.Narrator;
 using Server.Modules.Weapon;
 
 namespace Server.Handlers.LeaseCompany.Types;
@@ -24,12 +25,13 @@ public class AmmunationHandler : ISingletonScript
     private readonly InventoryModule _inventoryModule;
     private readonly ItemCatalogService _itemCatalogService;
     private readonly ItemCreationModule _itemCreationModule;
+    private readonly NarratorModule _narratorModule;
 
     private readonly MoneyModule _moneyModule;
 
     public AmmunationHandler(ItemCatalogService itemCatalogService, HouseService houseService,
         BankAccountService bankAccountService, MoneyModule moneyModule, BankModule bankModule,
-        InventoryModule inventoryModule, ItemCreationModule itemCreationModule)
+        InventoryModule inventoryModule, ItemCreationModule itemCreationModule, NarratorModule narratorModule)
     {
         _itemCatalogService = itemCatalogService;
         _houseService = houseService;
@@ -39,6 +41,7 @@ public class AmmunationHandler : ISingletonScript
         _bankModule = bankModule;
         _inventoryModule = inventoryModule;
         _itemCreationModule = itemCreationModule;
+        _narratorModule = narratorModule;
 
         AltAsync.OnClient<ServerPlayer>("ammunation:requestopenmenu", OnRequestOpenMenu);
         AltAsync.OnClient<ServerPlayer, ItemCatalogIds, int>("ammunation:buyitem", OnBuyItem);
@@ -50,6 +53,13 @@ public class AmmunationHandler : ISingletonScript
     {
         if (!player.Exists)
         {
+            return;
+        }
+        
+        if (!player.CharacterModel.Licenses.Exists(l => l.Type == PersonalLicensesType.WEAPON))
+        {
+            _narratorModule.SendMessage(player, "Der Verkäufer verlangt von deinem Charakter eine gültige Waffenlizenz. " +
+                                              "Als dein Charakter keine vorlegen konnte verwies er deinen Charakter aus dem Laden.");
             return;
         }
 

@@ -30,7 +30,7 @@ public class PlayerVehicleWorkshopModule : ITransientScript
         foreach (var target in Alt.GetAllPlayers()
                      .Where(p => p.GetData("VEHICLE_SERVICE_COMPANY_ID", out int companyId) && companyId == companyGroup.Id))
         {
-            target.EmitLocked("vehicleservice:update", companyGroup.Products);
+            target.EmitLocked("vehicleservice:updateproducts", companyGroup.Products);
         }
     }
 
