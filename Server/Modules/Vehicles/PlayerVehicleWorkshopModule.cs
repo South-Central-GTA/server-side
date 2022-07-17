@@ -42,7 +42,7 @@ public class PlayerVehicleWorkshopModule : ITransientScript
         {
             var price = GetTuningPartPrice(order.Type, order.Value);
             var moneyPrice = catalogVehiclePrice * 0.05f + price;
-            var productCosts = (int)(moneyPrice / _deliveryOptions.ProductPrice * 0.8f);
+            var productCosts = (int)(moneyPrice / _deliveryOptions.ProductPrice * 0.3f);
             
             products += productCosts;
         }
