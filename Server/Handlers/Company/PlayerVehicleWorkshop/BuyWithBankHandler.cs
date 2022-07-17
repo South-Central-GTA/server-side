@@ -99,6 +99,7 @@ public class BuyWithBankHandler : ISingletonScript
             if (bankAccount == null)
             {
                 player.SendNotification("Konto konnte nicht gefunden werden.", NotificationType.ERROR);
+                await _vehicleModule.Create(playerVehicleModel);
                 return;
             }
             
